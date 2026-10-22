@@ -187,6 +187,8 @@ table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;f
 .pzh{margin:0;width:100%;background:var(--paper);border:2px solid var(--blue);border-radius:12px;padding:10px 14px;font-weight:600}
 .puz{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 14px;display:flex;flex-direction:column;gap:8px;width:fit-content;max-width:100%;margin:0 auto}
 .pline{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font:800 1.8rem var(--display);line-height:1}
+.num.xin{font-size:.8em;padding:2px 6px;vertical-align:middle;border-color:var(--blue)}
+.fin.xin{vertical-align:middle;font-size:.8em}
 .num.stin{width:4.6ch;font-size:1.5rem;padding:6px 6px;border-style:dashed;border-color:var(--blue)}
 .num.pans{width:3.6ch;font-size:1.6rem;padding:2px 6px}
 .scratch.step1{border:2px solid var(--line)}
@@ -1426,7 +1428,11 @@ function answerHTML(){
   if(P.kind==='dur')return `<div class="answer"><input class="num tb" id="th" inputmode="none" autocomplete="off" aria-label="Tunnit"><span class="unit">h</span><input class="num tb" id="tm" inputmode="none" autocomplete="off" aria-label="Minuutit"><span class="unit">min</span></div>`;
   if(P.kind==='frac')return `<div class="answer"><span class="fin"><input class="num" id="fn" inputmode="none" autocomplete="off" aria-label="Osoittaja"><span class="bar"></span><input class="num" id="fdn" inputmode="none" autocomplete="off" aria-label="Nimittäjä"></span></div>`;
   return `<div class="answer"><input class="num" id="ans" inputmode="none" autocomplete="off" aria-label="Vastaus">${P.unit?`<span class="unit">${P.unit}</span>`:''}</div>`}
-function draw(){const t=cur(),pr=prog();
+function inlineAns(){if(P.steps||P.inline||!P.text||!P.text.includes(BOX)||!['int','dec','frac'].includes(P.kind))return null;
+  if(P.kind==='frac')return `<span class="fin xin"><input class="num" id="fn" inputmode="none" autocomplete="off" aria-label="Osoittaja"><span class="bar"></span><input class="num" id="fdn" inputmode="none" autocomplete="off" aria-label="Nimittäjä"></span>`;
+  const w=Math.max(3,String(P.ans).length+1);
+  return `<input class="num xin" id="ans" style="width:${w+1}ch" inputmode="none" autocomplete="off" aria-label="Vastaus">`}
+function draw(){const t=cur(),pr=prog();const IA=inlineAns();
   $('#sheet').innerHTML=`
     ${S.op==='mix'?`<p class="mixlbl">${typ()==='pulma'||typ()==='sana'?TYPES[typ()]:`${FAMN[fam()]} · ${t.name}${typ()==='sov'?' · sanallinen':''}`}</p>`:''}
     <div class="status">
@@ -1435,10 +1441,10 @@ function draw(){const t=cur(),pr=prog();
     </div>
     ${P.visual?`<div class="visual">${P.visual}</div>`:''}
     ${P.story?`<div class="story">${P.storyIcon?`<span class="sicon" aria-hidden="true">${P.storyIcon}</span>`:''}<p>${P.story}</p></div>`:''}
-    ${P.text?`<div class="expr">${P.text}</div>`:''}
+    ${P.text?`<div class="expr">${IA?P.text.replace(BOX,IA):P.text}</div>`:''}
     ${P.after||''}
     ${P.kind==='col'?'<p class="inst"><span>Laske allekkain. Aloita oikealta.</span></p>':''}
-    ${answerHTML()}
+    ${IA?'':answerHTML()}
     ${(kp=>`<div class="kpwrap${kp?' side':''}">${kp}`)(keypad())}
     <div class="actions">
       <button type="button" class="btn" id="check"${P.kind==='choice'?' hidden':''}>Tarkista</button>
