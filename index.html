@@ -1,0 +1,1465 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>*,*::before,*::after{box-sizing:border-box}html{-webkit-text-size-adjust:100%}:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Laskupolku</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: one-column workbook — grade tabs, choice chips, then a squared-paper task sheet (ruutuvihko) */
+:root{
+  --bg:#EAF0F8; --paper:#FFFFFF; --grid:#DCE6F3; --ink:#1C2742; --soft:#5A6680; --line:#C7D3E6;
+  --blue:#2B5FDB; --on-blue:#FFFFFF; --sun:#F2A20C; --sun-bg:#FFF4D9;
+  --good:#1B8F59; --good-bg:#E0F4E9; --bad:#CF3039; --bad-bg:#FCE6E7; --chip:#DFE7F4;
+  --apple:#DE3E2D; --orange:#F08B17; --pear:#86B52A; --berry:#E0335C; --leaf:#3B9637; --stem:#7A4B2A; --seed:#FFE7A0;
+  --cake:#F28AB3; --cake-edge:#CF5E8B; --plate:#E7ECF5;
+  --coin:#E8B42C; --coin-edge:#7A5408; --note:#2F8F55; --glass:#4FA9C2; --candy:#9B55D0; --blk:#3A76DB; --blk2:#6A9BEA;
+  --display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1525; --paper:#162036; --grid:#202D47; --ink:#E6ECF7; --soft:#9CA8C1; --line:#2E3C5B;
+  --blue:#7299FF; --on-blue:#0E1525; --sun:#FFC54A; --sun-bg:#33291A;
+  --good:#45CB8C; --good-bg:#143326; --bad:#FF7479; --bad-bg:#3A1C22; --chip:#22304C;
+  --apple:#F0553F; --orange:#FF9C30; --pear:#9CCB3A; --berry:#F04C73; --leaf:#4FB04A; --stem:#B98557; --seed:#FFE7A0;
+  --cake:#E37BA6; --cake-edge:#B4527D; --plate:#26324F; color-scheme:dark;
+  --coin:#F2C14A; --coin-edge:#6B4A06; --note:#3FAE6B; --glass:#62C0D8; --candy:#B278E6; --blk:#5B8DF0; --blk2:#86AAF5;
+}}
+:root[data-theme="dark"]{
+  --bg:#0E1525; --paper:#162036; --grid:#202D47; --ink:#E6ECF7; --soft:#9CA8C1; --line:#2E3C5B;
+  --blue:#7299FF; --on-blue:#0E1525; --sun:#FFC54A; --sun-bg:#33291A;
+  --good:#45CB8C; --good-bg:#143326; --bad:#FF7479; --bad-bg:#3A1C22; --chip:#22304C;
+  --apple:#F0553F; --orange:#FF9C30; --pear:#9CCB3A; --berry:#F04C73; --leaf:#4FB04A; --stem:#B98557; --seed:#FFE7A0;
+  --cake:#E37BA6; --cake-edge:#B4527D; --plate:#26324F; color-scheme:dark;
+  --coin:#F2C14A; --coin-edge:#6B4A06; --note:#3FAE6B; --glass:#62C0D8; --candy:#B278E6; --blk:#5B8DF0; --blk2:#86AAF5;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,7vw,2.7rem);line-height:1;margin:0;letter-spacing:-.01em}
+h1{display:flex;flex-wrap:wrap;align-items:center;gap:.25em .35em}
+.opsrow{display:inline-flex;gap:.12em}
+.opsrow span{display:inline-grid;place-items:center;width:.82em;height:.82em;border-radius:.2em;font-size:.82em;line-height:1;color:var(--paper);transform:rotate(-4deg)}
+.opsrow span:nth-child(even){transform:rotate(4deg)}
+.opsrow .o1{background:var(--blue)} .opsrow .o2{background:var(--sun)} .opsrow .o3{background:var(--good)} .opsrow .o4{background:var(--berry)}
+.sub{max-width:52ch}
+.sub{margin:6px 0 0;color:var(--soft);font-weight:600}
+.stars{flex:none;display:flex;align-items:center;gap:6px;background:var(--sun-bg);color:var(--ink);border-radius:999px;padding:6px 14px;font-family:var(--display);font-weight:800;font-size:1.25rem;font-variant-numeric:tabular-nums}
+.stars svg{width:22px;height:22px}
+.stars.pop{animation:pop .5s ease}
+@keyframes pop{40%{transform:scale(1.25)}100%{transform:scale(1)}}
+.lbl{font-size:.75rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--soft);margin:0 0 6px}
+.grades{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.grade{border:2px solid var(--line);background:var(--paper);color:var(--ink);border-radius:14px;padding:6px 0 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1}
+.grade b{font-family:var(--display);font-size:1.7rem;font-weight:800}
+.grade small{font-size:.7rem;font-weight:700;color:var(--soft);margin-top:2px}
+.grade[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:var(--on-blue)}
+.grade[aria-pressed="true"] small{color:var(--on-blue)}
+.goal{margin:0;color:var(--soft);font-size:.95rem;max-width:65ch}
+.goal b{color:var(--ink)}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.sel{display:block;width:100%;appearance:none;-webkit-appearance:none;font:700 1.05rem var(--body);color:var(--ink);background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%237A8599' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 14px center/14px 10px;border:2px solid var(--line);border-radius:12px;padding:10px 40px 10px 14px;cursor:pointer;min-height:48px}
+.sel:disabled{opacity:.55;cursor:default;background-image:none}
+.sel:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+label.lbl{display:block}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:2px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 14px;font:700 .95rem var(--body);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.sheet{background-color:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px;background-position:-1px -1px;
+  border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:16px;box-shadow:0 6px 18px -12px rgba(20,40,90,.35)}
+.status{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.levels{display:flex;align-items:center;gap:6px;background:var(--paper);border-radius:999px;padding:2px}
+.lv{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);background:var(--paper);color:var(--ink);font:800 1rem var(--display);cursor:pointer}
+.lv[aria-pressed="true"]{background:var(--sun);border-color:var(--sun);color:#1C2742}
+.lvname{font-weight:700;font-size:.9rem;color:var(--soft);background:var(--paper);padding:0 6px;border-radius:6px}
+.streak{display:flex;gap:5px;align-items:center;background:var(--paper);padding:2px 6px;border-radius:999px;font-size:.8rem;color:var(--soft);font-weight:700}
+.stlbl{font-size:.75rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--soft);padding-left:8px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.streak i{width:12px;height:12px;border-radius:50%;border:2px solid var(--good);display:inline-block}
+.streak i.on{background:var(--good)}
+.visual{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px}
+.group{display:grid;grid-template-columns:repeat(5,30px);gap:3px;padding:7px;background:var(--paper);border:2px dashed var(--line);border-radius:12px}
+.fr{width:30px;height:30px;display:block}
+.fr.x{opacity:.5}
+.sign{font-family:var(--display);font-weight:800;font-size:2.4rem;color:var(--blue);line-height:1}
+.opnd{margin:0;display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:8px}
+.opnd figcaption{font-family:var(--display);font-weight:800;font-size:1.3rem;line-height:1}
+.pv{display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;justify-content:center;max-width:250px}
+.pvh{display:flex;gap:4px;flex-wrap:wrap;max-width:156px}
+.pvt{display:flex;gap:3px}
+.pvo{display:grid;grid-template-columns:repeat(5,10px);gap:3px}
+.pal{display:inline-block;width:48px;height:48px;border:2px solid var(--stem);border-radius:5px;background:radial-gradient(circle,var(--apple) 36%,transparent 42%) 0 0/10% 10%,var(--paper)}
+.rod{display:inline-block;width:9px;height:48px;border:2px solid var(--stem);border-radius:4px;background:radial-gradient(circle,var(--apple) 40%,transparent 46%) 0 0/100% 10%,var(--paper)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--apple)}
+.legend{margin:0;text-align:center;font-size:.85rem;color:var(--soft);font-weight:700;display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px}
+.legend span{display:inline-flex;align-items:center;gap:5px;background:var(--paper);padding:0 4px;border-radius:4px}
+.legend .pal{width:18px;height:18px;border-width:1px}
+.legend .rod{height:18px;width:6px;border-width:1px}
+.legend .dot{width:8px;height:8px}
+.note{font-weight:700;background:var(--paper);border:1px solid var(--line);padding:4px 10px;border-radius:8px}
+.cakes{display:flex;gap:4px}
+.cake{width:76px;height:76px;display:block}
+.expr{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,7vw,2.3rem);text-align:center;line-height:1.3;font-variant-numeric:tabular-nums}
+.expr span.bg{background:var(--paper);padding:0 10px;border-radius:10px;display:inline-block}
+.story{display:flex;gap:12px;align-items:center;font-size:1.15rem;font-weight:600;background:var(--paper);padding:12px 14px;border-radius:12px;border:1px solid var(--line);max-width:60ch;margin:0 auto;width:100%}
+.story p{margin:0;min-width:0}
+.sicon{flex:none;width:56px;height:56px}
+.sicon svg{width:100%;height:100%;display:block}
+.pvt.u{flex-wrap:wrap;max-width:210px}
+.pvt.u svg{width:20px;height:34px;display:block}
+.pvo.u{grid-template-columns:repeat(5,18px)}
+.pvo.u svg{width:18px;height:18px;display:block}
+.legend svg{width:15px;height:15px;display:block}
+.legend .t svg{width:11px;height:18px}
+.inst{text-align:center;font-weight:700;color:var(--soft);margin:0}
+.inst span{background:var(--paper);padding:0 6px;border-radius:6px}
+.box{display:inline-grid;place-items:center;min-width:1.5em;border:3px dashed var(--blue);border-radius:10px;color:var(--blue);padding:0 .15em;line-height:1.1}
+.q{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.05;font-variant-numeric:tabular-nums;margin:0 .08em}
+.q>span:first-child{border-bottom:.09em solid currentColor;padding:0 .15em .04em}
+.q>span+span{padding-top:.04em}
+.answer{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap}
+.num{width:7.5ch;font:800 1.8rem var(--display);text-align:center;border:3px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);padding:4px 8px}
+.num:focus{border-color:var(--blue)}
+.unit{font:800 1.4rem var(--display);background:var(--paper);padding:0 6px;border-radius:6px}
+.fin{display:inline-flex;flex-direction:column;align-items:center;gap:6px;background:var(--paper);padding:6px;border-radius:12px}
+.fin .num{width:4.5ch;font-size:1.6rem;padding:2px 6px}
+.fin .bar{width:100%;height:4px;border-radius:2px;background:var(--ink)}
+.calc-wrap{overflow-x:auto;display:flex;justify-content:center}
+table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;font-family:var(--display);font-weight:800;font-variant-numeric:tabular-nums}
+.calc td{width:clamp(30px,8.5vw,42px);height:44px;text-align:center;font-size:1.65rem;padding:2px;line-height:1}
+.calc td.cm{width:14px;font-size:1.65rem}
+.calc td.sg{width:28px;color:var(--blue)}
+.calc tr.carry td{height:28px;padding:2px}
+.calc tr.res td{border-top:3px solid var(--ink);padding-top:6px}
+.calc input{width:100%;font:800 1.55rem var(--display);text-align:center;color:var(--ink);background:var(--paper);border:2px solid var(--line);border-radius:8px;padding:0;height:42px}
+.calc input.ci{height:24px;font-size:.95rem;border-style:dashed;color:var(--blue);border-radius:6px}
+.calc input.ci.hinted{border-color:var(--sun);background:var(--sun-bg)}
+.calc input.ok,.num.ok{border-color:var(--good);background:var(--good-bg)}
+.calc input.no,.num.no{border-color:var(--bad);background:var(--bad-bg)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.btn{font:700 1.15rem var(--display);border-radius:12px;padding:9px 20px;border:2px solid var(--blue);background:var(--blue);color:var(--on-blue);cursor:pointer}
+.btn.ghost{background:var(--paper);color:var(--ink);border-color:var(--line)}
+.btn.next{background:var(--good);border-color:var(--good);color:var(--paper)}
+.fb{border-radius:12px;padding:10px 14px;font-weight:800;text-align:center;font-size:1.05rem}
+.fb.good{background:var(--good-bg);color:var(--good)}
+.fb.bad{background:var(--bad-bg);color:var(--bad)}
+.fb.info{background:var(--paper);color:var(--soft);border:1px solid var(--line)}
+.panel{background:var(--paper);border:2px solid var(--sun);border-radius:12px;padding:12px 14px}
+.panel h3{margin:0 0 6px;font:800 1.05rem var(--display);color:var(--ink)}
+.panel p{margin:0 0 8px;max-width:65ch}
+.panel p:last-child{margin-bottom:0}
+.panel ol{margin:0 0 8px;padding-left:1.3em;display:flex;flex-direction:column;gap:4px}
+.panel .visual{margin:8px 0}
+.panel.explain{border-color:var(--good)}
+.clock{width:150px;height:150px;display:block}
+.num.tb{width:3.4ch}
+@media (max-width:420px){.clock{width:128px;height:128px}}
+.mgs{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:540px}
+.mg{display:grid;gap:2px;padding:5px;background:var(--paper);border:2px dashed var(--line);border-radius:10px;min-width:32px;min-height:32px;align-content:start}
+.mg svg,.mg .fr{width:18px;height:18px;display:block}
+.plates{display:grid;grid-template-columns:repeat(5,30px);gap:4px}
+.plates svg{width:30px;height:16px;display:block}
+.calc tr.pr td{padding:2px}
+.calc tr.pr.first td{border-top:3px solid var(--ink);padding-top:6px}
+.calc input.pi{height:34px;font-size:1.25rem;border-style:dashed}
+.arr svg{max-width:72vw;height:auto;display:block}
+.arr .blk{transform-box:view-box;transform-origin:0 0;transition:transform .7s ease}
+.arr.tr .blk{transform:matrix(0,-1,-1,0,var(--W),var(--W))}
+.arr .arrcap{font-size:1rem;font-weight:800;text-align:center}
+.btn.turn{font-size:1.5rem;line-height:1;padding:6px 12px;margin-left:8px;vertical-align:middle}
+@media (prefers-reduced-motion:reduce){.arr .blk{transition:none}}
+.pzhelp{width:100%;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.qhelp{width:34px;height:34px;border-radius:50%;border:2px solid var(--blue);background:var(--paper);color:var(--blue);font:800 1.2rem var(--display);cursor:pointer;line-height:1}
+.qhelp[aria-expanded="true"]{background:var(--blue);color:var(--on-blue)}
+.pzh{margin:0;width:100%;background:var(--paper);border:2px solid var(--blue);border-radius:12px;padding:10px 14px;font-weight:600}
+.puz{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 14px;display:flex;flex-direction:column;gap:8px;width:fit-content;max-width:100%;margin:0 auto}
+.pline{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font:800 1.8rem var(--display);line-height:1}
+.puz.qbox{border:2px solid var(--blue);width:100%;flex:1 1 100%;max-width:100%;overflow-x:auto}
+.qbox .pline{justify-content:center;flex-wrap:nowrap}
+.puz .pline{flex-wrap:nowrap}
+.qlbl{width:100%;font:800 .75rem var(--body);letter-spacing:.09em;text-transform:uppercase;color:var(--soft)}
+.pop{color:var(--blue);min-width:.6em;text-align:center}
+.pic svg{width:42px;height:42px;display:block}
+.pic.sm svg{width:28px;height:28px}
+.pfr{font-size:1.35rem}
+.pic.fq svg{width:30px;height:30px}
+.scratch{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:center;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:8px 12px;width:100%}
+.sclbl{font-weight:700;color:var(--soft);font-size:.9rem;width:100%;text-align:center}
+.scit{display:inline-flex;align-items:center;gap:6px;font:800 1.3rem var(--display)}
+.num.sc{width:3ch;font-size:1.3rem;padding:2px 4px;border-width:2px}
+.num.sc.sw{width:4.2ch}
+.scit{font-family:var(--display)}
+.wlist{margin:0 0 8px;padding-left:1.2em}
+.thermo{width:96px;height:auto;display:block}
+.choices{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.choice{min-width:76px;min-height:58px;padding:6px 18px;border-radius:14px;border:3px solid var(--line);background:var(--paper);color:var(--ink);font:800 1.3rem var(--display);cursor:pointer;touch-action:manipulation}
+.choices.big .choice{font-size:2.2rem;min-width:84px}
+.choice.ok{border-color:var(--good);background:var(--good-bg)}
+.choice.no{border-color:var(--bad);background:var(--bad-bg)}
+.mixlbl{margin:0;align-self:flex-start;font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.uicon svg{width:72px;height:72px;display:block}
+.stile.hl{border-color:var(--blue);color:var(--blue)}
+.ladtxt{font-size:.9rem;color:var(--soft);margin:6px 0 0}
+.kseq{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.kseq{flex-wrap:nowrap}
+.ktile{flex:1 1 0;min-width:0;max-width:66px;aspect-ratio:1;display:grid;place-items:center;background:var(--paper);border:2px solid var(--line);border-radius:12px}
+.ktile svg{width:85%;height:auto;display:block}
+.kopt svg{width:100%;height:auto;display:block}
+.choices.pics{display:grid;grid-template-columns:repeat(4,minmax(0,84px));gap:8px}
+.choices.pics .choice{min-width:0;padding:6px;aspect-ratio:1}
+.ktile.q2{border:3px dashed var(--blue);color:var(--blue);font:800 1.8rem var(--display)}
+.ktile.ans{border:3px solid var(--good)}
+.kopt{display:block}
+.seq{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px}
+.stile{min-width:52px;padding:8px 10px;text-align:center;background:var(--paper);border:2px solid var(--line);border-radius:12px;font:800 1.5rem var(--display);font-variant-numeric:tabular-nums}
+.stile.q2{border:3px dashed var(--blue);color:var(--blue)}
+.sdiff{font:800 .95rem var(--display);color:var(--sun);background:var(--paper);border-radius:6px;padding:0 4px}
+.key.wide{grid-column:1/-1;height:48px}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:300px;margin:0 auto;background:var(--paper);padding:8px;border-radius:16px;border:1px solid var(--line)}
+.key{height:58px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink);font:800 1.8rem var(--display);cursor:pointer;display:grid;place-items:center;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.key:active{background:var(--chip);transform:translateY(1px)}
+.key.alt{background:var(--chip)}
+@media (min-width:600px){.key{height:64px}}
+footer{color:var(--soft);font-size:.88rem;max-width:65ch}
+footer p{margin:0 0 6px}
+@media (prefers-reduced-motion:reduce){.stars.pop{animation:none}}
+@media (max-width:420px){.grade b{font-size:1.45rem}.group{grid-template-columns:repeat(5,26px)}.fr{width:26px;height:26px}.cake{width:64px;height:64px}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1">+</span><span class="o2">−</span><span class="o3">·</span><span class="o4">:</span></span></h1>
+      <p class="sub">Yhteen-, vähennys-, kerto- ja jakolaskua kuvien avulla 1.–6. luokalle. Mukana myös kellolaskut ja kuvapulmat.</p>
+    </div>
+    <div class="stars" id="stars" aria-label="Tähdet">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="var(--sun)" stroke="var(--stem)" stroke-width=".8"/></svg>
+      <span id="starN">0</span>
+    </div>
+  </header>
+
+  <section>
+    <p class="lbl">Luokka</p>
+    <div class="grades" id="grades"></div>
+  </section>
+
+  <p class="goal" id="goal"></p>
+
+  <section class="controls">
+    <div><label class="lbl" for="ops">Lasku</label><select class="sel" id="ops" data-sel="op"></select></div>
+    <div id="typeBox"><label class="lbl" for="types">Tehtävät</label><select class="sel" id="types" data-sel="type"></select></div>
+    <div id="topicBox"><label class="lbl" for="topics">Aihe</label><select class="sel" id="topics" data-sel="topic"></select></div>
+  </section>
+
+  <section class="sheet" id="sheet" aria-live="polite"></section>
+
+  <footer>
+    <p>Kolme oikeaa vastausta peräkkäin nostaa tasoa. Kaksi hankalaa tehtävää peräkkäin laskee sitä. Tason voi valita myös itse. Edistyminen tallentuu tähän selaimeen.</p>
+  </footer>
+</div>
+
+<script>
+/* ---------- apuvälineet ---------- */
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=R(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+const gcd=(a,b)=>b?gcd(b,a%b):Math.abs(a);
+const lcm=(a,b)=>a/gcd(a,b)*b;
+const OPS={'+':'+','-':'−'};
+const fmtInt=n=>{const s=String(n);return n>=10000?s.replace(/\B(?=(\d{3})+(?!\d))/g,' '):s};
+const fd=x=>{if(!x.d)return fmtInt(x.u);const s=String(x.u).padStart(x.d+1,'0');return fmtInt(+s.slice(0,-x.d))+','+s.slice(-x.d)};
+const val=x=>x.u/10**x.d;
+const frac=(n,d)=>`<span class="q"><span>${n}</span><span>${d}</span></span>`;
+const BOX='<span class="box">?</span>';
+
+const KIDS=[{n:'Aino',ll:'Ainolla'},{n:'Eetu',ll:'Eetulla'},{n:'Siiri',ll:'Siirillä'},{n:'Leo',ll:'Leolla'},{n:'Venla',ll:'Venlalla'},{n:'Onni',ll:'Onnilla'},{n:'Helmi',ll:'Helmillä'},{n:'Elias',ll:'Eliaksella'},{n:'Lilja',ll:'Liljalla'},{n:'Väinö',ll:'Väinöllä'}];
+const two=()=>{const s=shuffle(KIDS);return [s[0],s[1]]};
+
+/* ---------- hedelmät ---------- */
+const FRUITS={
+  omena:{nom:'omena',part:'omenaa',svg:'<circle cx="12" cy="14" r="8" fill="var(--apple)"/><path d="M12 6.5C12 4.5 13 3.2 14.2 2.2" stroke="var(--stem)" stroke-width="1.6" fill="none" stroke-linecap="round"/><ellipse cx="16" cy="4.6" rx="3" ry="1.5" transform="rotate(-25 16 4.6)" fill="var(--leaf)"/><circle cx="9" cy="11" r="2" fill="#fff" opacity=".35"/>'},
+  paaryna:{nom:'päärynä',part:'päärynää',svg:'<circle cx="12" cy="16" r="6.6" fill="var(--pear)"/><circle cx="12" cy="9.6" r="4.3" fill="var(--pear)"/><path d="M12 5.6L12.9 2.6" stroke="var(--stem)" stroke-width="1.6" stroke-linecap="round"/><ellipse cx="15.3" cy="4" rx="2.4" ry="1.2" transform="rotate(-20 15.3 4)" fill="var(--leaf)"/><circle cx="9.6" cy="14" r="1.6" fill="#fff" opacity=".35"/>'},
+  appelsiini:{nom:'appelsiini',part:'appelsiinia',svg:'<circle cx="12" cy="13.5" r="8.4" fill="var(--orange)"/><ellipse cx="13.5" cy="4.6" rx="2.8" ry="1.4" transform="rotate(-15 13.5 4.6)" fill="var(--leaf)"/><circle cx="12" cy="6.2" r=".9" fill="var(--stem)"/><circle cx="9" cy="10.5" r="1.8" fill="#fff" opacity=".35"/><circle cx="15" cy="16" r=".5" fill="var(--stem)" opacity=".4"/><circle cx="9.5" cy="17" r=".5" fill="var(--stem)" opacity=".4"/>'},
+  mansikka:{nom:'mansikka',part:'mansikkaa',svg:'<path d="M12 22C6.6 18 4.6 12.6 6.5 9.2 8 7.2 16 7.2 17.5 9.2 19.4 12.6 17.4 18 12 22Z" fill="var(--berry)"/><path d="M6.8 8.8L9.4 7.3 10.4 5 12 6.6 13.6 5 14.6 7.3 17.2 8.8Z" fill="var(--leaf)"/><circle cx="9.4" cy="12" r=".7" fill="var(--seed)"/><circle cx="14.6" cy="12" r=".7" fill="var(--seed)"/><circle cx="12" cy="14.6" r=".7" fill="var(--seed)"/><circle cx="9.8" cy="16.6" r=".7" fill="var(--seed)"/><circle cx="14.2" cy="16.6" r=".7" fill="var(--seed)"/>'}
+};
+const FK=Object.keys(FRUITS);
+const pf=(n,t)=>n===1?t.nom:t.part;
+function fruitSVG(t,s){
+  if(s==='e')return '<svg class="fr" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8" fill="none" stroke="var(--line)" stroke-width="2" stroke-dasharray="3 3"/></svg>';
+  return `<svg class="fr ${s==='x'?'x':''}" viewBox="0 0 24 24" aria-hidden="true">${FRUITS[t].svg}${s==='x'?'<path d="M5 5L19 21M19 5L5 21" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round"/>':''}</svg>`;
+}
+const many=(t,n,s='n')=>Array.from({length:Math.max(0,n)},()=>({t,s}));
+const group=(items,label)=>`<div class="group" role="img" aria-label="${label}">${items.map(i=>fruitSVG(i.t,i.s)).join('')}</div>`;
+const sign=op=>`<span class="sign">${OPS[op]||op}</span>`;
+
+/* ---------- kympit ja sadat ---------- */
+function pv(n){const h=Math.floor(n/100),t=Math.floor(n%100/10),o=n%10;let s='<div class="pv">';
+  if(h)s+=`<div class="pvh">${'<span class="pal"></span>'.repeat(h)}</div>`;
+  if(t)s+=`<div class="pvt">${'<span class="rod"></span>'.repeat(t)}</div>`;
+  if(o)s+=`<div class="pvo">${'<span class="dot"></span>'.repeat(o)}</div>`;
+  return s+'</div>'}
+const opnd=(inner,cap,label)=>`<figure class="opnd" role="img" aria-label="${label}">${inner}<figcaption>${cap}</figcaption></figure>`;
+const legend=h=>`<p class="legend"><span><i class="dot"></i> 1 omena</span><span><i class="rod"></i> laatikko = 10</span>${h?'<span><i class="pal"></i> lava = 100</span>':''}</p>`;
+
+/* ---------- laskettavat esineet (2. luokan sanalliset) ---------- */
+const NUMTXT=(x,y,s,c)=>`<text x="${x}" y="${y}" text-anchor="middle" font-size="${s}" font-weight="800" fill="${c}" font-family="Baloo 2, Trebuchet MS, sans-serif">`;
+const STAR=(x,y,s)=>`<path transform="translate(${x} ${y}) scale(${s})" d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="var(--sun)" stroke="var(--coin-edge)" stroke-width="1"/>`;
+const UNITS={
+  euro:{word:'euroa',l1:'1 € kolikko',l10:'10 € seteli',
+    one:`<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="var(--coin)" stroke="var(--coin-edge)" stroke-width="1.6"/>${NUMTXT(12,16.5,12,'var(--coin-edge)')}1</text></svg>`,
+    ten:`<svg viewBox="0 0 20 34" aria-hidden="true"><rect x="1" y="1" width="18" height="32" rx="2" fill="var(--note)"/><rect x="3.5" y="3.5" width="13" height="27" rx="1" fill="none" stroke="#fff" stroke-opacity=".6"/>${NUMTXT(10,20,9,'#fff')}10</text></svg>`},
+  pullo:{word:'pulloa',l1:'1 pullo',l10:'kori = 10 pulloa',
+    one:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 3.5h4v3l2 3v11a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 8 20.5v-11l2-3z" fill="var(--glass)"/><rect x="9.6" y="1.5" width="4.8" height="2.6" rx=".6" fill="var(--blue)"/><rect x="9.6" y="12" width="4.8" height="5" fill="#fff" opacity=".55"/></svg>',
+    ten:`<svg viewBox="0 0 20 34" aria-hidden="true"><rect x="1" y="1" width="18" height="32" rx="2" fill="var(--stem)"/>${[0,1,2,3,4].map(i=>`<circle cx="6" cy="${5.5+5.8*i}" r="2.5" fill="var(--glass)"/><circle cx="14" cy="${5.5+5.8*i}" r="2.5" fill="var(--glass)"/>`).join('')}</svg>`},
+  karkki:{word:'karkkia',l1:'1 karkki',l10:'pussi = 10 karkkia',
+    one:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 7l6 3.5v3L2 17zM22 7l-6 3.5v3l6 3.5z" fill="var(--candy)" opacity=".65"/><circle cx="12" cy="12" r="5.5" fill="var(--candy)"/><path d="M9.3 10.3c1.6-1.6 3.8-1.6 5.4 0" stroke="#fff" stroke-width="1.3" fill="none" opacity=".75"/></svg>',
+    ten:`<svg viewBox="0 0 20 34" aria-hidden="true"><path d="M6 4.2c1.2-1.4 2.6-.6 4-.6s2.8-.8 4 .6l-1.6 4h-4.8z" fill="var(--candy)" opacity=".65"/><path d="M8.2 9.6C5.5 12 .9 18 .6 25.5.4 31.2 3.5 33.4 10 33.4s9.6-2.2 9.4-7.9C19.1 18 14.5 12 11.8 9.6z" fill="var(--candy)"/><rect x="6.6" y="7.6" width="6.8" height="2.6" rx="1.2" fill="var(--sun)"/><circle cx="10" cy="24.6" r="6.2" fill="#fff"/>${NUMTXT(10,27.9,8.5,'var(--candy)')}10</text><path d="M3.2 21c.7-2.6 1.9-4.8 3.6-6.4" stroke="#fff" stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".6"/></svg>`},
+  tarra:{word:'tarraa',l1:'1 tarra',l10:'arkki = 10 tarraa',
+    one:`<svg viewBox="0 0 24 24" aria-hidden="true">${STAR(0,0,1)}</svg>`,
+    ten:`<svg viewBox="0 0 20 34" aria-hidden="true"><rect x="1" y="1" width="18" height="32" rx="2" fill="var(--paper)" stroke="var(--soft)" stroke-width="1.2"/>${[0,1,2,3,4].map(i=>STAR(2.4,2.6+5.9*i,.26)+STAR(10.4,2.6+5.9*i,.26)).join('')}</svg>`},
+  sivu:{word:'sivua',l1:'1 sivu',l10:'nippu = 10 sivua',
+    one:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 2h10l4 4v16H5z" fill="var(--paper)" stroke="var(--soft)" stroke-width="1.5" stroke-linejoin="round"/><path d="M15 2v4h4" fill="none" stroke="var(--soft)" stroke-width="1.5"/><path d="M8 10h8M8 13.5h8M8 17h5" stroke="var(--soft)" stroke-width="1.3" opacity=".6"/></svg>',
+    ten:`<svg viewBox="0 0 20 34" aria-hidden="true"><rect x="4" y="4" width="15" height="29" rx="1" fill="var(--paper)" stroke="var(--soft)"/><rect x="2.5" y="2.5" width="15" height="29" rx="1" fill="var(--paper)" stroke="var(--soft)"/><rect x="1" y="1" width="15" height="29" rx="1" fill="var(--paper)" stroke="var(--soft)"/>${NUMTXT(8.5,19,8,'var(--soft)')}10</text></svg>`}
+};
+function pvT(n,th){const U=UNITS[th],t=Math.floor(n/10),o=n%10;
+  return `<div class="pv">${t?`<div class="pvt u">${U.ten.repeat(t)}</div>`:''}${o?`<div class="pvo u">${U.one.repeat(o)}</div>`:''}</div>`}
+const legendT=th=>{const U=UNITS[th];return `<p class="legend"><span>${U.one} ${U.l1}</span><span class="t">${U.ten} ${U.l10}</span></p>`};
+
+/* ---------- sanallisten tehtävien kuvat ---------- */
+const ICON={
+  kirjat:'<svg viewBox="0 0 48 48"><rect x="6" y="10" width="8" height="28" rx="1.5" fill="var(--apple)"/><rect x="15" y="14" width="8" height="24" rx="1.5" fill="var(--blue)"/><rect x="24" y="7" width="7" height="31" rx="1.5" fill="var(--pear)"/><rect x="33" y="12" width="8" height="26" rx="1.5" transform="rotate(10 37 25)" fill="var(--sun)"/><path d="M8 15h4M17 19h4M26 12h3" stroke="#fff" stroke-width="2" opacity=".7"/><rect x="3" y="38" width="42" height="4" rx="1" fill="var(--stem)"/></svg>',
+  pokaali:'<svg viewBox="0 0 48 48"><path d="M15 8h18v9a9 9 0 0 1-18 0z" fill="var(--sun)"/><path d="M15 11H9a6 6 0 0 0 7 8M33 11h6a6 6 0 0 1-7 8" fill="none" stroke="var(--sun)" stroke-width="3"/><rect x="21" y="25" width="6" height="7" fill="var(--sun)"/><rect x="14" y="32" width="20" height="7" rx="1.5" fill="var(--stem)"/><path d="M24 10.5l1.6 3.3 3.6.5-2.6 2.5.6 3.6-3.2-1.7-3.2 1.7.6-3.6-2.6-2.5 3.6-.5z" fill="#fff" opacity=".85"/></svg>',
+  auto:'<svg viewBox="0 0 48 48"><path d="M5 31v-7l6-10h21l8 10h3v7z" fill="var(--blue)"/><path d="M13 16h7v8H9zM23 16h8l6 8H23z" fill="var(--paper)" opacity=".85"/><circle cx="14" cy="32" r="5" fill="var(--ink)"/><circle cx="35" cy="32" r="5" fill="var(--ink)"/><circle cx="14" cy="32" r="2" fill="var(--line)"/><circle cx="35" cy="32" r="2" fill="var(--line)"/><path d="M4 41h40" stroke="var(--soft)" stroke-width="2" stroke-dasharray="6 4"/></svg>',
+  nuotit:'<svg viewBox="0 0 48 48"><path d="M18 35V12l21-5v23" fill="none" stroke="var(--berry)" stroke-width="3"/><path d="M18 18l21-5" stroke="var(--berry)" stroke-width="3"/><ellipse cx="13.5" cy="35" rx="5.5" ry="4.5" fill="var(--berry)"/><ellipse cx="34.5" cy="30" rx="5.5" ry="4.5" fill="var(--berry)"/></svg>',
+  puu:'<svg viewBox="0 0 48 48"><rect x="21" y="28" width="6" height="15" rx="1" fill="var(--stem)"/><circle cx="24" cy="20" r="15" fill="var(--leaf)"/><circle cx="16" cy="16" r="3" fill="var(--apple)"/><circle cx="28" cy="12" r="3" fill="var(--apple)"/><circle cx="31" cy="24" r="3" fill="var(--apple)"/><circle cx="20" cy="26" r="3" fill="var(--apple)"/><path d="M6 43h36" stroke="var(--leaf)" stroke-width="3" stroke-linecap="round"/></svg>',
+  kone:'<svg viewBox="0 0 48 48"><path d="M5 24c0-1.7 1.3-3 3-3h28l8 3-8 3H8c-1.7 0-3-1.3-3-3z" fill="var(--blue)"/><path d="M19 21l7-13h5l-3 13zM19 27l7 13h5l-3-13z" fill="var(--blue)"/><path d="M6 21l-2-8h4l5 8z" fill="var(--blue)"/><path d="M30 23h3M25 23h3M20 23h3" stroke="var(--paper)" stroke-width="2" stroke-linecap="round"/></svg>',
+  kolikot:`<svg viewBox="0 0 48 48"><circle cx="31" cy="18" r="11" fill="var(--coin)" stroke="var(--coin-edge)" stroke-width="2"/><circle cx="18" cy="29" r="13" fill="var(--coin)" stroke="var(--coin-edge)" stroke-width="2"/>${NUMTXT(18,35,17,'var(--coin-edge)')}€</text></svg>`,
+  pyora:'<svg viewBox="0 0 48 48"><circle cx="12" cy="31" r="8" fill="none" stroke="var(--ink)" stroke-width="3"/><circle cx="36" cy="31" r="8" fill="none" stroke="var(--ink)" stroke-width="3"/><path d="M12 31l7-13h13l4 13M19 18l7 13H12M26 31l6-13M16 14h6M31 14l1 4" fill="none" stroke="var(--blue)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  sakki:`<svg viewBox="0 0 48 48"><path d="M13 13l3-6h16l3 6-2 29H15z" fill="var(--plate)" stroke="var(--stem)" stroke-width="2" stroke-linejoin="round"/><path d="M15 13h18" stroke="var(--stem)" stroke-width="2"/>${NUMTXT(24,33,12,'var(--stem)')}kg</text></svg>`,
+  naru:'<svg viewBox="0 0 48 48"><circle cx="22" cy="24" r="15" fill="none" stroke="var(--orange)" stroke-width="4"/><circle cx="22" cy="24" r="9" fill="none" stroke="var(--orange)" stroke-width="4"/><circle cx="22" cy="24" r="3" fill="var(--orange)"/><path d="M37 24c5 1 6 8 3 14" fill="none" stroke="var(--orange)" stroke-width="4" stroke-linecap="round"/></svg>',
+  mitta:'<svg viewBox="0 0 48 48"><rect x="3" y="17" width="42" height="14" rx="2" fill="var(--sun)"/><path d="M7 17v6M11 17v4M15 17v6M19 17v4M23 17v6M27 17v4M31 17v6M35 17v4M39 17v6" stroke="var(--ink)" stroke-width="1.5"/><path d="M8 38c3-2 6-2 9 0M28 38c3-2 6-2 9 0" stroke="var(--soft)" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>'
+};
+
+/* ---------- kakut ---------- */
+function cakeSVG(n,k){const S=76,c=S/2,r=c-3;let p='';
+  if(n===1)p=`<circle cx="${c}" cy="${c}" r="${r}" fill="${k?'var(--cake)':'var(--plate)'}"/>`;
+  else for(let i=0;i<n;i++){const a0=(-90+360*i/n)*Math.PI/180,a1=(-90+360*(i+1)/n)*Math.PI/180;
+    const x0=c+r*Math.cos(a0),y0=c+r*Math.sin(a0),x1=c+r*Math.cos(a1),y1=c+r*Math.sin(a1);
+    p+=`<path d="M${c} ${c}L${x0.toFixed(2)} ${y0.toFixed(2)}A${r} ${r} 0 ${360/n>180?1:0} 1 ${x1.toFixed(2)} ${y1.toFixed(2)}Z" fill="${i<k?'var(--cake)':'var(--plate)'}" stroke="var(--paper)" stroke-width="2"/>`}
+  return `<svg class="cake" viewBox="0 0 ${S} ${S}" aria-hidden="true">${p}<circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="var(--cake-edge)" stroke-width="2"/></svg>`}
+function cakes(n,d){const cnt=Math.max(1,Math.ceil(n/d));let s='<div class="cakes">';for(let i=0;i<cnt;i++)s+=cakeSVG(d,Math.min(d,Math.max(0,n-i*d)));return s+'</div>'}
+const fracOp=(n,d)=>opnd(cakes(n,d),frac(n,d),`${n}/${d}`);
+
+/* ---------- vihjeiden apu ---------- */
+function splitHint(a,b,op,base){
+  const nm=base===10?['kymmenet','ykköset']:['sadat','kympit'];
+  const aH=Math.floor(a/base)*base,aL=a%base,bH=Math.floor(b/base)*base,bL=b%base;
+  if(op==='+')return `<p>Laske ensin ${nm[0]} yhteen: ${aH} + ${bH} = ${aH+bH}.</p><p>Sitten ${nm[1]}: ${aL} + ${bL} = ${aL+bL}.</p><p>Lopuksi lasketaan ${aH+bH} + ${aL+bL}.</p>`;
+  let s='';const m=a-bH;
+  if(bH)s+=`<p>Vähennä ensin ${nm[0]}: ${a} − ${bH} = ${m}.</p>`;
+  if(bL){const r=m%base;
+    if(r&&r<bL)s+=`<p>Sitten ${bL} pois. Vähennä ensin ${r}, niin pääset lukuun ${m-r}. Vähennä sen jälkeen loput ${bL-r}.</p>`;
+    else s+=`<p>Sitten ${nm[1]}: ${m} − ${bL} = ?</p>`;}
+  return s}
+
+/* ---------- allekkainlasku ---------- */
+const PLACE={6:'Miljoonat',5:'Satatuhannet',4:'Kymmenettuhannet',3:'Tuhannet',2:'Sadat',1:'Kymmenet',0:'Ykköset','-1':'Kymmenesosat','-2':'Sadasosat','-3':'Tuhannesosat'};
+function countCarry(a,b,op){let c=0,k=0;while(a>0||b>0){const da=a%10,db=b%10;
+  if(op==='+'){if(da+db+k>=10){c++;k=1}else k=0}else{if(da-k<db){c++;k=1}else k=0}
+  a=Math.floor(a/10);b=Math.floor(b/10)}return c}
+function buildCol(n,mode,op){
+  for(let tries=0;tries<60;tries++){
+    const cand=[...Array(n-1).keys()];const want=new Set();
+    if(mode===1)want.add(pick(cand));
+    if(mode===2)shuffle(cand).slice(0,Math.min(cand.length,R(2,Math.max(2,cand.length)))).forEach(p=>want.add(p));
+    let A=0,B=0,k=0,p10=1;
+    for(let i=0;i<n;i++){const top=i===n-1,w=want.has(i);let da=0,db=0;
+      for(let t=0;t<200;t++){da=R(top?1:0,9);db=R(0,9);
+        if(op==='+'){const s=da+db+k;if(w?s>=10:s<=9)break}
+        else{const e=da-k;if(w?e<db:e>=db)break}}
+      A+=da*p10;B+=db*p10;k=w?1:0;p10*=10}
+    const ok=mode===0?countCarry(A,B,op)===0:mode===1?countCarry(A,B,op)===1:countCarry(A,B,op)>=2;
+    if(ok&&B>0&&(op==='+'||A>B))return [A,B]}
+  return op==='+'?[R(10**(n-1),5*10**(n-1)),R(10**(n-2),4*10**(n-1))]:[R(6*10**(n-1),10**n-1),R(10**(n-2),5*10**(n-1))]}
+function digitsOf(x){const s=String(x.u).padStart(x.d+1,'0');return{int:x.d?s.slice(0,-x.d):s,dec:x.d?s.slice(-x.d):'',d:x.d}}
+function colLayout(A,B,op){
+  const D=Math.max(A.d,B.d),sc=x=>x.u*10**(D-x.d);
+  const ansU=op==='+'?sc(A)+sc(B):sc(A)-sc(B);
+  const pa=digitsOf(A),pb=digitsOf(B),pr=digitsOf({u:ansU,d:D});
+  const I=Math.max(pa.int.length,pb.int.length,pr.int.length);
+  const row=p=>{const c=p.int.padStart(I,' ').split('');if(D){c.push(p.d?',':'');c.push(...p.dec.padEnd(D,' ').split(''))}return c.map(x=>x===' '?'':x)};
+  return{D,I,a:row(pa),b:row(pb),r:row(pr),ansU,N:I+(D?D+1:0)}}
+function colSteps(L,op){
+  const out=[],carries=[];let k=0;
+  const isC=i=>L.D&&i===L.I;
+  const leftOf=i=>{let j=i-1;if(isC(j))j--;return j};
+  for(let i=L.N-1;i>=0;i--){if(isC(i))continue;
+    const ca=L.a[i],cb=L.b[i];if(ca===''&&cb===''&&k===0)continue;
+    const exp=i<L.I?L.I-1-i:-(i-L.I),name=PLACE[exp]||'';
+    const da=+(ca||0),db=+(cb||0);
+    const z=(exp<0&&(ca===''||cb===''))?' Tyhjän paikan voi ajatella nollaksi.':'';
+    if(op==='+'){const s=da+db+k;
+      if(ca===''&&cb===''){out.push(`<li><b>${name}:</b> muistinumero 1 kirjoitetaan vastaukseen.</li>`);k=0;continue}
+      out.push(`<li><b>${name}:</b> ${da} + ${db}${k?' + 1':''} = ${s}.${s>=10?` Kirjoita ${s%10} ja merkitse muistiin 1.`:''}${z}</li>`);
+      if(s>=10)carries.push(leftOf(i));k=s>=10?1:0}
+    else{
+      if(k&&da===0){out.push(`<li><b>${name}:</b> tässä on 0, josta on jo lainattu. Lainataan vasemmalta, jolloin siitä tulee 10 − 1 = 9. Sitten 9 − ${db} = ${9-db}.${z}</li>`);k=1;continue}
+      const e=da-k,pre=k?`${da} − 1 (lainattu) = ${e}. `:'';
+      if(e<db){out.push(`<li><b>${name}:</b> ${pre}${e} − ${db} ei onnistu, joten lainataan 1 vasemmalta: ${e+10} − ${db} = ${e+10-db}.${z}</li>`);k=1}
+      else{out.push(`<li><b>${name}:</b> ${pre}${e} − ${db} = ${e-db}.${z}</li>`);k=0}}}
+  if(op==='+'&&k)out.push('<li>Muistinumero 1 kirjoitetaan vastaukseen vasemmalle.</li>');
+  return{out,carries}}
+
+/* ---------- sanalliset tehtävät ---------- */
+const ITEMS=['mehupullon','sämpylän','vihon','tarrapaketin','pallon','kirjan','lippiksen','jäätelön'];
+const W_IA=[
+  {icon:'kirjat',t:(a,b)=>`Koulun kirjastossa on ${a} kirjaa. Sinne tuodaan ${b} uutta kirjaa. Montako kirjaa kirjastossa on sen jälkeen?`},
+  {icon:'pokaali',t:(a,b,K)=>`${K.n} keräsi pelissä ensin ${a} pistettä ja sitten vielä ${b} pistettä. Montako pistettä hän sai yhteensä?`},
+  {icon:'auto',max:1500,unit:'km',t:(a,b)=>`Perhe ajoi lomamatkalla ensimmäisenä päivänä ${a} km ja toisena päivänä ${b} km. Montako kilometriä perhe ajoi yhteensä?`},
+  {icon:'nuotit',min:1000,t:(a,b)=>`Konsertissa oli lauantaina ${a} kuulijaa ja sunnuntaina ${b} kuulijaa. Montako kuulijaa oli yhteensä?`}];
+const W_IS=[
+  {icon:'puu',t:(a,b)=>`Tilalla kasvoi ${a} omenaa. Niistä myytiin ${b}. Montako omenaa jäi?`},
+  {icon:'pokaali',t:(a,b,K,M)=>`${K.ll} on pelissä ${a} pistettä ja ${M.ll} ${b} pistettä. Montako pistettä enemmän ${K.ll} on?`},
+  {icon:'kirjat',t:(a,b)=>`Kirjastossa on ${a} kirjaa. Niistä ${b} on lainassa. Montako kirjaa on hyllyssä?`},
+  {icon:'kone',min:500,unit:'km',t:(a,b)=>`Lentokone lentää ${a} km pituisen matkan. Se on lentänyt jo ${b} km. Montako kilometriä on vielä jäljellä?`}];
+function wordInt(a,b,op){const[K,M]=two();const mx=Math.max(a,b);
+  const w=pick((op==='+'?W_IA:W_IS).filter(w=>mx<=(w.max||Infinity)&&mx>=(w.min||0)));
+  return{text:w.t(fmtInt(a),fmtInt(b),K,M),unit:w.unit||'',icon:ICON[w.icon]}}
+const W_DA=[
+  {ok:(A,B)=>A.d===2&&B.d===2&&val(A)<50&&val(B)<50,unit:'€',icon:'kolikot',t:(A,B,K)=>{const[i1,i2]=shuffle(ITEMS);return `${K.n} ostaa ${i1} hintaan ${fd(A)} € ja ${i2} hintaan ${fd(B)} €. Paljonko hän maksaa yhteensä?`}},
+  {ok:()=>true,unit:'km',icon:'pyora',t:(A,B)=>`Pyöräretken ensimmäinen osuus oli ${fd(A)} km ja toinen osuus ${fd(B)} km. Kuinka pitkä retki oli yhteensä?`},
+  {ok:(A,B)=>val(A)<20&&val(B)<20,unit:'kg',icon:'sakki',t:(A,B)=>`Leipomoon tuodaan ${fd(A)} kg jauhoja ja ${fd(B)} kg sokeria. Montako kiloa niitä on yhteensä?`}];
+const W_DS=[
+  {ok:(A,B)=>(A.d===2||A.d===0)&&B.d===2&&val(A)<=100,unit:'€',icon:'kolikot',t:(A,B,K)=>`${K.ll} on ${fd(A)} €. Hän ostaa ${pick(ITEMS)} hintaan ${fd(B)} €. Paljonko rahaa jää?`},
+  {ok:()=>true,unit:'m',icon:'naru',t:(A,B)=>`Narua on ${fd(A)} m. Siitä leikataan pala, jonka pituus on ${fd(B)} m. Paljonko narua jää?`},
+  {ok:(A,B)=>val(A)<7,unit:'m',icon:'mitta',t:(A,B,K,M)=>`${K.n} hyppäsi pituutta ${fd(A)} m ja ${M.n} ${fd(B)} m. Kuinka monta metriä pidemmälle ${K.n} hyppäsi?`}];
+function wordDec(A,B,op){const[K,M]=two();const w=pick((op==='+'?W_DA:W_DS).filter(w=>w.ok(A,B)));return{text:w.t(A,B,K,M),unit:w.unit,icon:ICON[w.icon]}}
+
+/* ---------- tehtävien rakentajat ---------- */
+function intProblem({a,b,op,visual,text,story,hint,word,storyIcon}){
+  const ans=op==='+'?a+b:a-b;
+  return{kind:'int',visual,text,story,storyIcon,ans,answerText:fmtInt(ans),hint,
+    explain:`<p><b>${fmtInt(a)} ${OPS[op]} ${fmtInt(b)} = ${fmtInt(ans)}</b></p>`,unit:word&&word.unit}}
+function colProblem(A,B,op,word){
+  if(op==='-'){if(val(A)<val(B))[A,B]=[B,A];if(val(A)===val(B))A={u:A.u+1,d:A.d}}
+  const L=colLayout(A,B,op),{out,carries}=colSteps(L,op);
+  const ansText=fd({u:L.ansU,d:L.D}),expr=`${fd(A)} ${OPS[op]} ${fd(B)}`;
+  const dec=A.d||B.d,align=A.d!==B.d?'<p>Muista kirjoittaa pilkut allekkain.</p>':'';
+  const explain=`<p><b>${expr} = ${ansText}</b></p><ol>${out.join('')}</ol>`;
+  if(word){const w=dec?wordDec(A,B,op):wordInt(A.u,B.u,op);
+    return{kind:dec?'dec':'int',story:w.text,storyIcon:w.icon,unit:w.unit,ans:L.ansU/10**L.D,answerText:ansText+(w.unit?' '+w.unit:''),
+      hint:`<p>${op==='+'?'Tässä lasketaan yhteen':'Tässä lasketaan vähennyslasku'}: <b>${expr}</b>.</p><p>Laske allekkain paperille. Aloita oikealta.</p>${align}`,explain}}
+  return{kind:'col',L,op,carries,ans:L.ansU,answerText:ansText,
+    hint:`<p>Aloita oikealta ja etene vasemmalle.</p>${align}<ol>${out[0]}</ol><p>Jatka samalla tavalla seuraavaan sarakkeeseen.</p>`,explain}}
+function fracProblem(n1,d1,n2,d2,op,word,kind){
+  const D=lcm(d1,d2),k1=D/d1,k2=D/d2,N=op==='+'?n1*k1+n2*k2:n1*k1-n2*k2,g=gcd(N,D);
+  const visual=`${fracOp(n1,d1)}${sign(op)}${fracOp(n2,d2)}`;
+  let hint;
+  if(d1===d2)hint=`<p>Nimittäjät ovat samat (${d1}), joten palat ovat samankokoisia. Laske vain osoittajat: ${n1} ${OPS[op]} ${n2}. Nimittäjä pysyy samana.</p>`;
+  else if(k1===1||k2===1){const[sn,sd,sk]=k1===1?[n2,d2,k2]:[n1,d1,k1];
+    hint=`<p>Palat ovat erikokoisia. Lavenna ${frac(sn,sd)} niin, että nimittäjä on ${D}: kerro osoittaja ja nimittäjä luvulla ${sk}.</p><div class="visual">${fracOp(sn,sd)}<span class="sign">=</span>${fracOp(sn*sk,D)}</div><p>Nyt palat ovat samankokoisia, ja voit laskea osoittajat.</p>`}
+  else hint=`<p>Etsi yhteinen nimittäjä. Pienin luku, joka jakautuu tasan sekä luvulla ${d1} että luvulla ${d2}, on ${D}.</p><div class="visual">${fracOp(n1*k1,D)}${sign(op)}${fracOp(n2*k2,D)}</div><p>${frac(n1,d1)} = ${frac(n1*k1,D)} ja ${frac(n2,d2)} = ${frac(n2*k2,D)}. Laske nyt osoittajat.</p>`;
+  let res=frac(N,D);if(g>1)res+=` = ${frac(N/g,D/g)}`;
+  const nn=N/g,dd=D/g;if(nn>dd&&dd>1)res+=` eli ${Math.floor(nn/dd)} ja ${frac(nn%dd,dd)}`;if(dd===1)res+=` eli ${nn}`;
+  const mid=d1!==d2?` = ${frac(n1*k1,D)} ${OPS[op]} ${frac(n2*k2,D)}`:'';
+  const explain=`<p><b>${frac(n1,d1)} ${OPS[op]} ${frac(n2,d2)}${mid} = ${res}</b></p><div class="visual">${cakes(N,D)}</div><p>Myös supistettu tai laventamaton muoto hyväksytään.</p>`;
+  const P={kind:'frac',visual,ans:{n:N,d:D},answerText:frac(N,D)+(g>1?` = ${frac(N/g,D/g)}`:''),hint,explain};
+  if(word){const[K,M]=two();const over=op==='+'?N>D:n1>d1;const f1=frac(n1,d1),f2=frac(n2,d2);
+    P.story=op==='+'?(over?`Mustikkapiirakkaa syötiin perjantaina ${f1} piirakkaa ja lauantaina ${f2} piirakkaa. Kuinka paljon piirakkaa syötiin yhteensä?`:`${K.n} söi kakusta ${f1} ja ${M.n} ${f2}. Kuinka suuren osan kakusta he söivät yhteensä?`)
+      :(over?`Mustikkapiirakkaa oli jäljellä ${f1} piirakkaa. Vieraat söivät siitä ${f2}. Kuinka paljon piirakkaa jäi?`:`Kakusta oli jäljellä ${f1}. ${K.n} söi siitä ${f2}. Kuinka suuri osa kakusta jäi?`)}
+  else P.text=`${frac(n1,d1)} ${OPS[op]} ${frac(n2,d2)} = ${BOX}`;
+  return P}
+
+/* ---------- 1. luokka ---------- */
+function g1Fruit(L,op,word){
+  const tk=pick(FK),t=FRUITS[tk];let a,b;
+  if(op==='+'){if(L===1){a=R(1,8);b=R(1,10-a)}else if(L===2){const x=R(0,8);a=10+x;b=R(1,9-x);if(Math.random()<.4)[a,b]=[b,a]}else{a=R(3,9);b=R(11-a,9)}}
+  else{if(L===1){a=R(3,10);b=R(1,a-1)}else if(L===2){a=R(11,19);b=R(1,a-10)}else{a=R(11,18);b=R(a%10+1,9)}}
+  let visual=op==='+'?`${group(many(tk,a),a+' '+pf(a,t))}${sign('+')}${group(many(tk,b),b+' '+pf(b,t))}`:group([...many(tk,a-b),...many(tk,b,'x')],`${a} ${pf(a,t)}, joista ${b} syödään`);
+  let hint;
+  if(op==='+'){if(L<3)hint=`<p>Aloita isommasta luvusta ${Math.max(a,b)} ja laske ${Math.min(a,b)} eteenpäin.</p>`;
+    else{const big=Math.max(a,b),sm=Math.min(a,b),fill=10-big,rest=sm-fill,t2=pick(FK.filter(k=>k!==tk));
+      hint=`<p>Täydennä ensin kymppiin: ${big} + ${fill} = 10. Toisesta luvusta jää vielä ${rest}. Paljonko on 10 + ${rest}?</p><div class="visual">${group([...many(tk,big),...many(t2,fill)],'täysi kymppi')}${group([...many(t2,rest),...many(tk,10-rest,'e')],'loput')}</div>`}}
+  else{if(L===1)hint='<p>Laske hedelmät, joiden päällä ei ole ruksia.</p>';
+    else if(L===2)hint=`<p>Vähennä ykkösistä: ${a%10} − ${b} = ${a%10-b}. Kymppi pysyy ennallaan.</p>`;
+    else{const o=a-10,more=b-o;hint=`<p>Vähennä ensin kymppiin: ${a} − ${o} = 10. Vähennettävää on vielä ${more}. Paljonko on 10 − ${more}?</p><div class="visual">${group([...many(tk,10-more),...many(tk,more,'x')],'kymppi')}${group([...many(tk,o,'x'),...many(tk,10-o,'e')],'ykköset')}</div>`}}
+  let story;
+  if(word){const[K,M]=two();
+    if(op==='+')story=pick([`${K.n} poimii ${a} ${pf(a,t)}. Sitten hän poimii vielä ${b} ${pf(b,t)}. Montako ${t.part} ${K.ll} on nyt?`,`Kulhossa on ${a} ${pf(a,t)}. ${K.n} tuo kulhoon ${b} lisää. Montako ${t.part} kulhossa on nyt?`]);
+    else if(Math.random()<.4){story=`${K.ll} on ${a} ${pf(a,t)} ja ${M.ll} on ${a-b} ${pf(a-b,t)}. Montako ${t.part} enemmän ${K.ll} on?`;
+      visual=`${opnd(group(many(tk,a),''),K.n,K.n+': '+a)}${opnd(group(many(tk,a-b),''),M.n,M.n+': '+(a-b))}`;
+      return intProblem({a,b:a-b,op,visual,story,hint:`<p>Vertaile: kuinka monta hedelmää ${K.ll} on yli? Lasketaan ${a} − ${a-b}.</p>`,word:{}})}
+    else story=`Korissa on ${a} ${pf(a,t)}. ${K.n} syö ${b}. Montako ${t.part} koriin jää?`}
+  return intProblem({a,b,op,visual,story,text:word?null:`<span class="bg">${a} ${OPS[op]} ${b} = ${BOX}</span>`,hint,word})}
+function g1Missing(L,op,word){
+  const tk=pick(FK),t=FRUITS[tk];let a,c,ans,visual,text,hint,story;
+  if(op==='+'){if(L===1){c=R(3,10);a=R(1,c-1)}else if(L===2){c=R(12,19);a=R(10,c-1)}else{a=R(3,9);c=R(11,a+9)}
+    ans=c-a;visual=group([...many(tk,a),...many(tk,ans,'e')],`${a} hedelmää ja tyhjiä paikkoja, yhteensä ${c}`);
+    text=`${a} + ${BOX} = ${c}`;
+    hint=L<3?`<p>Laske tyhjät paikat. Voit myös laskea luvusta ${a} lukuun ${c} asti.</p>`:`<p>Täydennä ensin kymppiin: ${a} + ${10-a} = 10. Kympistä lukuun ${c} on vielä ${c-10}. Laske ${10-a} + ${c-10}.</p>`;
+    if(word){const[K]=two();story=`${K.n} poimi aamulla ${a} ${pf(a,t)}. Illalla ${K.ll} oli yhteensä ${c} ${pf(c,t)}. Montako ${t.part} hän poimi illalla?`}}
+  else{if(L===1){a=R(4,10);c=R(1,a-1)}else if(L===2){a=R(12,19);c=R(10,a-1)}else{a=R(11,18);c=R(Math.max(1,a-9),9)}
+    ans=a-c;visual=`${group(many(tk,a),a+' '+pf(a,t))}<span class="note">Jäljelle jää ${c}</span>`;
+    text=`${a} − ${BOX} = ${c}`;
+    hint=`<p>Kuinka monta pitää ottaa pois, jotta jää ${c}? Laske luvusta ${c} lukuun ${a} asti.</p>`;
+    if(word)story=`Kulhossa oli ${a} ${pf(a,t)}. Kun lapset olivat syöneet, kulhoon jäi ${c}. Montako ${t.part} lapset söivät?`}
+  return{kind:'int',visual,text:story?null:`<span class="bg">${text}</span>`,story,ans,answerText:String(ans),hint,
+    explain:`<p><b>${op==='+'?`${a} + ${ans} = ${c}`:`${a} − ${ans} = ${c}`}</b></p>`}}
+
+/* ---------- 2. ja 3. luokka ---------- */
+function g2(L,op,word){let a,b;
+  if(op==='+'){if(L===1){if(Math.random()<.5){a=10*R(1,8);b=10*R(1,9-a/10)}else{const au=R(0,8);a=10*R(1,8)+au;b=R(1,9-au)}}
+    else if(L===2){const at=R(1,7),bt=R(1,8-at),au=R(0,8),bu=R(1,9-au);a=10*at+au;b=10*bt+bu}
+    else{const at=R(1,7),bt=R(1,8-at),au=R(2,9),bu=R(10-au,9);a=10*at+au;b=10*bt+bu}}
+  else{if(L===1){if(Math.random()<.5){a=10*R(2,9);b=10*R(1,a/10-1)}else{const au=R(1,9);a=10*R(1,9)+au;b=R(1,au)}}
+    else if(L===2){const at=R(2,9),bt=R(1,at-1),au=R(1,9),bu=R(0,au);a=10*at+au;b=10*bt+bu}
+    else{const at=R(2,9),bt=R(1,at-1),au=R(0,8),bu=R(au+1,9);a=10*at+au;b=10*bt+bu}}
+  let story,theme='omena';
+  if(word){const[K,M]=two();
+    [theme,story]=pick(op==='+'?[['euro',`${K.ll} on säästössä ${a} euroa. Hän saa mummolta ${b} euroa. Paljonko rahaa ${K.ll} on nyt?`],['pullo',`Luokka keräsi maanantaina ${a} pulloa ja tiistaina ${b} pulloa. Montako pulloa luokka keräsi yhteensä?`]]
+      :[['sivu',`Kirjassa on ${a} sivua. ${K.n} on lukenut ${b} sivua. Montako sivua on vielä lukematta?`],['tarra',`${K.ll} on ${a} tarraa ja ${M.ll} ${b} tarraa. Montako tarraa enemmän ${K.ll} on?`],['karkki',`Pussissa on ${a} karkkia. Kaverit syövät ${b}. Montako karkkia jää pussiin?`]])}
+  const vis=n=>theme==='omena'?pv(n):pvT(n,theme),nm=theme==='omena'?'omenaa':UNITS[theme].word;
+  const visual=`${opnd(vis(a),a,a+' '+nm)}${sign(op)}${opnd(vis(b),b,b+' '+nm)}${theme==='omena'?legend(false):legendT(theme)}`;
+  return intProblem({a,b,op,visual,story,text:word?null:`<span class="bg">${a} ${OPS[op]} ${b} = ${BOX}</span>`,hint:splitHint(a,b,op,10),word})}
+function g3Head(L,op,word){let a,b;
+  if(op==='+'){if(L===1){const ah=R(1,8);a=100*ah;b=100*R(1,9-ah)}
+    else if(L===2){const ah=R(1,7),bh=R(1,8-ah),at=R(0,8),bt=R(1,9-at);a=100*ah+10*at;b=100*bh+10*bt}
+    else{const ah=R(1,7),bh=R(1,8-ah),at=R(2,9),bt=R(10-at,9);a=100*ah+10*at;b=100*bh+10*bt}}
+  else{if(L===1){const ah=R(2,9);a=100*ah;b=100*R(1,ah-1)}
+    else if(L===2){const ah=R(2,9),bh=R(1,ah-1),at=R(1,9),bt=R(0,at);a=100*ah+10*at;b=100*bh+10*bt}
+    else{const ah=R(2,9),bh=R(1,ah-1),at=R(0,8),bt=R(at+1,9);a=100*ah+10*at;b=100*bh+10*bt}}
+  const visual=`${opnd(pv(a),a,a+' omenaa')}${sign(op)}${opnd(pv(b),b,b+' omenaa')}${legend(true)}`;
+  const w=word?wordInt(a,b,op):null;
+  return intProblem({a,b,op,visual:word?null:visual,story:w&&w.text,storyIcon:w&&w.icon,text:word?null:`<span class="bg">${a} ${OPS[op]} ${b} = ${BOX}</span>`,hint:splitHint(a,b,op,100),word:w})}
+const colInt=(n,mode)=>(L,op,word)=>{const[a,b]=buildCol(n,mode[L-1],op);return colProblem({u:a,d:0},{u:b,d:0},op,word)};
+
+/* ---------- 4.–6. luokka ---------- */
+function g5Big(L,op,word){let a,b;
+  if(L===3&&op==='-'&&Math.random()<.5){a=R(1,9)*100000+pick([0,R(1,9)*1000,R(1,9)*10000]);b=R(10000,a-1)}
+  else[a,b]=buildCol(L===1?5:6,L===1?1:2,op);
+  return colProblem({u:a,d:0},{u:b,d:0},op,word)}
+function decPair(g,L){const mk=(lo,hi,d)=>({u:R(lo,hi),d});let A,B;
+  if(g===4){if(L===1){A=mk(11,99,1);B=mk(11,99,1)}else if(L===2){A=mk(101,999,2);B=mk(101,999,2)}else{A=mk(11,199,1);B=mk(101,999,2)}}
+  else if(g===5){if(L===1){A=mk(1001,9999,2);B=mk(1001,9999,2)}else if(L===2){A=mk(1001,9999,3);B=mk(1001,9999,3)}
+    else{const d=pick([0,1,2]);A=d===0?{u:R(2,30),d:0}:d===1?mk(11,299,1):mk(101,2999,2);B=mk(1001,19999,3)}}
+  else{if(L===1){A=mk(101,999,1);B=mk(101,9999,2)}else if(L===2){A=mk(10001,99999,2);B=mk(1001,99999,3)}else{A={u:R(10,500),d:0};B=mk(1001,99999,pick([2,3]))}}
+  if(Math.random()<.5)[A,B]=[B,A];return[A,B]}
+const gDec=g=>(L,op,word)=>{const[A,B]=decPair(g,L);return colProblem(A,B,op,word)};
+function g4Frac(L,op,word){let d,a,b;
+  d=L===1?pick([2,3,4,5,6]):L===2?pick([6,8,10,12]):pick([3,4,5,6,8]);
+  if(L<3){if(op==='+'){a=R(1,d-1);b=R(1,d-a)}else{a=R(2,d);b=R(1,a-1)}}
+  else{if(op==='+'){a=R(2,d-1);b=R(d-a+1,d-1)}else{a=R(d+1,2*d-2);b=R(a-d+1,d-1)}}
+  return fracProblem(a,d,b,d,op,word)}
+function fracPairGen(pairs,L,op,unit){
+  for(let t=0;t<400;t++){let[p,q]=pick(pairs);if(Math.random()<.5)[p,q]=[q,p];
+    let n1=unit?1:R(1,p-1),n2=unit?1:R(1,q-1);
+    if(L===3&&op==='-')n1=R(p+1,2*p-1);
+    if(gcd(n1,p)!==1||gcd(n2,q)!==1)continue;
+    const v1=n1/p,v2=n2/q;
+    if(op==='+'){if(L<3?v1+v2<=1:v1+v2>1)return[n1,p,n2,q]}
+    else{if(L===3){if(v1>1&&v1-v2>0)return[n1,p,n2,q]}else if(v1>v2)return[n1,p,n2,q];else if(v2>v1)return[n2,q,n1,p]}}
+  return op==='+'?[1,2,1,4]:[3,4,1,2]}
+function g5Frac(L,op,word){
+  const P1=[[2,4],[2,6],[3,6],[2,8],[4,8]],P2=[[3,9],[5,10],[2,10],[4,12],[3,12],[6,12],[2,12]];
+  return fracProblem(...fracPairGen(L===1?P1:L===2?P2:[...P1,...P2],L,op,false),op,word)}
+function g6Frac(L,op,word){
+  const ds=[2,3,4,5,6,8,10,12],pairs=[];
+  for(const x of ds)for(const y of ds)if(x<y&&y%x!==0&&lcm(x,y)<=24)pairs.push([x,y]);
+  return fracProblem(...fracPairGen(pairs,L,op,L===1),op,word)}
+
+/* ---------- kellolaskut ---------- */
+const pad2=n=>String(n).padStart(2,'0');
+const tfmt=(t,m12)=>{t=((t%1440)+1440)%1440;let h=Math.floor(t/60);if(m12)h=h%12||12;return `${h}.${pad2(t%60)}`};
+const durAcc=d=>{const h=Math.floor(d/60),m=d%60,p=[];if(h)p.push(h===1?'tunnin':`${h} tuntia`);if(m)p.push(m===1?'minuutin':`${m} minuuttia`);return p.join(' ja ')};
+const durGen=d=>{const h=Math.floor(d/60),m=d%60,p=[];if(h)p.push(h===1?'tunnin':`${h} tunnin`);if(m)p.push(`${m} minuutin`);return p.join(' ja ')};
+const durPart=d=>{const h=Math.floor(d/60),m=d%60,p=[];if(h)p.push(h===1?'tunti':`${h} tuntia`);if(m)p.push(m===1?'minuutti':`${m} minuuttia`);return p.join(' ja ')};
+const durShort=d=>{const h=Math.floor(d/60),m=d%60;return [h?h+' h':'',m||!h?m+' min':''].filter(Boolean).join(' ')};
+function clockSVG(t,arc){const c=80;t=((t%1440)+1440)%1440;const mm=t%60,hh=Math.floor(t/60)%12;
+  const pt=(deg,r)=>[c+r*Math.cos(deg*Math.PI/180),c+r*Math.sin(deg*Math.PI/180)];
+  let s=`<svg class="clock" viewBox="0 0 160 160" aria-hidden="true"><circle cx="80" cy="80" r="74" fill="var(--paper)" stroke="var(--ink)" stroke-width="4"/>`;
+  if(arc&&arc.len>0){const a0=arc.from*6-90,a1=a0+(arc.dir<0?-1:1)*Math.min(arc.len,59.9)*6,[x0,y0]=pt(a0,66),[x1,y1]=pt(a1,66);
+    s+=`<path d="M80 80L${x0.toFixed(1)} ${y0.toFixed(1)}A66 66 0 ${arc.len>30?1:0} ${arc.dir<0?0:1} ${x1.toFixed(1)} ${y1.toFixed(1)}Z" fill="var(--sun)" opacity=".4"/>`}
+  for(let i=0;i<60;i++){const big=i%5===0,[x0,y0]=pt(i*6-90,big?62:66),[x1,y1]=pt(i*6-90,70);
+    s+=`<line x1="${x0.toFixed(1)}" y1="${y0.toFixed(1)}" x2="${x1.toFixed(1)}" y2="${y1.toFixed(1)}" stroke="var(--ink)" stroke-width="${big?3:1.4}" stroke-linecap="round" opacity="${big?1:.55}"/>`}
+  for(let n=1;n<=12;n++){const[x,y]=pt(n*30-90,51);s+=`<text x="${x.toFixed(1)}" y="${(y+5.5).toFixed(1)}" text-anchor="middle" font-size="16" font-weight="800" fill="var(--ink)" font-family="Baloo 2, Trebuchet MS, sans-serif">${n}</text>`}
+  const[hx,hy]=pt((hh+mm/60)*30-90,36),[mx,my]=pt(mm*6-90,60);
+  s+=`<line x1="80" y1="80" x2="${hx.toFixed(1)}" y2="${hy.toFixed(1)}" stroke="var(--ink)" stroke-width="7" stroke-linecap="round"/><line x1="80" y1="80" x2="${mx.toFixed(1)}" y2="${my.toFixed(1)}" stroke="var(--blue)" stroke-width="4" stroke-linecap="round"/><circle cx="80" cy="80" r="5" fill="var(--ink)"/></svg>`;
+  return s}
+const clockFig=(t,cap,m12,arc)=>opnd(clockSVG(t,arc),cap,'Kello '+tfmt(t,m12));
+function clockGen(g){return(L,op,word)=>{if(op!=='+'&&op!=='-')op=pick(['+','-']);
+  const m12=!(g===4&&L>=2),[K]=two();
+  const diff=g===4&&L===3&&op==='-';
+  const hour=()=>m12?R(1,12):(op==='+'?R(7,18):R(10,21));
+  let sm,dm;
+  if(g===2){if(L===1){sm=0;dm=60*R(1,5)}else if(L===2){sm=pick([0,30]);dm=pick([30,60,90,120,150])}else{sm=pick([0,15,30,45]);dm=pick([15,30,45,60,75,90])}}
+  else if(g===3){if(L===1){sm=pick([0,15,30,45]);dm=pick([15,30,45,60,75,90,105])}else if(L===2){sm=5*R(0,11);dm=5*R(1,11)}else{sm=5*R(0,11);dm=60*R(1,3)+5*R(1,11)}}
+  else{if(L===1){sm=R(0,59);dm=R(5,55)}else{sm=R(0,59);dm=60*R(L===3?0:1,3)+R(5,59)}}
+  const t0=hour()*60+sm;
+  if(diff){const t1=R(7,16)*60+R(0,59),t2=t1+dm,f1=tfmt(t1,false),f2=tfmt(t2,false);
+    const visual=`${clockFig(t1,'Alku '+f1,false)}<span class="sign">→</span>${clockFig(t2,'Loppu '+f2,false)}`;
+    const nh=Math.ceil(t1/60)*60,lh=Math.floor(t2/60)*60;let hint;
+    if(nh<=lh)hint=`<p>Laske osissa:</p><ol>${nh>t1?`<li>${f1} → ${tfmt(nh,false)}: ${nh-t1} min</li>`:''}${lh>nh?`<li>${tfmt(nh,false)} → ${tfmt(lh,false)}: ${(lh-nh)/60} h</li>`:''}${t2>lh?`<li>${tfmt(lh,false)} → ${f2}: ${t2-lh} min</li>`:''}</ol><p>Laske lopuksi osat yhteen.</p>`;
+    else hint=`<p>Molemmat ajat ovat saman tunnin sisällä. Vähennä minuutit: ${t2%60} − ${t1%60}.</p>`;
+    const story=word?pick([`Uintitunti alkaa kello ${f1} ja loppuu kello ${f2}. Kuinka kauan uintitunti kestää?`,`Junamatka alkaa kello ${f1}, ja juna on perillä kello ${f2}. Kuinka kauan matka kestää?`,`${K.n} meni pihalle leikkimään kello ${f1} ja tuli sisälle kello ${f2}. Kuinka kauan hän oli ulkona?`]):null;
+    return{kind:'dur',visual,story,text:word?null:`<span class="bg" style="font-size:.7em">Kuinka kauan aikaa kuluu?</span>`,ans:dm,answerText:durShort(dm),hint,
+      explain:`<p><b>${f1} → ${f2} = ${durShort(dm)}</b></p>`}}
+  const ans=op==='+'?t0+dm:t0-dm,F0=tfmt(t0,m12),FA=tfmt(ans,m12);
+  const hh=Math.floor(dm/60),mm=dm%60,t1=op==='+'?t0+hh*60:t0-hh*60,m1=((t1%60)+60)%60;
+  let hint='';
+  if(!mm)hint=`<p>Minuuttiviisari pysyy paikallaan. Tuntiviisari siirtyy ${hh} numeroa ${op==='+'?'eteenpäin':'taaksepäin'}.</p>`;
+  else{if(hh)hint+=`<p>${op==='+'?'Lisää':'Vähennä'} ensin ${durPart(hh*60)}. Silloin kello on ${tfmt(t1,m12)}.</p>`;
+    if(op==='+'&&m1+mm>=60){const to=60-m1;hint+=`<p>Täydennä ${hh?'sitten':'ensin'} tasatuntiin: ${to} minuuttia, jolloin kello on ${tfmt(t1+to,m12)}. Lisää vielä loput ${mm-to} minuuttia.</p>`}
+    else if(op==='-'&&m1<mm&&m1>0){hint+=`<p>Vähennä ${hh?'sitten':'ensin'} ${m1} minuuttia, niin kello on ${tfmt(t1-m1,m12)}. Vähennä vielä loput ${mm-m1} minuuttia.</p>`}
+    else hint+=`<p>${op==='+'?'Siirrä':'Siirrä taaksepäin'} minuuttiviisaria ${mm} minuuttia.</p>`;
+    hint+=`<div class="visual">${clockFig(t1,tfmt(t1,m12),m12,{from:m1,len:mm,dir:op==='+'?1:-1})}</div>`}
+  let story=null;
+  if(word){const T=`${F0}`;
+    story=op==='+'?pick([`${K.n} lähtee kouluun kello ${T}. Koulumatka kestää ${durAcc(dm)}. Mihin aikaan ${K.n} on koululla?`,`Jalkapallotreenit alkavat kello ${T} ja kestävät ${durAcc(dm)}. Milloin treenit loppuvat?`,`Elokuva alkaa kello ${T} ja kestää ${durAcc(dm)}. Milloin elokuva loppuu?`,`Kakku laitetaan uuniin kello ${T}. Se paistuu ${durAcc(dm)}. Milloin kakku on valmis?`])
+      :pick([`Bussi saapui perille kello ${T}. Matka kesti ${durAcc(dm)}. Mihin aikaan bussi lähti?`,`Konsertti loppui kello ${T}. Se kesti ${durAcc(dm)}. Milloin konsertti alkoi?`,`${K.n} tuli kotiin kello ${T}. Hän oli ollut kaverilla ${durAcc(dm)}. Mihin aikaan hän lähti kaverille?`])}
+  const ask=op==='+'?`Kello on ${F0}. Mitä kello on ${durGen(dm)} kuluttua?`:`Kello on ${F0}. Mitä kello oli ${durPart(dm)} sitten?`;
+  return{kind:'time',m12,visual:clockFig(t0,F0,m12),story:story||ask,ans:((ans%1440)+1440)%1440,answerText:FA,hint,
+    explain:`<p><b>${F0} ${OPS[op]} ${durShort(dm)} = ${FA}</b></p><div class="visual">${clockFig(ans,FA,m12)}</div>${m12?'':'<p>Vastaus kirjoitetaan 24 tunnin kellona.</p>'}`}}}
+
+/* ---------- kerto- ja jakolasku ---------- */
+OPS['*']='·';OPS['/']=':';
+const nn=(n,p)=>n===1?p[0]:p[1];
+const CONT={
+  hedelma:{c:['kori','koria'],cin:'korissa',ill:'koreihin'},
+  karkki:{c:['pussi','pussia'],cin:'pussissa',ill:'pusseihin',item:['karkki','karkkia']},
+  tarra:{c:['arkki','arkkia'],cin:'arkissa',ill:'arkeille',item:['tarra','tarraa']},
+  pullo:{c:['laatikko','laatikkoa'],cin:'laatikossa',ill:'laatikoihin',item:['pullo','pulloa']}};
+function mulTheme(){const k=pick(['hedelma','hedelma','karkki','tarra','pullo']),C=CONT[k];
+  if(k==='hedelma'){const tk=pick(FK),t=FRUITS[tk];return{...C,item:[t.nom,t.part],svg:fruitSVG(tk,'n')}}
+  return{...C,svg:UNITS[k].one}}
+function mulGroups(a,b,svg,lab){if(a===0)return '<span class="note">Ei yhtään ryhmää</span>';
+  let s='';for(let i=0;i<a;i++)s+=`<div class="mg" style="grid-template-columns:repeat(${Math.min(Math.max(b,1),5)},18px)">${svg.repeat(b)}</div>`;
+  return `<div class="mgs" role="img" aria-label="${lab}">${s}</div>`}
+const PLATE='<svg viewBox="0 0 30 16" aria-hidden="true"><ellipse cx="15" cy="8" rx="14" ry="7" fill="var(--plate)" stroke="var(--soft)" stroke-width="1.2"/><ellipse cx="15" cy="7.4" rx="8.5" ry="3.8" fill="none" stroke="var(--soft)" stroke-width="1" opacity=".6"/></svg>';
+const plates=b=>`<div class="plates">${PLATE.repeat(b)}</div>`;
+const pile=(a,svg)=>`<div class="mg" style="grid-template-columns:repeat(${Math.min(Math.max(a,1),10)},18px)" role="img" aria-label="${a}">${svg.repeat(a)}</div>`;
+function fracRes(N,D){const g=gcd(N,D);let r=frac(N,D);if(g>1)r+=` = ${frac(N/g,D/g)}`;const n=N/g,d=D/g;
+  if(n>d&&d>1)r+=` eli ${Math.floor(n/d)} ja ${frac(n%d,d)}`;if(d===1&&D>1)r+=` eli ${n}`;return r}
+
+const capText=(a,b)=>`${a} · ${b}: ${a} ${a===1?'rivi, jossa':'riviä, joissa'} ${b} ${b===1?'palikka':'palikkaa'}`;
+function blockGrid(a,b){const m=Math.max(a,b),W=m*20+4;let blk='';
+  for(let r=0;r<a;r++)for(let c=0;c<b;c++)blk+=`<rect x="${c*20+3.5}" y="${W-2-(r+1)*20+1.5}" width="17" height="17" rx="3" fill="var(${r%2?'--blk2':'--blk'})" stroke="var(--ink)" stroke-opacity=".18"/>`;
+  return `<figure class="opnd arr" data-a="${a}" data-b="${b}" style="--W:${W}"><svg viewBox="0 0 ${W} ${W}" style="width:${Math.min(230,m*23+8)}px" role="img" aria-label="${a} riviä, joissa ${b} palikkaa"><g class="blk">${blk}</g></svg></figure>`}
+function tablesGen(g){return(L,op,word)=>{
+  const tabs=g===2?(L===1?[2,5,10]:L===2?[3,4]:[0,1,2,3,4,5,10]):(L===1?[2,3,4,5,10]:L===2?[6,7,8,9]:[2,3,4,5,6,7,8,9,10]);
+  const T=mulTheme(),[K]=two();
+  if(op==='*'){
+    if(g===3&&L===3&&!word&&Math.random()<.5){const b=pick(tabs),a=R(2,10),p=a*b;
+      return{kind:'int',text:`<span class="bg">${BOX} · ${b} = ${p}</span>`,ans:a,answerText:String(a),
+        hint:`<p>Käy läpi ${b}:n kertotaulua: ${b}, ${2*b}, ${3*b}, … Monesko luku on ${p}?</p>`,explain:`<p><b>${a} · ${b} = ${p}</b></p>`}}
+    let b=pick(tabs),a=R(g===2&&L===3?0:1,10);if(Math.random()<.5)[a,b]=[b,a];
+    if(word){if(a<2)a=R(2,5);if(b<2)b=R(2,5)}
+    const p=a*b;
+    let hint=(a===0||b===0)?'<p>Jos ryhmiä on 0 tai jokaisessa ryhmässä on 0, tulos on aina 0.</p>'
+      :a===1?`<p>1 · ${b} on yksi ryhmä, jossa on ${b}.</p>`
+      :`<p>${a} · ${b} tarkoittaa ${a} ryhmää, joissa jokaisessa on ${b}.</p><p>Jos tiedät, että ${a-1} · ${b} = ${(a-1)*b}, lisää siihen vielä ${b}.</p><p>Voit myös vaihtaa järjestystä: ${b} · ${a} on yhtä paljon.</p>`;
+    const story=word?`${K.ll} on ${a} ${nn(a,T.c)}, ja jokaisessa ${T.cin} on ${b} ${nn(b,T.item)}. Montako ${T.item[1]} ${K.ll} on yhteensä?`:null;
+    const useGrid=!word&&a>0&&b>0&&Math.random()<.5;
+    if(a>0&&b>0)hint+=useGrid?`<p>Paina ↻-nappia laskun vieressä: rivit muuttuvat sarakkeiksi, mutta palikoita on yhtä monta. Siksi ${a} · ${b} = ${b} · ${a}.</p>`:`<p>Sama palikoina:</p><div class="visual">${blockGrid(a,b)}</div>`;
+    return{kind:'int',visual:useGrid?blockGrid(a,b):mulGroups(a,b,T.svg,`${a} ryhmää, joissa ${b}`),story,text:word?null:`<span class="bg"><span class="ex">${a} · ${b}</span> = ${BOX}</span>${useGrid?'<button type="button" class="btn ghost turn" data-turn="1" aria-label="Käännä palikat">↻</button>':''}`,ans:p,answerText:String(p),hint,
+      explain:`<p><b>${a} · ${b} = ${p}</b></p>`}}
+  const b=pick(tabs.filter(x=>x>(word?1:0))),q=R(1,10),a=b*q;
+  let story=null,visual=`${pile(a,T.svg)}${sign('/')}${opnd(plates(b),b+' osaan',b+' osaan')}`;
+  if(word){if(Math.random()<.5)story=`${a} ${T.item[1]} jaetaan tasan ${b} lapselle. Montako ${T.item[1]} kukin saa?`;
+    else{story=`${a} ${T.item[1]} laitetaan ${T.ill}, ${b} jokaiseen. Montako ${T.c[1]} tarvitaan?`;visual=`${pile(a,T.svg)}<span class="note">${b} jokaiseen</span>`}}
+  return{kind:'int',visual,story,text:word?null:`<span class="bg">${a} : ${b} = ${BOX}</span>`,ans:q,answerText:String(q),
+    hint:`<p>Ajattele kertolaskuna: ${BOX} · ${b} = ${a}. Voit myös jakaa esineet ${b} yhtä suureen ryhmään:</p><div class="visual">${mulGroups(b,q,T.svg,'')}</div><p>Palikoina: ${a} palikkaa laitetaan riveihin, joissa jokaisessa on ${b}. Montako riviä tulee?</p><div class="visual">${blockGrid(q,b,false)}</div>`,
+    explain:`<p><b>${a} : ${b} = ${q}</b>, koska ${q} · ${b} = ${a}.</p>`}}}
+
+function mulLayout(a,b){const p=a*b,I=String(p).length,row=n=>String(n).padStart(I,' ').split('').map(x=>x===' '?'':x);
+  return{D:0,I,N:I,a:row(a),b:row(b),r:row(p),ansU:p}}
+function mulCol(a,b,word){
+  const L=mulLayout(a,b),bs=String(b),out=[],carries=[];
+  if(bs.length===1){let c=0;const ds=String(a).split('').reverse().map(Number);
+    ds.forEach((d,j)=>{const p=d*b+c,last=j===ds.length-1;
+      out.push(`<li><b>${PLACE[j]}:</b> ${b} · ${d}${c?` + ${c}`:''} = ${p}.${last?` Kirjoita ${p}.`:p>=10?` Kirjoita ${p%10} ja merkitse muistiin ${Math.floor(p/10)}.`:''}</li>`);
+      c=Math.floor(p/10);if(!last&&c)carries.push({i:L.I-2-j,v:c})})}
+  else{const parts=bs.split('').reverse().map((d,j)=>({d:+d,j,v:a*(+d)*10**j}));
+    parts.forEach(p=>out.push(`<li>Kerro ${['ykkösillä','kymmenillä','sadoilla'][p.j]}: ${fmtInt(a)} · ${p.d*10**p.j} = ${fmtInt(p.v)}.${p.j?` Kirjoita tämä välitulos riville ${p.j+1}.`:' Kirjoita tämä välitulos riville 1.'}</li>`));
+    out.push(`<li>Laske välitulokset yhteen: ${parts.map(p=>fmtInt(p.v)).join(' + ')} = ${fmtInt(a*b)}.</li>`)}
+  const expr=`${fmtInt(a)} · ${b}`,explain=`<p><b>${expr} = ${fmtInt(a*b)}</b></p><ol>${out.join('')}</ol>`;
+  if(word){const[K]=two();const w=pick([
+      {icon:'kirjat',t:`Kirjakauppaan tuodaan ${b} laatikkoa kirjoja. Jokaisessa laatikossa on ${fmtInt(a)} kirjaa. Montako kirjaa tuotiin yhteensä?`},
+      {icon:'nuotit',unit:'€',t:`Konserttilippu maksaa ${fmtInt(a)} euroa. Lippuja myydään ${b}. Paljonko lipuista saadaan rahaa?`},
+      {icon:'kone',t:`Lentokoneessa on ${fmtInt(a)} paikkaa. Kone lentää täynnä ${b} kertaa. Montako matkustajaa se kuljettaa yhteensä?`},
+      {icon:'pokaali',t:`${K.n} saa pelissä jokaisesta tasosta ${fmtInt(a)} pistettä. Hän läpäisee ${b} tasoa. Montako pistettä hän saa?`}]);
+    return{kind:'int',story:w.t,storyIcon:ICON[w.icon],unit:w.unit||'',ans:a*b,answerText:fmtInt(a*b)+(w.unit?' '+w.unit:''),
+      hint:`<p>Tässä lasketaan kertolasku: <b>${expr}</b>.</p><p>Laske allekkain paperille. Aloita oikealta.</p>`,explain}}
+  return{kind:'col',L,op:'*',carries,partials:bs.length>1?bs.length:0,ans:a*b,answerText:fmtInt(a*b),
+    hint:`<p>Aloita oikealta ja etene vasemmalle.</p><ol>${out[0]}</ol><p>Jatka samalla tavalla.</p>`,explain}}
+function divSteps(a,b){const ds=String(a).split('').map(Number),n=ds.length,out=[];let r=0;
+  ds.forEach((d,i)=>{const e=n-1-i,cur=r*10+d,q=Math.floor(cur/b),nr=cur%b;
+    out.push(`<li><b>${PLACE[e]}:</b> ${r?`edellisestä jäi ${r}, ja se vaihdetaan pienempiin: ${r} · 10 + ${d} = ${cur}. `:''}${cur} : ${b} = ${q}${nr?`, jää ${nr}`:''}.</li>`);r=nr});
+  if(r)out.push(`<li>Lopuksi jää ${r}. Se on jakojäännös.</li>`);return out}
+function divProblem(a,b,rem,word,showPv){
+  const q=Math.floor(a/b),r=a%b,st=divSteps(a,b);
+  const P={kind:rem?'divr':'int',ans:q,rem:r,answerText:rem?`${fmtInt(q)}, jakojäännös ${r}`:fmtInt(q),
+    text:word?null:`<span class="bg">${fmtInt(a)} : ${b} = ${BOX}</span>`,
+    visual:showPv&&!word?`${opnd(pv(a),a,a+' omenaa')}${sign('/')}${opnd(plates(b),b+' osaan',b+' osaan')}${legend(false)}`:null,
+    hint:`<p>Jaa luku osissa suurimmasta paikasta alkaen.</p><ol>${st[0]}</ol><p>Jatka samalla tavalla.</p>`,
+    explain:`<p><b>${fmtInt(a)} : ${b} = ${fmtInt(q)}${r?`, jakojäännös ${r}`:''}</b></p><ol>${st.join('')}</ol>${r?`<p>Tarkistus: ${fmtInt(q)} · ${b} + ${r} = ${fmtInt(a)}.</p>`:''}`};
+  if(word){if(rem){P.story=`${fmtInt(a)} omenaa pakataan pusseihin, ${b} omenaa jokaiseen. Montako täyttä pussia tulee, ja montako omenaa jää yli?`;P.storyIcon=ICON.puu;P.qLabel='pussia';P.rLabel='jää yli'}
+    else{const w=pick([{icon:'kolikot',unit:'€',t:`${fmtInt(a)} euroa jaetaan tasan ${b} voittajan kesken. Paljonko kukin saa?`},
+      {icon:'kirjat',t:`${fmtInt(a)} sivun kirja luetaan ${b} päivässä niin, että joka päivä luetaan yhtä monta sivua. Montako sivua luetaan päivässä?`}]);
+      P.story=w.t;P.storyIcon=ICON[w.icon];P.unit=w.unit||''}
+    P.hint=`<p>Tässä lasketaan jakolasku: <b>${fmtInt(a)} : ${b}</b>.</p>`+P.hint}
+  return P}
+function bigMulDiv(g){return(L,op,word)=>{
+  if(op==='*'){let a,b;
+    if(g===4){if(L===1){b=R(2,4);const m=Math.floor(9/b);a=R(1,m)*10+R(0,m)}else if(L===2){a=R(12,99);b=R(3,9)}else{a=R(102,999);b=R(3,9)}}
+    else{if(L===1){a=R(102,999);b=R(3,9)}else if(L===2){a=R(12,99);b=R(12,99)}else{a=R(102,999);b=R(12,99)}}
+    return mulCol(a,b,word)}
+  let a,b,rem=false;
+  if(g===4){if(L===1){b=R(2,4);const m=Math.floor(9/b);a=b*R(1,m)*10+b*R(0,m)}
+    else if(L===2){b=R(3,6);let q,t=0;do{q=R(11,Math.floor(99/b))}while(Math.floor(q*b/10)%b===0&&++t<60);a=b*q}
+    else{b=R(3,9);a=R(100,999);if(a%b===0)a++;rem=true}}
+  else{b=R(3,9);if(L===1)a=b*R(Math.ceil(100/b),Math.floor(999/b));else if(L===2)a=b*R(Math.ceil(1000/b),Math.floor(9999/b));else{a=R(1000,9999);if(a%b===0)a++;rem=true}}
+  return divProblem(a,b,rem,word,g===4&&a<100)}}
+
+const norm=x=>{x={...x};while(x.d>0&&x.u%10===0){x.u/=10;x.d--}return x};
+const decWord=d=>d===1?'yksi desimaali':`${d} desimaalia`;
+const unitWord=d=>d===1?'kymmenesosaa':d===2?'sadasosaa':'tuhannesosaa';
+const places=k=>k===10?'yhden paikan':k===100?'kaksi paikkaa':'kolme paikkaa';
+function decMulDiv(g){return(L,op,word)=>{const[K]=two();let A,k=null,B=null,res,hint,text,story=null,icon=null,unit='';
+  if(op==='*'){
+    if(g===5){if(L===1){A={u:R(2,49),d:1};k=R(2,9)}else if(L===2){A={u:R(101,999),d:2};k=R(2,9)}else{A={u:R(11,9999),d:pick([1,2,3])};k=pick([10,100,1000])}}
+    else{if(L===1){A={u:R(101,999),d:2};k=R(3,9)}else if(L===2){A={u:R(11,999),d:1};k=R(12,49)}else{A={u:R(2,9),d:1};B={u:R(2,9),d:pick([1,2])}}}
+    if(B){res={u:A.u*B.u,d:A.d+B.d};text=`${fd(A)} · ${fd(B)}`;
+      hint=`<p>Laske ensin ilman pilkkuja: ${A.u} · ${B.u} = ${A.u*B.u}.</p><p>Desimaaleja on yhteensä ${A.d} + ${B.d} = ${A.d+B.d}, joten vastauksessa on ${decWord(A.d+B.d)}.</p>`;
+      if(word){story=`Yksi metri koristenauhaa painaa ${fd(B)} kg. Kuinka paljon painaa ${fd(A)} metriä nauhaa?`;icon='mitta';unit='kg'}}
+    else{res={u:A.u*k,d:A.d};text=`${fd(A)} · ${fmtInt(k)}`;
+      hint=[10,100,1000].includes(k)&&g===5&&L===3?`<p>Kun kerrot luvulla ${k}, pilkku siirtyy ${places(k)} oikealle.</p>`
+        :`<p>Laske ensin ilman pilkkua: ${A.u} · ${k} = ${fmtInt(A.u*k)}.</p><p>Luvussa ${fd(A)} on ${decWord(A.d)}, joten vastauksessakin on ${decWord(A.d)}.</p>`;
+      if(word){if(A.d===2&&k<10){story=`Mehupullo maksaa ${fd(A)} €. ${K.n} ostaa ${k} pulloa. Paljonko hän maksaa?`;icon='kolikot';unit='€'}
+        else{story=`Lenkkipolku on ${fd(A)} km pitkä. ${K.n} kiertää sen ${fmtInt(k)} kertaa. Montako kilometriä hän kulkee?`;icon='pyora';unit='km'}}}}
+  else{
+    if(g===5){if(L===1){k=R(2,9);res={u:R(1,9),d:1}}else if(L===2){k=R(2,9);res={u:R(11,99),d:1}}else{k=pick([10,100]);A={u:R(11,9999),d:pick([0,1,2])}}}
+    else{if(L===1){k=R(2,9);res={u:R(11,99),d:2}}else if(L===2){k=R(3,9);res={u:R(101,999),d:2}}else{k=pick([10,100,1000]);A={u:R(11,9999),d:pick([1,2])}}}
+    if(A){res={u:A.u,d:A.d+Math.round(Math.log10(k))};hint=`<p>Kun jaat luvulla ${k}, pilkku siirtyy ${places(k)} vasemmalle.</p>`}
+    else{A={u:res.u*k,d:res.d};hint=`<p>Ajattele lukua ${unitWord(A.d).replace('aa','ina')}: ${fd(A)} on ${fmtInt(A.u)} ${unitWord(A.d)}.</p><p>${fmtInt(A.u)} : ${k} = ${fmtInt(res.u)}. Muuta tulos takaisin desimaaliluvuksi.</p>`}
+    text=`${fd(A)} : ${fmtInt(k)}`;
+    if(word){if(A.d===2&&k<10){story=`${k} kaverusta jakaa ${fd(A)} euron laskun tasan. Paljonko kukin maksaa?`;icon='kolikot';unit='€'}
+      else{story=`${fd(A)} metrin pituinen naru leikataan ${fmtInt(k)} yhtä pitkään osaan. Kuinka pitkä on yksi osa?`;icon='naru';unit='m'}}}
+  res=norm(res);const at=fd(res);
+  return{kind:'dec',story,storyIcon:icon?ICON[icon]:null,unit,text:word?null:`<span class="bg">${text} = ${BOX}</span>`,ans:val(res),answerText:at+(unit?' '+unit:''),
+    hint:(word?`<p>Tässä lasketaan ${op==='*'?'kertolasku':'jakolasku'}: <b>${text}</b>.</p>`:'')+hint,explain:`<p><b>${text} = ${at}</b></p>`}}}
+
+function fracMulDiv(L,op,word){const[K]=two();let n,d,k;
+  if(op==='*'){
+    if(L<3){for(let t=0;t<300;t++){d=pick([2,3,4,5,6,8,10]);n=R(1,d-1);k=R(2,5);if(gcd(n,d)===1&&(L===1?n*k<=d:n*k>d))break}
+      const N=n*k;
+      return{kind:'frac',visual:Array(k).fill(fracOp(n,d)).join(sign('+')),text:word?null:`${frac(n,d)} · ${k} = ${BOX}`,
+        story:word?`${K.n} syö joka päivä ${frac(n,d)} piirakkaa. Kuinka paljon piirakkaa hän syö ${k} päivässä?`:null,
+        ans:{n:N,d},answerText:fracRes(N,d),hint:`<p>${frac(n,d)} · ${k} tarkoittaa, että ${frac(n,d)} otetaan ${k} kertaa. Kerro osoittaja: ${n} · ${k}. Nimittäjä pysyy samana.</p>`,
+        explain:`<p><b>${frac(n,d)} · ${k} = ${fracRes(N,d)}</b></p><div class="visual">${cakes(N,d)}</div>`}}
+    do{d=pick([2,3,4,5,6,8,10]);n=R(1,d-1)}while(gcd(n,d)!==1);const m=R(2,6),W=d*m,A=n*m,tk=pick(FK);
+    return{kind:'frac',visual:pile(W,fruitSVG(tk,'n')),text:word?null:`${frac(n,d)} · ${W} = ${BOX}`,
+      story:word?`Luokassa on ${W} oppilasta. Heistä ${frac(n,d)} käy kuorossa. Montako oppilasta käy kuorossa?`:null,
+      ans:{n:A,d:1},answerText:String(A),
+      hint:`<p>Nimittäjä ${d} kertoo, että ${W} jaetaan ${d} yhtä suureen osaan: ${W} : ${d} = ${m}.</p><p>Osoittaja ${n} kertoo, montako osaa otetaan: ${n} · ${m}.</p><div class="visual">${mulGroups(d,m,fruitSVG(tk,'n'),'')}</div>`,
+      explain:`<p><b>${frac(n,d)} · ${W} = ${A}</b>, koska ${W} : ${d} = ${m} ja ${n} · ${m} = ${A}.</p>`}}
+  if(L===1){d=pick([4,6,8,9,10,12]);k=R(2,Math.min(4,d-1));const m=R(1,Math.floor((d-1)/k));n=m*k}
+  else{do{d=pick(L===2?[2,3,4,5]:[5,6,7,8,9,10]);n=R(1,d-1)}while(gcd(n,d)!==1);k=R(2,4);if(n%k===0)k=k===2?3:2}
+  const hint=n%k===0?`<p>Osoittaja ${n} jakautuu tasan: ${n} : ${k} = ${n/k}. Nimittäjä pysyy samana.</p>`
+    :`<p>Osoittaja ei jakaudu tasan, joten jaa jokainen pala ${k} osaan eli kerro nimittäjä luvulla ${k}.</p><div class="visual">${fracOp(n*k,d*k)}</div><p>Nyt palat voi jakaa tasan ${k} osaan.</p>`;
+  return{kind:'frac',visual:`${fracOp(n,d)}${sign('/')}${opnd(plates(k),k+' osaan',k+' osaan')}`,text:word?null:`${frac(n,d)} : ${k} = ${BOX}`,
+    story:word?`Kakusta on jäljellä ${frac(n,d)}. Se jaetaan tasan ${k} lapselle. Kuinka suuren osan kakusta kukin saa?`:null,
+    ans:{n,d:d*k},answerText:fracRes(n,d*k),hint,explain:`<p><b>${frac(n,d)} : ${k} = ${fracRes(n,d*k)}</b></p><div class="visual">${cakes(n,d*k)}</div>`}}
+
+const GOALM={
+  2:'<b>Kertolaskun periaate</b> ja kertotaulut 0–5 ja 10 sekä jakaminen tasan.',
+  3:'<b>Kertotaulut 2–10</b> ja jakolasku kertotaulujen avulla.',
+  4:'<b>Kertolasku allekkain</b> ja jakaminen lukuyksiköittäin, myös jakojäännös.',
+  5:'<b>Kerto- ja jakolasku isommilla luvuilla</b> sekä desimaaliluvun kertominen ja jakaminen.',
+  6:'<b>Murtoluvun kertominen ja jakaminen</b> kokonaisluvulla sekä desimaalilukujen kerto- ja jakolasku.'};
+
+/* ---------- kuvapulmat ---------- */
+const PUZ_ICONS=()=>[...FK.map(k=>fruitSVG(k,'n')),UNITS.karkki.one,UNITS.tarra.one,UNITS.pullo.one];
+const PUZ_NAMES=[...FK.map(k=>FRUITS[k].nom),'karkki','tarra','pullo'];
+const tv=(x,v)=>typeof x==='number'?x:x.d?v[x.i]/x.d:v[x.i];
+function evalToks(t,v){const vals=[],ops=[];t.forEach(x=>typeof x==='string'?ops.push(x):vals.push(tv(x,v)));
+  let st=[vals[0]],so=[];for(let i=0;i<ops.length;i++){if(ops[i]==='·')st[st.length-1]*=vals[i+1];else{so.push(ops[i]);st.push(vals[i+1])}}
+  let r=st[0];so.forEach((o,i)=>{r=o==='+'?r+st[i+1]:r-st[i+1]});return r}
+const OPSYM={'+':'+','−':'−','·':'·'};
+function puzzleGen(g){return(L,op)=>{
+  const k=L===1?2:3,lim=g===1?20:g===2?100:1000;
+  const pMul=g===1?0:fam()==='mul'?.75:g===2?.3:.5;
+  const pFrac=g>=5?(L===1?.35:.5):0;
+  const DEN=g===5?[2,3,4,5]:[2,3,4,5,6,8,10];
+  const COEF=g===2?[2,3,4,5,10]:[2,3,4,5,6,7,8,9];
+  const ic=shuffle(PUZ_ICONS().map((s,i)=>({s,n:PUZ_NAMES[i]}))).slice(0,k);
+  const I=[{i:0},{i:1},{i:2}];
+  const F=(i,d)=>({i,d});
+  for(let t=0;t<800;t++){
+    const useMul=Math.random()<pMul,useFrac=Math.random()<pFrac,sub=g>1||L>1;
+    /* rivi 1: vain ensimmäinen kuva */
+    const A=I[0],r=R(2,g===1?2:g<4?3:4);
+    let first,ftype;
+    const fc=Math.random();
+    if(useFrac&&fc<.4){const d=pick(DEN);first=[F(0,d)];ftype={t:'frac',d}}
+    else if(useMul&&fc<.75&&g>=3&&Math.random()<.5){first=[A,'·',A];ftype={t:'sq'}}
+    else if(useMul&&fc<.75){const c=pick(COEF);first=[c,'·',A];ftype={t:'coef',c}}
+    else{first=Array(r).fill(A).flatMap((x,i)=>i?['+',x]:[x]);ftype={t:'sum',r}}
+    const lines=[first];
+    /* uudet kuvat yksi kerrallaan */
+    for(let n=1;n<k;n++){const X=I[n],Y=I[R(0,n-1)],opts=[[Y,'+',X],[X,'+',X,'+',Y]];
+      if(sub)opts.push([X,'−',Y]);
+      if(useMul){opts.push([Y,'·',X],[X,'·',Y,'+',Y]);if(sub)opts.push([Y,'·',X,'−',Y])}
+      if(useFrac){const d=pick(DEN);opts.push([F(n,d),'+',Y]);if(sub)opts.push([Y,'−',F(n,d)])}
+      lines.push(pick(opts))}
+    /* tehtävärivi: kaikki kuvat, satunnaiset laskumerkit */
+    const ord=shuffle([...Array(k).keys()]);if(k===2&&Math.random()<.5)ord.push(R(0,1));
+    const fin=[];let fracUsed=false;
+    ord.forEach((ix,j)=>{if(j){const ops=['+','+'];if(sub&&L>1)ops.push('−');if(useMul)ops.push('·','·');fin.push(pick(ops))}
+      if(useFrac&&!fracUsed&&Math.random()<.5){fin.push(F(ix,pick(DEN)));fracUsed=true}else fin.push(I[ix])});
+    /* arvot: murtolukuosoittajien pitää jakautua tasan */
+    const div=[1,1,1],mulIc=new Set();
+    [...lines,fin].forEach(l=>l.forEach((x,j)=>{if(typeof x==='object'){if(x.d)div[x.i]=lcm(div[x.i],x.d);if(l[j-1]==='·'||l[j+1]==='·')mulIc.add(x.i)}}));
+    const cap=i=>mulIc.has(i)?(g===2?5:g===3?10:12):({1:5,2:9,3:12,4:15,5:20,6:25}[g]);
+    const v=[...Array(k).keys()].map(i=>div[i]>1?div[i]*R(1,Math.max(1,Math.floor((mulIc.has(i)?24:g===5?40:60)/div[i]))):R(mulIc.has(i)?2:1,cap(i)));
+    if(new Set(v).size<k)continue;
+    const res=lines.map(l=>evalToks(l,v)),ans=evalToks(fin,v);
+    if([...res,ans].some(x=>x<0||x>lim||!Number.isInteger(x)))continue;
+    if(res.slice(1).some(x=>x===0)||ans===0)continue;
+    if(useFrac&&!lines.concat([fin]).some(l=>l.some(x=>x&&x.d)))continue;
+    if(useMul&&!lines.concat([fin]).some(l=>l.includes('·')))continue;
+    const order=L===3?shuffle(lines.map((l,i)=>i)):lines.map((l,i)=>i);
+    const pic=(x,small)=>`<span class="pic${small?' fq':''}">${ic[x.i].s}</span>`;
+    const tok=(l,nums)=>l.map(x=>typeof x==='string'?`<span class="pop">${OPSYM[x]}</span>`:typeof x==='number'?`<b>${x}</b>`
+      :x.d?(nums?frac(v[x.i],x.d):`<span class="q pfr"><span>${pic(x,true)}</span><span>${x.d}</span></span>`):nums?`<b>${v[x.i]}</b>`:pic(x)).join('');
+    const row=(l,r,q)=>`<div class="pline${q?' pq':''}">${tok(l)}<span class="pop">=</span>${q?BOX:`<b>${r}</b>`}</div>`;
+    const visual=`<div class="pzhelp"><button type="button" class="qhelp" data-help="1" aria-expanded="false" aria-controls="pzh" aria-label="Näytä ohje">?</button><p class="pzh" id="pzh" hidden>Sama kuva tarkoittaa aina samaa lukua. Selvitä ylempien rivien avulla, mikä luku kukin kuva on. Laske sitten tehtävä kuvien arvoilla.${useMul?' Muista, että kertolasku lasketaan ennen yhteen- ja vähennyslaskua.':''}</p></div><div class="puz" role="img" aria-label="Vihjerivit">${order.map(i=>row(lines[i],res[i])).join('')}</div>
+      <div class="scratch"><span class="sclbl">1. Selvitä ja merkitse kuvien arvot</span>${ic.map((c,i)=>`<span class="scit"><span class="pic sm">${c.s}</span>=<input class="num tb sc" id="sc${i}" inputmode="none" autocomplete="off" aria-label="${c.n}"></span>`).join('')}</div>
+      <div class="puz qbox"><span class="sclbl">2. Laske</span>${row(fin,0,true)}</div>`;
+    const s1=res[0];let how;
+    if(ftype.t==='sum')how=`<p>${ftype.r} samaa kuvaa on yhteensä ${s1}. ${g<=2?`Mikä luku ${ftype.r} kertaa yhteen laskettuna on ${s1}?`:`Yksi kuva on siis ${s1} : ${ftype.r}.`}</p>`;
+    else if(ftype.t==='coef')how=`<p>${ftype.c} kertaa kuva on ${s1}. Mikä luku kerrottuna ${ftype.c}:llä on ${s1}? Laske ${s1} : ${ftype.c}.</p>`;
+    else if(ftype.t==='sq')how=`<p>Kuva kertaa sama kuva on ${s1}. Mikä luku kerrottuna itsellään on ${s1}?</p>`;
+    else how=`<p>Kuva jaettuna ${ftype.d}:llä on ${s1}. Kuva on siis ${s1} · ${ftype.d}.</p>`;
+    const hint=`<p>Aloita riviltä, jossa on vain yhtä kuvaa:</p><div class="puz">${row(lines[0],s1)}</div>${how}<p>Etsi sitten rivi, jossa on vain yksi kuva, jota et vielä tiedä.</p>${fin.includes('·')&&fin.some(x=>x==='+'||x==='−')?'<p>Tehtävärivillä kertolasku lasketaan ensin.</p>':''}`;
+    const explain=`<div class="scratch">${ic.map((c,i)=>`<span class="scit"><span class="pic sm">${c.s}</span>= <b>${v[i]}</b></span>`).join('')}</div><div class="puz"><div class="pline">${tok(fin,true)}<span class="pop">=</span><b>${ans}</b></div></div>`;
+    return{kind:'int',visual,story:null,ans,answerText:String(ans),hint,explain}}
+  return puzzleGen(g)(1,op)}}
+
+/* ---------- sanapulmat ---------- */
+const GEN={Aino:'Ainon',Eetu:'Eetun',Siiri:'Siirin',Leo:'Leon',Venla:'Venlan',Onni:'Onnin',Helmi:'Helmin',Elias:'Eliaksen',Lilja:'Liljan','Väinö':'Väinön'};
+const WITEMS=[
+  {part:'karkkia',ela:'karkeista',svg:()=>UNITS.karkki.one},
+  {part:'tarraa',ela:'tarroista',svg:()=>UNITS.tarra.one},
+  {part:'helmeä',ela:'helmistä',svg:()=>'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="var(--plate)" stroke="var(--soft)" stroke-width="1.4"/><circle cx="9" cy="9" r="3" fill="#fff" opacity=".8"/></svg>'},
+  {part:'keräilykorttia',ela:'keräilykorteista',svg:()=>'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="13" height="16" rx="2" fill="var(--blue)" opacity=".5" transform="rotate(-10 10 14)"/><rect x="7" y="3" width="13" height="17" rx="2" fill="var(--blue)"/><path d="M13.5 7.5l1.3 2.7 3 .4-2.2 2 .6 2.9-2.7-1.5-2.7 1.5.6-2.9-2.2-2 3-.4z" fill="var(--sun)"/></svg>'},
+  {part:'simpukkaa',ela:'simpukoista',svg:()=>'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21L3.5 10a8.5 8.5 0 0 1 17 0z" fill="var(--cake)"/><path d="M12 21L7 6M12 21V4M12 21l5-15M12 21L4 10M12 21l8-11" stroke="var(--cake-edge)" stroke-width="1.2"/><rect x="9.5" y="19.5" width="5" height="3" rx="1" fill="var(--cake-edge)"/></svg>'}];
+const CW={2:'kaksi',3:'kolme',4:'neljä',5:'viisi',10:'kymmenen'};
+const FW={'1/2':'puolet','1/3':'kolmasosa','1/4':'neljäsosa','1/5':'viidesosa','2/3':'kaksi kolmasosaa','3/4':'kolme neljäsosaa','2/5':'kaksi viidesosaa','3/5':'kolme viidesosaa'};
+const DIVW={2:'kahdella',3:'kolmella',4:'neljällä',5:'viidellä'},MULW={2:'kahdella',3:'kolmella',4:'neljällä',5:'viidellä',10:'kymmenellä'};
+function wordPuzzleGen(g){return(L)=>{
+  const mulBias=fam()==='mul';
+  const n=L===1?2:L===2?3:(g>=5?4:3),reverse=L===3;
+  const lim={1:20,2:100,3:200,4:500,5:1000,6:1000}[g];
+  const v0r={1:[5,15],2:[10,60],3:[10,100],4:[20,300],5:[20,400],6:[20,500]}[g];
+  const addr={1:[1,5],2:[2,20],3:[5,40],4:[10,90],5:[10,150],6:[10,200]}[g];
+  const coefs=g===1?[]:g===2?[2]:g===3?[2,3,4,5]:[2,3,4,5,10];
+  const fracs=g===1?[]:g===2?['1/2']:g===3?['1/2','1/3','1/4']:g===4?['1/2','1/3','1/4','1/5','2/3','3/4']:Object.keys(FW);
+  const rels=['more','less'];if(coefs.length)rels.push('times');if(fracs.length)rels.push('frac');if(g>=3)rels.push('total');
+  const it=pick(WITEMS);
+  for(let t=0;t<1000;t++){
+    const P=shuffle(KIDS).slice(0,n),vals=[R(...v0r)],steps=[];let ok=true;
+    for(let i=1;i<n;i++){const x=vals[i-1];
+      let pool=[...rels];if(mulBias)pool.push(...pool.filter(r=>r==='times'||r==='frac'));
+      const r=pick(pool);let y,s;
+      if(r==='more'){const k=R(...addr);y=x+k;s={r,k}}
+      else if(r==='less'){const k=R(...addr);y=x-k;s={r,k}}
+      else if(r==='times'){const c=pick(coefs);y=x*c;s={r,c}}
+      else if(r==='frac'){const f=pick(fracs),[a,b]=f.split('/').map(Number);if(x%b){ok=false;break}y=x/b*a;s={r,f,a,b}}
+      else{y=R(...addr);if(y===x)y++;s={r,S:x+y}}
+      if(y<1||y>lim||vals.includes(y)){ok=false;break}
+      vals.push(y);steps.push(s)}
+    if(!ok)continue;
+    const askTotal=L===3&&Math.random()<.5,total=vals.reduce((a,b)=>a+b,0);
+    if(askTotal&&total>lim*1.5)continue;
+    const sent=[`${P[0].ll} on ${vals[0]} ${it.part}.`];
+    const calc=[`${P[0].n}: ${vals[0]}`];const why=new Set();
+    steps.forEach((s,j)=>{const X=P[j],Y=P[j+1],x=vals[j],y=vals[j+1];
+      if(s.r==='more'){sent.push(`${Y.ll} on ${s.k} ${it.part} enemmän kuin ${X.ll}.`);calc.push(`${Y.n}: ${x} + ${s.k} = ${y}`);why.add('<li><b>enemmän kuin</b> → lisää</li>')}
+      else if(s.r==='less'){sent.push(`${Y.ll} on ${s.k} ${it.part} vähemmän kuin ${X.ll}.`);calc.push(`${Y.n}: ${x} − ${s.k} = ${y}`);why.add('<li><b>vähemmän kuin</b> → vähennä</li>')}
+      else if(s.r==='times'){sent.push(`${Y.ll} on ${CW[s.c]} kertaa niin monta ${it.part} kuin ${X.ll}.`);calc.push(`${Y.n}: ${s.c} · ${x} = ${y}`);why.add(`<li><b>${CW[s.c]} kertaa niin monta</b> → kerro ${MULW[s.c]}</li>`)}
+      else if(s.r==='frac'){sent.push(`${Y.ll} on ${FW[s.f]} ${GEN[X.n]} ${it.ela}.`);calc.push(`${Y.n}: ${x} : ${s.b}${s.a>1?` · ${s.a}`:''} = ${y}`);why.add(`<li><b>${FW[s.f]}</b> → jaa ${DIVW[s.b]}${s.a>1?` ja kerro ${MULW[s.a]}`:''}</li>`)}
+      else{sent.push(`${X.ll} ja ${Y.ll} on yhteensä ${s.S} ${it.part}.`);calc.push(`${Y.n}: ${s.S} − ${x} = ${y}`);why.add(`<li><b>yhteensä</b> → vähennä yhteismäärästä se, minkä jo tiedät</li>`)}});
+    const order=reverse?sent.map((_,i)=>i).reverse():sent.map((_,i)=>i);
+    const last=P[n-1],q=askTotal?`Montako ${it.part} heillä on yhteensä?`:`Montako ${it.part} ${last.ll} on?`;
+    const ans=askTotal?total:vals[n-1];
+    let ppl=P.filter((p,i)=>i>0&&(i<n-1||askTotal));if(reverse)ppl.reverse();
+    const after=!ppl.length?'':`<div class="scratch"><span class="sclbl">Apuruutu${ppl.length>1?'t':''}</span>${ppl.map((p,i)=>`<span class="scit">${p.n} =<input class="num sc sw" id="sc${i}" inputmode="none" autocomplete="off" aria-label="${p.n}"></span>`).join('')}</div>`;
+    const hint=(reverse?`<p>Etsi lause, jossa kerrotaan suoraan, montako ${it.part} jollakulla on. Se on tarinan lopussa. Etene siitä taaksepäin lause kerrallaan.</p>`
+      :`<p>${P[0].ll} on ${vals[0]} ${it.part}. Laske sen avulla seuraavan henkilön määrä, ja jatka siitä eteenpäin.</p>`)+`<ul class="wlist">${[...why].join('')}</ul>`;
+    const explain=`<ol>${calc.map(c=>`<li>${c}</li>`).join('')}${askTotal?`<li>Yhteensä: ${vals.join(' + ')} = ${total}</li>`:''}</ol>`;
+    return{kind:'int',story:order.map(i=>sent[i]).join(' ')+' <b>'+q+'</b>',storyIcon:it.svg(),after,ans,answerText:String(ans),hint,explain}}
+  return wordPuzzleGen(g)(1)}}
+
+/* ---------- lämpömittari ---------- */
+const degF=t=>t<0?`−${-t} °C`:t>0?`+${t} °C`:'0 °C';
+const degN=t=>t<0?`−${-t}`:String(t);
+function thermoScale(vals){let lo=Math.floor((Math.min(...vals)-3)/5)*5,hi=Math.ceil((Math.max(...vals)+3)/5)*5;lo=Math.min(lo,-5);hi=Math.max(hi,5);return[lo,hi]}
+function thermoSVG(t,lo,hi){const top=22,bot=186,px=(bot-top)/(hi-lo),y=v=>bot-(v-lo)*px,lab=(hi-lo)<=30?5:10,ts=px>=3.5?1:2;
+  let s=`<svg class="thermo" viewBox="0 0 80 236" aria-hidden="true"><rect x="4" y="3" width="72" height="230" rx="12" fill="var(--sun-bg)" stroke="var(--stem)" stroke-width="2.5"/><circle cx="40" cy="12" r="3" fill="var(--paper)" stroke="var(--stem)" stroke-width="1.5"/>`;
+  for(let v=lo;v<=hi;v+=ts){const big=v%5===0,z=v===0;s+=`<line x1="${z?28:big?34:38}" y1="${y(v).toFixed(1)}" x2="44" y2="${y(v).toFixed(1)}" stroke="var(--ink)" stroke-width="${z?2:big?1.3:.8}" opacity="${big?1:.6}"/>`;
+    if(v%lab===0)s+=`<text x="${z?26:32}" y="${(y(v)+3.2).toFixed(1)}" text-anchor="end" font-size="${z?10:9}" font-weight="${z?800:700}" fill="${v<0?'var(--blue)':'var(--ink)'}" font-family="Nunito, sans-serif">${degN(v)}</text>`}
+  if(t!=null)s+=`<rect x="47" y="${y(t).toFixed(1)}" width="6" height="${(bot+16-y(t)).toFixed(1)}" fill="var(--apple)"/>`;
+  s+=`<rect x="45" y="${top-8}" width="10" height="${bot-top+22}" rx="5" fill="none" stroke="var(--soft)" stroke-width="1.6"/><circle cx="50" cy="${bot+24}" r="12" fill="var(--apple)" stroke="var(--soft)" stroke-width="1.6"/><circle cx="46" cy="${bot+20}" r="3" fill="#fff" opacity=".5"/><text x="64" y="${top+2}" font-size="9" font-weight="800" fill="var(--soft)" font-family="Nunito, sans-serif">°C</text></svg>`;
+  return s}
+const thermoFig=(t,lo,hi,cap)=>opnd(thermoSVG(t,lo,hi),cap,cap+(t==null?'':': '+degF(t)));
+const CITIES=[['Utsjoella','Utsjoki'],['Rovaniemellä','Rovaniemi'],['Oulussa','Oulu'],['Kuopiossa','Kuopio'],['Tampereella','Tampere'],['Helsingissä','Helsinki'],['Turussa','Turku'],['Maarianhaminassa','Maarianhamina']];
+function thermoGen(g){return(L,op,word)=>{
+  const M=g===3?15:g===4?25:30,h=Math.floor(M/2);
+  const mode=op==='+'?'rise':op==='mit'?pick(['diff','diff','rise','drop']):pick(['diff','diff','drop']);
+  if(mode==='diff'){let a,b;
+    if(L===1){a=-R(1,h);b=R(1,h)}else if(L===2){a=-R(2,M);b=R(1,M)}
+    else if(Math.random()<.5){a=-R(4,M);b=-R(1,-a-2)}else{a=-R(5,M);b=R(5,M)}
+    if(Math.random()<.5)[a,b]=[b,a];
+    const d=Math.abs(a-b),[lo,hi]=thermoScale([a,b]),cold=Math.min(a,b),warm=Math.max(a,b);
+    let story=null,caps=['Aamulla','Iltapäivällä'];
+    if(word){if(Math.random()<.5)story=`Aamulla lämpötila oli ${degF(a)}. Iltapäivällä mittari näytti ${degF(b)}. Kuinka monta astetta lämpötila ${b>a?'nousi':'laski'}?`;
+      else{const[c1,c2]=shuffle(CITIES);caps=[c2[1],c1[1]];const wc=b>a?c1:c2;
+        story=`${c2[0]} on ${degF(a)} ja ${c1[0]} ${degF(b)}. Kuinka monta astetta lämpimämpää on ${wc[0]}?`}}
+    const hint=cold<0&&warm>0?`<p>Laske matka nollan kautta. Kylmemmästä lämpötilasta ${degF(cold)} on nollaan ${-cold} astetta. Nollasta lämpötilaan ${degF(warm)} on ${warm} astetta.</p><p>Laske nämä yhteen.</p>`
+      :cold<0&&warm===0?`<p>Laske, montako astetta lämpötilasta ${degF(cold)} on nollaan.</p>`
+      :`<p>Molemmat ovat pakkasella. Lämpimämpi on se, joka on lähempänä nollaa. Ero on ${-cold} − ${-warm}.</p>`;
+    return{kind:'int',visual:`${thermoFig(a,lo,hi,caps[0])}${thermoFig(b,lo,hi,caps[1])}`,story,storyIcon:null,
+      text:word?null:'<span class="bg" style="font-size:.7em">Kuinka monta astetta lämpötilat eroavat?</span>',unit:'astetta',ans:d,answerText:`${d} astetta`,hint,
+      explain:`<p><b>Ero on ${d} astetta.</b></p><p>${cold<0&&warm>0?`${-cold} + ${warm} = ${d}`:`${degN(warm)} − (${degN(cold)}) = ${d}`}</p>`}}
+  let t0,k;
+  if(mode==='rise'){if(L===1){t0=-R(1,h);k=R(-t0+1,-t0+h)}else if(L===2){t0=-R(2,M);k=R(1,M)}else{t0=R(-M,h);k=R(2,M)}}
+  else{if(L===1){t0=R(1,h);k=R(t0+1,t0+h)}else if(L===2){t0=R(-h,M);k=R(1,M)}else{t0=R(-h,M);k=R(2,M)}}
+  const t1=mode==='rise'?t0+k:t0-k,[lo,hi]=thermoScale([t0,t1]);
+  const verb=mode==='rise'?'nousi':'laski',up=mode==='rise';
+  const story=word?(up?pick([`Aamulla mittari näytti ${degF(t0)}. Päivän aikana lämpötila nousi ${k} astetta. Mikä oli lämpötila iltapäivällä?`,`Kun perhe saapui mökille, sisällä oli ${degF(t0)}. Takan lämmittäessä lämpötila nousi ${k} astetta. Mikä lämpötila mökissä oli sitten?`])
+    :pick([`Illalla lämpötila oli ${degF(t0)}. Yön aikana lämpötila laski ${k} astetta. Mikä oli lämpötila aamulla?`,`Iltapäivällä mittari näytti ${degF(t0)}. Illaksi lämpötila laski ${k} astetta. Mikä oli lämpötila illalla?`])):null;
+  let hint;
+  if(up&&t0<0&&t1>0)hint=`<p>Nouse ensin nollaan: siihen tarvitaan ${-t0} astetta. Nousua on jäljellä vielä ${k} − ${-t0} = ${k+t0} astetta.</p>`;
+  else if(!up&&t0>0&&t1<0)hint=`<p>Laske ensin nollaan: siihen tarvitaan ${t0} astetta. Laskua on jäljellä vielä ${k} − ${t0} = ${k-t0} astetta, joten mennään pakkasen puolelle.</p>`;
+  else if(t0<0&&t1<0)hint=`<p>Ollaan koko ajan pakkasen puolella. ${up?'Kun lämpötila nousee, pakkasasteita tulee vähemmän.':'Kun lämpötila laskee, pakkasasteita tulee lisää.'}</p>`;
+  else hint=`<p>Siirry mittarin asteikolla ${k} astetta ${up?'ylöspäin':'alaspäin'}.</p>`;
+  hint+='<p>Jos vastaus on pakkasella, kirjoita alkuun miinusmerkki −.</p>';
+  return{kind:'int',neg:true,visual:`${thermoFig(t0,lo,hi,up?'Alussa':'Alussa')}<span class="note">${up?'Nousee':'Laskee'} ${k} astetta</span>`,story,
+    text:word?null:`<span class="bg" style="font-size:.7em">Lämpötila ${verb==='nousi'?'nousee':'laskee'} ${k} astetta. Mikä on uusi lämpötila?</span>`,
+    unit:'°C',ans:t1,answerText:degF(t1),hint,
+    explain:`<p><b>${degN(t0)} ${up?'+':'−'} ${k} = ${degN(t1)}</b>, eli ${degF(t1)}.</p><div class="visual">${thermoFig(t1,lo,hi,'Lopussa')}</div>`}}}
+
+/* ---------- luokat ---------- */
+
+
+const GR={
+  1:{goal:'<b>Lukualue 0–20.</b> Yhteen- ja vähennyslaskut, lukujen 0–10 hajotelmat ja vaihdannaisuus (3 + 5 = 5 + 3).',topics:[
+    {id:'hedelmat',name:'Hedelmälaskut',levels:['Luvut 0–10','Luvut 0–20','Kymppiylitys'],gen:g1Fruit},
+    {id:'puuttuva',name:'Puuttuva luku',levels:['Luvut 0–10','Luvut 0–20','Kymppiylitys'],gen:g1Missing}]},
+  2:{goal:'<b>Lukualue 0–100.</b> Yhteen- ja vähennyslaskut päässä sekä kymmenjärjestelmä: kymmenet ja ykköset.',topics:[
+    {id:'kymmenet',name:'Kymmenet ja ykköset',levels:['Täydet kympit','Ilman kymppiylitystä','Kymppiylitys'],gen:g2},
+    {id:'kello',fam:'mit',name:'Kellolaskut',levels:['Tasatunnit','Puolet tunnit','Vartit'],gen:clockGen(2)},
+    {id:'m-taulut',fam:'mul',name:'Kertotaulut',levels:['Taulut 2, 5 ja 10','Taulut 3 ja 4','Kaikki taulut 0–5 ja 10'],gen:tablesGen(2)}]},
+  3:{goal:'<b>Lukualue 0–1000.</b> Päässälaskua satojen ja kymppien avulla sekä yhteen- ja vähennyslasku allekkain.',topics:[
+    {id:'paassa',name:'Päässälasku',levels:['Täydet sadat','Sadat ja kympit','Kymppiylitys'],gen:g3Head},
+    {id:'allekkain',name:'Allekkain',levels:['Ilman muistinumeroa','Yksi muistinumero tai lainaus','Monta muistinumeroa tai lainausta'],gen:colInt(3,[0,1,2])},
+    {id:'lampo',fam:'mit',name:'Lämpömittari',levels:['Pakkasesta plussalle','Nousut ja laskut','Isommat erot'],gen:thermoGen(3)},
+    {id:'kello',fam:'mit',name:'Kellolaskut',levels:['Vartit','5 minuutin välein','Tunnit ja minuutit'],gen:clockGen(3)},
+    {id:'m-taulut',fam:'mul',name:'Kertotaulut',levels:['Taulut 2–5 ja 10','Taulut 6–9','Kaikki taulut'],gen:tablesGen(3)}]},
+  4:{goal:'<b>Allekkainlasku isommilla luvuilla,</b> desimaalilukujen yhteen- ja vähennyslasku allekkain sekä samannimiset murtoluvut.',topics:[
+    {id:'allekkain',name:'Allekkain',levels:['Ilman muistinumeroa','Yksi muistinumero tai lainaus','Monta muistinumeroa tai lainausta'],gen:colInt(4,[0,1,2])},
+    {id:'desimaalit',name:'Desimaaliluvut',levels:['Kymmenesosat','Sadasosat','Eri määrä desimaaleja'],gen:gDec(4)},
+    {id:'murto',name:'Murtoluvut',levels:['Yksi kakku','Pienemmät palat','Yli yhden kakun'],gen:g4Frac},
+    {id:'lampo',fam:'mit',name:'Lämpömittari',levels:['Pakkasesta plussalle','Nousut ja laskut','Isommat erot'],gen:thermoGen(4)},
+    {id:'kello',fam:'mit',name:'Kellolaskut',levels:['Minuutin tarkkuus','24 tunnin kello','Kuinka kauan?'],gen:clockGen(4)},
+    {id:'m-isot',fam:'mul',name:'Allekkain ja osissa',levels:[{'*':'Ei muistinumeroita','/':'Jokainen numero jakautuu tasan'},{'*':'Muistinumeroita','/':'Vaihtoja'},{'*':'Kolminumeroiset','/':'Jakojäännös'}],gen:bigMulDiv(4)}]},
+  5:{goal:'<b>Lukualue 0–1 000 000</b> sekä yhteen- ja vähennyslasku desimaali- ja murtoluvuilla, myös laventaminen.',topics:[
+    {id:'isot',name:'Isot luvut',levels:['Viisinumeroiset','Kuusinumeroiset','Paljon lainauksia ja nollia'],gen:g5Big},
+    {id:'desimaalit',name:'Desimaaliluvut',levels:['Sadasosat','Tuhannesosat','Eri määrä desimaaleja'],gen:gDec(5)},
+    {id:'lampo',fam:'mit',name:'Lämpömittari',levels:['Pakkasesta plussalle','Nousut ja laskut','Isommat erot'],gen:thermoGen(5)},
+    {id:'murto',name:'Murtoluvut',levels:['Laventaminen','Isommat nimittäjät','Yli yhden kakun'],gen:g5Frac},
+    {id:'m-isot',fam:'mul',name:'Isot luvut',levels:[{'*':'Kolminumeroinen · yksinumeroinen','/':'Kolminumeroinen jaettava'},{'*':'Kaksinumeroinen · kaksinumeroinen','/':'Nelinumeroinen jaettava'},{'*':'Kolminumeroinen · kaksinumeroinen','/':'Jakojäännös'}],gen:bigMulDiv(5)},
+    {id:'m-desimaalit',fam:'mul',name:'Desimaaliluvut',levels:[{'*':'Kymmenesosat','/':'Kymmenesosat'},{'*':'Sadasosat','/':'Isommat luvut'},{'*':'Luvuilla 10, 100 ja 1000','/':'Luvuilla 10 ja 100'}],gen:decMulDiv(5)}]},
+  6:{goal:'<b>Erinimisten murtolukujen</b> yhteen- ja vähennyslasku sekä desimaalilukujen laskutaidon vahvistaminen.',topics:[
+    {id:'murto',name:'Erinimiset murtoluvut',levels:['Yksi pala kummastakin','Yksi kakku','Yli yhden kakun'],gen:g6Frac},
+    {id:'desimaalit',name:'Desimaaliluvut',levels:['Eri määrä desimaaleja','Isommat luvut','Kokonaisluku ja desimaaliluku'],gen:gDec(6)},
+    {id:'lampo',fam:'mit',name:'Lämpömittari',levels:['Pakkasesta plussalle','Nousut ja laskut','Isommat erot'],gen:thermoGen(6)},
+    {id:'m-murto',fam:'mul',name:'Murtoluvut',levels:[{'*':'Tulos enintään yksi','/':'Osoittaja jakautuu tasan'},{'*':'Yli yhden kakun','/':'Pienemmät nimittäjät'},{'*':'Osa luvusta','/':'Isommat nimittäjät'}],gen:fracMulDiv},
+    {id:'m-desimaalit',fam:'mul',name:'Desimaaliluvut',levels:[{'*':'Sadasosat','/':'Sadasosat'},{'*':'Kaksinumeroinen kerroin','/':'Isommat luvut'},{'*':'Desimaaliluku · desimaaliluku','/':'Luvuilla 10, 100 ja 1000'}],gen:decMulDiv(6)}]}
+};
+
+/* ---------- luvut: vertailu ja lukujonot ---------- */
+const PLACEN=['ykkösissä','kymmenissä','sadoissa','tuhansissa','kymmenissätuhansissa','sadoissatuhansissa','miljoonissa'];
+const iI=v=>({v,h:fmtInt(v),t:'int'});
+const iD=(u,d)=>({v:u/10**d,h:fd({u,d}),t:'dec',u,d});
+const iF=(n,d)=>({v:n/d,h:frac(n,d),t:'frac',n,d});
+const iN=v=>({v,h:v<0?'−'+fmtInt(-v):fmtInt(v),t:'neg'});
+function iE(g,target){const tries=[];
+  for(let k=0;k<60;k++){const t=pick(g===1?['+','-']:g===2?['+','-','·']:['+','-','·']);let a,b,v;
+    if(t==='+'){a=R(0,target);b=target-a;if(g>=2&&Math.random()<.5){a=R(1,target);b=target-a}}
+    if(t==='-'){b=R(1,g===1?9:30);a=target+b}
+    if(t==='·'){const ds=[2,3,4,5,6,7,8,9,10].filter(x=>target%x===0&&target/x<=10);if(!ds.length)continue;b=pick(ds);a=target/b}
+    if(a<0||b<0||a==null)continue;v=t==='+'?a+b:t==='-'?a-b:a*b;if(v!==target)continue;
+    return{v,h:`${a} ${t==='-'?'−':t} ${b}`,t:'expr',calc:`${a} ${t==='-'?'−':t} ${b} = ${v}`}}
+  return iI(target)}
+function nearInt(lo,hi){const a=R(lo,hi),s=String(a);const opts=[];
+  if(s.length>=2){const ds=s.split('');const i=R(0,ds.length-2);if(ds[i]!==ds[i+1]&&!(i===0&&ds[i+1]==='0')){[ds[i],ds[i+1]]=[ds[i+1],ds[i]];opts.push(+ds.join(''))}}
+  const p=10**Math.max(0,s.length-2);opts.push(a+R(1,9)*p,a-R(1,9)*p,a+R(1,9),a-R(1,9));
+  let b=pick(opts.filter(x=>x>=lo&&x<=hi&&x!==a));if(b==null)b=a+1;return[a,b]}
+const FDEC=[[1,2,5,1],[1,4,25,2],[3,4,75,2],[1,5,2,1],[2,5,4,1],[3,5,6,1],[4,5,8,1],[1,10,1,1],[3,10,3,1],[7,10,7,1]];
+function cmpPair(g,L){const eq=Math.random()<.18;let A,B,vis=null;
+  const ints=(lo,hi)=>{if(eq){const a=R(lo,hi);return[iI(a),iI(a)]}const[a,b]=nearInt(lo,hi);return[iI(a),iI(b)]};
+  if(g===1){if(L===1){const a=R(1,10),b=eq?a:R(1,10);A=iI(a);B=iI(b);const[f1,f2]=shuffle(FK);
+      vis=`${opnd(group(many(f1,a),a+' '+FRUITS[f1].part),a,a)}${opnd(group(many(f2,b),b+' '+FRUITS[f2].part),b,b)}`}
+    else if(L===2)[A,B]=ints(0,20);
+    else{const t=R(3,20);A=iE(1,t);B=iI(eq?t:Math.max(0,t+pick([-2,-1,1,2])))}}
+  else if(g===2){if(L===1){[A,B]=ints(10,99);vis=`${opnd(pv(A.v),A.v,A.v+' omenaa')}${opnd(pv(B.v),B.v,B.v+' omenaa')}${legend(false)}`}
+    else if(L===2){const a=R(12,98),t=String(a);let b=eq?a:(t[0]!==t[1]&&t[1]!=='0'&&Math.random()<.6?+(t[1]+t[0]):Math.floor(a/10)*10+R(0,9));if(b===a&&!eq)b=a+1;A=iI(a);B=iI(b)}
+    else{const t=R(12,60);A=iE(2,t);B=Math.random()<.5?iI(eq?t:t+pick([-3,-1,1,2])):iE(2,eq?t:t+pick([-2,1,3]))}}
+  else if(g===3){if(L===1)[A,B]=ints(100,999);else if(L===2){[A,B]=ints(100,999);if(!eq){const a=R(100,999),h=Math.floor(a/100)*100;A=iI(a);let b=h+R(0,99);if(b===a)b=h+(a%100+7)%100;B=iI(b)}}
+    else{const t=R(12,90);A=iE(3,t);B=iE(3,eq?t:t+pick([-4,-2,1,3]))}}
+  else if(g===4){if(L===1)[A,B]=ints(1000,9999);
+    else if(L===2){const d1=1,a=R(1,99);A=iD(a,2);B=eq?iD(a*10,3):Math.random()<.5?iD(R(1,9),d1):iD(a+pick([-9,-1,1,10]),2);if(B.v<=0)B=iD(a+1,2)}
+    else if(Math.random()<.5){const a=-R(1,25);let b=eq?a:pick([-a,-R(1,25),R(0,10)]);if(b===a&&!eq)b=a-3;A=iN(a);B=iN(b);const[lo,hi]=thermoScale([a,b]);vis=`${thermoFig(a,lo,hi,A.h)}${thermoFig(b,lo,hi,B.h)}`}
+    else{const d=pick([3,4,5,6,8,10]),n=R(1,d-1);let m=eq?n:R(1,d-1);if(m===n&&!eq)m=n%(d-1)+1;A=iF(n,d);B=iF(m,d)}}
+  else if(g===5){if(L===1){[A,B]=ints(10000,999999)}
+    else if(L===2){const d=pick([2,3]),u=R(10**(d-1),10**d-1);A=iD(u,d);if(eq)B=iD(u*10,d+1);else{const d2=pick([1,2,3]);B=iD(R(10**(d2-1),10**d2-1),d2);if(B.v===A.v)B=iD(B.u+1,d2)}}
+    else{for(let t=0;t<50;t++){const d1=pick([2,3,4,5,6,8,10]),d2=pick([2,3,4,5,6,8,10,12]);if(d1===d2)continue;const n1=R(1,d1-1);let n2=eq?n1*d2/d1:R(1,d2-1);if(!Number.isInteger(n2))continue;A=iF(n1,d1);B=iF(n2,d2);if(eq||A.v!==B.v)break}if(!A){A=iF(1,2);B=iF(2,4)}}}
+  else{if(L===1){const d=pick([1,2,3]),u=R(10**(d-1),10**d-1)+R(0,9)*10**d;A=iD(u,d);if(eq)B=iD(u*10,d+1);else{const d2=pick([1,2,3]);B=iD(Math.max(1,Math.round(A.v*10**d2)+pick([-11,-1,1,9])),d2);if(Math.abs(B.v-A.v)<1e-9)B=iD(B.u+1,d2)}}
+    else if(L===2){const[n,d,u,dd]=pick(FDEC);A=iF(n,d);B=eq?iD(u,dd):iD(Math.max(1,u*10**(2-dd)+pick([-15,-5,5,10,-10])),2);if(!eq&&Math.abs(B.v-A.v)<1e-9)B=iD(B.u+1,2)}
+    else{if(Math.random()<.5){const a=-(R(1,99)/10),b=eq?a:-(R(1,99)/10);A=iN(a);A.h=(a<0?'−':'')+fd({u:Math.round(-a*10),d:1});B=iN(b);B.h=(b<0?'−':'')+fd({u:Math.round(-b*10),d:1});A.t=B.t='negd'}
+      else{const t=R(20,90);A=iE(6,t);B=iE(6,eq?t:t+pick([-3,-1,2,4]))}}}
+  if(Math.random()<.5){[A,B]=[B,A]}
+  return{A,B,vis}}
+function cmpHint(A,B,g){const sym=Math.abs(A.v-B.v)<1e-9?'=':A.v<B.v?'<':'>';let h='';
+  if(A.t==='expr'||B.t==='expr')h=`<p>Laske ensin:</p><ul class="wlist">${[A,B].filter(x=>x.calc).map(x=>`<li>${x.calc}</li>`).join('')}</ul><p>Vertaa sitten tuloksia.</p>`;
+  else if(A.t==='int'&&B.t==='int'){const a=String(A.v),b=String(B.v);
+    if(a.length!==b.length)h=`<p>Luvussa ${a.length>b.length?A.h:B.h} on enemmän numeroita, joten se on suurempi.</p>`;
+    else if(a===b)h='<p>Luvut ovat täsmälleen samat.</p>';
+    else{const i=[...a].findIndex((c,j)=>c!==b[j]);h=`<p>Vertaa numeroita vasemmalta alkaen. Ensimmäinen ero on ${PLACEN[a.length-1-i]}: ${a[i]} ja ${b[i]}.</p>`}}
+  else if((A.t==='neg'||A.t==='negd')){h='<p>Mitä kauempana nollasta pakkasen puolella luku on, sitä pienempi se on. −8 on pienempi kuin −3, koska −8 on kylmempi.</p>'}
+  else if(A.t==='dec'&&B.t==='dec'){const D=Math.max(A.d,B.d),pa=fd({u:A.u*10**(D-A.d),d:D}),pb=fd({u:B.u*10**(D-B.d),d:D});
+    h=`<p>Lisää loppuun nollia, jotta desimaaleja on yhtä monta: ${pa} ja ${pb}. Vertaa sitten numeroita vasemmalta alkaen.</p>`}
+  else if(A.t==='frac'&&B.t==='frac'){if(A.d===B.d)h=`<p>Nimittäjät ovat samat, joten palat ovat samankokoisia. Vertaa osoittajia: ${A.n} ja ${B.n}.</p><div class="visual">${fracOp(A.n,A.d)}${fracOp(B.n,B.d)}</div>`;
+    else{const D=lcm(A.d,B.d);h=`<p>Lavenna samannimisiksi: ${frac(A.n,A.d)} = ${frac(A.n*D/A.d,D)} ja ${frac(B.n,B.d)} = ${frac(B.n*D/B.d,D)}. Vertaa sitten osoittajia.</p><div class="visual">${fracOp(A.n,A.d)}${fracOp(B.n,B.d)}</div>`}}
+  else{const F=A.t==='frac'?A:B;h=`<p>Muuta murtoluku desimaaliluvuksi: ${frac(F.n,F.d)} = ${String(F.v).replace('.',',')}. Vertaa sitten desimaalilukuja.</p>`}
+  if(g<=2)h+='<p>Muista: merkin kärki osoittaa aina pienempään lukuun.</p>';
+  return{sym,h}}
+function cmpGen(g){return(L,op,word)=>{const{A,B,vis}=cmpPair(g,L),{sym,h}=cmpHint(A,B,g);
+  const word2={sym,explain:`<p><b>${A.h} ${sym} ${B.h}</b></p>${[A,B].filter(x=>x.calc).map(x=>`<p>${x.calc}</p>`).join('')}`};
+  if(word){const[K,M]=two();let story,ch,ans;
+    const who=sym==='>'?K.n:sym==='<'?M.n:'same';
+    if(A.t==='int'&&B.t==='int'){const it=pick(['tarraa','karkkia','pistettä','keräilykorttia']);story=`${K.ll} on ${A.h} ${it} ja ${M.ll} ${B.h} ${it}. Kummalla on enemmän?`}
+    else if(A.t==='dec'&&B.t==='dec')story=`${K.n} hyppäsi pituutta ${A.h} m ja ${M.n} ${B.h} m. Kumpi hyppäsi pidemmälle?`;
+    else if(A.t==='frac'&&B.t==='frac')story=`${K.n} söi ${A.h} pizzasta ja ${M.n} ${B.h} samankokoisesta pizzasta. Kumpi söi enemmän?`;
+    else if(A.t==='neg'||A.t==='negd'){const[c1,c2]=shuffle(CITIES);story=`${c1[0]} on ${A.h} °C ja ${c2[0]} ${B.h} °C. Kummassa on lämpimämpää?`;
+      ch=[[c1[1],c1[1]],[c2[1],c2[1]],['same','Yhtä lämmintä']];ans=sym==='>'?c1[1]:sym==='<'?c2[1]:'same'}
+    else if(A.t==='expr'||B.t==='expr'){const f=x=>x.t==='expr'?`${x.h} (laske)`:x.h;story=`${K.n} sai pelissä ${f(A)} pistettä ja ${M.n} ${f(B)} pistettä. Kumpi sai enemmän pisteitä?`.replace(/ \(laske\)/g,'')}
+    else story=`${K.n} joi ${A.h} litraa mehua ja ${M.n} ${B.h} litraa. Kumpi joi enemmän?`;
+    if(!ch){ch=[[K.n,K.n],[M.n,M.n],['same','Yhtä paljon']];ans=who===K.n?K.n:who===M.n?M.n:'same'}
+    return{kind:'choice',choices:ch,ans,answerText:ch.find(c=>c[0]===ans)[1],story,visual:vis,hint:h,explain:word2.explain}}
+  return{kind:'choice',choices:[['<','&lt;'],['=','='],['>','&gt;']],big:true,ans:sym,answerText:sym,visual:vis,
+    text:`<span class="bg">${A.h} ${BOX} ${B.h}</span>`,hint:h+`<p>Valitse oikea merkki: &lt; pienempi kuin, = yhtä suuri kuin, &gt; suurempi kuin.</p>`,explain:word2.explain}}}
+
+/* lukujonot */
+function seqMake(g,L){const T=(f,n=6)=>Array.from({length:n},(_,i)=>f(i));let terms,rule,dec=0;
+  const ar=(a,s)=>{rule={type:'ar',s};return T(i=>a+i*s)};
+  if(g===1){if(L===1)terms=ar(R(0,8),pick([1,2]));else if(L===2)terms=Math.random()<.5?ar(R(0,8),pick([1,2])):ar(R(12,20),-pick([1,2]));else terms=Math.random()<.5?ar(0,pick([5,10])).slice(0,5):ar(R(14,20),-2)}
+  else if(g===2){if(L===1)terms=ar(pick([0,2,5,10]),pick([2,5,10]));else if(L===2)terms=Math.random()<.5?ar(R(1,20),pick([3,4,5])):ar(R(60,100),-pick([2,5,10]));else terms=Math.random()<.5?ar(R(1,9),10):ar(R(50,99),-pick([3,4]))}
+  else if(g===3){if(L===1)terms=ar(pick([0,25,50,100]),pick([10,20,25,50,100]));else if(L===2)terms=Math.random()<.5?ar(R(400,999),-pick([5,10,20,50])):ar(R(100,300),pick([6,7,8,9,15]));
+    else if(Math.random()<.5){const a=R(1,10);rule={type:'grow'};let x=a;terms=T(i=>{const r=x;x+=i+1;return r})}else{rule={type:'mul',m:2};const a=R(1,6);terms=T(i=>a*2**i)}}
+  else if(g===4){if(L===1)terms=ar(R(100,2000),pick([3,4,6,7,8,9,11,12,25,250]));else if(L===2)terms=ar(R(8,20),-pick([3,4,5]));
+    else{const k=pick(['mul','grow','half']);if(k==='mul'){const m=pick([2,3]);rule={type:'mul',m};const a=R(1,4);terms=T(i=>a*m**i)}else if(k==='half'){rule={type:'div',m:2};const a=pick([3,5,7])*32;terms=T(i=>a/2**i)}else{rule={type:'grow'};let x=R(1,20);terms=T(i=>{const r=x;x+=2*(i+1);return r});rule.type='grow2'}}}
+  else if(g===5){if(L===1){const[s,d]=pick([[5,1],[25,2],[1,1],[2,1]]);dec=d;terms=ar(R(0,40)*10**(d-1)*(d===2?5:1)/10**d,s/10**d)}
+    else if(L===2){const[s,d]=pick([[5,1],[25,2],[2,1],[15,2]]);dec=d;terms=ar(R(30,90)/10,-s/10**d)}
+    else{const k=pick(['sq','mul','div']);if(k==='sq'){rule={type:'sq'};const a=R(1,4);terms=T(i=>(a+i)**2)}else if(k==='mul'){rule={type:'mul',m:3};terms=T(i=>R(1,1)*3**i)}else{rule={type:'div',m:2};terms=T(i=>pick([1,3])*64/2**i)}}}
+  else{if(L===1)terms=ar(R(5,20),-pick([3,4,5,6,7]));else if(L===2){const[s,d]=pick([[2,1],[25,2],[5,1]]);dec=d;terms=ar(R(-5,10)/10,-s/10**d)}
+    else{const k=pick(['fib','alt','sq']);if(k==='fib'){rule={type:'fib'};const a=R(1,4),b=R(a,6);terms=[a,b];while(terms.length<7)terms.push(terms.at(-1)+terms.at(-2))}
+      else if(k==='alt'){const p=R(3,6),q=R(1,p-1);rule={type:'alt',p,q};let x=R(1,10);terms=T(i=>{const r=x;x+=i%2?-q:p;return r},7)}else{rule={type:'sq'};const a=R(1,5);terms=T(i=>(a+i)**2)}}}
+  if(rule.type==='ar'&&dec){terms=terms.map(x=>Math.round(x*10**dec)/10**dec)}
+  return{terms,rule,dec}}
+const numF=(x,dec)=>{const neg=x<0;let s=dec?Math.abs(x).toFixed(dec).replace('.',','):fmtInt(Math.abs(x));if(dec)s=s.replace(/,?0+$/,m=>m.startsWith(',')?'':m.replace(/0+$/,''));return(neg?'−':'')+s};
+function seqTiles(terms,miss,dec,diffs){let s='<div class="seq">';
+  terms.forEach((t,i)=>{if(i&&diffs){const d=terms[i]-terms[i-1];s+=`<span class="sdiff">${diffs==='rule'?'':(d>=0?'+':'−')+numF(Math.abs(d),dec)}</span>`}
+    s+=i===miss?`<span class="stile q2">?</span>`:`<span class="stile">${numF(t,dec)}</span>`});return s+'</div>'}
+function ruleText(r,dec){switch(r.type){case 'ar':return r.s>0?`Jokainen luku on ${numF(r.s,dec)} suurempi kuin edellinen.`:`Jokainen luku on ${numF(-r.s,dec)} pienempi kuin edellinen.`;
+  case 'grow':return 'Ero kasvaa joka kerta yhdellä: +1, +2, +3, …';case 'grow2':return 'Ero kasvaa joka kerta kahdella: +2, +4, +6, …';
+  case 'mul':return `Jokainen luku on ${r.m} kertaa edellinen.`;case 'div':return 'Jokainen luku on puolet edellisestä.';
+  case 'sq':return 'Luvut ovat neliölukuja: 1 · 1, 2 · 2, 3 · 3, …';case 'fib':return 'Jokainen luku on kahden edellisen luvun summa.';
+  case 'alt':return `Vuorotellen lisätään ${r.p} ja vähennetään ${r.q}.`}}
+function seqGen(g){return(L,op,word)=>{
+  for(let t=0;t<50;t++){const{terms,rule,dec}=seqMake(g,L);
+    let miss=terms.length-1;if(L>=2&&Math.random()<.5)miss=R(1,terms.length-2);if(rule.type==='fib'&&miss<2)miss=terms.length-1;
+    const ans=terms[miss],neg=terms.some(x=>x<0);
+    if(word&&rule.type==='ar'&&!dec){const s=rule.s,a=terms[0],n=terms.length-1,[K]=two();let story;
+      if(s>0)story=pick([`${K.ll} on säästössä ${a} euroa. Hän laittaa säästöön joka viikko ${s} euroa lisää. Paljonko rahaa hänellä on ${n} viikon kuluttua?`,`Puu on nyt ${a} cm pitkä. Se kasvaa joka vuosi ${s} cm. Kuinka pitkä puu on ${n} vuoden kuluttua?`]);
+      else if(terms.at(-1)>=0)story=pick([`Purkissa on ${a} karkkia. ${K.n} syö joka päivä ${-s} karkkia. Montako karkkia purkissa on ${n} päivän jälkeen?`,`Kirjassa on ${a} sivua lukematta. ${K.n} lukee joka ilta ${-s} sivua. Montako sivua on lukematta ${n} illan jälkeen?`]);
+      else story=`Aamulla lämpötila on ${degF(a)}. Lämpötila laskee joka tunti ${-s} astetta. Mikä lämpötila on ${n} tunnin kuluttua?`;
+      const ansW=terms.at(-1),dg=story.includes('°C');
+      return{kind:'int',neg:ansW<0,story,unit:dg?'°C':story.includes('euroa')?'€':story.includes('cm')?'cm':'',ans:ansW,answerText:dg?degF(ansW):String(ansW),
+        hint:`<p>Kirjoita tilanne lukujonoksi. Aloita luvusta ${numF(a)} ja ${s>0?'lisää':'vähennä'} joka kerta ${Math.abs(s)}.</p>${seqTiles(terms.slice(0,3),-1,0,true)}<p>Jatka, kunnes olet tehnyt sen ${n} kertaa.</p>`,
+        explain:`<div class="visual">${seqTiles(terms,-1,0,true)}</div><p>Tai lyhyemmin: ${a} ${s>0?'+':'−'} ${n} · ${Math.abs(s)} = ${ansW}.</p>`}}
+    if(word)return seqGen(g)(L,op,false);
+    const known=terms.filter((_,i)=>i!==miss);if(known.length<3)continue;
+    return{kind:dec?'dec':'int',neg,visual:seqTiles(terms,miss,dec,false),text:'<span class="bg" style="font-size:.7em">Mikä luku puuttuu jonosta?</span>',ans,answerText:numF(ans,dec),
+      hint:`<p>Katso, miten luku muuttuu aina seuraavaan siirryttäessä. Laske ensin kahden vierekkäisen luvun ero. Jos ero ei pysy samana, kokeile, onko luku aina tietty määrä kertaa edellinen, tai muuttuuko ero säännöllisesti.</p>${miss>1?`<p>Esimerkiksi ${numF(terms[0],dec)} → ${numF(terms[1],dec)}.</p>`:`<p>Esimerkiksi ${numF(terms.at(-2),dec)} → ${numF(terms.at(-1),dec)}.</p>`}`,
+      explain:`<p><b>${ruleText(rule,dec)}</b></p><div class="visual">${seqTiles(terms,-1,dec,['ar','grow','grow2','alt'].includes(rule.type))}</div>`}}
+  return seqGen(g)(1,op,word)}}
+const CMPLV={1:['Kuvat','Luvut 0–20','Laskut'],2:['Kymmenet ja ykköset','Lähekkäiset luvut','Laskut'],3:['Luvut 0–1000','Samat sadat','Laskut'],4:['Isot luvut','Desimaaliluvut','Pakkasasteet ja murtoluvut'],5:['Isot luvut','Desimaaliluvut','Murtoluvut'],6:['Desimaaliluvut','Murtoluku vai desimaaliluku','Negatiiviset luvut ja laskut']};
+const SEQLV={1:['Yhden ja kahden välein','Puuttuva luku','Viisi ja kymmenen'],2:['Kahden, viiden ja kymmenen välein','Puuttuva luku','Takaperin'],3:['Isot hypyt','Takaperin ja puuttuva','Kasvava ero ja tuplaus'],4:['Isot luvut','Nollan yli','Kertominen ja kasvava ero'],5:['Desimaaliluvut','Desimaalit takaperin','Neliöt ja kertominen'],6:['Nollan alle','Desimaalit nollan yli','Haastavat säännöt']};
+const GOALC={1:'<b>Lukujonot</b> lukualueella 0–20.',2:'<b>Lukujonot</b> lukualueella 0–100: kahden, viiden ja kymmenen välein.',3:'<b>Säännönmukaisuudet lukujonoissa</b> lukualueella 0–1000.',4:'<b>Lukujonot</b> isoilla luvuilla ja nollan yli negatiivisiin lukuihin.',5:'<b>Lukujonojen säännönmukaisuus</b> desimaaliluvuilla, neliöillä ja kertomalla.',6:'<b>Haastavat lukujonot</b> negatiivisilla luvuilla ja desimaaliluvuilla.'};
+const GOALMIT={1:'<b>Lukujen ja määrien vertailu</b> lukualueella 0–20.',2:'<b>Lukujen vertailu</b> lukualueella 0–100 sekä kellonajat ja viisarit.',3:'<b>Lukujen vertailu</b> lukualueella 0–1000, ajan laskeminen kellosta ja lämpötilat lämpömittarista.',4:'<b>Kellonajat minuutin tarkkuudella</b> ja ajan kesto sekä lämpötilat ja pakkasasteet.',5:'<b>Lämpötilat ja lämpötilojen erot</b> pakkasen ja plussan välillä.',6:'<b>Lämpötilat ja lämpötilojen erot</b> pakkasen ja plussan välillä.'};
+for(const g of [1,2,3,4,5,6]){if(g<=3)GR[g].topics.push({id:'c-vertailu',fam:'mit',name:'Vertailu',levels:CMPLV[g],gen:cmpGen(g)});GR[g].topics.push({id:'c-jonot',fam:'cmp',name:'Lukujonot',levels:SEQLV[g],gen:seqGen(g)});}
+/* kuviojonot */
+const KCOL={r:['--apple','punainen'],b:['--blue','sininen'],y:['--sun','keltainen'],g:['--good','vihreä'],p:['--candy','violetti']};
+const KSYM=['circle','square','tri','star'],KROT=['arrow','halfsq','flag','pac'];
+const KSHN={circle:'ympyrä',square:'neliö',tri:'kolmio',star:'tähti'};
+function kShape(t,col){const c=`var(${KCOL[col][0]})`;switch(t){
+  case 'circle':return `<circle r="9" fill="${c}"/>`;case 'square':return `<rect x="-8.5" y="-8.5" width="17" height="17" rx="2" fill="${c}"/>`;
+  case 'tri':return `<path d="M0 -9.5L9.5 8H-9.5Z" fill="${c}"/>`;case 'star':return `<path d="M0 -10L2.9 -3.6 9.5 -3.1 4.6 1.4 5.9 8.1 0 4.7-5.9 8.1-4.6 1.4-9.5-3.1-2.9-3.6Z" fill="${c}"/>`;
+  case 'arrow':return `<path d="M-9 -3.5H1V-9L10 0 1 9V3.5H-9Z" fill="${c}"/>`;
+  case 'halfsq':return `<rect x="-9" y="-9" width="18" height="18" rx="2" fill="var(--paper)" stroke="${c}" stroke-width="2"/><rect x="-9" y="-9" width="9" height="18" rx="1" fill="${c}"/>`;
+  case 'flag':return `<path d="M-6 10V-10" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/><path d="M-6 -10L9 -5 -6 0Z" fill="${c}"/>`;
+  case 'pac':return `<path d="M0 0L9 -5A10 10 0 1 0 9 5Z" fill="${c}"/>`}}
+const KLAY={1:[[30,30]],2:[[18,30],[42,30]],3:[[30,16],[17,42],[43,42]],4:[[18,18],[42,18],[18,42],[42,42]],5:[[16,16],[44,16],[30,30],[16,44],[44,44]],6:[[16,14],[44,14],[16,30],[44,30],[16,46],[44,46]],7:[[14,14],[30,14],[46,14],[30,30],[14,46],[30,46],[46,46]],8:[[14,14],[30,14],[46,14],[14,30],[46,30],[14,46],[30,46],[46,46]],9:[[14,14],[30,14],[46,14],[14,30],[30,30],[46,30],[14,46],[30,46],[46,46]]};
+const RING=[0,1,2,5,8,7,6,3];
+function kCell(st){let s='<svg viewBox="0 0 60 60" aria-hidden="true">';
+  if(st.pos!=null){s+='<path d="M20 2V58M40 2V58M2 20H58M2 40H58" stroke="var(--line)" stroke-width="1.5"/>';const x=10+20*(st.pos%3),y=10+20*Math.floor(st.pos/3);
+    s+=`<g transform="translate(${x} ${y}) rotate(${st.rot}) scale(.75)">${kShape(st.shape,st.color)}</g>`}
+  else{const n=st.count,sc=n===1?1.6:n<=4?.95:.68;KLAY[n].forEach(([x,y])=>{s+=`<g transform="translate(${x} ${y}) rotate(${st.rot}) scale(${sc})">${kShape(st.shape,st.color)}</g>`})}
+  return s+'</svg>'}
+const kKey=st=>[st.shape,st.color,((st.rot%360)+360)%360,st.count,st.pos].join('|');
+function kuvioGen(g){return(L)=>{
+  const band=g<=2?0:g<=4?1:2;
+  let props;
+  if(band===0)props=L===1?[pick(['acol','ashape'])]:L===2?['count']:['rot90'];
+  else if(band===1)props=L===1?[pick(['rot90','count'])]:L===2?['move']:shuffle(['rot90','count','acol']).slice(0,2);
+  else props=L===1?['rot45','acol']:L===2?['move','acol3']:['rot90','count','acol'];
+  const rotating=props.some(p=>p.startsWith('rot'))||(props.includes('move')&&Math.random()<.4);
+  const cols=shuffle(Object.keys(KCOL)),shapes=shuffle(KSYM);
+  const per=props.includes('acol3')?3:pick([2,2,3]),sper=pick([2,3]);
+  const dir=pick([1,-1]),c0=props.includes('count')?R(1,band===2?2:3):1,cs=1,ms=pick(band===2?[1,2,-1]:[1,-1]),p0=R(0,7);
+  const base={shape:rotating?pick(KROT):shapes[0],color:cols[0],rot:rotating?pick([0,90,180,270]):0,count:1,pos:null};
+  const N=6;const st=[];
+  for(let i=0;i<N;i++){const x={...base};
+    props.forEach(p=>{if(p==='acol'||p==='acol3')x.color=cols[i%(p==='acol3'?3:per)];
+      if(p==='ashape')x.shape=shapes[i%sper];
+      if(p==='rot90')x.rot=base.rot+dir*90*i;if(p==='rot45')x.rot=base.rot+dir*45*i;
+      if(p==='count')x.count=c0+cs*i;if(p==='move')x.pos=RING[((p0+ms*i)%8+8)%8]});
+    if(props.includes('move')&&x.pos==null)x.pos=RING[p0];
+    st.push(x)}
+  const C=st[N-1],ck=kKey(C),cand=[st[N-2]];
+  props.forEach(p=>{
+    if(p==='acol'||p==='acol3')cols.slice(0,4).forEach(c=>cand.push({...C,color:c}));
+    if(p==='ashape')shapes.forEach(s=>cand.push({...C,shape:s}));
+    if(p.startsWith('rot'))[90,180,270,45,-45].forEach(d=>cand.push({...C,rot:C.rot+d}));
+    if(p==='count')[-1,1,2,-2,3].forEach(d=>C.count+d>=1&&C.count+d<=9&&cand.push({...C,count:C.count+d}));
+    if(p==='move'){const i=RING.indexOf(C.pos);[1,-1,2,4].forEach(d=>cand.push({...C,pos:RING[(i+d+8)%8]}));cand.push({...C,pos:4})}});
+  const fb=[];(KROT.includes(C.shape)?KROT:KSYM).forEach(sh=>fb.push({...C,shape:sh}));
+  const seen=new Set([ck]),wrong=[];[...shuffle(cand),...shuffle(fb)].forEach(x=>{const k=kKey(x);if(!seen.has(k)&&wrong.length<3){seen.add(k);wrong.push(x)}});
+  const opts=shuffle([C,...wrong]),ids=['a','b','c','d'],ans=ids[opts.indexOf(C)];
+  const tile=(x,q)=>`<span class="ktile${q?' q2':''}">${q?'?':kCell(x)}</span>`;
+  const rule=[];props.forEach(p=>{
+    if(p==='acol'||p==='acol3'){const P=p==='acol3'?3:per;rule.push(`Värit toistuvat samassa järjestyksessä: ${cols.slice(0,P).map(c=>KCOL[c][1]).join(', ')}, ja sitten alusta.`)}
+    if(p==='ashape')rule.push(`Muodot toistuvat samassa järjestyksessä: ${shapes.slice(0,sper).map(s=>KSHN[s]).join(', ')}, ja sitten alusta.`);
+    if(p==='rot90')rule.push(`Kuvio kääntyy joka kerta neljänneskierroksen (90 astetta) ${dir>0?'myötäpäivään':'vastapäivään'}.`);
+    if(p==='rot45')rule.push(`Kuvio kääntyy joka kerta kahdeksasosakierroksen (45 astetta) ${dir>0?'myötäpäivään':'vastapäivään'}.`);
+    if(p==='count')rule.push('Kuvioita tulee joka kerta yksi lisää.');
+    if(p==='move')rule.push(`Kuvio siirtyy reunaa pitkin joka kerta ${Math.abs(ms)===2?'kaksi ruutua':'yhden ruudun'} ${ms>0?'myötäpäivään':'vastapäivään'}.`)});
+  const hint=`<p>Vertaa vierekkäisiä kuvia. Mikä muuttuu: väri, muoto, määrä, asento vai paikka?</p>${props.length>1?`<p>Tässä jonossa muuttuu ${props.length===2?'kaksi':'kolme'} asiaa yhtä aikaa. Tarkista ne yksi kerrallaan.</p>`:''}`;
+  return{kind:'choice',pics:true,choices:opts.map((x,i)=>[ids[i],`<span class="kopt">${kCell(x)}</span>`]),ans,answerText:'',
+    visual:`<div class="kseq" role="img" aria-label="Kuviojono">${st.slice(0,N-1).map(x=>tile(x)).join('')}${tile(null,true)}</div>`,
+    text:'<span class="bg" style="font-size:.7em">Mikä kuva tulee seuraavaksi?</span>',hint,
+    explain:`${rule.map(r=>`<p><b>${r}</b></p>`).join('')}<div class="kseq">${st.map((x,i)=>`<span class="ktile${i===N-1?' ans':''}">${kCell(x)}</span>`).join('')}</div>`}}}
+const KVLV={0:['Toistuvat värit ja muodot','Kasvava määrä','Kääntyvä kuvio'],1:['Kääntyvä tai kasvava','Liikkuva kuvio','Kaksi muutosta'],2:['Kääntyminen ja väri','Liike ja väri','Kolme muutosta']};
+for(const g of [1,2,3,4,5,6])GR[g].topics.push({id:'c-kuviot',fam:'cmp',name:'Kuviojonot',levels:KVLV[g<=2?0:g<=4?1:2],gen:kuvioGen(g)});
+
+/* murtolukujen vertailu 5.–6. luokka */
+function fracBetween(g){const DS=g===5?[2,3,4,5,6,8,10]:[2,3,4,5,6,8,10,12];
+  const rnd=()=>{const d=pick(DS),n=R(1,d-1);return gcd(n,d)===1?iF(n,d):null};
+  for(let t=0;t<400;t++){const lo=rnd(),hi=rnd();if(!lo||!hi||hi.v-lo.v<.12||hi.v-lo.v>.5)continue;
+    const ins=[];DS.forEach(d=>{for(let n=1;n<d;n++)if(gcd(n,d)===1&&n/d>lo.v+1e-9&&n/d<hi.v-1e-9&&d!==lo.d&&d!==hi.d)ins.push(iF(n,d))});
+    if(!ins.length)continue;const C=pick(ins);
+    const outs=[];DS.forEach(d=>{for(let n=1;n<d;n++)if(gcd(n,d)===1&&(n/d<lo.v-1e-9||n/d>hi.v+1e-9))outs.push(iF(n,d))});
+    const eqs=[2,3].map(k=>Math.random()<.5?iF(lo.n*k,lo.d*k):iF(hi.n*k,hi.d*k)).filter(x=>x.d<=24);
+    const wrong=[];const used=new Set([C.v]);
+    [pick(eqs),...shuffle(outs.filter(x=>x.v<lo.v)).slice(0,2),...shuffle(outs.filter(x=>x.v>hi.v)).slice(0,2)].forEach(x=>{if(x&&wrong.length<3&&!wrong.some(w=>w.n===x.n&&w.d===x.d)&&!(x.n===C.n&&x.d===C.d)){wrong.push(x)}});
+    if(wrong.length<3)continue;
+    const opts=shuffle([C,...wrong]),ids=['a','b','c','d'];
+    const all=[lo,hi,...opts],D=all.reduce((a,x)=>lcm(a,x.d),1);
+    const conv=x=>D<=60?`${x.h} = ${frac(x.n*D/x.d,D)}`:`${x.h} ≈ ${(x.v).toFixed(2).replace('.',',')}`;
+    return{kind:'choice',big:true,choices:opts.map((x,i)=>[ids[i],x.h]),ans:ids[opts.indexOf(C)],answerText:C.h,
+      text:`<span class="bg">${lo.h} &lt; ${BOX} &lt; ${hi.h}</span>`,
+      hint:`<p>Etsi murtoluku, joka on suurempi kuin ${lo.h} mutta pienempi kuin ${hi.h}.</p><p>Muuta luvut samannimisiksi${D<=60?` (nimittäjäksi ${D})`:''} tai desimaaliluvuiksi, niin niitä on helpompi verrata. Rajan kanssa yhtä suuri luku ei kelpaa.</p>`,
+      explain:`<p><b>${lo.h} &lt; ${C.h} &lt; ${hi.h}</b></p><ul class="wlist">${[lo,hi].map(x=>`<li>raja: ${conv(x)}</li>`).join('')}${opts.map(x=>`<li>${conv(x)}${x===C?' ✓':''}</li>`).join('')}</ul>`}}
+  return fracBetween(5)}
+function fracCmpGen(g){return(L,op,word)=>L===1?cmpGen(5)(3,op,word):L===2?cmpGen(6)(2,op,word):fracBetween(g)}
+for(const g of [5,6]){const i=GR[g].topics.findIndex(t=>t.id==='murto');GR[g].topics.splice(i+1,0,{id:'murtovert',name:'Murtolukujen vertailu',levels:['Kaksi murtolukua','Murtoluku vai desimaaliluku','Mikä sopii väliin?'],gen:fracCmpGen(g)})}
+
+/* yksikkömuunnokset */
+const USYS={
+  len:{u:{mm:1,cm:10,dm:100,m:1000,km:1e6},order:['mm','cm','dm','m','km'],p:{mm:'millimetriä',cm:'senttimetriä',dm:'desimetriä',m:'metriä',km:'kilometriä'},
+    icon:'<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="4" y="22" width="56" height="20" rx="2" fill="var(--sun)" stroke="var(--coin-edge)" stroke-width="1.5"/><path d="M10 22v9M16 22v5M22 22v9M28 22v5M34 22v9M40 22v5M46 22v9M52 22v5" stroke="var(--ink)" stroke-width="1.5"/></svg>'},
+  vol:{u:{ml:1,cl:10,dl:100,l:1000},order:['ml','cl','dl','l'],p:{ml:'millilitraa',cl:'senttilitraa',dl:'desilitraa',l:'litraa'},
+    icon:'<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M14 10h30l-2 46a3 3 0 0 1-3 3H19a3 3 0 0 1-3-3z" fill="var(--paper)" stroke="var(--soft)" stroke-width="2"/><path d="M15.4 30h27.2l-1.6 26a3 3 0 0 1-3 3H20a3 3 0 0 1-3-3z" fill="var(--glass)" opacity=".75"/><path d="M44 16h6a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4h-6" fill="none" stroke="var(--soft)" stroke-width="2.5"/><path d="M16 20h8M16 30h8M16 40h8M16 50h8" stroke="var(--ink)" stroke-width="1.5"/></svg>'},
+  mass:{u:{g:1,kg:1000,t:1e6},order:['g','kg','t'],p:{g:'grammaa',kg:'kilogrammaa',t:'tonnia'},
+    icon:`<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="13" r="6" fill="none" stroke="var(--ink)" stroke-width="3"/><path d="M16 22h32l8 34H8z" fill="var(--ink)" opacity=".85"/>${NUMTXT(32,47,14,'var(--paper)')}kg</text></svg>`},
+  money:{u:{snt:1,'€':100},order:['snt','€'],p:{snt:'senttiä','€':'euroa'},icon:()=>ICON.kolikot}};
+const dcnt=x=>{for(let d=0;d<7;d++){const m=x*10**d;if(Math.abs(Math.round(m)-m)<1e-7)return d}return 7};
+const unum=(x,u)=>{const d=u==='€'&&dcnt(x)>0?2:dcnt(x);let s=x.toFixed(d).replace('.',',');const[i,f]=s.split(',');return fmtInt(+i)+(f?','+f:'')};
+const uq=(x,u)=>`${unum(x,u)} ${u}`;
+const UCFG={
+  2:[{pairs:[['money','€','snt'],['len','m','cm']],fr:[1,9]},{mixed:[['len','m','cm'],['money','€','snt']]},{pairs:[['vol','l','dl'],['mass','kg','g'],['money','snt','€'],['len','cm','m']],fr:[1,9],rev:true}],
+  3:[{pairs:[['len','m','cm'],['len','cm','mm'],['vol','l','dl'],['mass','kg','g'],['money','€','snt'],['len','km','m']],fr:[2,15]},{pairs:[['len','cm','m'],['len','mm','cm'],['vol','dl','l'],['mass','g','kg'],['money','snt','€'],['len','m','km']],fr:[1,9],rev:true},{mixed:[['len','m','cm'],['vol','l','dl'],['money','€','snt'],['mass','kg','g'],['len','km','m']]}],
+  4:[{pairs:[['len','dm','cm'],['len','m','dm'],['vol','l','cl'],['vol','dl','cl'],['len','cm','dm'],['vol','cl','dl']],fr:[1,40],any:true},{pairs:[['len','cm','m'],['vol','dl','l'],['money','snt','€'],['mass','g','kg'],['len','mm','cm']],dTo:2},{pairs:[['len','km','m'],['len','m','cm'],['vol','l','dl'],['mass','kg','g'],['money','€','snt']],dFrom:2}],
+  5:[{pairs:[['len','m','cm'],['len','cm','m'],['vol','l','dl'],['vol','dl','l'],['mass','kg','g'],['mass','g','kg'],['len','km','m'],['len','m','km']],dFrom:2,dTo:3},{pairs:[['len','mm','m'],['len','m','mm'],['vol','ml','l'],['vol','l','ml'],['vol','ml','dl'],['len','cm','km']],dFrom:2,dTo:3},{sum:true}],
+  6:[{pairs:[['len','mm','m'],['vol','ml','l'],['vol','cl','l'],['mass','g','kg'],['len','m','km'],['len','cm','km']],dFrom:1,dTo:3},{pairs:[['mass','kg','t'],['mass','t','kg'],['vol','ml','dl'],['vol','cl','ml'],['len','dm','km'],['len','km','cm']],dFrom:2,dTo:3},{sum:true}]};
+const USTO={len:[[1000,7000,(F,K)=>`${K.n} hyppäsi pituutta ${F}.`],[300000,6000000,F=>`Koulumatka on ${F}.`],[100,20000,F=>`Naru on ${F} pitkä.`],[50,250,F=>`Kynä on ${F} pitkä.`],[500,3000,F=>`Pöytä on ${F} pitkä.`],[2000000,20000000,(F,K)=>`${K.n} pyöräili ${F}.`]],
+  vol:[[200,3000,F=>`Kannussa on ${F} mehua.`],[3000,15000,F=>`Ämpäriin mahtuu ${F} vettä.`],[100,400,F=>`Lasissa on ${F} maitoa.`],[100000,300000,F=>`Kylpyammeeseen mahtuu ${F} vettä.`],[5,20,F=>`Lääkelusikkaan mahtuu ${F}.`]],
+  mass:[[2000,7000,F=>`Kissa painaa ${F}.`],[500,2000,F=>`Jauhopussi painaa ${F}.`],[80,300,F=>`Omena painaa ${F}.`],[800000,2500000,F=>`Auto painaa ${F}.`],[10,50,F=>`Kirje painaa ${F}.`],[5000000,40000000,F=>`Rekan kuorma painaa ${F}.`]],
+  money:[[150,600,F=>`Jäätelö maksaa ${F}.`],[10000,80000,F=>`Polkupyörä maksaa ${F}.`],[100,400,F=>`Karkkipussi maksaa ${F}.`],[100,10000,(F,K)=>`${K.ll} on säästössä ${F}.`]]};
+function unitStory(sys,F,toU,K,base){const ok=USTO[sys].filter(([a,b])=>base>=a&&base<=b);if(!ok.length)return null;
+  return `${pick(ok)[2](F,K)} Montako ${USYS[sys].p[toU]} se on?`}
+function ladder(sys,a,b){const U=USYS[sys],o=U.order;let s='<div class="seq">';
+  o.forEach((u,i)=>{if(i){const f=U.u[u]/U.u[o[i-1]];s+=`<span class="sdiff">· ${fmtInt(f)}</span>`}s+=`<span class="stile${u===a||u===b?' hl':''}">${u}</span>`});return s+'</div><p class="ladtxt">Oikealle mentäessä yksikkö kasvaa. Isommasta pienempään kerrotaan, pienemmästä isompaan jaetaan.</p>'}
+function convHint(sys,fu,tu,x){const U=USYS[sys],r=U.u[fu]/U.u[tu];
+  const k=r>=1?r:1/r,z=Math.round(Math.log10(k));
+  return `<p>1 ${r>=1?fu:tu} = ${fmtInt(k)} ${r>=1?tu:fu}. ${r>=1?`Muutat isommasta pienempään yksikköön, joten kerro luvulla ${fmtInt(k)}.`:`Muutat pienemmästä isompaan yksikköön, joten jaa luvulla ${fmtInt(k)}.`}</p>${Number.isInteger(z)&&10**z===k?`<p>Pilkku siirtyy ${z} ${z===1?'paikan':'paikkaa'} ${r>=1?'oikealle':'vasemmalle'}.</p>`:''}${ladder(sys,fu,tu)}`}
+function unitGen(g){return(L,op,word)=>{const C=UCFG[g][L-1],[K]=two();
+  const icon=s=>{const i=USYS[s].icon;return typeof i==='function'?i():i};
+  if(C.mixed){const[sys,big,small]=pick(C.mixed),U=USYS[sys],r=U.u[big]/U.u[small];
+    const a=R(1,g===2?3:9),b=R(1,r-1>99?999:r-1),ans=a*r+b,F=`${a} ${big} ${b} ${small}`;const st=word?unitStory(sys,F,small,K,ans*U.u[small]):null;if(word&&!st)return unitGen(g)(L,op,word);
+    return{kind:'int',visual:`<span class="uicon">${icon(sys)}</span>`,story:st,text:word?null:`<span class="bg">${F} = ${BOX} ${small}</span>`,unit:small,ans,answerText:`${fmtInt(ans)} ${small}`,
+      hint:`<p>Muuta ensin ${a} ${big} ${small}-yksiköiksi: ${a} · ${fmtInt(r)} = ${fmtInt(a*r)} ${small}. Lisää sitten ${b} ${small}.</p>${ladder(sys,big,small)}`,
+      explain:`<p><b>${F} = ${fmtInt(ans)} ${small}</b></p><p>${a} · ${fmtInt(r)} + ${b} = ${fmtInt(ans)}</p>`}}
+  if(C.sum){for(let t=0;t<200;t++){const sys=pick(g===5?['len','vol','mass']:['len','vol','mass','money']),o=USYS[sys].order.filter(u=>sys!=='mass'||g===6||u!=='t');
+      const[u1,u2]=shuffle(o).slice(0,2),f1=USYS[sys].u[u1],f2=USYS[sys].u[u2];if(Math.max(f1,f2)/Math.min(f1,f2)>1000)continue;
+      const tu=pick([u1,u2]),x1=R(1,99)/10**R(0,1),x2=R(1,99)/10**R(0,1),tot=(x1*f1+x2*f2)/USYS[sys].u[tu];
+      const b1=x1*f1,b2=x2*f2;if(dcnt(tot)>3||dcnt(b1)>0||dcnt(b2)>0||Math.max(b1,b2)/Math.min(b1,b2)>20)continue;
+      const F=`${uq(x1,u1)} + ${uq(x2,u2)}`;
+      const B=x1*f1+x2*f2,A1=uq(x1,u1),A2=uq(x2,u2),vt=` Vastaa yksikössä ${tu}.`;
+      const story=word?{len:B>=100000?`${K.n} käveli ensin ${A1} ja sitten vielä ${A2}. Kuinka pitkän matkan hän käveli yhteensä?${vt}`:`${K.n} liimasi yhteen kaksi paperinauhaa, joiden pituudet ovat ${A1} ja ${A2}. Kuinka pitkä nauhasta tuli?${vt}`,
+        vol:B<=2000?`${K.n} joi ${A1} maitoa ja ${A2} mehua. Paljonko hän joi yhteensä?${vt}`:`Ämpäriin kaadetaan ensin ${A1} ja sitten ${A2} vettä. Paljonko vettä ämpärissä on?${vt}`,
+        mass:B<300?`Taikinaan laitetaan ${A1} sokeria ja ${A2} voita. Paljonko niitä on yhteensä?${vt}`:B<=20000?`Kassissa on ${A1} omenoita ja ${A2} perunoita. Paljonko kassi painaa yhteensä?${vt}`:`Kuorma-autoon lastataan ${A1} ja ${A2} tavaraa. Paljonko kuorma painaa yhteensä?${vt}`,
+        money:`${K.n} ostaa kirjan hintaan ${A1} ja kortin hintaan ${A2}. Paljonko hän maksaa yhteensä?${vt}`}[sys]:null;
+      const ou=tu===u1?u2:u1,ox=tu===u1?x2:x1,oc=ox*USYS[sys].u[ou]/USYS[sys].u[tu];
+      return{kind:'dec',visual:`<span class="uicon">${icon(sys)}</span>`,story,text:word?null:`<span class="bg">${F} = ${BOX} ${tu}</span>`,unit:tu,ans:tot,answerText:uq(tot,tu),
+        hint:`<p>Muuta ensin molemmat samaan yksikköön (${tu}). Laske sitten yhteen.</p>${convHint(sys,ou,tu,ox)}`,
+        explain:`<p><b>${F} = ${uq(tot,tu)}</b></p><p>${uq(ox,ou)} = ${uq(oc,tu)}, joten ${unum(tu===u1?x1:x2,tu)} + ${unum(oc,tu)} = ${unum(tot,tu)}.</p>`}}}
+  for(let t=0;t<300;t++){const[sys,fu,tu]=pick(C.pairs),U=USYS[sys],ff=U.u[fu],ft=U.u[tu];
+    let x;if(C.fr){x=R(...C.fr);if(C.rev)x=x*ff>=ft?x*ft/ff:x}else if(C.any)x=R(1,40);else{const dF=R(0,C.dFrom||0);x=R(1,g>=5?999:99)/10**dF;if(C.dTo&&!C.dFrom)x=R(1,ff<ft?ft/ff*9:99)}
+    if(C.rev){x=R(1,9)*ft/ff;if(g>=3&&Math.random()<.4)x=R(10,99)*ft/ff}
+    const y=x*ff/ft;if(!(x>0)||dcnt(y)>(C.dTo!=null?C.dTo:0)||dcnt(x)>(C.dFrom||0)||y>1e6)continue;
+    if(sys==='money'&&(dcnt(x)>0&&fu==='snt'||dcnt(y)>2))continue;
+    const F=uq(x,fu),st=word?unitStory(sys,F,tu,K,x*ff):null;if(word&&!st)continue;
+    return{kind:dcnt(y)?'dec':'int',visual:`<span class="uicon">${icon(sys)}</span>`,story:st,text:word?null:`<span class="bg">${F} = ${BOX} ${tu}</span>`,unit:tu,ans:y,answerText:uq(y,tu),
+      hint:convHint(sys,fu,tu,x),explain:`<p><b>${F} = ${uq(y,tu)}</b></p><p>${unum(x,fu)} ${ff>ft?'·':':'} ${fmtInt(ff>ft?ff/ft:ft/ff)} = ${unum(y,tu)}</p>`}}
+  return word?unitGen(g)(L,op,false):unitGen(g)(1,op,word)}}
+const ULV={2:['Eurot ja metrit','Kaksi yksikköä','Litrat ja kilot'],3:['Isosta pieneen','Pienestä isoon','Kaksi yksikköä'],4:['Lähiyksiköt','Desimaaliksi','Desimaaleista'],5:['Desimaaliluvut','Kahden askeleen muunnokset','Yhteenlasku eri yksiköillä'],6:['Desimaaliluvut','Tonnit ja millilitrat','Yhteenlasku eri yksiköillä']};
+for(const g of [2,3,4,5,6])GR[g].topics.push({id:'yksikot',fam:'mit',name:'Yksikkömuunnokset',levels:ULV[g],gen:unitGen(g)});
+
+/* ---------- tila ---------- */
+const KEY='laskupolku-v1';
+let S={grade:1,topic:{},op:'+',fam:'add',type:'perus',stars:0,prog:{}};
+try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&typeof s==='object')S={...S,...s}}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+let RND=null;const MIX=()=>S.op==='mix'&&RND;
+const fam=()=>MIX()?RND.fam:S.fam==='cmp'||S.fam==='mit'?S.fam:S.grade===1?'add':(S.fam||'add');
+const tlist=()=>GR[S.grade].topics.filter(t=>(t.fam||'add')===fam());
+const PUZ_LEVELS=['Kaksi kuvaa','Kolme kuvaa','Rivit sekaisin'];
+const TYPES={perus:'Perustehtävät',sov:'Sanalliset tehtävät',pulma:'Kuvapulmat',sana:'Päättelytehtävät'};
+const typesFor=f=>f==='cmp'?['perus']:f==='mit'?['perus','sov']:['perus','sov','pulma','sana'];
+const typ=()=>MIX()?RND.type:typesFor(fam()).includes(S.type)?S.type:'perus';
+const cur=()=>{if(typ()==='sana')return{id:'sana-'+fam(),name:'Päättelytehtävät',levels:['Kaksi henkilöä','Kolme henkilöä','Tieto vasta lopussa'],gen:wordPuzzleGen(S.grade)};if(typ()==='pulma')return{id:'pulma-'+fam(),name:'Kuvapulmat',levels:PUZ_LEVELS,gen:puzzleGen(S.grade)};const l=tlist();return l.find(t=>t.id===(MIX()?RND.topic:S.topic[S.grade+fam()]))||l[0]};
+const prog=()=>{const k=S.grade+'-'+cur().id;return S.prog[k]||(S.prog[k]={level:1,streak:0,fails:0})};
+
+const $=s=>document.querySelector(s);
+function chips(el,items,active){if(el.disabled){el.innerHTML='<option value=""></option>';return}el.innerHTML=items.map(([v,l])=>`<option value="${v}"${v===active?' selected':''}>${l}</option>`).join('')}
+document.addEventListener('change',e=>{const t=e.target;if(!t.dataset||!t.dataset.sel)return;const v=t.value;
+  if(t.dataset.sel==='op'){S.op=v;if(v==='+'||v==='-')S.fam='add';else if(v==='cmp'||v==='mit')S.fam=v;else if(v!=='mix')S.fam='mul'}
+  else if(t.dataset.sel==='topic')S.topic[S.grade+fam()]=v;else S.type=v;
+  renderControls();newProblem();save()});
+function renderControls(){
+  $('#grades').innerHTML=[1,2,3,4,5,6].map(g=>`<button type="button" class="grade" data-grade="${g}" aria-pressed="${g===S.grade}" aria-label="${g}. luokka"><b>${g}.</b><small>luokka</small></button>`).join('');
+  const g=GR[S.grade];if(S.grade===1&&(S.op==='*'||S.op==='/'))S.op='+';
+  if(S.op==='mix'){$('#goal').innerHTML='<b>Sattuma:</b> tehtävät tulevat satunnaisesti kaikista laskuista, aiheista ja tehtävätyypeistä. Tehtävän aihe näkyy sen yläreunassa.';
+    $('#types').disabled=true;chips($('#types'),[['x','Satunnainen']],'x');$('#topics').disabled=true;chips($('#topics'),[['x','Satunnainen']],'x');
+    chips($('#ops'),[['+','Yhteenlasku'],['-','Vähennyslasku'],...(S.grade>1?[['*','Kertolasku'],['/','Jakolasku']]:[]),['cmp','Jonot'],['mit','Mittaaminen'],['mix','Sattuma']],S.op,'op');$('#starN').textContent=S.stars;return}
+  $('#goal').innerHTML=fam()==='mul'?GOALM[S.grade]:fam()==='cmp'?GOALC[S.grade].replace(/\.$/,' sekä kuviojonot.'):fam()==='mit'?GOALMIT[S.grade]+(S.grade>=2?' Lisäksi yksikkömuunnokset: pituus, tilavuus, massa ja raha.':''):g.goal;
+  const l=tlist(),noTopic=typ()==='pulma'||typ()==='sana';
+  if(noTopic){$('#topics').disabled=true;chips($('#topics'),[['x','Kaikki laskut sekaisin']],'x')}
+  else{$('#topics').disabled=l.length<2;chips($('#topics'),l.map(t=>[t.id,t.name]),cur().id,'topic')}
+  chips($('#ops'),[['+','Yhteenlasku'],['-','Vähennyslasku'],...(S.grade>1?[['*','Kertolasku'],['/','Jakolasku']]:[]),['cmp','Jonot'],['mit','Mittaaminen'],['mix','Sattuma']],S.op,'op');
+  const ty=typesFor(fam());$('#types').disabled=ty.length<2;chips($('#types'),ty.map(k=>[k,TYPES[k]]),typ(),'type');
+  $('#starN').textContent=S.stars}
+
+/* ---------- tehtävä ---------- */
+let P=null,tries=0,done=false;
+const FAMN={add:'Yhteen- ja vähennyslasku',mul:'Kerto- ja jakolasku',cmp:'Jonot',mit:'Mittaaminen'};
+function newProblem(keep){
+  if(S.op==='mix'&&!(keep&&RND)){const f=pick(['add',...(S.grade>1?['mul']:[]),'cmp','mit']);RND={fam:f,type:'perus',topic:null};
+    RND.type=pick(typesFor(f));RND.topic=pick(tlist()).id}
+  const t=cur(),pr=prog();const op=S.op==='mix'?pick(fam()==='mul'?['*','/']:fam()==='cmp'?['cmp']:fam()==='mit'?['mit']:['+','-']):S.op;
+  P=t.gen(pr.level,op,typ()==='sov');P.opUsed=op;tries=0;done=false;draw()}
+function answerHTML(){
+  if(P.kind==='col'){const L=P.L,isC=i=>L.D&&i===L.I,rng=[...Array(L.N).keys()];
+    const cells=a=>rng.map(i=>`<td class="${isC(i)?'cm':''}">${a[i]}</td>`).join('');
+    return `<div class="calc-wrap"><table class="calc" aria-label="Allekkainlasku"><tbody>
+      <tr class="carry"><td class="sg"></td>${rng.map(i=>isC(i)?'<td class="cm"></td>':i===L.N-1?'<td></td>':`<td><input class="ci" id="c${i}" data-i="${i}" inputmode="none" maxlength="2" autocomplete="off" aria-label="Muistinumero"></td>`).join('')}</tr>
+      <tr><td class="sg"></td>${cells(L.a)}</tr>
+      <tr><td class="sg">${OPS[P.op]}</td>${cells(L.b)}</tr>
+      ${[...Array(P.partials||0).keys()].map(r=>`<tr class="pr${r===0?' first':''}"><td class="sg"></td>${rng.map(i=>`<td><input class="pi" id="p${r}_${i}" data-r="${r}" data-i="${i}" inputmode="none" maxlength="1" autocomplete="off" aria-label="Välitulos"></td>`).join('')}</tr>`).join('')}
+      <tr class="res"><td class="sg">${P.partials?'+':''}</td>${rng.map(i=>isC(i)?'<td class="cm">,</td>':`<td><input class="ri" id="r${i}" data-i="${i}" inputmode="none" maxlength="1" autocomplete="off" aria-label="Vastauksen numero"></td>`).join('')}</tr>
+    </tbody></table></div>`}
+  if(P.kind==='choice')return `<div class="choices${P.big?' big':''}${P.pics?' pics':''}" role="group" aria-label="Vastausvaihtoehdot">${P.choices.map(([v,l])=>`<button type="button" class="choice" data-choice="${v}">${l}</button>`).join('')}</div>`;
+  if(P.kind==='divr')return `<div class="answer"><input class="num" id="ans" inputmode="none" autocomplete="off" aria-label="Osamäärä">${P.qLabel?`<span class="unit">${P.qLabel}</span>`:''}<span class="unit">${P.rLabel||'jakojäännös'}</span><input class="num tb" id="rem" inputmode="none" autocomplete="off" aria-label="Jakojäännös"></div>`;
+  if(P.kind==='time')return `<div class="answer"><span class="unit">kello</span><input class="num tb" id="th" inputmode="none" autocomplete="off" aria-label="Tunnit"><span class="unit">.</span><input class="num tb" id="tm" inputmode="none" autocomplete="off" aria-label="Minuutit" placeholder="00"></div>${P.m12?'':'<p class="inst"><span>Käytä 24 tunnin kelloa, esimerkiksi 18.05.</span></p>'}`;
+  if(P.kind==='dur')return `<div class="answer"><input class="num tb" id="th" inputmode="none" autocomplete="off" aria-label="Tunnit"><span class="unit">h</span><input class="num tb" id="tm" inputmode="none" autocomplete="off" aria-label="Minuutit"><span class="unit">min</span></div>`;
+  if(P.kind==='frac')return `<div class="answer"><span class="fin"><input class="num" id="fn" inputmode="none" autocomplete="off" aria-label="Osoittaja"><span class="bar"></span><input class="num" id="fdn" inputmode="none" autocomplete="off" aria-label="Nimittäjä"></span></div>`;
+  return `<div class="answer"><input class="num" id="ans" inputmode="none" autocomplete="off" aria-label="Vastaus">${P.unit?`<span class="unit">${P.unit}</span>`:''}</div>`}
+function draw(){const t=cur(),pr=prog();
+  $('#sheet').innerHTML=`
+    ${S.op==='mix'?`<p class="mixlbl">${typ()==='pulma'||typ()==='sana'?TYPES[typ()]:`${FAMN[fam()]} · ${t.name}${typ()==='sov'?' · sanallinen':''}`}</p>`:''}
+    <div class="status">
+      <div class="levels" role="group" aria-label="Taso"><span class="stlbl">Taso</span>${[1,2,3].map(l=>`<button type="button" class="lv" data-level="${l}" aria-pressed="${l===pr.level}" aria-label="Taso ${l}">${l}</button>`).join('')}<span class="lvname">${(ln=>typeof ln==='object'?ln[P.opUsed]||ln['*']:ln)(t.levels[pr.level-1])}</span></div>
+      <div class="streak" id="streak">${streakHTML()}</div>
+    </div>
+    ${P.visual?`<div class="visual">${P.visual}</div>`:''}
+    ${P.story?`<div class="story">${P.storyIcon?`<span class="sicon" aria-hidden="true">${P.storyIcon}</span>`:''}<p>${P.story}</p></div>`:''}
+    ${P.text?`<div class="expr">${P.text}</div>`:''}
+    ${P.after||''}
+    ${P.kind==='col'?'<p class="inst"><span>Laske allekkain. Aloita oikealta.</span></p>':''}
+    ${answerHTML()}
+    ${keypad()}
+    <div class="actions">
+      <button type="button" class="btn" id="check"${P.kind==='choice'?' hidden':''}>Tarkista</button>
+      <button type="button" class="btn ghost" id="hintBtn">Vihje</button>
+      <button type="button" class="btn ghost" id="skip">Vaihda tehtävä</button>
+      <button type="button" class="btn next" id="next" hidden>Seuraava tehtävä →</button>
+    </div>
+    <div id="fb" hidden></div>
+    <div class="panel" id="hint" hidden><h3>Vihje</h3>${P.hint}</div>
+    <div class="panel explain" id="explain" hidden><h3>Näin se lasketaan</h3>${P.explain}</div>`;
+  const first=P.kind==='col'?document.getElementById('r'+(P.L.N-1)):document.querySelector('#ans,#fn,#th');
+  activeEl=first;if(first)first.focus({preventScroll:true})}
+function fb(msg,cls){const e=$('#fb');e.hidden=false;e.className='fb '+cls;e.innerHTML=msg}
+function evaluate(){
+  if(P.kind==='int'||P.kind==='dec'){const el=$('#ans');const s=el.value.replace(/[\s ]/g,'').replace(',','.').replace('−','-');
+    if(!s)return{empty:true};if(!/^-?(\d+\.?\d*|\.\d+)$/.test(s))return{bad:'Kirjoita vastaukseksi luku, esimerkiksi 12 tai 3,5.'};
+    const ok=Math.abs(parseFloat(s)-P.ans)<1e-9;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok);return{ok}}
+  if(P.kind==='choice'){if(P.sel==null)return{empty:true};const ok=P.sel===P.ans;document.querySelectorAll('.choice').forEach(b=>{b.classList.remove('ok','no');if(b.dataset.choice===P.sel)b.classList.add(ok?'ok':'no')});return{ok}}
+  if(P.kind==='divr'){const qs=$('#ans').value.trim(),rs=$('#rem').value.trim();if(!qs)return{empty:true};
+    if(!/^\d+$/.test(qs)||!/^\d*$/.test(rs))return{bad:'Kirjoita vastaukseen kokonaisluvut.'};
+    const ok=+qs===P.ans&&+(rs||0)===P.rem;['#ans','#rem'].forEach(s=>{$(s).classList.toggle('ok',ok);$(s).classList.toggle('no',!ok)});return{ok}}
+  if(P.kind==='time'||P.kind==='dur'){const hs=$('#th').value.trim(),ms=$('#tm').value.trim();if(!hs&&!ms)return{empty:true};
+    if(!/^\d*$/.test(hs)||!/^\d*$/.test(ms))return{bad:'Kirjoita tunnit ja minuutit numeroina.'};
+    const h=+(hs||0),m=+(ms||0);if(P.kind==='time'&&m>59)return{bad:'Minuutteja voi olla korkeintaan 59.'};
+    let ok;if(P.kind==='dur')ok=h*60+m===P.ans;else{const ah=Math.floor(P.ans/60),am=P.ans%60;ok=m===am&&(P.m12?h%12===ah%12:h===ah)}
+    ['#th','#tm'].forEach(s=>{$(s).classList.toggle('ok',ok);$(s).classList.toggle('no',!ok)});return{ok}}
+  if(P.kind==='frac'){const n=$('#fn').value.trim(),d=$('#fdn').value.trim();if(!n)return{empty:true};
+    if(!/^\d+$/.test(n)||(d&&!/^\d+$/.test(d)))return{bad:'Kirjoita osoittajaan ja nimittäjään kokonaisluvut.'};
+    const nn=+n,dd=d?+d:1;if(dd===0)return{bad:'Nimittäjä ei voi olla 0.'};
+    const ok=nn*P.ans.d===P.ans.n*dd;['#fn','#fdn'].forEach(s=>{$(s).classList.toggle('ok',ok);$(s).classList.toggle('no',!ok)});return{ok}}
+  const L=P.L,ins=[...document.querySelectorAll('.ri')],v={};ins.forEach(x=>v[+x.dataset.i]=x.value.trim());
+  if(ins.every(x=>!x.value.trim()))return{empty:true};
+  let ip='',seen=false,bad=false;for(let i=0;i<L.I;i++){const c=v[i];if(c===''){if(seen)bad=true}else{seen=true;ip+=c}}
+  let dp='';if(L.D){const ds=[];for(let i=L.I+1;i<L.N;i++)ds.push(v[i]);while(ds.length&&ds[ds.length-1]==='')ds.pop();if(ds.includes(''))bad=true;dp=ds.join('')}
+  if(bad||!/^\d*$/.test(ip+dp))return{bad:'Täytä ruudut ilman välejä. Kirjoita yksi numero jokaiseen ruutuun.'};
+  const num=parseFloat((ip||'0')+(dp?'.'+dp:''));const ok=Math.round(num*10**L.D)===L.ansU;
+  ins.forEach(x=>{const i=+x.dataset.i,e=L.r[i],c=x.value.trim();
+    const cellOk=ok?true:(c===e||(c===''&&e==='0'&&i>L.I)||(c==='0'&&e==='')||(c===''&&e===''));
+    x.classList.remove('ok','no');if(c!==''||e!=='')x.classList.add(cellOk?'ok':'no')});
+  return{ok}}
+const PRAISE=['Oikein!','Hienoa!','Mahtavaa!','Juuri niin!','Loistavaa!','Hyvin laskettu!'];
+function check(){if(done)return;const r=evaluate(),pr=prog();
+  if(r.empty){fb('Kirjoita ensin vastaus.','info');return}
+  if(r.bad){fb(r.bad,'info');return}
+  if(r.ok){done=true;S.stars++;pr.streak++;pr.fails=0;let msg=pick(PRAISE)+' Sait tähden.';
+    if(pr.streak>=3&&pr.level<3){pr.level++;pr.streak=0;msg+=` Siirryt tasolle ${pr.level}.`}
+    else if(pr.streak>=3){pr.streak=0;msg+=' Olet ylimmällä tasolla. Upeaa!'}
+    fb(msg,'good');const st=$('#stars');st.classList.remove('pop');void st.offsetWidth;st.classList.add('pop');$('#starN').textContent=S.stars;finish()}
+  else{tries++;
+    if(tries===1){fb('Ei vielä ihan. Tarkista vastaus tai katso vihje.','bad')}
+    else{done=true;pr.streak=0;pr.fails++;let msg=P.answerText?`Oikea vastaus on ${P.answerText}.`:'Oikea vaihtoehto on merkitty vihreällä.';if(P.kind==='choice'){const cb=document.querySelector(`.choice[data-choice="${P.ans}"]`);if(cb)cb.classList.add('ok')}
+      if(pr.fails>=2&&pr.level>1){pr.level--;pr.fails=0;msg+=' Harjoitellaan välillä vähän helpompia.'}
+      fb(msg,'bad');$('#explain').hidden=false;$('#hint').hidden=true;
+      if(P.kind==='col'&&(P.op==='+'||P.op==='*'))P.carries.forEach(x=>{const i=typeof x==='object'?x.i:x,v=typeof x==='object'?x.v:1;const c=document.getElementById('c'+i);if(c&&!c.value){c.value=String(v);c.classList.add('hinted')}});
+      finish()}}
+  updateStreak();save()}
+function finish(){const kp=$('.keypad');if(kp)kp.hidden=true;$('#check').hidden=true;$('#skip').hidden=true;$('#hintBtn').hidden=$('#hint').hidden;const n=$('#next');n.hidden=false;n.focus({preventScroll:true})}
+function streakHTML(){const pr=prog();
+  if(pr.level>=3)return `<span>Ylin taso</span>`;
+  return `<span>Seuraavalle tasolle:</span>${[0,1,2].map(i=>`<i class="${i<pr.streak?'on':''}"></i>`).join('')}<span class="sr">${3-pr.streak} oikein peräkkäin puuttuu</span>`}
+function updateStreak(){const e=$('#streak');if(e)e.innerHTML=streakHTML()}
+
+/* ---------- numeronäppäimistö ---------- */
+let activeEl=null;
+const BACK='<svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M9 5h11v14H9l-6-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 9l5 6M17 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+function keypad(){
+  if(P.kind==='choice')return '';
+  if(P.neg&&P.kind==='dec')return `<div class="keypad" role="group" aria-label="Numeronäppäimistö">${[1,2,3,4,5,6,7,8,9].map(n=>`<button type="button" class="key" data-key="${n}">${n}</button>`).join('')}<button type="button" class="key alt" data-key="neg" aria-label="Miinusmerkki">−</button><button type="button" class="key" data-key="0">0</button><button type="button" class="key" data-key="," aria-label="Pilkku">,</button><button type="button" class="key alt wide" data-key="back" aria-label="Pyyhi">${BACK}</button></div>`;
+  const last=P.neg?'<button type="button" class="key alt" data-key="neg" aria-label="Miinusmerkki">−</button>':P.kind==='dec'?'<button type="button" class="key" data-key="," aria-label="Pilkku">,</button>'
+    :P.kind==='frac'?'<button type="button" class="key alt" data-key="swap" aria-label="Vaihda osoittajan ja nimittäjän välillä">↕</button>'
+    :(P.kind==='time'||P.kind==='dur'||P.kind==='divr')?'<button type="button" class="key alt" data-key="swap" aria-label="Seuraava ruutu">→</button>':'<span></span>';
+  return `<div class="keypad" role="group" aria-label="Numeronäppäimistö">${[1,2,3,4,5,6,7,8,9].map(n=>`<button type="button" class="key" data-key="${n}">${n}</button>`).join('')}${last}<button type="button" class="key" data-key="0">0</button><button type="button" class="key alt" data-key="back" aria-label="Pyyhi">${BACK}</button></div>`}
+function pressKey(k){if(done)return;
+  let el=activeEl&&document.body.contains(activeEl)?activeEl:null;
+  if(!el)el=P.kind==='col'?document.getElementById('r'+(P.L.N-1)):document.querySelector('#ans,#fn,#th');
+  if(!el)return;
+  const fire=()=>el.dispatchEvent(new Event('input',{bubbles:true}));
+  if(k==='swap'){const f=[...document.querySelectorAll('.answer .num')];el=f[(f.indexOf(el)+1)%f.length]}
+  else if(k==='back'){
+    if(el.classList.contains('ri')&&!el.value){let j=+el.dataset.i+1;if(P.L.D&&j===P.L.I)j++;const n=document.getElementById('r'+j);if(n)el=n}
+    el.value=el.value.slice(0,-1);el.classList.remove('ok','no');if(!el.classList.contains('ri'))fire()}
+  else if(k==='neg'){if(el.id==='ans'){el.value=el.value.startsWith('−')||el.value.startsWith('-')?el.value.slice(1):'−'+el.value;fire()}}
+  else if(k===','){if(el.id==='ans'&&!el.value.includes(','))el.value+=(el.value?'':'0')+',';}
+  else if(el.classList.contains('ri')||el.classList.contains('ci')||el.classList.contains('pi')){el.value=k;fire();if(!el.classList.contains('ci'))return}
+  else if(el.classList.contains('tb')){if(el.value.length<2){el.value+=k;fire()}if(el.id==='th'&&el.value.length===2)el=$('#tm')}
+  else if(el.value.replace(/\D/g,'').length<9){el.value+=k;fire()}
+  activeEl=el;el.focus({preventScroll:true})}
+document.addEventListener('focusin',e=>{if(e.target.matches('.num,.ri,.ci,.pi'))activeEl=e.target});
+document.addEventListener('pointerdown',e=>{if(e.target.closest('.key'))e.preventDefault()});
+document.addEventListener('mousedown',e=>{if(e.target.closest('.key'))e.preventDefault()});
+
+/* ---------- tapahtumat ---------- */
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.help){const h=$('#pzh');h.hidden=!h.hidden;b.setAttribute('aria-expanded',String(!h.hidden));b.setAttribute('aria-label',h.hidden?'Näytä ohje':'Piilota ohje');return}
+  if(b.dataset.turn){const f=$('#sheet .visual .arr'),ex=$('#sheet .ex');if(!f||!ex)return;const t=f.classList.toggle('tr'),A=+f.dataset.a,B=+f.dataset.b;ex.textContent=t?`${B} · ${A}`:`${A} · ${B}`;return}
+  if(b.dataset.grade){S.grade=+b.dataset.grade;renderControls();newProblem();save()}
+  else if(b.dataset.topic){S.topic[S.grade+fam()]=b.dataset.topic;renderControls();newProblem();save()}
+  else if(b.dataset.op){S.op=b.dataset.op;if(S.op==='+'||S.op==='-')S.fam='add';else if(S.op==='cmp')S.fam='cmp';else if(S.op!=='mix')S.fam='mul';renderControls();newProblem();save()}
+  else if(b.dataset.type){S.type=b.dataset.type;renderControls();newProblem();save()}
+  else if(b.dataset.level){const pr=prog();pr.level=+b.dataset.level;pr.streak=0;pr.fails=0;newProblem(true);save()}
+  else if(b.dataset.choice!=null){if(done)return;P.sel=b.dataset.choice;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));check()}
+  else if(b.dataset.key)pressKey(b.dataset.key);
+  else if(b.id==='check')check();
+  else if(b.id==='hintBtn'){const h=$('#hint');h.hidden=!h.hidden;b.textContent=h.hidden?'Vihje':'Piilota vihje'}
+  else if(b.id==='next'||b.id==='skip')newProblem()});
+document.addEventListener('keydown',e=>{const t=e.target;
+  if(e.key==='Enter'&&t.matches('input')){e.preventDefault();if(done)newProblem();else check();return}
+  if(!t.classList||!t.classList.contains('ri'))return;
+  const i=+t.dataset.i,go=j=>{let k=j;if(P.L.D&&k===P.L.I)k+=(j>i?1:-1);const el=document.getElementById('r'+k);if(el){el.focus();el.select()}};
+  if(e.key==='Backspace'&&!t.value){e.preventDefault();go(i+1)}
+  else if(e.key==='ArrowLeft'){e.preventDefault();go(i-1)}
+  else if(e.key==='ArrowRight'){e.preventDefault();go(i+1)}});
+document.addEventListener('input',e=>{const t=e.target;
+  if(t.classList.contains('ri')){t.value=t.value.replace(/\D/g,'').slice(-1);t.classList.remove('ok','no');
+    if(t.value){let k=+t.dataset.i-1;if(P.L.D&&k===P.L.I)k--;const el=document.getElementById('r'+k);if(el){el.focus();el.select()}}}
+  else if(t.classList.contains('pi')){t.value=t.value.replace(/\D/g,'').slice(-1);if(t.value){const el=document.getElementById(`p${t.dataset.r}_${+t.dataset.i-1}`);if(el){el.focus();el.select()}}}
+  else if(t.classList.contains('ci')){t.value=t.value.replace(/[^\d−-]/g,'').slice(0,2);t.classList.remove('hinted')}
+  else if(t.matches('.num'))t.classList.remove('ok','no')});
+
+renderControls();newProblem();
+</script>
+
+</body>
+</html>
