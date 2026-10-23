@@ -4,11 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>*,*::before,*::after{box-sizing:border-box}html{-webkit-text-size-adjust:100%}:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>@font-face{font-family:"Baloo 2";src:url("Baloo2-VariableFont_wght.ttf") format("truetype");font-weight:400 800;font-display:swap}@font-face{font-family:"Nunito";src:url("Nunito-VariableFont_wght.ttf") format("truetype");font-weight:200 1000;font-display:swap}</style>
 <title>Laskupolku</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
 <style>
 /* Layout: one-column workbook — grade tabs, choice chips, then a squared-paper task sheet (ruutuvihko) */
 :root{
@@ -18,8 +16,8 @@
   --apple:#DE3E2D; --orange:#F08B17; --pear:#86B52A; --berry:#E0335C; --leaf:#3B9637; --stem:#7A4B2A; --seed:#FFE7A0;
   --cake:#F28AB3; --cake-edge:#CF5E8B; --plate:#E7ECF5;
   --coin:#E8B42C; --coin-edge:#7A5408; --note:#2F8F55; --glass:#4FA9C2; --candy:#9B55D0; --blk:#3A76DB; --blk2:#6A9BEA;
-  --display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
-  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --display:"Baloo 2",ui-rounded,"SF Pro Rounded","Arial Rounded MT Bold","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0E1525; --paper:#162036; --grid:#202D47; --ink:#E6ECF7; --soft:#9CA8C1; --line:#2E3C5B;
@@ -288,6 +286,21 @@ table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;f
 .simnote{margin:0;font-size:.82rem;color:var(--soft)}
 .simtot{margin:0;color:var(--soft);font-weight:700;font-size:.9rem}
 @media (prefers-reduced-motion:reduce){.sbv{transition:none}}
+.bchart{width:100%;max-width:420px;height:auto;display:block;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.bchart.sm{max-width:150px;border:none;background:none}
+.pie{width:100%;max-width:300px;height:auto;display:block;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.choices.charts{display:grid;grid-template-columns:repeat(3,minmax(0,160px));gap:8px}
+.choices.charts .choice{padding:4px;min-width:0}
+.pchart{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;width:100%;max-width:440px}
+.prow{display:flex;align-items:center;gap:8px}
+.plab{flex:0 0 90px;font-weight:800;font-size:.95rem}
+.picons{display:flex;flex-wrap:wrap;gap:2px;flex:1;min-width:0}
+.picons .fr{width:24px;height:24px}
+.half{display:inline-block;width:12px;overflow:hidden}
+.pkey{margin:4px 0 0;font-size:.85rem;color:var(--soft);font-weight:700;display:flex;align-items:center;gap:4px}
+.pkey .fr{width:18px;height:18px}
+.dtab{border-collapse:collapse;margin:0 auto;background:var(--paper);font-weight:800}
+.dtab th,.dtab td{border:1px solid var(--line);padding:6px 10px;text-align:center}
 .kseq{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 .kseq{flex-wrap:nowrap}
 .ktile{flex:1 1 0;min-width:0;max-width:66px;aspect-ratio:1;display:grid;place-items:center;background:var(--paper);border:2px solid var(--line);border-radius:12px}
@@ -1021,7 +1034,7 @@ function thermoSVG(t,lo,hi){const top=22,bot=186,px=(bot-top)/(hi-lo),y=v=>bot-(
   return s}
 const thermoFig=(t,lo,hi,cap)=>opnd(thermoSVG(t,lo,hi),cap,cap+(t==null?'':': '+degF(t)));
 const CITIES=[['Utsjoella','Utsjoki'],['Rovaniemellä','Rovaniemi'],['Oulussa','Oulu'],['Kuopiossa','Kuopio'],['Tampereella','Tampere'],['Helsingissä','Helsinki'],['Turussa','Turku'],['Maarianhaminassa','Maarianhamina']];
-function thermoGen(g){return(L,op,word)=>{
+function thermoBase(g){return(L,op,word)=>{
   const M=g===3?15:g===4?25:30,h=Math.floor(M/2);
   const mode=op==='+'?'rise':op==='mit'?pick(['diff','diff','rise','drop']):pick(['diff','diff','drop']);
   if(mode==='diff'){let a,b;
@@ -1042,7 +1055,7 @@ function thermoGen(g){return(L,op,word)=>{
   let t0,k;
   if(mode==='rise'){if(L===1){t0=-R(1,h);k=R(-t0+1,-t0+h)}else if(L===2){t0=-R(2,M);k=R(1,M)}else{t0=R(-M,h);k=R(2,M)}}
   else{if(L===1){t0=R(1,h);k=R(t0+1,t0+h)}else if(L===2){t0=R(-h,M);k=R(1,M)}else{t0=R(-h,M);k=R(2,M)}}
-  const t1=mode==='rise'?t0+k:t0-k,[lo,hi]=thermoScale([t0,t1]);
+  const t1=mode==='rise'?t0+k:t0-k;if(Math.abs(t1)>M)return thermoBase(g)(L,op,word);const[lo,hi]=thermoScale([t0,t1]);
   const verb=mode==='rise'?'nousi':'laski',up=mode==='rise';
   const story=word?(up?pick([`Aamulla mittari näytti ${degF(t0)}. Päivän aikana lämpötila nousi ${k} astetta. Mikä oli lämpötila iltapäivällä?`,`Kun perhe saapui mökille, sisällä oli ${degF(t0)}. Takan lämmittäessä lämpötila nousi ${k} astetta. Mikä lämpötila mökissä oli sitten?`])
     :pick([`Illalla lämpötila oli ${degF(t0)}. Yön aikana lämpötila laski ${k} astetta. Mikä oli lämpötila aamulla?`,`Iltapäivällä mittari näytti ${degF(t0)}. Illaksi lämpötila laski ${k} astetta. Mikä oli lämpötila illalla?`])):null;
@@ -1084,14 +1097,14 @@ const GR={
   5:{goal:'<b>Lukualue 0–1 000 000</b> sekä yhteen- ja vähennyslasku desimaali- ja murtoluvuilla, myös laventaminen.',topics:[
     {id:'isot',name:'Isot luvut',levels:['Viisinumeroiset','Kuusinumeroiset','Paljon lainauksia ja nollia'],gen:g5Big},
     {id:'desimaalit',name:'Desimaaliluvut',levels:['Sadasosat','Tuhannesosat','Eri määrä desimaaleja'],gen:gDec(5)},
-    {id:'lampo',fam:'mit',name:'Lämpömittari',levels:['Pakkasesta plussalle','Nousut ja laskut','Isommat erot'],gen:thermoGen(5)},
+    {id:'lampo',fam:'mit',noWord:true,name:'Lämpömittari',levels:['Isommat erot','Desimaalilämpötilat','Monta muutosta'],gen:thermoGen(5)},
     {id:'murto',name:'Murtoluvut',levels:['Laventaminen','Isommat nimittäjät','Yli yhden kakun'],gen:g5Frac},
     {id:'m-isot',fam:'mul',name:'Isot luvut',levels:[{'*':'Kolminumeroinen · yksinumeroinen','/':'Kolminumeroinen jaettava'},{'*':'Kaksinumeroinen · kaksinumeroinen','/':'Nelinumeroinen jaettava'},{'*':'Kolminumeroinen · kaksinumeroinen','/':'Jakojäännös'}],gen:bigMulDiv(5)},
     {id:'m-desimaalit',fam:'mul',name:'Desimaaliluvut',levels:[{'*':'Kymmenesosat','/':'Kymmenesosat'},{'*':'Sadasosat','/':'Isommat luvut'},{'*':'Luvuilla 10, 100 ja 1000','/':'Luvuilla 10 ja 100'}],gen:decMulDiv(5)}]},
   6:{goal:'<b>Erinimisten murtolukujen</b> yhteen- ja vähennyslasku sekä desimaalilukujen laskutaidon vahvistaminen.',topics:[
     {id:'murto',name:'Erinimiset murtoluvut',levels:['Yksi pala kummastakin','Yksi kakku','Yli yhden kakun'],gen:g6Frac},
     {id:'desimaalit',name:'Desimaaliluvut',levels:['Eri määrä desimaaleja','Isommat luvut','Kokonaisluku ja desimaaliluku'],gen:gDec(6)},
-    {id:'lampo',fam:'mit',name:'Lämpömittari',levels:['Pakkasesta plussalle','Nousut ja laskut','Isommat erot'],gen:thermoGen(6)},
+    {id:'lampo',fam:'mit',noWord:true,name:'Lämpömittari',levels:['Desimaalilämpötilat','Monta muutosta','Keskilämpötila'],gen:thermoGen(6)},
     {id:'m-murto',fam:'mul',name:'Murtoluvut',levels:[{'*':'Tulos enintään yksi','/':'Osoittaja jakautuu tasan'},{'*':'Yli yhden kakun','/':'Pienemmät nimittäjät'},{'*':'Osa luvusta','/':'Isommat nimittäjät'}],gen:fracMulDiv},
     {id:'m-desimaalit',fam:'mul',name:'Desimaaliluvut',levels:[{'*':'Sadasosat','/':'Sadasosat'},{'*':'Kaksinumeroinen kerroin','/':'Isommat luvut'},{'*':'Desimaaliluku · desimaaliluku','/':'Luvuilla 10, 100 ja 1000'}],gen:decMulDiv(6)}]}
 };
@@ -1196,7 +1209,7 @@ function ruleText(r,dec){switch(r.type){case 'ar':return r.s>0?`Jokainen luku on
   case 'sq':return 'Luvut ovat neliölukuja: 1 · 1, 2 · 2, 3 · 3, …';case 'fib':return 'Jokainen luku on kahden edellisen luvun summa.';
   case 'alt':return `Vuorotellen lisätään ${r.p} ja vähennetään ${r.q}.`}}
 function seqGen(g){return(L,op,word)=>{
-  for(let t=0;t<50;t++){const{terms,rule,dec}=seqMake(g,L);
+  for(let t=0;t<50;t++){const mk=seqMake(g,L),{rule,dec}=mk;const LEN={ar:4,mul:4,div:4,sq:4,grow:5,grow2:5,fib:5,alt:6}[rule.type]||4;const terms=mk.terms.slice(0,LEN);
     const pos=L===1?pick(['last','last','mid','first']):pick(['last','mid','mid','first','first']);let miss=pos==='last'?terms.length-1:pos==='first'?0:(L===1?Math.floor((terms.length-1)/2):R(1,terms.length-2));if(rule.type==='fib'&&miss<2)miss=terms.length-1;
     const ans=terms[miss],neg=terms.some(x=>x<0);
     if(word&&rule.type==='ar'&&!dec){const s=rule.s,a=terms[0],n=terms.length-1,[K]=two();let story;
@@ -1642,6 +1655,121 @@ function pairGen(g){return(L)=>{SIM={counts:{},n:0,run:false};
   return pairGen(g)(1)}}
 for(const g of [5,6])GR[g].topics.push({id:'kaksipalloa',fam:'stat',name:'Kaksi palloa',levels:['Kumpi todennäköisempää?','Mikä todennäköisintä?','Todennäköisyys murtolukuna'],gen:pairGen(g)});
 
+/* lämpömittari 5.–6. luokka: desimaalit, monivaiheiset, keskilämpötila */
+const r1=x=>Math.round(x*10)/10;
+const degD=t=>{t=r1(t);const a=unum(Math.abs(t));return t<0?`−${a} °C`:t>0?`+${a} °C`:'0 °C'};
+const numD=t=>{t=r1(t);return (t<0?'−':'')+unum(Math.abs(t))};
+function thermoDec(word){const mode=pick(['diff','diff','rise','drop']);
+  if(mode==='diff'){let a=-R(5,150)/10,b=R(5,150)/10;if(Math.random()<.3)b=-R(5,Math.round(-a*10)-3)/10;if(Math.random()<.5)[a,b]=[b,a];
+    const d=r1(Math.abs(a-b)),[lo,hi]=thermoScale([a,b]),cold=Math.min(a,b),warm=Math.max(a,b);
+    return{kind:'dec',visual:`${thermoFig(a,lo,hi,'Aamulla')}${thermoFig(b,lo,hi,'Iltapäivällä')}`,story:`Aamulla lämpötila oli ${degD(a)}. Iltapäivällä mittari näytti ${degD(b)}. Kuinka monta astetta lämpötila ${b>a?'nousi':'laski'}?`,unit:'astetta',ans:d,answerText:`${unum(d)} astetta`,
+      hint:cold<0&&warm>0?`<p>Laske nollan kautta: ${degD(cold)} on ${unum(-cold)} astetta nollan alapuolella ja ${degD(warm)} ${unum(warm)} astetta nollan yläpuolella. Laske nämä yhteen.</p>`:`<p>Molemmat ovat pakkasella. Laske ${unum(-cold)} − ${unum(-warm)}.</p>`,
+      explain:`<p><b>Ero on ${unum(d)} astetta.</b></p>`}}
+  const t0=mode==='rise'?-R(10,150)/10:R(10,150)/10,k=R(20,250)/10,t1=r1(mode==='rise'?t0+k:t0-k),[lo,hi]=thermoScale([t0,t1]);
+  return{kind:'dec',neg:true,visual:`${thermoFig(t0,lo,hi,'Alussa')}<span class="note">${mode==='rise'?'Nousee':'Laskee'} ${unum(k)} astetta</span>`,
+    story:mode==='rise'?`Aamulla mittari näytti ${degD(t0)}. Päivän aikana lämpötila nousi ${unum(k)} astetta. Mikä oli lämpötila iltapäivällä?`:`Illalla lämpötila oli ${degD(t0)}. Yön aikana lämpötila laski ${unum(k)} astetta. Mikä oli lämpötila aamulla?`,
+    unit:'°C',ans:t1,answerText:degD(t1),hint:`<p>${mode==='rise'?'Nouse':'Laske'} ensin nollaan ja sitten loput. Jos vastaus on pakkasella, kirjoita alkuun miinusmerkki −.</p>`,
+    explain:`<p><b>${numD(t0)} ${mode==='rise'?'+':'−'} ${unum(k)} = ${numD(t1)}</b></p><div class="visual">${thermoFig(t1,lo,hi,'Lopussa')}</div>`}}
+function thermoMulti(g){for(let t=0;t<200;t++){
+  if(Math.random()<.35){const t1=R(-20,10),k=R(5,25),t0=t1+k,[lo,hi]=thermoScale([t0,t1]);if(t0<=0&&t1<0&&Math.random()<.5)continue;
+    return{kind:'int',neg:true,visual:`${thermoFig(t1,lo,hi,'Aamulla')}`,story:`Lämpötila laski yön aikana ${k} astetta. Aamulla mittari näytti ${degF(t1)}. Mikä oli lämpötila illalla?`,unit:'°C',ans:t0,answerText:degF(t0),
+      hint:'<p>Mene ajassa taaksepäin. Jos lämpötila laski yöllä, se oli illalla korkeampi kuin aamulla. Lisää siis lasku aamun lämpötilaan.</p>',
+      explain:`<p><b>${degN(t1)} + ${k} = ${degN(t0)}</b>, eli illalla oli ${degF(t0)}.</p><div class="visual">${thermoFig(t0,lo,hi,'Illalla')}</div>`}}
+  const t0=R(-15,10),up=Math.random()<.5,k1=R(4,18),k2=R(4,18),m=up?t0+k1:t0-k1,e=up?m-k2:m+k2;
+  if(Math.sign(t0)===Math.sign(m)&&Math.sign(m)===Math.sign(e))continue;if(Math.abs(e)>30||Math.abs(m)>30)continue;
+  const[lo,hi]=thermoScale([t0,m,e]);
+  return{kind:'int',neg:true,visual:`${thermoFig(t0,lo,hi,'Aamulla')}<span class="note">${up?'+':'−'}${k1} ja sitten ${up?'−':'+'}${k2}</span>`,
+    story:`Aamulla oli ${degF(t0)}. Päivällä lämpötila ${up?'nousi':'laski'} ${k1} astetta ja illalla ${up?'laski':'nousi'} ${k2} astetta. Mikä oli lämpötila illalla?`,unit:'°C',ans:e,answerText:degF(e),
+    hint:`<p>Laske vaihe kerrallaan. Ensin ${degN(t0)} ${up?'+':'−'} ${k1}. Sitten tuloksesta ${up?'−':'+'} ${k2}.</p><p>Jos vastaus on pakkasella, kirjoita alkuun miinusmerkki −.</p>`,
+    explain:`<p>${degN(t0)} ${up?'+':'−'} ${k1} = ${degN(m)}</p><p><b>${degN(m)} ${up?'−':'+'} ${k2} = ${degN(e)}</b></p><div class="visual">${thermoFig(e,lo,hi,'Illalla')}</div>`}}
+  return thermoMulti(g)}
+function barsNeg(vals,labels,mean){const n=vals.length,PW=n*40+40,EX=mean!=null?84:0,W=PW+EX,H=192,mx=Math.max(5,...vals.map(Math.abs),Math.abs(mean||0)),z=88,sc=60/mx,bw=26;
+  let s=`<svg class="bars" viewBox="0 0 ${W} ${H}" style="max-width:${W}px" aria-hidden="true"><path d="M20 ${z}H${PW}" stroke="var(--ink)" stroke-width="2"/><text x="16" y="${z+4}" text-anchor="end" font-size="11" font-weight="800" fill="var(--soft)" font-family="Nunito, sans-serif">0</text>`;
+  vals.forEach((v,i)=>{const x=30+i*40,h=Math.abs(v)*sc,y=v>=0?z-h:z;s+=`<rect x="${x}" y="${y.toFixed(1)}" width="${bw}" height="${Math.max(1,h).toFixed(1)}" rx="3" fill="${v<0?'var(--blue)':'var(--apple)'}" opacity=".85"/><text x="${x+bw/2}" y="${(v>=0?y-5:y+h+13).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="800" fill="var(--ink)" font-family="Nunito, sans-serif">${degN(v)}</text><text x="${x+bw/2}" y="${H-4}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--soft)" font-family="Nunito, sans-serif">${labels[i]}</text>`});
+  if(mean!=null){const y=z-mean*sc;s+=`<path d="M20 ${y.toFixed(1)}H${PW-4}" stroke="var(--sun)" stroke-width="2.5" stroke-dasharray="7 5"/><text x="${PW}" y="${(y+4).toFixed(1)}" font-size="11" font-weight="800" fill="var(--coin-edge)" font-family="Nunito, sans-serif">keskiarvo ${degN(mean)}</text>`}
+  return s+'</svg>'}
+function thermoAvg(){for(let t=0;t<300;t++){const n=pick([4,5,7]),vals=Array.from({length:n},()=>R(-12,10)),sum=vals.reduce((a,b)=>a+b,0);
+    if(sum%n||!vals.some(v=>v<0)||!vals.some(v=>v>0))continue;const m=sum/n,lab=n===7?DAYS:DAYS.slice(0,n);
+    return{kind:'int',neg:true,visual:barsNeg(vals,lab,null),story:`Lämpötila mitattiin ${n} päivänä samaan aikaan: ${vals.map(degF).join(', ').replace(/, ([^,]*)$/,' ja $1')}. Mikä oli keskilämpötila?`,unit:'°C',ans:m,answerText:degF(m),
+      hint:'<p>Laske ensin lämpötilat yhteen. Pakkasasteet pienentävät summaa: lisää plusasteet ja vähennä pakkasasteet.</p><p>Jaa summa päivien määrällä. Jos tulos on pakkasella, kirjoita alkuun miinusmerkki −.</p>',
+      explain:`<p>Summa: ${vals.map((v,i)=>i===0?degN(v):v<0?`− ${-v}`:`+ ${v}`).join(' ')} = ${degN(sum)}</p><p><b>${degN(sum)} : ${n} = ${degN(m)}</b></p><div class="visual">${barsNeg(vals,lab,m)}</div>`}}
+  return thermoAvg()}
+function thermoGen(g){const base=thermoBase(g);return(L,op,word)=>{
+  if(g===5)return L===1?base(3,op,word):L===2?thermoDec(word):thermoMulti(g);
+  if(g===6)return L===1?thermoDec(word):L===2?thermoMulti(g):thermoAvg();
+  return base(L,op,word)}}
+
+/* ---------- diagrammit ---------- */
+const DTHEME=[
+  {t:'Luokan oppilailta kysyttiin lempihedelmää.',u:'oppilasta',cats:FK.map(k=>({n:cap(FRUITS[k].nom),k}))},
+  {t:'Oppilailta kysyttiin, millä he tulevat kouluun.',u:'oppilasta',cats:[{n:'Kävellen'},{n:'Pyörällä'},{n:'Bussilla'},{n:'Autolla'}]},
+  {t:'Oppilailta kysyttiin lempiurheilulajia.',u:'oppilasta',cats:[{n:'Jalkapallo'},{n:'Uinti'},{n:'Hiihto'},{n:'Sähly'}]},
+  {t:'Diagrammi näyttää koulun kirjaston lainat viikonpäivittäin.',u:'lainaa',days:true,cats:[{n:'ma',l:'maanantaina'},{n:'ti',l:'tiistaina'},{n:'ke',l:'keskiviikkona'},{n:'to',l:'torstaina'},{n:'pe',l:'perjantaina'}]}];
+const dq=(c,th)=>th&&th.days?c.l:`vastasi ”${c.n.toLowerCase()}”`;
+const DCOL=['--apple','--blue','--sun','--good','--candy'];
+function barChart(cats,vals,step,max,small){const n=cats.length,W=small?150:Math.max(220,n*56+46),H=small?110:180,L=small?22:34,B=small?96:150,T=small?8:14,PW=W-L-6,bw=Math.min(small?18:34,PW/n-10),y=v=>B-(v/max)*(B-T);
+  let s=`<svg class="${small?'bchart sm':'bchart'}" viewBox="0 0 ${W} ${H}" aria-hidden="true">`;
+  for(let v=0;v<=max;v+=step){s+=`<path d="M${L} ${y(v).toFixed(1)}H${W-4}" stroke="var(--line)" stroke-width="${v?1:2}"/>`;if(!small||v===max||v===0)s+=`<text x="${L-4}" y="${(y(v)+4).toFixed(1)}" text-anchor="end" font-size="${small?9:11}" font-weight="700" fill="var(--soft)" font-family="Nunito, sans-serif">${v}</text>`}
+  cats.forEach((c,i)=>{const x=L+i*(PW/n)+(PW/n-bw)/2;s+=`<rect x="${x.toFixed(1)}" y="${y(vals[i]).toFixed(1)}" width="${bw.toFixed(1)}" height="${(B-y(vals[i])).toFixed(1)}" rx="3" fill="var(${DCOL[i%5]})"/>`;
+    if(!small)s+=`<text x="${(x+bw/2).toFixed(1)}" y="${B+16}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--ink)" font-family="Nunito, sans-serif">${c.n}</text>`});
+  return s+'</svg>'}
+function picChart(cats,vals,per){const icon=c=>c.k?fruitSVG(c.k,'n'):`<svg class="fr" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="var(--blue)"/><circle cx="12" cy="9.5" r="3.4" fill="var(--paper)"/><path d="M5.5 18.5c1.5-3 4-4 6.5-4s5 1 6.5 4" fill="var(--paper)"/></svg>`;
+  return `<div class="pchart">${cats.map((c,i)=>{const full=Math.floor(vals[i]/per),half=vals[i]%per?1:0;return `<div class="prow"><span class="plab">${c.n}</span><span class="picons">${icon(c).repeat(full)}${half?`<span class="half">${icon(c)}</span>`:''}</span></div>`}).join('')}<p class="pkey">${icon(cats[0])} = ${per} ${per===1?'oppilas':'oppilasta'}</p></div>`}
+function lineChart(labels,vals,step,max,unit){const n=labels.length,W=Math.max(240,n*46+50),H=180,L=34,B=150,T=14,x=i=>L+16+i*((W-L-44)/(n-1)),y=v=>B-(v/max)*(B-T);
+  let s=`<svg class="bchart" viewBox="0 0 ${W} ${H}" aria-hidden="true">`;for(let v=0;v<=max;v+=step)s+=`<path d="M${L} ${y(v).toFixed(1)}H${W-4}" stroke="var(--line)" stroke-width="${v?1:2}"/><text x="${L-4}" y="${(y(v)+4).toFixed(1)}" text-anchor="end" font-size="11" font-weight="700" fill="var(--soft)" font-family="Nunito, sans-serif">${v}</text>`;
+  s+=`<path d="${vals.map((v,i)=>`${i?'L':'M'}${x(i).toFixed(1)} ${y(v).toFixed(1)}`).join('')}" fill="none" stroke="var(--blue)" stroke-width="3" stroke-linejoin="round"/>`;
+  vals.forEach((v,i)=>{s+=`<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="4.5" fill="var(--paper)" stroke="var(--blue)" stroke-width="2.5"/><text x="${x(i).toFixed(1)}" y="${B+16}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--ink)" font-family="Nunito, sans-serif">${labels[i]}</text>`});
+  return s+`<text x="${L}" y="10" font-size="10" font-weight="700" fill="var(--soft)" font-family="Nunito, sans-serif">${unit}</text></svg>`}
+function pieChart(cats,pcts,hide){let a=-90,s='<svg class="pie" viewBox="0 0 270 160" aria-hidden="true">';const c=[80,80],r=70;
+  pcts.forEach((p,i)=>{const a0=a*D2R,a1=(a+p*3.6)*D2R,m=(a+p*1.8)*D2R;a+=p*3.6;
+    s+=`<path d="M80 80L${(80+r*Math.cos(a0)).toFixed(1)} ${(80+r*Math.sin(a0)).toFixed(1)}A${r} ${r} 0 ${p>50?1:0} 1 ${(80+r*Math.cos(a1)).toFixed(1)} ${(80+r*Math.sin(a1)).toFixed(1)}Z" fill="var(${DCOL[i%5]})" stroke="var(--paper)" stroke-width="2"/>`;
+    s+=`<text x="${(80+r*.62*Math.cos(m)).toFixed(1)}" y="${(84+r*.62*Math.sin(m)).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="800" fill="#fff" font-family="Nunito, sans-serif">${i===hide?'?':p+' %'}</text>`;
+    s+=`<rect x="165" y="${20+i*24}" width="12" height="12" rx="2" fill="var(${DCOL[i%5]})"/><text x="182" y="${30+i*24}" font-size="11" font-weight="700" fill="var(--ink)" font-family="Nunito, sans-serif">${cats[i].n}</text>`});
+  return s+'</svg>'}
+function diaQuestion(cats,vals,unit,allowDiff,th){const D=th&&th.days;const i=R(0,cats.length-1);let j=R(0,cats.length-1);while(j===i)j=R(0,cats.length-1);
+  const qt=pick(allowDiff?['count','most','least','diff','total']:['count','count','most','least']);const mx=Math.max(...vals),mn=Math.min(...vals);
+  if((qt==='most'&&vals.filter(v=>v===mx).length>1)||(qt==='least'&&vals.filter(v=>v===mn).length>1))return diaQuestion(cats,vals,unit,allowDiff,th);
+  if(qt==='count')return{kind:'int',q:D?`Montako lainaa oli ${cats[i].l}?`:`Montako oppilasta ${dq(cats[i])}?`,ans:vals[i],ex:`${cats[i].n}: ${vals[i]}`};
+  if(qt==='most'||qt==='least'){const k=vals.indexOf(qt==='most'?mx:mn);return{kind:'choice',q:D?`Minä päivänä lainoja oli ${qt==='most'?'eniten':'vähiten'}?`:`Mikä vaihtoehto sai ${qt==='most'?'eniten':'vähiten'} vastauksia?`,choices:cats.map((c,x)=>[String(x),D?cap(c.l.replace(/na$/,'')).replace('Maanantai','Maanantai'):c.n]),ans:String(k),ex:`${cats[k].n}: ${vals[k]}`}}
+  if(qt==='diff'){const[a,b]=vals[i]>=vals[j]?[i,j]:[j,i];if(vals[a]===vals[b])return diaQuestion(cats,vals,unit,allowDiff,th);return{kind:'int',q:D?`Kuinka monta lainaa enemmän oli ${cats[a].l} kuin ${cats[b].l}?`:`Kuinka monta oppilasta enemmän vastasi ”${cats[a].n.toLowerCase()}” kuin ”${cats[b].n.toLowerCase()}”?`,ans:vals[a]-vals[b],ex:`${vals[a]} − ${vals[b]} = ${vals[a]-vals[b]}`}}
+  const tot=vals.reduce((x,y)=>x+y,0);return{kind:'int',q:D?'Montako lainaa oli yhteensä?':'Montako oppilasta vastasi kyselyyn yhteensä?',ans:tot,ex:`${vals.join(' + ')} = ${tot}`}}
+function diaGen(g){return(L)=>{const th=pick(DTHEME),cats=th.cats.slice(0,g<=2?3:4);const n=cats.length;
+  const mkQ=(vis,vals,allow,hint)=>{const Q=diaQuestion(cats,vals,th.u,allow,th);return{kind:Q.kind,choices:Q.choices,ans:Q.ans,answerText:Q.kind==='choice'?cats[+Q.ans].n:String(Q.ans),visual:vis,story:`${th.t} ${Q.q}`,hint,explain:`<p><b>${Q.ex}</b></p>`}};
+  if(g<=2){if(L===1){const fc=th.cats[0].k?th:DTHEME[0];const c2=fc.cats.slice(0,3),vals=c2.map(()=>R(1,g===1?6:9));const Q=diaQuestion(c2,vals,fc.u,false);
+      return{kind:Q.kind,choices:Q.choices,ans:Q.ans,answerText:Q.kind==='choice'?c2[+Q.ans].n:String(Q.ans),visual:picChart(c2,vals,1),story:`${fc.t} ${Q.q}`,hint:'<p>Jokainen kuva tarkoittaa yhtä oppilasta. Laske kuvat riviltä.</p>',explain:`<p><b>${Q.ex}</b></p>`}}
+    if(L===2){const fc=DTHEME[0],c2=fc.cats.slice(0,3),vals=c2.map(()=>R(1,g===1?7:10));const Q=diaQuestion(c2,vals,fc.u,true);
+      return{kind:Q.kind,choices:Q.choices,ans:Q.ans,answerText:Q.kind==='choice'?c2[+Q.ans].n:String(Q.ans),visual:picChart(c2,vals,1),story:`${fc.t} ${Q.q}`,hint:'<p>Laske kunkin rivin kuvat. Vertaa sitten rivejä.</p>',explain:`<p><b>${Q.ex}</b></p>`}}
+    const step=g===1?1:2,vals=cats.map(()=>step*R(1,g===1?7:5));return mkQ(barChart(cats,vals,step,step*(g===1?8:6)),vals,true,`<p>Katso, mihin viivaan asti pylväs ulottuu, ja lue luku vasemmalta.${step>1?' Viivat ovat kahden välein.':''}</p>`)}
+  if(g<=4){if(L===1){const step=pick(g===3?[2,5]:[5,10]),vals=cats.map(()=>step*R(1,8));return mkQ(barChart(cats,vals,step,step*9),vals,true,`<p>Asteikossa viivat ovat ${step} välein. Lue pylvään korkeus vasemmalta.</p>`)}
+    if(L===2){const fc=DTHEME[0],c2=fc.cats.slice(0,4),vals=c2.map(()=>R(1,9)*(g===3?1:2)+(g===3?R(0,1):0)*0);const per=2,v2=c2.map(()=>R(2,14));const Q=diaQuestion(c2,v2,fc.u,true);
+      return{kind:Q.kind,choices:Q.choices,ans:Q.ans,answerText:Q.kind==='choice'?c2[+Q.ans].n:String(Q.ans),visual:picChart(c2,v2,per),story:`${fc.t} ${Q.q}`,hint:'<p>Katso selitettä: yksi kuva tarkoittaa kahta oppilasta. Puolikas kuva tarkoittaa yhtä.</p>',explain:`<p><b>${Q.ex}</b></p><p>Jokainen kokonainen kuva on 2 ja puolikas 1.</p>`}}
+    const step=g===3?2:5,vals=cats.map(()=>step*R(1,7)),opts=[vals];
+    for(let t=0;opts.length<3&&t<50;t++){const w=[...vals];if(Math.random()<.5){const[a,b]=shuffle([...cats.keys()]).slice(0,2);if(w[a]===w[b])continue;[w[a],w[b]]=[w[b],w[a]]}else{const a=R(0,n-1);w[a]=Math.max(step,w[a]+pick([-step,step]))}if(!opts.some(o=>o.join()===w.join()))opts.push(w)}
+    const sh=shuffle(opts.map((o,i)=>({o,i}))),ans=String(sh.findIndex(x=>x.i===0));
+    const table=`<table class="dtab"><tr>${cats.map(c=>`<th>${c.n}</th>`).join('')}</tr><tr>${vals.map(v=>`<td>${v}</td>`).join('')}</tr></table>`;
+    return{kind:'choice',chartopts:true,choices:sh.map((x,k)=>[String(k),barChart(cats,x.o,step,step*8,true)]),ans,answerText:'',visual:`<div class="calc-wrap">${table}</div><p class="ladtxt">Pylväät ovat samassa järjestyksessä kuin taulukossa: ${cats.map(c=>c.n).join(', ')}.</p>`,
+      text:'<span class="bg" style="font-size:.7em">Mikä pylväsdiagrammi esittää taulukon tietoja?</span>',hint:`<p>Tarkista jokainen pylväs vuorollaan. Asteikossa viivat ovat ${step} välein.</p>`,explain:'<p><b>Oikea diagrammi on merkitty vihreällä.</b> Kaikkien pylväiden korkeudet vastaavat taulukkoa.</p>'}}
+  if(L===1){const step=10,vals=cats.map(()=>5*R(1,17));return mkQ(barChart(cats,vals,step,step*9),vals,true,'<p>Viivat ovat 10 välein. Jos pylväs päättyy kahden viivan puoliväliin, luku on viiva + 5.</p>')}
+  if(L===2){const labels=['tammi','helmi','maalis','huhti','touko','kesä'],base=R(5,20);let v=[base];for(let i=1;i<6;i++)v.push(Math.max(0,v[i-1]+R(-6,12)));const mx=Math.ceil((Math.max(...v)+2)/10)*10;
+    const d=v.slice(1).map((x,i)=>x-v[i]),bi=d.indexOf(Math.max(...d));const q=pick(['val','inc','range']);
+    const story='Viivadiagrammi näyttää, montako kirjaa luokka luki kuukausittain.';
+    if(q==='inc'&&d.filter(x=>x===d[bi]).length===1)return{kind:'choice',choices:d.map((_,i)=>[String(i),`${labels[i]}–${labels[i+1]}`]),ans:String(bi),answerText:`${labels[bi]}–${labels[bi+1]}`,visual:lineChart(labels,v,10,mx,'kirjoja'),story:story+' Minkä kahden kuukauden välillä lukeminen kasvoi eniten?',
+      hint:'<p>Etsi kohta, jossa viiva nousee jyrkimmin ylöspäin.</p>',explain:`<p><b>${labels[bi]}–${labels[bi+1]}</b>: ${v[bi]} → ${v[bi+1]}, kasvua ${d[bi]}.</p>`};
+    if(q==='range'){const r=Math.max(...v)-Math.min(...v);return{kind:'int',visual:lineChart(labels,v,10,mx,'kirjoja'),story:story+' Kuinka paljon enemmän luettiin parhaana kuukautena kuin heikoimpana?',ans:r,answerText:String(r),hint:'<p>Etsi viivan korkein ja matalin kohta ja laske niiden erotus.</p>',explain:`<p><b>${Math.max(...v)} − ${Math.min(...v)} = ${r}</b></p>`}}
+    const k=R(0,5);return{kind:'int',visual:lineChart(labels,v,10,mx,'kirjoja').replace(/(<circle[^>]*>)/g,'$1'),story:story+` Montako kirjaa luettiin ${labels[k]}kuussa? Arvioi viivoista mahdollisimman tarkasti.`.replace('kesäkuussa','kesäkuussa'),ans:v[k],answerText:String(v[k]),tol:1,
+      hint:'<p>Katso pistettä kuukauden kohdalla ja vertaa sitä vasemman reunan lukuihin.</p>',explain:`<p><b>${cap(labels[k])}kuussa luettiin ${v[k]} kirjaa.</b></p>`}}
+  if(g===5){const step=5,vals=cats.map(()=>step*R(1,7)),tot=vals.reduce((a,b)=>a+b,0),m=tot/n;if(!Number.isInteger(m))return diaGen(g)(L);
+    return{kind:'int',visual:barChart(cats,vals,step,step*8),story:`${th.t} ${th.days?'Montako lainaa oli keskimäärin päivässä?':'Montako vastausta kukin vaihtoehto sai keskimäärin?'}`,ans:m,answerText:String(m),hint:'<p>Lue jokaisen pylvään arvo. Laske ne yhteen ja jaa pylväiden määrällä.</p>',explain:`<p>${vals.join(' + ')} = ${tot}</p><p><b>${tot} : ${n} = ${m}</b></p>`}}
+  if(th.days)return diaGen(g)(L);
+  for(let t=0;t<100;t++){const ps=[pick([10,20,25,30,40,50])];while(ps.length<3){const rest=100-ps.reduce((a,b)=>a+b,0);if(ps.length===2){ps.push(rest);break}const p=pick([10,15,20,25,30,35,40].filter(x=>x<rest-5));if(!p)break;ps.push(p)}
+    if(ps.length<3||ps.some(p=>p<=0))continue;const c3=cats.slice(0,3),N=pick([20,40,60,80,200]),q=Math.random()<.5;
+    if(q){const h=R(0,2),known=ps.filter((_,i)=>i!==h);return{kind:'int',visual:pieChart(c3,ps,h),story:`${th.t} Kuinka monta prosenttia vastaajista vastasi ”${c3[h].n.toLowerCase()}”?`,unit:'%',ans:ps[h],answerText:`${ps[h]} %`,hint:'<p>Koko ympyrä on 100 %. Vähennä tunnetut osat sadasta.</p>',explain:`<p><b>100 − ${known.join(' − ')} = ${ps[h]} %</b></p>`}}
+    const h=R(0,2);if((ps[h]*N)%100)continue;const a=ps[h]*N/100;
+    return{kind:'int',visual:pieChart(c3,ps,-1),story:`${th.t} Vastaajia oli ${N}. Montako vastaajaa vastasi ”${c3[h].n.toLowerCase()}”?`,ans:a,answerText:String(a),hint:`<p>${ps[h]} % tarkoittaa ${ps[h]} sadasosaa. Laske ${ps[h]} % luvusta ${N}: ensin 1 % on ${N} : 100.</p>`,explain:`<p><b>${ps[h]} % · ${N} = ${a}</b></p>`}}
+  return diaGen(g)(1)}}
+const DIALV={1:['Kuvadiagrammi','Kuvadiagrammin vertailu','Pylväsdiagrammi'],2:['Kuvadiagrammi','Kuvadiagrammin vertailu','Pylväät kahden välein'],3:['Pylväsdiagrammi','Yksi kuva = kaksi','Taulukosta diagrammiksi'],4:['Pylväät 5 tai 10 välein','Yksi kuva = kaksi','Taulukosta diagrammiksi'],5:['Puolivälin lukeminen','Viivadiagrammi','Diagrammin keskiarvo'],6:['Puolivälin lukeminen','Viivadiagrammi','Ympyrädiagrammi']};
+for(const g of [1,2,3,4,5,6]){const i=GR[g].topics.findIndex(t=>t.id==='tn');GR[g].topics.splice(i,0,{id:'diagrammit',fam:'stat',name:'Diagrammit',levels:DIALV[g],gen:diaGen(g),noWord:true})}
+
 /* ---------- tila ---------- */
 const KEY='laskupolku-v1';
 let S={grade:1,topic:{},op:'+',fam:'add',type:'perus',stars:0,prog:{}};
@@ -1696,7 +1824,7 @@ function answerHTML(){
       <tr class="res"><td class="sg">${P.partials?'+':''}</td>${rng.map(i=>isC(i)?'<td class="cm">,</td>':`<td><input class="ri" id="r${i}" data-i="${i}" inputmode="none" maxlength="1" autocomplete="off" aria-label="Vastauksen numero"></td>`).join('')}</tr>
     </tbody></table></div>`}
   if(P.steps||P.inline||P.kind==='multi')return '';
-  if(P.kind==='choice')return `<div class="choices${P.big?' big':''}${P.pics?' pics':''}" role="group" aria-label="Vastausvaihtoehdot">${P.choices.map(([v,l])=>`<button type="button" class="choice" data-choice="${v}">${l}</button>`).join('')}</div>`;
+  if(P.kind==='choice')return `<div class="choices${P.big?' big':''}${P.pics?' pics':''}${P.chartopts?' charts':''}" role="group" aria-label="Vastausvaihtoehdot">${P.choices.map(([v,l])=>`<button type="button" class="choice" data-choice="${v}">${l}</button>`).join('')}</div>`;
   if(P.ldiv){const ds=String(P.dvd).split('');
     return `<div class="calc-wrap"><table class="calc ldiv" aria-label="Jakokulma"><tbody><tr class="qrow"><td></td>${ds.map((_,i)=>`<td><input class="qi" id="q${i}" data-i="${i}" inputmode="none" maxlength="1" autocomplete="off" aria-label="Osamäärän numero"></td>`).join('')}</tr>
       <tr class="drow"><td class="dvs">${P.dvs}</td>${ds.map((d,i)=>`<td class="dd${i===0?' first':''}">${d}</td>`).join('')}</tr></tbody></table></div>${P.kind==='divr'?`<div class="answer"><span class="unit">jakojäännös</span><input class="num tb" id="rem" inputmode="none" autocomplete="off" aria-label="Jakojäännös"></div>`:''}`}
@@ -1709,7 +1837,9 @@ function inlineAns(){if(P.ldiv||P.steps||P.inline||!P.text||!P.text.includes(BOX
   if(P.kind==='frac')return `<span class="fin xin"><input class="num" id="fn" inputmode="none" autocomplete="off" aria-label="Osoittaja"><span class="bar"></span><input class="num" id="fdn" inputmode="none" autocomplete="off" aria-label="Nimittäjä"></span>`;
   const w=Math.max(3,String(P.ans).length+1);
   return `<input class="num xin" id="ans" style="width:${w+1}ch" inputmode="none" autocomplete="off" aria-label="Vastaus">`}
-const padOK=()=>P&&!['col','choice','multi'].includes(P.kind)&&!P.ldiv;
+const NOPAD=new Set(['kello','lampo','tn','kokeilu','kaksipalloa','hedelmat','puuttuva']);
+function maxDigits(){const t=((P.text||'')+' '+(P.story||'')+' '+(P.steps?P.visual:'')).replace(/<svg[\s\S]*?<\/svg>/g,' ').replace(/<[^>]+>/g,' ').replace(/(\d)[\u00A0 ](?=\d{3})/g,'$1');return Math.max(0,...(t.match(/\d+(?:,\d+)?/g)||[]).map(x=>x.replace(',','').length))}
+const padOK=()=>P&&!['col','choice','multi'].includes(P.kind)&&!P.ldiv&&!NOPAD.has(cur().id)&&(cur().id==='keskiarvo'||maxDigits()>=3);
 function padHTML(){const C=8,row=(r,cls)=>`<tr class="${cls}"><td class="pop">${r===2?'<button type="button" class="padop" data-padop="0" aria-label="Vaihda laskumerkki">+</button>':''}</td>${Array.from({length:C},(_,c)=>`<td><input class="sq${r===0?' small':''}" inputmode="none" maxlength="1" autocomplete="off" aria-label="Ruutu"></td>`).join('')}</tr>`;
   return `<div class="panel pad" id="pad" hidden><h3>Ruutupaperi</h3><p class="padtip">Kirjoita luvut allekkain omiin ruutuihinsa. Ylärivi on muistinumeroille. Napauta laskumerkkiä vaihtaaksesi sen.</p><div class="calc-wrap"><table class="calc padt"><tbody>${row(0,'carry')}${row(1,'')}${row(2,'')}${row(3,'res')}</tbody></table></div><button type="button" class="btn ghost padclr" data-padclr="1">Tyhjennä ruudut</button></div>`}
 function draw(){const t=cur(),pr=prog();const IA=inlineAns();
@@ -1748,7 +1878,7 @@ function evaluate(){
 
   if(P.kind==='int'||P.kind==='dec'){const el=$('#ans');const s=el.value.replace(/[\s ]/g,'').replace(',','.').replace('−','-');
     if(!s)return{empty:true};if(!/^-?(\d+\.?\d*|\.\d+)$/.test(s))return{bad:'Kirjoita vastaukseksi luku, esimerkiksi 12 tai 3,5.'};
-    const ok=Math.abs(parseFloat(s)-P.ans)<1e-9;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok);return{ok}}
+    const ok=Math.abs(parseFloat(s)-P.ans)<=(P.tol||0)+1e-9;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok);return{ok}}
   if(P.kind==='multi'){const sel=[...document.querySelectorAll('.gtile[aria-pressed="true"]')].map(b=>+b.dataset.pick);if(!sel.length)return{empty:true};
     const ok=sel.length===P.ans.length&&sel.every(i=>P.ans.includes(i));document.querySelectorAll('.gtile').forEach(b=>{b.classList.remove('ok','no');const i=+b.dataset.pick;if(b.getAttribute('aria-pressed')==='true')b.classList.add(P.ans.includes(i)?'ok':'no')});
     if(!ok){const miss=P.ans.filter(i=>!sel.includes(i)).length,extra=sel.filter(i=>!P.ans.includes(i)).length;P.multiMsg=extra?'Osa valinnoista ei kuulu joukkoon. Ne on merkitty punaisella.':`Löysit jo osan. Vielä ${miss} puuttuu.`}return{ok}}
