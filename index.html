@@ -228,6 +228,49 @@ table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;f
 .gtile.no{border-color:var(--bad);background:var(--bad-bg)}
 .gtile.miss{border-color:var(--good);border-style:dashed}
 .bars{width:100%;height:auto;display:block}
+.bag{width:170px;height:auto;display:block}
+.spin{width:150px;height:auto;display:block}
+.dice{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.die{width:44px;height:44px;display:block}
+.die3d{width:96px;height:auto;display:block}
+.cchip{display:inline-block;width:18px;height:18px;border-radius:50%;margin-right:6px;vertical-align:-3px;border:1px solid var(--line)}
+.stab{border-collapse:collapse;margin:6px auto;background:var(--paper);font:800 .95rem var(--display);font-variant-numeric:tabular-nums}
+.stab th,.stab td{border:1px solid var(--line);width:34px;height:30px;text-align:center;padding:2px}
+.stab th .die{width:22px;height:22px;margin:auto}
+.stab td.hl{background:var(--sun);color:#1C2742}
+.sim{width:100%;display:flex;flex-direction:column;gap:10px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:12px}
+.simbtns{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.simbtns .btn{font-size:.95rem;padding:7px 12px}
+.simbars{display:flex;align-items:flex-end;gap:4px;height:130px;width:100%;max-width:440px}
+.sb{flex:1 1 0;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:2px}
+.sbv{width:100%;background:var(--blue);border-radius:4px 4px 0 0;transition:height .25s ease-out;min-height:2px}
+#simdice.shake svg{animation:dshake .17s linear infinite}
+@keyframes dshake{0%{transform:rotate(-12deg) translateY(-2px)}50%{transform:rotate(12deg) translateY(2px)}100%{transform:rotate(-12deg) translateY(-2px)}}
+.simbtns .btn:disabled{opacity:.5;cursor:default}
+.sbn{font-size:.72rem;font-weight:800;color:var(--soft);font-variant-numeric:tabular-nums}
+.sbl{font:800 .85rem var(--display)}
+.ball{width:28px;height:28px;display:block}
+.pchips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:6px 0}
+.pchip{display:inline-flex;gap:2px;padding:4px 6px;border:2px solid var(--line);border-radius:10px;background:var(--paper)}
+.pchip .ball{width:20px;height:20px}
+.pchip.hl{border-color:var(--good);background:var(--good-bg)}
+.sb.full .sbv{background:repeating-linear-gradient(0deg,var(--blue) 0 8px,color-mix(in srgb,var(--blue) 70%,var(--paper)) 8px 10px)}
+.sb{position:relative}
+.burst{position:absolute;left:50%;top:14px;width:0;height:0;pointer-events:none;z-index:3}
+.burst i{position:absolute;left:0;top:0;animation:fly .9s cubic-bezier(.15,.7,.3,1) forwards}
+@keyframes fly{0%{transform:translate(-50%,-50%) scale(.4);opacity:1}100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy) + 30px)) rotate(var(--r)) scale(1);opacity:0}}
+.pum{position:absolute;left:0;top:-14px;transform:translate(-50%,-50%);font:800 1rem var(--display);color:var(--apple);white-space:nowrap;animation:pum .9s ease-out forwards}
+@keyframes pum{0%{transform:translate(-50%,-30%) scale(.3);opacity:0}25%{transform:translate(-50%,-60%) scale(1.3);opacity:1}100%{transform:translate(-50%,-140%) scale(1);opacity:0}}
+.sb.hit .sbv{animation:hit .35s ease-out}
+@keyframes hit{0%{filter:brightness(1.8)}100%{filter:none}}
+.simbars{overflow:visible}
+.simcap{display:inline-block}
+.simcap.grow{animation:capgrow .8s ease-out}
+@keyframes capgrow{0%{transform:scale(1)}30%{transform:scale(1.6)}100%{transform:scale(1)}}
+.sbl2{font:700 .72rem var(--body);text-align:center;line-height:1.15}
+.simnote{margin:0;font-size:.82rem;color:var(--soft)}
+.simtot{margin:0;color:var(--soft);font-weight:700;font-size:.9rem}
+@media (prefers-reduced-motion:reduce){.sbv{transition:none}}
 .kseq{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 .kseq{flex-wrap:nowrap}
 .ktile{flex:1 1 0;min-width:0;max-width:66px;aspect-ratio:1;display:grid;place-items:center;background:var(--paper);border:2px solid var(--line);border-radius:12px}
@@ -252,6 +295,20 @@ footer{color:var(--soft);font-size:.88rem;max-width:65ch}
 footer p{margin:0 0 6px}
 @media (prefers-reduced-motion:reduce){.stars.pop{animation:none}}
 @media (max-width:420px){.grade b{font-size:1.45rem}.group{grid-template-columns:repeat(5,26px)}.fr{width:26px;height:26px}.cake{width:64px;height:64px}}
+/* pylväsdiagrammi y-akselilla */
+.simbars{display:flex;align-items:stretch;gap:4px;height:auto;padding-top:18px}
+.sb{height:auto;justify-content:flex-start;gap:3px}
+.sbw{position:relative;display:block;width:100%;height:112px}
+.sb .sbv{position:absolute;left:0;right:0;bottom:0;width:auto}
+.sb .sbn{position:absolute;left:0;right:0;bottom:2px;text-align:center;transition:bottom .25s ease-out}
+.burst{top:0}
+.yax{flex:0 0 30px;display:flex;flex-direction:column}
+.yax .sbw{border-right:2px solid var(--soft)}
+.ytick{position:absolute;right:7px;font:800 .75rem var(--body);color:var(--soft);line-height:1;transform:translateY(-50%);font-variant-numeric:tabular-nums}
+.ytick::after{content:"";position:absolute;right:-9px;top:50%;width:7px;height:2px;background:var(--soft)}
+.ytick.simcap{top:0}
+.ytick.y0{top:100%}
+@media (prefers-reduced-motion:reduce){.sb .sbn{transition:none}}
 </style>
 </head>
 <body>
@@ -277,8 +334,8 @@ footer p{margin:0 0 6px}
 
   <section class="controls">
     <div><label class="lbl" for="ops">Lasku</label><select class="sel" id="ops" data-sel="op"></select></div>
-    <div id="typeBox"><label class="lbl" for="types">Tehtävät</label><select class="sel" id="types" data-sel="type"></select></div>
     <div id="topicBox"><label class="lbl" for="topics">Aihe</label><select class="sel" id="topics" data-sel="topic"></select></div>
+    <div id="typeBox"><label class="lbl" for="types">Tyyppi</label><select class="sel" id="types" data-sel="type"></select></div>
   </section>
 
   <section class="sheet" id="sheet" aria-live="polite"></section>
@@ -1063,7 +1120,7 @@ function cmpPair(g,L){const eq=Math.random()<.18;let A,B,vis=null;
     else if(L===2){const[n,d,u,dd]=pick(FDEC);A=iF(n,d);B=eq?iD(u,dd):iD(Math.max(1,u*10**(2-dd)+pick([-15,-5,5,10,-10])),2);if(!eq&&Math.abs(B.v-A.v)<1e-9)B=iD(B.u+1,2)}
     else{if(Math.random()<.5){const a=-(R(1,99)/10),b=eq?a:-(R(1,99)/10);A=iN(a);A.h=(a<0?'−':'')+fd({u:Math.round(-a*10),d:1});B=iN(b);B.h=(b<0?'−':'')+fd({u:Math.round(-b*10),d:1});A.t=B.t='negd'}
       else{const t=R(20,90);A=iE(6,t);B=iE(6,eq?t:t+pick([-3,-1,2,4]))}}}
-  if(Math.random()<.5){[A,B]=[B,A]}
+  if(!vis&&Math.random()<.5){[A,B]=[B,A]}
   return{A,B,vis}}
 function cmpHint(A,B,g){const sym=Math.abs(A.v-B.v)<1e-9?'=':A.v<B.v?'<':'>';let h='';
   if(A.t==='expr'||B.t==='expr')h=`<p>Laske ensin:</p><ul class="wlist">${[A,B].filter(x=>x.calc).map(x=>`<li>${x.calc}</li>`).join('')}</ul><p>Vertaa sitten tuloksia.</p>`;
@@ -1123,7 +1180,7 @@ function ruleText(r,dec){switch(r.type){case 'ar':return r.s>0?`Jokainen luku on
   case 'alt':return `Vuorotellen lisätään ${r.p} ja vähennetään ${r.q}.`}}
 function seqGen(g){return(L,op,word)=>{
   for(let t=0;t<50;t++){const{terms,rule,dec}=seqMake(g,L);
-    let miss=terms.length-1;if(L>=2&&Math.random()<.5)miss=R(1,terms.length-2);if(rule.type==='fib'&&miss<2)miss=terms.length-1;
+    const pos=L===1?pick(['last','last','mid','first']):pick(['last','mid','mid','first','first']);let miss=pos==='last'?terms.length-1:pos==='first'?0:(L===1?Math.floor((terms.length-1)/2):R(1,terms.length-2));if(rule.type==='fib'&&miss<2)miss=terms.length-1;
     const ans=terms[miss],neg=terms.some(x=>x<0);
     if(word&&rule.type==='ar'&&!dec){const s=rule.s,a=terms[0],n=terms.length-1,[K]=two();let story;
       if(s>0)story=pick([`${K.ll} on säästössä ${a} euroa. Hän laittaa säästöön joka viikko ${s} euroa lisää. Paljonko rahaa hänellä on ${n} viikon kuluttua?`,`Puu on nyt ${a} cm pitkä. Se kasvaa joka vuosi ${s} cm. Kuinka pitkä puu on ${n} vuoden kuluttua?`]);
@@ -1136,7 +1193,7 @@ function seqGen(g){return(L,op,word)=>{
     if(word)return seqGen(g)(L,op,false);
     const known=terms.filter((_,i)=>i!==miss);if(known.length<3)continue;
     return{kind:dec?'dec':'int',neg,inline:true,visual:seqTiles(terms,miss,dec,false,true),text:'<span class="bg" style="font-size:.7em">Mikä luku puuttuu jonosta?</span>',ans,answerText:numF(ans,dec),
-      hint:`<p>Katso, miten luku muuttuu aina seuraavaan siirryttäessä. Laske ensin kahden vierekkäisen luvun ero. Jos ero ei pysy samana, kokeile, onko luku aina tietty määrä kertaa edellinen, tai muuttuuko ero säännöllisesti.</p>${miss>1?`<p>Esimerkiksi ${numF(terms[0],dec)} → ${numF(terms[1],dec)}.</p>`:`<p>Esimerkiksi ${numF(terms.at(-2),dec)} → ${numF(terms.at(-1),dec)}.</p>`}`,
+      hint:`<p>Katso, miten luku muuttuu aina seuraavaan siirryttäessä. Laske ensin kahden vierekkäisen luvun ero. Jos ero ei pysy samana, kokeile, onko luku aina tietty määrä kertaa edellinen, tai muuttuuko ero säännöllisesti.</p>${miss>1?`<p>Esimerkiksi ${numF(terms[0],dec)} → ${numF(terms[1],dec)}.</p>`:`<p>Esimerkiksi ${numF(terms.at(-2),dec)} → ${numF(terms.at(-1),dec)}.</p>`}${miss===0?'<p>Kun ensimmäinen luku puuttuu, kulje jonoa takaperin: tee sääntö toisin päin.</p>':''}`,
       explain:`<p><b>${ruleText(rule,dec)}</b></p><div class="visual">${seqTiles(terms,-1,dec,['ar','grow','grow2','alt'].includes(rule.type))}</div>`}}
   return seqGen(g)(1,op,word)}}
 const CMPLV={1:['Kuvat','Luvut 0–20','Laskut'],2:['Kymmenet ja ykköset','Lähekkäiset luvut','Laskut'],3:['Luvut 0–1000','Samat sadat','Laskut'],4:['Isot luvut','Desimaaliluvut','Pakkasasteet ja murtoluvut'],5:['Isot luvut','Desimaaliluvut','Murtoluvut'],6:['Desimaaliluvut','Murtoluku vai desimaaliluku','Negatiiviset luvut ja laskut']};
@@ -1306,7 +1363,7 @@ const GPOLY={
 const GCAT={tri:'kolmio',rtri:'kolmio',stri:'kolmio',otri:'kolmio',square:'nelikulmio',rect:'nelikulmio',rhomb:'nelikulmio',para:'nelikulmio',trap:'nelikulmio',quad:'nelikulmio',pent:'viisikulmio',hex:'kuusikulmio',circle:'ympyra',oval:'soikio'};
 function gShape(t,rot,sc,col){const c=`var(${KCOL[col][0]})`;let inner;
   if(t==='circle')inner=`<circle r="${26*sc}" fill="${c}"/>`;else if(t==='oval')inner=`<ellipse rx="${28*sc}" ry="${16*sc}" fill="${c}" transform="rotate(${rot})"/>`;
-  else{const pts=GPOLY[t].map(([x,y])=>{const a=rot*Math.PI/180,X=x*Math.cos(a)-y*Math.sin(a),Y=x*Math.sin(a)+y*Math.cos(a);return `${(X*28*sc).toFixed(1)},${(Y*28*sc).toFixed(1)}`}).join(' ');inner=`<polygon points="${pts}" fill="${c}" stroke-linejoin="round"/>`}
+  else{const pts=(Array.isArray(t)?t:GPOLY[t]).map(([x,y])=>{const a=rot*Math.PI/180,X=x*Math.cos(a)-y*Math.sin(a),Y=x*Math.sin(a)+y*Math.cos(a);return `${(X*28*sc).toFixed(1)},${(Y*28*sc).toFixed(1)}`}).join(' ');inner=`<polygon points="${pts}" fill="${c}" stroke-linejoin="round"/>`}
   return `<svg viewBox="-35 -35 70 70" aria-hidden="true">${inner}</svg>`}
 const GTGT={kolmio:{pl:'kolmiot',is:t=>GCAT[t]==='kolmio',def:'Kolmiossa on kolme suoraa sivua ja kolme kulmaa. Koko, väri ja asento eivät vaikuta.'},
   nelikulmio:{pl:'nelikulmiot',is:t=>GCAT[t]==='nelikulmio',def:'Nelikulmiossa on neljä suoraa sivua ja neljä kulmaa. Myös neliöt ja suorakulmiot ovat nelikulmioita.'},
@@ -1331,6 +1388,56 @@ function geoGen(g){return(L)=>{const b=g===1?0:1;let tgt,pool,rotOn;
       explain:`<p><b>${T.def}</b></p><p>Kuvioita oli ${ans.length}. Ne on merkitty vihreällä.</p>`}}
   return geoGen(g)(1)}}
 for(const g of [1,2,3])GR[g].topics.push({id:'muodot',fam:'mit',name:'Muodot',levels:g===1?['Kolmio, ympyrä vai neliö','Eri asennot ja koot','Kolmiot ja nelikulmiot']:['Eri asennot ja koot','Neliöt ja suorakulmiot','Monikulmiot'],gen:geoGen(g)});
+/* muodot 4.–6. luokka */
+function gNorm(p){const xs=p.map(q=>q[0]),ys=p.map(q=>q[1]),cx=(Math.min(...xs)+Math.max(...xs))/2,cy=(Math.min(...ys)+Math.max(...ys))/2;
+  const q=p.map(([x,y])=>[x-cx,y-cy]),m=Math.max(...q.map(([x,y])=>Math.hypot(x,y)));return q.map(([x,y])=>[x/m,y/m])}
+const D2R=Math.PI/180;
+function triAng(A,B){const C=180-A-B,b=Math.sin(B*D2R)/Math.sin(C*D2R);return gNorm([[0,0],[1,0],[b*Math.cos(A*D2R),-b*Math.sin(A*D2R)]])}
+function mkTri(kind){let A,B,C,t=0;
+  do{t++;if(kind==='eq'){A=60;B=60}
+    else if(kind==='iso'){const a=pick([R(30,50),R(65,80),45,R(25,35)]);A=a;B=a}
+    else if(kind==='right'){A=90;B=R(25,65)}
+    else if(kind==='obtuse'){A=R(110,140);B=R(15,180-A-15)}
+    else if(kind==='acute'){A=R(45,80);B=R(45,80)}
+    else{A=R(25,100);B=R(25,180-A-25)}
+    C=180-A-B}while(t<50&&(C<15||(kind==='acute'&&Math.max(A,B,C)>78)||(kind==='scal'&&(Math.abs(A-B)<12||Math.abs(B-C)<12||Math.abs(A-C)<12||Math.abs(Math.max(A,B,C)-90)<8))));
+  const ang=[A,B,C],mx=Math.max(...ang),sides=new Set(ang.map(a=>Math.round(a))).size;
+  const tags=new Set(['kolmio',mx===90?'suora':mx>90?'tylppa':'terava',sides===1?'tasasivuinen':sides===2?'tasakylkinen':'erisivuinen']);
+  const o=shuffle([[A,B],[B,C],[C,A]])[0];return{t:triAng(o[0],o[1]),tags,ang}}
+function mkQuad(kind){const r=(a,b)=>a+Math.random()*(b-a);let p,tags;
+  if(kind==='para'){const s=r(.5,.7),th=r(55,70)*D2R;p=[[0,0],[1,0],[1+s*Math.cos(th),-s*Math.sin(th)],[s*Math.cos(th),-s*Math.sin(th)]];tags=['suunnikas']}
+  else if(kind==='rhomb'){const th=r(50,68)*D2R;p=[[0,0],[1,0],[1+Math.cos(th),-Math.sin(th)],[Math.cos(th),-Math.sin(th)]];tags=['vinonelio']}
+  else if(kind==='trap'){const t=r(.35,.6),h=r(.4,.65),x0=pick([(1-t)/2,0,r(.05,1-t-.05)]);p=[[0,0],[1,0],[x0+t,-h],[x0,-h]];tags=['puolisuunnikas']}
+  else if(kind==='kite'){const a=r(.3,.45),b=r(.85,1.1),w=r(.45,.6);p=[[0,-a],[w,0],[0,b],[-w,0]];tags=['leija']}
+  else if(kind==='rect'){const h=r(.45,.62);p=[[-1,-h],[1,-h],[1,h],[-1,h]];tags=['suorakulmio']}
+  else if(kind==='square'){p=[[-1,-1],[1,-1],[1,1],[-1,1]];tags=['nelio']}
+  else{p=[[-r(.8,1),r(.5,.9)],[r(.6,1),r(.7,1)],[r(.5,.9),-r(.6,1)],[-r(.3,.6),-r(.4,.8)]];tags=['epasaannollinen']}
+  return{t:gNorm(p),tags:new Set(['nelikulmio',...tags])}}
+const GT2={
+  suunnikas:{pl:'suunnikkaat',def:'Suunnikkaassa vastakkaiset sivut ovat yhdensuuntaiset ja yhtä pitkät. (Myös neliöt, suorakulmiot ja vinoneliöt ovat suunnikkaita, mutta niitä ei ole tässä tehtävässä.)',pool:['para','para','trap','kite','quad','tri']},
+  vinonelio:{pl:'vinoneliöt',def:'Vinoneliössä kaikki neljä sivua ovat yhtä pitkät, mutta kulmat eivät ole suoria.',pool:['rhomb','rhomb','para','kite','trap','rect','quad']},
+  puolisuunnikas:{pl:'puolisuunnikkaat',def:'Puolisuunnikkaassa on yksi pari yhdensuuntaisia sivuja. Muut kaksi sivua eivät ole yhdensuuntaiset.',pool:['trap','trap','kite','quad','tri','rhomb']},
+  suorakulmio:{pl:'suorakulmiot',def:'Suorakulmiossa kaikki neljä kulmaa ovat suoria, ja vastakkaiset sivut ovat yhtä pitkät.',pool:['rect','rect','para','trap','kite','quad']},
+  terava:{pl:'teräväkulmaiset kolmiot',def:'Teräväkulmaisen kolmion kaikki kolme kulmaa ovat teräviä eli pienempiä kuin suora kulma.',pool:['acute','acute','right','obtuse','eq']},
+  suora:{pl:'suorakulmaiset kolmiot',def:'Suorakulmaisessa kolmiossa yksi kulma on suora (90°), kuin kirjan kulma.',pool:['right','right','acute','obtuse','eq']},
+  tylppa:{pl:'tylppäkulmaiset kolmiot',def:'Tylppäkulmaisessa kolmiossa yksi kulma on tylppä eli suurempi kuin suora kulma.',pool:['obtuse','obtuse','acute','right','eq']},
+  tasasivuinen:{pl:'tasasivuiset kolmiot',def:'Tasasivuisen kolmion kaikki kolme sivua ovat yhtä pitkät, ja kaikki kulmat ovat 60°.',pool:['eq','eq','iso','scal','right']},
+  tasakylkinen:{pl:'tasakylkiset kolmiot',def:'Tasakylkisessä kolmiossa kaksi sivua on yhtä pitkät. (Tasasivuinen kolmio on myös tasakylkinen, mutta niitä ei ole tässä tehtävässä.)',pool:['iso','iso','scal','right','obtuse']},
+  erisivuinen:{pl:'erisivuiset kolmiot',def:'Erisivuisen kolmion kaikki sivut ovat eri pituiset.',pool:['scal','scal','iso','eq']}};
+function geoGen2(g){return(L)=>{
+  const tg=L===1?pick(g===6?['suunnikas','vinonelio','puolisuunnikas','suorakulmio']:['suunnikas','vinonelio','puolisuunnikas']):L===2?pick(['terava','suora','tylppa']):pick(['tasasivuinen','tasakylkinen','erisivuinen']);
+  const T=GT2[tg],N=g===4?9:12;
+  const mk=k=>['acute','right','obtuse','eq','iso','scal'].includes(k)?mkTri(k):k==='tri'?mkTri(pick(['acute','right','obtuse'])):mkQuad(k);
+  for(let t=0;t<200;t++){let its=Array.from({length:N},()=>{const x=mk(pick(T.pool));x.rot=g===4?pick([0,90,180,270])+R(-8,8):R(0,359);x.sc=R(105,120)/100;x.col=pick(Object.keys(KCOL));return x});
+    if(tg==='tasakylkinen')its=its.filter(x=>!x.tags.has('tasasivuinen'));if(its.length<N)continue;
+    if(L===3&&its.some(x=>x.ang&&x.tags.has('erisivuinen')&&Math.min(Math.abs(x.ang[0]-x.ang[1]),Math.abs(x.ang[1]-x.ang[2]),Math.abs(x.ang[0]-x.ang[2]))<10))continue;
+    const ans=its.map((x,i)=>x.tags.has(tg)?i:-1).filter(i=>i>=0);if(ans.length<2||ans.length>N/2)continue;
+    const grid=`<div class="ggrid${N===12?' g4':''}" role="group" aria-label="Kuviot">${its.map((x,i)=>`<button type="button" class="gtile" data-pick="${i}" aria-pressed="false" aria-label="Kuvio ${i+1}">${gShape(x.t,x.rot,x.sc,x.col)}</button>`).join('')}</div>`;
+    return{kind:'multi',visual:grid,text:`<span class="bg" style="font-size:.75em">Valitse kaikki ${T.pl}.</span>`,ans,answerText:'',
+      hint:`<p>${T.def}</p>${L===2?'<p>Vertaa kulmia vihon tai kirjan kulmaan: se on suora kulma.</p>':L===3?'<p>Vertaa sivujen pituuksia toisiinsa. Voit kääntää laitetta, jos se auttaa.</p>':'<p>Etsi yhdensuuntaiset sivut: ne kulkevat samaan suuntaan kuin junan kiskot.</p>'}`,
+      explain:`<p><b>${T.def}</b></p><p>Kuvioita oli ${ans.length}. Ne on merkitty vihreällä.</p>`}}
+  return geoGen2(g)(L)}}
+for(const g of [4,5,6])GR[g].topics.push({id:'muodot',fam:'mit',name:'Muodot',levels:['Nelikulmiot','Kolmiot kulmien mukaan','Kolmiot sivujen mukaan'],gen:geoGen2(g)});
 
 /* keskiarvo */
 const DAYS=['ma','ti','ke','to','pe','la','su'];
@@ -1366,7 +1473,157 @@ function avgGen(g){return(L,op,word)=>{const[K]=two();
       hint:`<p>Keskiarvo lasketaan kahdessa vaiheessa:</p><ol><li>Laske kaikki luvut yhteen.</li><li>Jaa summa lukujen määrällä. Tässä lukuja on ${n}.</li></ol><p>Keskiarvo on kuin pylväiden tasoitus: korkeista pylväistä siirretään matalille, kunnes kaikki ovat yhtä korkeita.</p>`,
       explain:`<p><b>${vals.join(' + ')} = ${sum}</b></p><p><b>${sum} : ${n} = ${unum(mean)}</b></p><div class="visual">${bars(vals,labels,mean)}</div>`}}
   return avgGen(g)(1,op,word)}}
-for(const g of [5,6])GR[g].topics.push({id:'keskiarvo',fam:'mul',name:'Keskiarvo',levels:g===5?['Kolme lukua','Useampi luku','Puuttuva luku']:['Neljä lukua','Desimaalivastaus','Puuttuva luku'],gen:avgGen(g)});
+for(const g of [5,6])GR[g].topics.push({id:'keskiarvo',fam:'stat',name:'Keskiarvo',levels:g===5?['Kolme lukua','Useampi luku','Puuttuva luku']:['Neljä lukua','Desimaalivastaus','Puuttuva luku'],gen:avgGen(g)});
+
+/* ---------- tilastot: todennäköisyys ja kokeilu ---------- */
+const BCOL=['r','b','y','g'];
+const cname=c=>KCOL[c][1];
+const cpart={r:'punaista',b:'sinistä',y:'keltaista',g:'vihreää'},cgen={r:'punaisen',b:'sinisen',y:'keltaisen',g:'vihreän'},cnom={r:'punaiset',b:'siniset',y:'keltaiset',g:'vihreät'},cgpl={r:'punaisten',b:'sinisten',y:'keltaisten',g:'vihreiden'};
+const cap=x=>x[0].toUpperCase()+x.slice(1);
+function bagSVG(cnt){const balls=[];Object.entries(cnt).forEach(([c,n])=>{for(let i=0;i<n;i++)balls.push(c)});const sh=shuffle(balls);
+  let s=`<svg class="bag" viewBox="0 0 160 150" aria-hidden="true"><path d="M52 22C40 30 14 60 12 96c-2 32 22 48 68 48s70-16 68-48c-2-36-28-66-40-74z" fill="var(--sun-bg)" stroke="var(--stem)" stroke-width="3"/><path d="M50 22c10-8 50-8 60 0" fill="none" stroke="var(--stem)" stroke-width="5" stroke-linecap="round"/>`;
+  const n=sh.length,r=n<=6?13:n<=10?12:n<=15?11:n<=20?10:8.6,placed=[];
+  const floor=x=>{const ex=(x-80)/(66-r);return ex*ex>=1?-1:97+(46-r)*Math.sqrt(1-ex*ex)};
+  for(let k=0;k<n;k++){let best=[];for(let x=80-(66-r)+.5;x<=80+(66-r)-.5;x+=1){let y=floor(x);if(y<0)continue;
+      for(const[bx,by]of placed){const d=Math.abs(x-bx);if(d<2*r){const yy=by-Math.sqrt(4*r*r-d*d);if(yy<y)y=yy}}
+      if(y<34+r)continue;best.push([x,y])}
+    const my=Math.max(...best.map(b=>b[1])),c=best.filter(b=>b[1]>=my-1.5);placed.push(c.length?pick(c):[80,70])}
+  sh.forEach((c,k)=>{const[x,y]=placed[k];
+    s+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="var(${KCOL[c][0]})" stroke="var(--ink)" stroke-opacity=".3"/><circle cx="${(x-r*.32).toFixed(1)}" cy="${(y-r*.32).toFixed(1)}" r="${(r*.27).toFixed(1)}" fill="#fff" opacity=".5"/>`});
+  return s+'</svg>'}
+function spinSVG(secs){const n=secs.length,c=60,r=54;let s=`<svg class="spin" viewBox="0 0 120 130" aria-hidden="true">`;
+  secs.forEach((col,i)=>{const a0=(-90+360*i/n)*D2R,a1=(-90+360*(i+1)/n)*D2R;s+=`<path d="M${c} ${c}L${(c+r*Math.cos(a0)).toFixed(1)} ${(c+r*Math.sin(a0)).toFixed(1)}A${r} ${r} 0 0 1 ${(c+r*Math.cos(a1)).toFixed(1)} ${(c+r*Math.sin(a1)).toFixed(1)}Z" fill="var(${KCOL[col][0]})" stroke="var(--paper)" stroke-width="2"/>`});
+  return s+`<circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="var(--ink)" stroke-width="2"/><path d="M${c} ${c}L${c+8} ${c-30}" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/><circle cx="${c}" cy="${c}" r="6" fill="var(--ink)"/></svg>`}
+const PIPS={1:[[2,2]],2:[[1,1],[3,3]],3:[[1,1],[2,2],[3,3]],4:[[1,1],[3,1],[1,3],[3,3]],5:[[1,1],[3,1],[2,2],[1,3],[3,3]],6:[[1,1],[3,1],[1,2],[3,2],[1,3],[3,3]]};
+const dieSVG=v=>`<svg class="die" viewBox="0 0 40 40" aria-label="${v}"><rect x="2" y="2" width="36" height="36" rx="8" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>${PIPS[v].map(([x,y])=>`<circle cx="${x*10}" cy="${y*10}" r="3.6" fill="var(--ink)"/>`).join('')}</svg>`;
+function die3D(){const face=(m,n,fill)=>`<g transform="matrix(${m.join(' ')})"><rect x="0" y="0" width="1" height="1" fill="${fill}"/>${PIPS[n].map(([x,y])=>`<circle cx="${x/4}" cy="${y/4}" r=".085" fill="var(--ink)"/>`).join('')}</g>`;
+  return `<svg class="die3d" viewBox="0 0 100 80" aria-label="Noppa">${face([26,-15,26,15,24,25],1,'var(--paper)')}${face([26,15,0,30,24,25],2,'var(--plate)')}${face([26,-15,0,30,50,40],3,'var(--chip)')}<path d="M50 10L76 25V55L50 70L24 55V25Z M24 25L50 40L76 25 M50 40V70" fill="none" stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round"/></svg>`}
+const colChip=c=>`<span class="cchip" style="background:var(${KCOL[c][0]})"></span>${cname(c)}`;
+const DEV=[{t:'parillisen luvun',f:v=>v%2===0},{t:'parittoman luvun',f:v=>v%2===1},{t:'luvun, joka on suurempi kuin 4',f:v=>v>4},{t:'luvun, joka on pienempi kuin 3',f:v=>v<3},{t:'kolmella jaollisen luvun',f:v=>v%3===0},{t:'vähintään kakkosen',f:v=>v>=2},{t:'kuutosen',f:v=>v===6},{t:'luvun 1, 2 tai 3',f:v=>v<=3}];
+const ways=s=>{let n=0;for(let a=1;a<=6;a++)for(let b=1;b<=6;b++)if(a+b===s)n++;return n};
+function sumTable(hl){let s='<div class="calc-wrap"><table class="stab"><tr><th>+</th>'+[1,2,3,4,5,6].map(b=>`<th>${dieSVG(b)}</th>`).join('')+'</tr>';
+  for(let a=1;a<=6;a++){s+=`<tr><th>${dieSVG(a)}</th>`;for(let b=1;b<=6;b++)s+=`<td class="${a+b===hl?'hl':''}">${a+b}</td>`;s+='</tr>'}return s+'</table></div>'}
+function tnGen(g){return(L)=>{const band=g<=2?0:g<=4?1:2;
+  if(band===0){
+    if(L===1||(L===3&&Math.random()<.5)){const cs=shuffle(BCOL).slice(0,R(1,2)),cnt={};cs.forEach(c=>cnt[c]=R(2,6));const q=pick([...cs,pick(BCOL.filter(c=>!cs.includes(c)))]),n=cnt[q]||0,tot=Object.values(cnt).reduce((a,b)=>a+b,0);
+      const ans=n===tot?'varma':n===0?'mahdoton':'mahdollinen';
+      return{kind:'choice',choices:[['varma','Varma'],['mahdollinen','Mahdollinen'],['mahdoton','Mahdoton']],ans,answerText:ans,visual:bagSVG(cnt),
+        text:`<span class="bg" style="font-size:.7em">Nostat pussista yhden pallon katsomatta. Saatko ${cgen[q]} pallon?</span>`,
+        hint:'<p><b>Varma</b>: tapahtuu aina. <b>Mahdollinen</b>: voi tapahtua, mutta ei aina. <b>Mahdoton</b>: ei voi tapahtua koskaan.</p><p>Katso, millaisia palloja pussissa on.</p>',
+        explain:`<p><b>${ans[0].toUpperCase()+ans.slice(1)}.</b> ${n===0?`Pussissa ei ole yhtään ${cgen[q].replace(/n$/,'stä')} palloa.`.replace('punaisestä','punaista').replace('sinisestä','sinistä').replace('keltaisestä','keltaista').replace('vihreästä','vihreää'):n===tot?'Kaikki pussin pallot ovat tämän värisiä.':`Pussissa on ${n} tällaista ja ${tot-n} muuta palloa.`}</p>`}}
+    if(L===3){const e=pick([{t:'luvun 7',a:'mahdoton'},{t:'luvun, joka on pienempi kuin 7',a:'varma'},{t:'kuutosen',a:'mahdollinen'},{t:'luvun 0',a:'mahdoton'},{t:'parillisen luvun',a:'mahdollinen'},{t:'luvun, joka on vähintään 1',a:'varma'}]);
+      return{kind:'choice',choices:[['varma','Varma'],['mahdollinen','Mahdollinen'],['mahdoton','Mahdoton']],ans:e.a,answerText:e.a,visual:`<div class="dice">${die3D()}</div>`,
+        text:`<span class="bg" style="font-size:.7em">Heität noppaa kerran. Saatko ${e.t}?</span>`,hint:'<p>Nopassa ovat luvut 1, 2, 3, 4, 5 ja 6. Mieti, mitkä niistä sopivat.</p>',explain:`<p><b>${e.a[0].toUpperCase()+e.a.slice(1)}.</b> Nopan luvut ovat 1–6.</p>`}}
+    const cs=shuffle(BCOL).slice(0,2),a=R(1,7);let b=R(1,7);if(b===a)b=a+R(2,3);const cnt={[cs[0]]:a,[cs[1]]:b},ans=a>b?cs[0]:cs[1];
+    return{kind:'choice',choices:cs.map(c=>[c,colChip(c)]),ans,answerText:cname(ans),visual:bagSVG(cnt),text:'<span class="bg" style="font-size:.7em">Nostat pussista yhden pallon katsomatta. Kumman värisen pallon saat todennäköisemmin?</span>',
+      hint:'<p>Laske, montako palloa kumpaakin väriä on. Sitä väriä, jota on enemmän, nostaa todennäköisemmin.</p>',explain:`<p><b>${cap(cname(ans))}</b>, koska ${cpart[cs[0]]} on ${a} ja ${cpart[cs[1]]} ${b}.</p>`}}
+  if(band===1){
+    if(L===1){if(Math.random()<.5){const n=pick([4,6,8]),cs=shuffle(BCOL).slice(0,3);let secs;do{secs=Array.from({length:n},()=>pick(cs))}while(new Set(secs).size<2||(()=>{const c={};secs.forEach(x=>c[x]=(c[x]||0)+1);const v=Object.values(c).sort((a,b)=>b-a);return v[0]===v[1]})());
+        const c={};secs.forEach(x=>c[x]=(c[x]||0)+1);const ans=Object.keys(c).sort((a,b)=>c[b]-c[a])[0],sh=shuffle(secs);
+        return{kind:'choice',choices:Object.keys(c).map(k=>[k,colChip(k)]),ans,answerText:cname(ans),visual:spinSVG(sh),text:'<span class="bg" style="font-size:.7em">Pyörää pyöräytetään. Mihin väriin nuoli todennäköisimmin pysähtyy?</span>',
+          hint:'<p>Kaikki osat ovat yhtä suuria. Laske, montako osaa kullakin värillä on.</p>',explain:`<p><b>${cap(cname(ans))}</b>: sillä on ${c[ans]} osaa ${n}:stä.</p>`}}
+      const cs=shuffle(BCOL).slice(0,3),cnt={};cs.forEach(c=>cnt[c]=R(1,7));const v=Object.values(cnt).sort((a,b)=>b-a);if(v[0]===v[1])cnt[cs[0]]=v[0]+1;const ans=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0];
+      return{kind:'choice',choices:cs.map(c=>[c,colChip(c)]),ans,answerText:cname(ans),visual:bagSVG(cnt),text:'<span class="bg" style="font-size:.7em">Nostat pussista yhden pallon katsomatta. Minkä värisen pallon saat todennäköisimmin?</span>',hint:'<p>Laske kunkin värin pallot.</p>',explain:`<p><b>${cap(cname(ans))}</b>, koska sitä on eniten (${cnt[ans]}).</p>`}}
+    if(L===2){const[c1,c2]=shuffle(BCOL).slice(0,2);let A,B;
+      for(let t=0;t<100;t++){A=[R(1,6),R(1,6)];B=[R(1,6),R(1,6)];const pa=A[0]/(A[0]+A[1]),pb=B[0]/(B[0]+B[1]);if(g===3&&A[0]+A[1]!==B[0]+B[1]&&Math.random()<.7)continue;if(Math.abs(pa-pb)<.08&&pa!==pb)continue;if(A[0]===B[0]&&A[1]===B[1])continue;break}
+      const pa=A[0]/(A[0]+A[1]),pb=B[0]/(B[0]+B[1]),ans=pa>pb?'A':pb>pa?'B':'same';
+      return{kind:'choice',choices:[['A','Pussi A'],['B','Pussi B'],['same','Yhtä todennäköistä']],ans,answerText:ans==='same'?'yhtä todennäköistä':`pussi ${ans}`,
+        visual:`${opnd(bagSVG({[c1]:A[0],[c2]:A[1]}),'A','Pussi A')}${opnd(bagSVG({[c1]:B[0],[c2]:B[1]}),'B','Pussi B')}`,
+        text:`<span class="bg" style="font-size:.7em">Nostat yhden pallon katsomatta. Kummasta pussista saat todennäköisemmin ${cgen[c1]} pallon?</span>`,
+        hint:`<p>Pelkkä ${cgpl[c1]} pallojen määrä ei riitä. Vertaa, kuinka suuri osa pussin kaikista palloista on ${cpart[c1]}.</p>`,
+        explain:`<p>Pussi A: ${frac(A[0],A[0]+A[1])}, pussi B: ${frac(B[0],B[0]+B[1])}.</p><p><b>${ans==='same'?'Yhtä todennäköistä':`Pussi ${ans}`}</b></p>`}}
+    const[c1,c2]=shuffle(BCOL).slice(0,2),a=R(4,10),b=R(1,a-1),add=Math.random()<.6;
+    return{kind:'int',visual:bagSVG({[c1]:a,[c2]:b}),text:`<span class="bg" style="font-size:.7em">Pussista nostetaan yksi pallo katsomatta. ${add?`Montako ${cpart[c2]} palloa pussiin pitää lisätä, jotta ${cgen[c1]} ja ${cgen[c2]} nostaminen on yhtä todennäköistä?`:`Montako ${cpart[c1]} palloa pussista pitää ottaa pois, jotta ${cgen[c1]} ja ${cgen[c2]} nostaminen on yhtä todennäköistä?`} ${BOX}</span>`,
+      ans:a-b,answerText:String(a-b),hint:'<p>Kaksi väriä on yhtä todennäköisiä, kun niitä on yhtä monta.</p>',explain:`<p>${cap(cpart[c1])} on ${a}, ${cpart[c2]} ${b}. Ero on <b>${a-b}</b>.</p>`}}
+  if(L===1){const cs=shuffle(BCOL).slice(0,R(2,3)),cnt={};cs.forEach(c=>cnt[c]=R(1,6));const q=pick(cs),tot=Object.values(cnt).reduce((a,b)=>a+b,0);
+    return{kind:'frac',visual:bagSVG(cnt),text:`<span class="bg" style="font-size:.7em">Nostat pussista yhden pallon katsomatta. Millä todennäköisyydellä saat ${cgen[q]} pallon?</span> ${BOX}`,ans:{n:cnt[q],d:tot},answerText:fracRes(cnt[q],tot),
+      hint:`<p>Todennäköisyys = suotuisat / kaikki.</p><p>Suotuisia ovat ${cnom[q]} pallot. Laske ne ja kaikki pallot.</p>`,
+      explain:`<p>${cap(cnom[q])} palloja on ${cnt[q]}, kaikkia palloja ${tot}.</p><p><b>${fracRes(cnt[q],tot)}</b></p>`}}
+  if(L===2){const e=pick(DEV),fav=[1,2,3,4,5,6].filter(e.f);
+    return{kind:'frac',visual:`<div class="dice">${[1,2,3,4,5,6].map(dieSVG).join('')}</div>`,text:`<span class="bg" style="font-size:.7em">Heität noppaa. Millä todennäköisyydellä saat ${e.t}?</span> ${BOX}`,ans:{n:fav.length,d:6},answerText:fracRes(fav.length,6),
+      hint:'<p>Nopassa on 6 yhtä todennäköistä tulosta. Laske, moniko niistä sopii.</p>',explain:`<p>Sopivat luvut: ${fav.join(', ')} (${fav.length} kpl).</p><p><b>${fracRes(fav.length,6)}</b></p>`}}
+  if(g===6&&Math.random()<.5){const tot=pick([4,5,10,20,25]),cs=shuffle(BCOL).slice(0,2),a=R(1,tot-1),q=cs[0];const cnt={[cs[0]]:a,[cs[1]]:tot-a};
+    return{kind:'int',visual:bagSVG(tot<=20?cnt:{[cs[0]]:a,[cs[1]]:tot-a}),text:`<span class="bg" style="font-size:.7em">Nostat pussista yhden pallon katsomatta. Millä todennäköisyydellä saat ${cgen[q]} pallon? Vastaa prosentteina.</span> ${BOX} %`,unit:'%',ans:a/tot*100,answerText:`${a/tot*100} %`,
+      hint:`<p>Laske ensin murtolukuna ${frac(a,tot)}. Muuta se sitten sadasosiksi: lavenna niin, että nimittäjä on 100.</p>`,explain:`<p>${frac(a,tot)} = ${frac(a*100/tot,100)} = <b>${a/tot*100} %</b></p>`}}
+  const s=pick([2,3,4,5,6,7,8,9,10,11,12]),w=ways(s);
+  return{kind:'frac',visual:`<div class="dice">${die3D()}${die3D()}</div>`,text:`<span class="bg" style="font-size:.7em">Heität kahta noppaa. Millä todennäköisyydellä silmälukujen summa on ${s}?</span> ${BOX}`,ans:{n:w,d:36},answerText:fracRes(w,36),
+    hint:'<p>Kahdella nopalla on 6 · 6 = 36 yhtä todennäköistä tulosta. Laske taulukosta, monessako summa sopii.</p>'+sumTable(null),explain:`<p>Summa ${s} tulee ${w} tavalla 36:sta.</p>${sumTable(s)}<p><b>${fracRes(w,36)}</b></p>`}}}
+/* kokeilu */
+function simHTML(type){const keys=type==='one'?[1,2,3,4,5,6]:[2,3,4,5,6,7,8,9,10,11,12];
+  return `<div class="sim" data-type="${type}" data-pmax="${type==='two'?6/36:1/6}"><div class="dice" id="simdice">${dieSVG(1)}${type==='two'?dieSVG(1):''}</div>
+  <div class="simbtns"><button type="button" class="btn ghost" data-sim="1">Heitä kerran</button><button type="button" class="btn ghost" data-sim="10">10 kertaa</button><button type="button" class="btn ghost" data-sim="100">100 kertaa</button><button type="button" class="btn ghost" data-simreset="1">Tyhjennä</button></div>
+  <div class="simbars"><div class="yax"><span class="sbw"><b class="ytick simcap" id="simcap">25</b><b class="ytick y0">0</b></span></div>${keys.map(k=>`<div class="sb" data-k="${k}"><span class="sbw"><span class="sbv" style="height:0%"></span><span class="sbn">0</span></span><span class="sbl">${k}</span></div>`).join('')}</div><p class="simtot">${type==='two'?'Summa':'Silmäluku'} · heittoja: <b id="simn">0</b></p><p class="simnote" id="simnote" hidden>Sarjan kokoa voi vaihtaa, kun tyhjennät ensin.</p></div>`}
+let SIM={counts:{},n:0,run:false};
+function simBoom(b){if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;const bx=document.createElement('span');bx.className='burst';
+  const cols=['--apple','--sun','--good','--blue','--candy','--orange'];let h='<span class="pum">PUM!</span>';
+  for(let i=0;i<18;i++){const a=(-170+R(0,160))*D2R,d=R(35,85);h+=`<i style="--dx:${(Math.cos(a)*d).toFixed(0)}px;--dy:${(Math.sin(a)*d).toFixed(0)}px;--r:${R(-200,200)}deg;background:var(${pick(cols)});width:${R(5,9)}px;height:${R(5,9)}px;border-radius:${pick(['50%','2px'])}"></i>`}
+  bx.innerHTML=h;b.querySelector('.sbw').appendChild(bx);b.classList.add('hit');setTimeout(()=>{bx.remove();b.classList.remove('hit')},1100)}
+const SCALES=[10,20,40,60,100,150,200,300,500,750,1000,1500,2000,5000,10000];
+function simUpdate(){const bars=document.querySelectorAll('.sb[data-k]'),mx=SIM.cap||25;const cp=$('#simcap');if(cp)cp.textContent=mx;bars.forEach(b=>{const c=SIM.counts[b.dataset.k]||0;const hh=Math.min(100,c/mx*100);b.querySelector('.sbv').style.height=hh+'%';b.querySelector('.sbn').style.bottom=`calc(${hh}% + 2px)`;b.classList.toggle('full',c>mx);if(c>mx&&!b.dataset.boom){b.dataset.boom='1';simBoom(b)}if(c<=mx)delete b.dataset.boom;b.querySelector('.sbn').textContent=c});const e=$('#simn');if(e)e.textContent=SIM.n}
+function simRoll(){const sm=$('.sim');if(sm.dataset.type==='pair'){const bl=shuffle(sm.dataset.balls.split('')),p=[bl[0],bl[1]],k=pairEv(p,sm.dataset.c1,sm.dataset.c2);SIM.counts[k]=(SIM.counts[k]||0)+1;SIM.n++;$('#simdice').innerHTML=ballSVG(p[0])+ballSVG(p[1]);return}
+  const two=sm.dataset.type==='two',a=R(1,6),b=two?R(1,6):0,k=two?a+b:a;SIM.counts[k]=(SIM.counts[k]||0)+1;SIM.n++;$('#simdice').innerHTML=dieSVG(a)+(two?dieSVG(b):'')}
+function simShake(done){const sm=$('.sim'),box=$('#simdice');if(!sm||!box){done();return}let f=0;const pair=sm.dataset.type==='pair',two=sm.dataset.type==='two';
+  box.classList.add('shake');const tick=()=>{if(!$('.sim')){done();return}
+    if(pair){const bl=shuffle(sm.dataset.balls.split(''));box.innerHTML=ballSVG(bl[0])+ballSVG(bl[1])}else box.innerHTML=dieSVG(R(1,6))+(two?dieSVG(R(1,6)):'');
+    if(++f<7)setTimeout(tick,85);else{box.classList.remove('shake');done()}};tick()}
+const NICE=[5,6,8,10,12,15,20,25,30,40,50,60,75,80,100,120,150,200];
+function simBtns(){const m=SIM.mode;document.querySelectorAll('[data-sim]').forEach(b=>{const n=+b.dataset.sim;b.disabled=SIM.run||(m==='small'&&n===100)||(m==='big'&&n===10);b.title=b.disabled&&!SIM.run?'Tyhjennä ensin, jos haluat vaihtaa sarjan kokoa.':''});document.querySelectorAll('[data-simreset]').forEach(b=>b.disabled=SIM.run);
+  const nt=$('#simnote');if(nt)nt.hidden=!m}
+function simRun(n){if(SIM.run||!$('.sim'))return;const red=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!SIM.mode){SIM.mode=n===100?'big':'small';const N=SIM.mode==='big'?100:10,pm=+($('.sim').dataset.pmax||1/6),raw=N*pm+3*Math.sqrt(N*pm*(1-pm));SIM.cap=NICE.find(x=>x>=raw)||Math.ceil(raw);SIM.batches=0}
+  else if((SIM.mode==='small'&&n===100)||(SIM.mode==='big'&&n===10))return;
+  if(n>1){if(SIM.batches>0){SIM.cap*=2;document.querySelectorAll('.sb[data-k]').forEach(b=>delete b.dataset.boom);const cl=$('.simcap');if(cl){cl.classList.remove('grow');void cl.offsetWidth;cl.classList.add('grow')}}SIM.batches++}
+  simUpdate();
+  if(red){for(let i=0;i<n;i++)simRoll();simUpdate();simBtns();return}
+  SIM.run=true;simBtns();
+  const end=()=>{SIM.run=false;simBtns()};
+  if(n===1){simShake(()=>{if($('.sim')){simRoll();simUpdate()}end()});return}
+  let i=0;const delay=n>=100?60:260;const step=()=>{if(!$('.sim')){end();return}simRoll();i++;simUpdate();if(i<n)setTimeout(step,delay);else end()};step()}
+function kokeiluGen(g){return(L)=>{SIM={counts:{},n:0,run:false};
+  if(L===1){const q=pick([0,1]);
+    return{kind:'choice',visual:simHTML('one'),choices:q?[['1','Ykkönen'],['6','Kuutonen'],['all','Kaikki yhtä todennäköisiä']]:[['yes','Kyllä, kuutonen on harvinaisempi'],['no','Ei, ne ovat yhtä todennäköisiä']],ans:q?'all':'no',answerText:'',
+      text:`<span class="bg" style="font-size:.7em">${q?'Heitä noppaa monta kertaa. Mikä silmäluku on todennäköisin?':'Onko kuutosen saaminen vaikeampaa kuin ykkösen?'}</span>`,
+      hint:'<p>Kokeile heittää 100 kertaa. Mitä useammin heität, sitä tasaisemmiksi pylväät tulevat.</p>',explain:'<p><b>Nopan kaikki kuusi silmälukua ovat yhtä todennäköisiä.</b> Jokaisen todennäköisyys on 1/6. Pienessä kokeilussa jokin luku voi silti tulla sattumalta useammin.</p>'}}
+  if(L===2){let x,y;do{[x,y]=shuffle([2,3,4,5,6,7,8,9,10,11,12]).slice(0,2)}while(ways(x)===ways(y)||Math.random()<.4&&x!==7&&y!==7);
+    const q=Math.random()<.4;const ans=q?'7':String(ways(x)>ways(y)?x:y);
+    return{kind:'choice',visual:simHTML('two'),choices:q?[['2','2'],['7','7'],['12','12'],['all','Kaikki yhtä todennäköisiä']]:[[String(x),`Summa ${x}`],[String(y),`Summa ${y}`],['same','Yhtä todennäköisiä']],ans,answerText:'',
+      text:`<span class="bg" style="font-size:.7em">Heitetään kahta noppaa ja lasketaan silmälukujen summa. ${q?'Mikä summa on todennäköisin?':`Kumpi on todennäköisempi: summa ${x} vai summa ${y}?`}</span>`,
+      hint:'<p>Kokeile heittää 100 kertaa ja katso pylväitä. Mieti sitten, monellako tavalla kunkin summan voi saada.</p>',
+      explain:`<p><b>Kahdella nopalla summat eivät ole yhtä todennäköisiä.</b> Summan 7 voi saada kuudella tavalla (1+6, 2+5, 3+4, 4+3, 5+2, 6+1), mutta summan 2 vain yhdellä tavalla (1+1).</p>${sumTable(q?7:Number(ans))}`}}
+  const s=pick([3,4,5,6,8,9,10,11]),w=ways(s);
+  return{kind:'int',visual:simHTML('two'),text:`<span class="bg" style="font-size:.7em">Monellako eri tavalla kahdella nopalla voi saada summan ${s}?</span> ${BOX}`,ans:w,answerText:String(w),
+    hint:`<p>Ajattele, että nopat ovat eriväriset. Esimerkiksi 1 + 2 ja 2 + 1 ovat eri tapoja.</p>${sumTable(null)}`,explain:`<p>Summa ${s} tulee <b>${w}</b> tavalla:</p>${sumTable(s)}`}}}
+const GOALS={1:'<b>Todennäköisyyden alkeet:</b> varma, mahdollinen vai mahdoton.',2:'<b>Todennäköisyyden alkeet:</b> varma, mahdollinen vai mahdoton, ja kumpi on todennäköisempi.',3:'<b>Todennäköisyys</b> pussien ja onnenpyörän avulla sekä kokeilut nopilla.',4:'<b>Todennäköisyys</b> pussien ja onnenpyörän avulla sekä kokeilut nopilla.',5:'<b>Todennäköisyys murtolukuna</b>, kokeilut nopilla, kahden pallon nostot ja keskiarvo.',6:'<b>Todennäköisyys murtolukuna ja prosentteina</b>, kahden nopan summat, kahden pallon nostot ja keskiarvo.'};
+for(const g of [1,2,3,4,5,6]){GR[g].topics.push({id:'tn',fam:'stat',name:'Todennäköisyys',levels:g<=2?['Varma vai mahdoton?','Kumpi todennäköisempi?','Pussit ja noppa']:g<=4?['Todennäköisin väri','Kaksi pussia','Reilu peli']:['Pussin pallot','Noppa',g===6?'Prosentit ja kaksi noppaa':'Kaksi noppaa'],gen:tnGen(g)});
+  if(g>=3)GR[g].topics.push({id:'kokeilu',fam:'stat',name:'Kokeilu nopilla',levels:['Yksi noppa','Kaksi noppaa','Monellako tavalla?'],gen:kokeiluGen(g)})}
+
+/* kaksi palloa */
+const cppl={r:'punaisia',b:'sinisiä',y:'keltaisia',g:'vihreitä'};
+const ballSVG=c=>`<svg class="ball" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.5" fill="var(${KCOL[c][0]})" stroke="var(--ink)" stroke-opacity=".3"/><circle cx="7.5" cy="7.5" r="2.2" fill="#fff" opacity=".5"/></svg>`;
+function pairList(balls){const ps=[];for(let i=0;i<balls.length;i++)for(let j=i+1;j<balls.length;j++)ps.push([balls[i],balls[j]]);return ps}
+const pairEv=(p,c1,c2)=>p[0]===p[1]?(p[0]===c1?'r':p[0]===c2?'b':'o'):'d';
+function pairChips(ps,c1,c2,hl){return `<div class="pchips">${ps.map(p=>{const e=pairEv(p,c1,c2);return `<span class="pchip${hl&&hl.includes(e)?' hl':''}">${ballSVG(p[0])}${ballSVG(p[1])}</span>`}).join('')}</div>`}
+function pairSim(c1,c2,balls,pmax){return `<div class="sim" data-type="pair" data-pmax="${pmax}" data-balls="${balls.join('')}" data-c1="${c1}" data-c2="${c2}"><div class="dice" id="simdice">${ballSVG(c1)}${ballSVG(c2)}</div>
+  <div class="simbtns"><button type="button" class="btn ghost" data-sim="1">Nosta kerran</button><button type="button" class="btn ghost" data-sim="10">10 kertaa</button><button type="button" class="btn ghost" data-sim="100">100 kertaa</button><button type="button" class="btn ghost" data-simreset="1">Tyhjennä</button></div>
+  <div class="simbars"><div class="yax"><span class="sbw"><b class="ytick simcap" id="simcap">25</b><b class="ytick y0">0</b></span></div>${[['r',`Molemmat ${cppl[c1]}`],['b',`Molemmat ${cppl[c2]}`],['d','Eriväriset']].map(([k,l])=>`<div class="sb" data-k="${k}"><span class="sbw"><span class="sbv" style="height:0%"></span><span class="sbn">0</span></span><span class="sbl sbl2">${l}</span></div>`).join('')}</div><p class="simtot">Nostoja: <b id="simn">0</b> · pallot palautetaan pussiin joka noston jälkeen</p><p class="simnote" id="simnote" hidden>Sarjan kokoa voi vaihtaa, kun tyhjennät ensin.</p></div>`}
+function pairGen(g){return(L)=>{SIM={counts:{},n:0,run:false};
+  for(let t=0;t<200;t++){const[c1,c2]=shuffle(['r','b','y','g']).slice(0,2);const a=R(1,g===5?3:4),b=R(1,g===5?3:4);if(a+b<3||a+b>(g===5?5:7)||(L===2&&(a<2||b<2)))continue;
+    const balls=[...Array(a).fill(c1),...Array(b).fill(c2)],ps=pairList(balls),cnt={r:0,b:0,d:0};ps.forEach(p=>cnt[pairEv(p,c1,c2)]++);
+    const lab={r:`Molemmat ${cppl[c1]}`,b:`Molemmat ${cppl[c2]}`,d:'Eriväriset'};
+    const vis=`${bagSVG({[c1]:a,[c2]:b})}${pairSim(c1,c2,balls,Math.max(cnt.r,cnt.b,cnt.d)/ps.length)}`;
+    const hint=`<p>Ajattele, että jokainen pallo on erilainen, vaikka niillä olisi sama väri. Luettele kaikki parit, jotka pussista voi nostaa:</p>${pairChips(ps,c1,c2)}<p>Laske, moniko pari sopii kuhunkin vaihtoehtoon.</p>`;
+    const expl=e=>`<p>Mahdollisia pareja on ${ps.length}: ${lab.r.toLowerCase()} ${cnt.r}, ${lab.b.toLowerCase()} ${cnt.b} ja erivärisiä ${cnt.d}.</p>${pairChips(ps,c1,c2,e)}`;
+    if(L===1){const other=pick(['r','b']);if(cnt[other]===0)continue;if(cnt[other]===cnt.d&&Math.random()<.7)continue;const ans=cnt[other]>cnt.d?other:cnt.d>cnt[other]?'d':'same';
+      return{kind:'choice',choices:[[other,lab[other]],['d','Eriväriset'],['same','Yhtä todennäköistä']],ans,answerText:'',visual:vis,
+        text:`<span class="bg" style="font-size:.7em">Nostat pussista kaksi palloa yhtä aikaa katsomatta. Kumpi on todennäköisempää?</span>`,hint,explain:expl(ans==='same'?[other,'d']:[ans])}}
+    if(L===2){const vals=[cnt.r,cnt.b,cnt.d],mx=Math.max(...vals);if(vals.filter(v=>v===mx).length>1)continue;const ans=['r','b','d'][vals.indexOf(mx)];
+      return{kind:'choice',choices:[['r',lab.r],['b',lab.b],['d','Eriväriset']],ans,answerText:'',visual:vis,
+        text:`<span class="bg" style="font-size:.7em">Nostat pussista kaksi palloa yhtä aikaa katsomatta. Mikä on todennäköisintä?</span>`,hint,explain:expl([ans])}}
+    const e=pick(['r','b','d']);if(cnt[e]===0)continue;
+    return{kind:'frac',visual:vis,text:`<span class="bg" style="font-size:.7em">Nostat pussista kaksi palloa yhtä aikaa katsomatta. Millä todennäköisyydellä ${e==='d'?'pallot ovat erivärisiä':`molemmat ovat ${e==='r'?cppl[c1]:cppl[c2]}`}?</span> ${BOX}`,
+      ans:{n:cnt[e],d:ps.length},answerText:fracRes(cnt[e],ps.length),hint:hint+'<p>Todennäköisyys = sopivat parit / kaikki parit.</p>',explain:expl([e])+`<p><b>${fracRes(cnt[e],ps.length)}</b></p>`}}
+  return pairGen(g)(1)}}
+for(const g of [5,6])GR[g].topics.push({id:'kaksipalloa',fam:'stat',name:'Kaksi palloa',levels:['Kumpi todennäköisempää?','Mikä todennäköisintä?','Todennäköisyys murtolukuna'],gen:pairGen(g)});
 
 /* ---------- tila ---------- */
 const KEY='laskupolku-v1';
@@ -1374,19 +1631,21 @@ let S={grade:1,topic:{},op:'+',fam:'add',type:'perus',stars:0,prog:{}};
 try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&typeof s==='object')S={...S,...s}}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 let RND=null;const MIX=()=>S.op==='mix'&&RND;
-const fam=()=>MIX()?RND.fam:S.fam==='cmp'||S.fam==='mit'?S.fam:S.grade===1?'add':(S.fam||'add');
-const tlist=()=>GR[S.grade].topics.filter(t=>(t.fam||'add')===fam());
+const fam=()=>MIX()?RND.fam:S.fam==='cmp'||S.fam==='mit'||S.fam==='stat'?S.fam:S.grade===1?'add':(S.fam||'add');
+const PSEUDO=f=>f==='add'||f==='mul'?[{id:'pulma-'+f,name:'Kuvapulmat',levels:PUZ_LEVELS,gen:(L,op)=>puzzleGen(S.grade)(L,op),noWord:true,puzzle:true},{id:'sana-'+f,name:'Päättelytehtävät',levels:['Kaksi henkilöä','Kolme henkilöä','Tieto vasta lopussa'],gen:L=>wordPuzzleGen(S.grade)(L),noWord:true,puzzle:true}]:[];
+const tlist=()=>[...GR[S.grade].topics.filter(t=>(t.fam||'add')===fam()),...PSEUDO(fam())];
 const PUZ_LEVELS=['Kaksi kuvaa','Kolme kuvaa','Rivit sekaisin'];
-const TYPES={perus:'Perustehtävät',sov:'Sanalliset tehtävät',pulma:'Kuvapulmat',sana:'Päättelytehtävät'};
-const typesFor=f=>f==='cmp'?['perus']:f==='mit'?['perus','sov']:['perus','sov','pulma','sana'];
-const typ=()=>MIX()?RND.type:typesFor(fam()).includes(S.type)?S.type:'perus';
-const cur=()=>{if(typ()==='sana')return{id:'sana-'+fam(),name:'Päättelytehtävät',levels:['Kaksi henkilöä','Kolme henkilöä','Tieto vasta lopussa'],gen:wordPuzzleGen(S.grade)};if(typ()==='pulma')return{id:'pulma-'+fam(),name:'Kuvapulmat',levels:PUZ_LEVELS,gen:puzzleGen(S.grade)};const l=tlist();return l.find(t=>t.id===(MIX()?RND.topic:S.topic[S.grade+fam()]))||l[0]};
+const TYPES={perus:'Perustehtävät',sov:'Sanalliset tehtävät'};
+const NOWORD=new Set(['muodot','c-kuviot','tn','kokeilu','kaksipalloa']);
+const typesFor=t=>t.noWord||NOWORD.has(t.id)?['perus']:['perus','sov'];
+const typ=()=>MIX()?RND.type:typesFor(cur()).includes(S.type)?S.type:'perus';
+const cur=()=>{const l=tlist();return l.find(t=>t.id===(MIX()?RND.topic:S.topic[S.grade+fam()]))||l[0]};
 const prog=()=>{const k=S.grade+'-'+cur().id;return S.prog[k]||(S.prog[k]={level:1,streak:0,fails:0})};
 
 const $=s=>document.querySelector(s);
 function chips(el,items,active){if(el.disabled){el.innerHTML='<option value=""></option>';return}el.innerHTML=items.map(([v,l])=>`<option value="${v}"${v===active?' selected':''}>${l}</option>`).join('')}
 document.addEventListener('change',e=>{const t=e.target;if(!t.dataset||!t.dataset.sel)return;const v=t.value;
-  if(t.dataset.sel==='op'){S.op=v;if(v==='+'||v==='-')S.fam='add';else if(v==='cmp'||v==='mit')S.fam=v;else if(v!=='mix')S.fam='mul'}
+  if(t.dataset.sel==='op'){S.op=v;if(v==='+'||v==='-')S.fam='add';else if(v==='cmp'||v==='mit'||v==='stat')S.fam=v;else if(v!=='mix')S.fam='mul'}
   else if(t.dataset.sel==='topic')S.topic[S.grade+fam()]=v;else S.type=v;
   renderControls();newProblem();save()});
 function renderControls(){
@@ -1394,22 +1653,20 @@ function renderControls(){
   const g=GR[S.grade];if(S.grade===1&&(S.op==='*'||S.op==='/'))S.op='+';
   if(S.op==='mix'){$('#goal').innerHTML='<b>Sattuma:</b> tehtävät tulevat satunnaisesti kaikista laskuista, aiheista ja tehtävätyypeistä. Tehtävän aihe näkyy sen yläreunassa.';
     $('#types').disabled=true;chips($('#types'),[['x','Satunnainen']],'x');$('#topics').disabled=true;chips($('#topics'),[['x','Satunnainen']],'x');
-    chips($('#ops'),[['+','Yhteenlasku'],['-','Vähennyslasku'],...(S.grade>1?[['*','Kertolasku'],['/','Jakolasku']]:[]),['cmp','Jonot'],['mit','Mittaaminen'],['mix','Sattuma']],S.op,'op');$('#starN').textContent=S.stars;return}
-  $('#goal').innerHTML=fam()==='mul'?GOALM[S.grade]:fam()==='cmp'?GOALC[S.grade].replace(/\.$/,' sekä kuviojonot.'):fam()==='mit'?GOALMIT[S.grade]+(S.grade>=2?' Lisäksi yksikkömuunnokset: pituus, tilavuus, massa ja raha.':''):g.goal;
-  const l=tlist(),noTopic=typ()==='pulma'||typ()==='sana';
-  if(noTopic){$('#topics').disabled=true;chips($('#topics'),[['x','Kaikki laskut sekaisin']],'x')}
-  else{$('#topics').disabled=l.length<2;chips($('#topics'),l.map(t=>[t.id,t.name]),cur().id,'topic')}
-  chips($('#ops'),[['+','Yhteenlasku'],['-','Vähennyslasku'],...(S.grade>1?[['*','Kertolasku'],['/','Jakolasku']]:[]),['cmp','Jonot'],['mit','Mittaaminen'],['mix','Sattuma']],S.op,'op');
-  const ty=typesFor(fam());$('#types').disabled=ty.length<2;chips($('#types'),ty.map(k=>[k,TYPES[k]]),typ(),'type');
+    chips($('#ops'),[['+','Yhteenlasku'],['-','Vähennyslasku'],...(S.grade>1?[['*','Kertolasku'],['/','Jakolasku']]:[]),['cmp','Jonot'],['mit','Mittaaminen'],['stat','Tilastot'],['mix','Sattuma']],S.op,'op');$('#starN').textContent=S.stars;return}
+  $('#goal').innerHTML=fam()==='mul'?GOALM[S.grade]:fam()==='cmp'?GOALC[S.grade].replace(/\.$/,' sekä kuviojonot.'):fam()==='stat'?GOALS[S.grade]:fam()==='mit'?GOALMIT[S.grade]+(S.grade>=2?' Lisäksi yksikkömuunnokset: pituus, tilavuus, massa ja raha.':''):g.goal;
+  const l=tlist();$('#topics').disabled=l.length<2;chips($('#topics'),l.map(t=>[t.id,t.name]),cur().id,'topic');
+  chips($('#ops'),[['+','Yhteenlasku'],['-','Vähennyslasku'],...(S.grade>1?[['*','Kertolasku'],['/','Jakolasku']]:[]),['cmp','Jonot'],['mit','Mittaaminen'],['stat','Tilastot'],['mix','Sattuma']],S.op,'op');
+  const ty=typesFor(cur());$('#types').disabled=ty.length<2;chips($('#types'),ty.map(k=>[k,TYPES[k]]),typ(),'type');
   $('#starN').textContent=S.stars}
 
 /* ---------- tehtävä ---------- */
 let P=null,tries=0,done=false;
-const FAMN={add:'Yhteen- ja vähennyslasku',mul:'Kerto- ja jakolasku',cmp:'Jonot',mit:'Mittaaminen'};
+const FAMN={add:'Yhteen- ja vähennyslasku',mul:'Kerto- ja jakolasku',cmp:'Jonot',mit:'Mittaaminen',stat:'Tilastot'};
 function newProblem(keep){
-  if(S.op==='mix'&&!(keep&&RND)){const f=pick(['add',...(S.grade>1?['mul']:[]),'cmp','mit']);RND={fam:f,type:'perus',topic:null};
-    RND.type=pick(typesFor(f));RND.topic=pick(tlist()).id}
-  const t=cur(),pr=prog();const op=S.op==='mix'?pick(fam()==='mul'?['*','/']:fam()==='cmp'?['cmp']:fam()==='mit'?['mit']:['+','-']):S.op;
+  if(S.op==='mix'&&!(keep&&RND)){const f=pick(['add',...(S.grade>1?['mul']:[]),'cmp','mit','stat']);RND={fam:f,type:'perus',topic:null};
+    const tl=tlist();const tp=pick(tl.flatMap(t=>t.puzzle?[t]:[t,t]));RND.topic=tp.id;RND.type=pick(typesFor(tp))}
+  const t=cur(),pr=prog();const op=S.op==='mix'?pick(fam()==='mul'?['*','/']:fam()==='cmp'?['cmp']:fam()==='mit'?['mit']:fam()==='stat'?['stat']:['+','-']):S.op;
   P=t.gen(pr.level,op,typ()==='sov');P.opUsed=op;tries=0;done=false;draw()}
 function answerHTML(){
   if(P.kind==='col'){const L=P.L,isC=i=>L.D&&i===L.I,rng=[...Array(L.N).keys()];
@@ -1434,7 +1691,7 @@ function inlineAns(){if(P.steps||P.inline||!P.text||!P.text.includes(BOX)||!['in
   return `<input class="num xin" id="ans" style="width:${w+1}ch" inputmode="none" autocomplete="off" aria-label="Vastaus">`}
 function draw(){const t=cur(),pr=prog();const IA=inlineAns();
   $('#sheet').innerHTML=`
-    ${S.op==='mix'?`<p class="mixlbl">${typ()==='pulma'||typ()==='sana'?TYPES[typ()]:`${FAMN[fam()]} · ${t.name}${typ()==='sov'?' · sanallinen':''}`}</p>`:''}
+    ${S.op==='mix'?`<p class="mixlbl">${t.puzzle?`${t.name} · ${FAMN[fam()].toLowerCase()}`:`${FAMN[fam()]} · ${t.name}${typ()==='sov'?' · sanallinen':''}`}</p>`:''}
     <div class="status">
       <div class="levels" role="group" aria-label="Taso"><span class="stlbl">Taso</span>${[1,2,3].map(l=>`<button type="button" class="lv" data-level="${l}" aria-pressed="${l===pr.level}" aria-label="Taso ${l}">${l}</button>`).join('')}<span class="lvname">${(ln=>typeof ln==='object'?ln[P.opUsed]||ln['*']:ln)(t.levels[pr.level-1])}</span></div>
       <div class="streak" id="streak">${streakHTML()}</div>
@@ -1549,6 +1806,8 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)r
   else if(b.dataset.type){S.type=b.dataset.type;renderControls();newProblem();save()}
   else if(b.dataset.level){const pr=prog();pr.level=+b.dataset.level;pr.streak=0;pr.fails=0;newProblem(true);save()}
   else if(b.dataset.pick!=null){if(done)return;b.setAttribute('aria-pressed',String(b.getAttribute('aria-pressed')!=='true'));b.classList.remove('ok','no')}
+  else if(b.dataset.sim){simRun(+b.dataset.sim);return}
+  else if(b.dataset.simreset){SIM.counts={};SIM.n=0;SIM.cap=25;SIM.mode=null;SIM.batches=0;simUpdate();simBtns();return}
   else if(b.dataset.choice!=null){if(done)return;P.sel=b.dataset.choice;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));check()}
   else if(b.dataset.key)pressKey(b.dataset.key);
   else if(b.id==='check')check();
