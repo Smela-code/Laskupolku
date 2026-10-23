@@ -283,6 +283,7 @@ table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;f
 .padt tr.res td{border-top:3px solid var(--ink);padding-top:5px}
 .padop{width:28px;height:32px;border:2px solid var(--blue);border-radius:8px;background:var(--paper);color:var(--blue);font:800 1.3rem var(--display);cursor:pointer;padding:0}
 .padclr{font-size:.9rem;padding:6px 12px;margin-top:8px}
+.below{width:100%}
 .simnote{margin:0;font-size:.82rem;color:var(--soft)}
 .simtot{margin:0;color:var(--soft);font-weight:700;font-size:.9rem}
 @media (prefers-reduced-motion:reduce){.sbv{transition:none}}
@@ -1413,7 +1414,7 @@ function geoGen(g){return(L)=>{const b=g===1?0:1;let tgt,pool,rotOn;
     const k=its.filter(x=>T.is(x.t)).length;if(k<2||k>N/2)continue;
     const ans=its.map((x,i)=>T.is(x.t)?i:-1).filter(i=>i>=0);
     const grid=`<div class="ggrid${N===12?' g4':''}" role="group" aria-label="Kuviot">${its.map((x,i)=>`<button type="button" class="gtile" data-pick="${i}" aria-pressed="false" aria-label="Kuvio ${i+1}">${gShape(x.t,x.rot,x.sc,x.col)}</button>`).join('')}</div>`;
-    return{kind:'multi',visual:grid,text:`<span class="bg" style="font-size:.75em">Valitse kaikki ${T.pl}.</span>`,ans,answerText:'',
+    return{kind:'multi',after:grid,text:`<span class="bg" style="font-size:.75em">Valitse kaikki ${T.pl}.</span>`,ans,answerText:'',
       hint:`<p>${T.def}</p><p>Laske jokaisesta kuviosta sivut tai katso muotoa tarkasti.</p>`,
       explain:`<p><b>${T.def}</b></p><p>Kuvioita oli ${ans.length}. Ne on merkitty vihreällä.</p>`}}
   return geoGen(g)(1)}}
@@ -1463,7 +1464,7 @@ function geoGen2(g){return(L)=>{
     if(L===3&&its.some(x=>x.ang&&x.tags.has('erisivuinen')&&Math.min(Math.abs(x.ang[0]-x.ang[1]),Math.abs(x.ang[1]-x.ang[2]),Math.abs(x.ang[0]-x.ang[2]))<10))continue;
     const ans=its.map((x,i)=>x.tags.has(tg)?i:-1).filter(i=>i>=0);if(ans.length<2||ans.length>N/2)continue;
     const grid=`<div class="ggrid${N===12?' g4':''}" role="group" aria-label="Kuviot">${its.map((x,i)=>`<button type="button" class="gtile" data-pick="${i}" aria-pressed="false" aria-label="Kuvio ${i+1}">${gShape(x.t,x.rot,x.sc,x.col)}</button>`).join('')}</div>`;
-    return{kind:'multi',visual:grid,text:`<span class="bg" style="font-size:.75em">Valitse kaikki ${T.pl}.</span>`,ans,answerText:'',
+    return{kind:'multi',after:grid,text:`<span class="bg" style="font-size:.75em">Valitse kaikki ${T.pl}.</span>`,ans,answerText:'',
       hint:`<p>${T.def}</p>${L===2?'<p>Vertaa kulmia vihon tai kirjan kulmaan: se on suora kulma.</p>':L===3?'<p>Vertaa sivujen pituuksia toisiinsa. Voit kääntää laitetta, jos se auttaa.</p>':'<p>Etsi yhdensuuntaiset sivut: ne kulkevat samaan suuntaan kuin junan kiskot.</p>'}`,
       explain:`<p><b>${T.def}</b></p><p>Kuvioita oli ${ans.length}. Ne on merkitty vihreällä.</p>`}}
   return geoGen2(g)(L)}}
@@ -1611,17 +1612,17 @@ function simRun(n){if(SIM.run||!$('.sim'))return;const red=window.matchMedia('(p
   let i=0;const delay=n>=100?60:260;const step=()=>{if(!$('.sim')){end();return}simRoll();i++;simUpdate();if(i<n)setTimeout(step,delay);else end()};step()}
 function kokeiluGen(g){return(L)=>{SIM={counts:{},n:0,run:false};
   if(L===1){const q=pick([0,1]);
-    return{kind:'choice',visual:simHTML('one'),choices:q?[['1','Ykkönen'],['6','Kuutonen'],['all','Kaikki yhtä todennäköisiä']]:[['yes','Kyllä, kuutonen on harvinaisempi'],['no','Ei, ne ovat yhtä todennäköisiä']],ans:q?'all':'no',answerText:'',
+    return{kind:'choice',below:simHTML('one'),choices:q?[['1','Ykkönen'],['6','Kuutonen'],['all','Kaikki yhtä todennäköisiä']]:[['yes','Kyllä, kuutonen on harvinaisempi'],['no','Ei, ne ovat yhtä todennäköisiä']],ans:q?'all':'no',answerText:'',
       text:`<span class="bg" style="font-size:.7em">${q?'Heitä noppaa monta kertaa. Mikä silmäluku on todennäköisin?':'Onko kuutosen saaminen vaikeampaa kuin ykkösen?'}</span>`,
       hint:'<p>Kokeile heittää 100 kertaa. Mitä useammin heität, sitä tasaisemmiksi pylväät tulevat.</p>',explain:'<p><b>Nopan kaikki kuusi silmälukua ovat yhtä todennäköisiä.</b> Jokaisen todennäköisyys on 1/6. Pienessä kokeilussa jokin luku voi silti tulla sattumalta useammin.</p>'}}
   if(L===2){let x,y;do{[x,y]=shuffle([2,3,4,5,6,7,8,9,10,11,12]).slice(0,2)}while(ways(x)===ways(y)||Math.random()<.4&&x!==7&&y!==7);
     const q=Math.random()<.4;const ans=q?'7':String(ways(x)>ways(y)?x:y);
-    return{kind:'choice',visual:simHTML('two'),choices:q?[['2','2'],['7','7'],['12','12'],['all','Kaikki yhtä todennäköisiä']]:[[String(x),`Summa ${x}`],[String(y),`Summa ${y}`],['same','Yhtä todennäköisiä']],ans,answerText:'',
+    return{kind:'choice',below:simHTML('two'),choices:q?[['2','2'],['7','7'],['12','12'],['all','Kaikki yhtä todennäköisiä']]:[[String(x),`Summa ${x}`],[String(y),`Summa ${y}`],['same','Yhtä todennäköisiä']],ans,answerText:'',
       text:`<span class="bg" style="font-size:.7em">Heitetään kahta noppaa ja lasketaan silmälukujen summa. ${q?'Mikä summa on todennäköisin?':`Kumpi on todennäköisempi: summa ${x} vai summa ${y}?`}</span>`,
       hint:'<p>Kokeile heittää 100 kertaa ja katso pylväitä. Mieti sitten, monellako tavalla kunkin summan voi saada.</p>',
       explain:`<p><b>Kahdella nopalla summat eivät ole yhtä todennäköisiä.</b> Summan 7 voi saada kuudella tavalla (1+6, 2+5, 3+4, 4+3, 5+2, 6+1), mutta summan 2 vain yhdellä tavalla (1+1).</p>${sumTable(q?7:Number(ans))}`}}
   const s=pick([3,4,5,6,8,9,10,11]),w=ways(s);
-  return{kind:'int',visual:simHTML('two'),text:`<span class="bg" style="font-size:.7em">Monellako eri tavalla kahdella nopalla voi saada summan ${s}?</span> ${BOX}`,ans:w,answerText:String(w),
+  return{kind:'int',below:simHTML('two'),text:`<span class="bg" style="font-size:.7em">Monellako eri tavalla kahdella nopalla voi saada summan ${s}?</span> ${BOX}`,ans:w,answerText:String(w),
     hint:`<p>Ajattele, että nopat ovat eriväriset. Esimerkiksi 1 + 2 ja 2 + 1 ovat eri tapoja.</p>${sumTable(null)}`,explain:`<p>Summa ${s} tulee <b>${w}</b> tavalla:</p>${sumTable(s)}`}}}
 const GOALS={1:'<b>Todennäköisyyden alkeet:</b> varma, mahdollinen vai mahdoton.',2:'<b>Todennäköisyyden alkeet:</b> varma, mahdollinen vai mahdoton, ja kumpi on todennäköisempi.',3:'<b>Todennäköisyys</b> pussien ja onnenpyörän avulla sekä kokeilut nopilla.',4:'<b>Todennäköisyys</b> pussien ja onnenpyörän avulla sekä kokeilut nopilla.',5:'<b>Todennäköisyys murtolukuna</b>, kokeilut nopilla, kahden pallon nostot ja keskiarvo.',6:'<b>Todennäköisyys murtolukuna ja prosentteina</b>, kahden nopan summat, kahden pallon nostot ja keskiarvo.'};
 for(const g of [1,2,3,4,5,6]){GR[g].topics.push({id:'tn',fam:'stat',name:'Todennäköisyys',levels:g<=2?['Varma vai mahdoton?','Kumpi todennäköisempi?','Pussit ja noppa']:g<=4?['Todennäköisin väri','Kaksi pussia','Reilu peli']:['Pussin pallot','Noppa',g===6?'Prosentit ja kaksi noppaa':'Kaksi noppaa'],gen:tnGen(g)});
@@ -1640,17 +1641,17 @@ function pairGen(g){return(L)=>{SIM={counts:{},n:0,run:false};
   for(let t=0;t<200;t++){const[c1,c2]=shuffle(['r','b','y','g']).slice(0,2);const a=R(1,g===5?3:4),b=R(1,g===5?3:4);if(a+b<3||a+b>(g===5?5:7)||(L===2&&(a<2||b<2)))continue;
     const balls=[...Array(a).fill(c1),...Array(b).fill(c2)],ps=pairList(balls),cnt={r:0,b:0,d:0};ps.forEach(p=>cnt[pairEv(p,c1,c2)]++);
     const lab={r:`Molemmat ${cppl[c1]}`,b:`Molemmat ${cppl[c2]}`,d:'Eriväriset'};
-    const vis=`${bagSVG({[c1]:a,[c2]:b})}${pairSim(c1,c2,balls,Math.max(cnt.r,cnt.b,cnt.d)/ps.length)}`;
+    const vis=bagSVG({[c1]:a,[c2]:b}),below=pairSim(c1,c2,balls,Math.max(cnt.r,cnt.b,cnt.d)/ps.length);
     const hint=`<p>Ajattele, että jokainen pallo on erilainen, vaikka niillä olisi sama väri. Luettele kaikki parit, jotka pussista voi nostaa:</p>${pairChips(ps,c1,c2)}<p>Laske, moniko pari sopii kuhunkin vaihtoehtoon.</p>`;
     const expl=e=>`<p>Mahdollisia pareja on ${ps.length}: ${lab.r.toLowerCase()} ${cnt.r}, ${lab.b.toLowerCase()} ${cnt.b} ja erivärisiä ${cnt.d}.</p>${pairChips(ps,c1,c2,e)}`;
     if(L===1){const other=pick(['r','b']);if(cnt[other]===0)continue;if(cnt[other]===cnt.d&&Math.random()<.7)continue;const ans=cnt[other]>cnt.d?other:cnt.d>cnt[other]?'d':'same';
-      return{kind:'choice',choices:[[other,lab[other]],['d','Eriväriset'],['same','Yhtä todennäköistä']],ans,answerText:'',visual:vis,
+      return{kind:'choice',choices:[[other,lab[other]],['d','Eriväriset'],['same','Yhtä todennäköistä']],ans,answerText:'',visual:vis,below,
         text:`<span class="bg" style="font-size:.7em">Nostat pussista kaksi palloa yhtä aikaa katsomatta. Kumpi on todennäköisempää?</span>`,hint,explain:expl(ans==='same'?[other,'d']:[ans])}}
     if(L===2){const vals=[cnt.r,cnt.b,cnt.d],mx=Math.max(...vals);if(vals.filter(v=>v===mx).length>1)continue;const ans=['r','b','d'][vals.indexOf(mx)];
-      return{kind:'choice',choices:[['r',lab.r],['b',lab.b],['d','Eriväriset']],ans,answerText:'',visual:vis,
+      return{kind:'choice',choices:[['r',lab.r],['b',lab.b],['d','Eriväriset']],ans,answerText:'',visual:vis,below,
         text:`<span class="bg" style="font-size:.7em">Nostat pussista kaksi palloa yhtä aikaa katsomatta. Mikä on todennäköisintä?</span>`,hint,explain:expl([ans])}}
     const e=pick(['r','b','d']);if(cnt[e]===0)continue;
-    return{kind:'frac',visual:vis,text:`<span class="bg" style="font-size:.7em">Nostat pussista kaksi palloa yhtä aikaa katsomatta. Millä todennäköisyydellä ${e==='d'?'pallot ovat erivärisiä':`molemmat ovat ${e==='r'?cppl[c1]:cppl[c2]}`}?</span> ${BOX}`,
+    return{kind:'frac',visual:vis,below,text:`<span class="bg" style="font-size:.7em">Nostat pussista kaksi palloa yhtä aikaa katsomatta. Millä todennäköisyydellä ${e==='d'?'pallot ovat erivärisiä':`molemmat ovat ${e==='r'?cppl[c1]:cppl[c2]}`}?</span> ${BOX}`,
       ans:{n:cnt[e],d:ps.length},answerText:fracRes(cnt[e],ps.length),hint:hint+'<p>Todennäköisyys = sopivat parit / kaikki parit.</p>',explain:expl([e])+`<p><b>${fracRes(cnt[e],ps.length)}</b></p>`}}
   return pairGen(g)(1)}}
 for(const g of [5,6])GR[g].topics.push({id:'kaksipalloa',fam:'stat',name:'Kaksi palloa',levels:['Kumpi todennäköisempää?','Mikä todennäköisintä?','Todennäköisyys murtolukuna'],gen:pairGen(g)});
@@ -1709,7 +1710,7 @@ const dq=(c,th)=>th&&th.days?c.l:`vastasi ”${c.n.toLowerCase()}”`;
 const DCOL=['--apple','--blue','--sun','--good','--candy'];
 function barChart(cats,vals,step,max,small){const n=cats.length,W=small?150:Math.max(220,n*56+46),H=small?110:180,L=small?22:34,B=small?96:150,T=small?8:14,PW=W-L-6,bw=Math.min(small?18:34,PW/n-10),y=v=>B-(v/max)*(B-T);
   let s=`<svg class="${small?'bchart sm':'bchart'}" viewBox="0 0 ${W} ${H}" aria-hidden="true">`;
-  for(let v=0;v<=max;v+=step){s+=`<path d="M${L} ${y(v).toFixed(1)}H${W-4}" stroke="var(--line)" stroke-width="${v?1:2}"/>`;if(!small||v===max||v===0)s+=`<text x="${L-4}" y="${(y(v)+4).toFixed(1)}" text-anchor="end" font-size="${small?9:11}" font-weight="700" fill="var(--soft)" font-family="Nunito, sans-serif">${v}</text>`}
+  for(let v=0;v<=max;v+=step){s+=`<path d="M${L} ${y(v).toFixed(1)}H${W-4}" stroke="var(--line)" stroke-width="${v?1:2}"/>`;if(!small||v%(2*step)===0)s+=`<text x="${L-4}" y="${(y(v)+4).toFixed(1)}" text-anchor="end" font-size="${small?9:11}" font-weight="700" fill="var(--soft)" font-family="Nunito, sans-serif">${v}</text>`}
   cats.forEach((c,i)=>{const x=L+i*(PW/n)+(PW/n-bw)/2;s+=`<rect x="${x.toFixed(1)}" y="${y(vals[i]).toFixed(1)}" width="${bw.toFixed(1)}" height="${(B-y(vals[i])).toFixed(1)}" rx="3" fill="var(${DCOL[i%5]})"/>`;
     if(!small)s+=`<text x="${(x+bw/2).toFixed(1)}" y="${B+16}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--ink)" font-family="Nunito, sans-serif">${c.n}</text>`});
   return s+'</svg>'}
@@ -1741,13 +1742,13 @@ function diaGen(g){return(L)=>{const th=pick(DTHEME),cats=th.cats.slice(0,g<=2?3
       return{kind:Q.kind,choices:Q.choices,ans:Q.ans,answerText:Q.kind==='choice'?c2[+Q.ans].n:String(Q.ans),visual:picChart(c2,vals,1),story:`${fc.t} ${Q.q}`,hint:'<p>Laske kunkin rivin kuvat. Vertaa sitten rivejä.</p>',explain:`<p><b>${Q.ex}</b></p>`}}
     const step=g===1?1:2,vals=cats.map(()=>step*R(1,g===1?7:5));return mkQ(barChart(cats,vals,step,step*(g===1?8:6)),vals,true,`<p>Katso, mihin viivaan asti pylväs ulottuu, ja lue luku vasemmalta.${step>1?' Viivat ovat kahden välein.':''}</p>`)}
   if(g<=4){if(L===1){const step=pick(g===3?[2,5]:[5,10]),vals=cats.map(()=>step*R(1,8));return mkQ(barChart(cats,vals,step,step*9),vals,true,`<p>Asteikossa viivat ovat ${step} välein. Lue pylvään korkeus vasemmalta.</p>`)}
-    if(L===2){const fc=DTHEME[0],c2=fc.cats.slice(0,4),vals=c2.map(()=>R(1,9)*(g===3?1:2)+(g===3?R(0,1):0)*0);const per=2,v2=c2.map(()=>R(2,14));const Q=diaQuestion(c2,v2,fc.u,true);
-      return{kind:Q.kind,choices:Q.choices,ans:Q.ans,answerText:Q.kind==='choice'?c2[+Q.ans].n:String(Q.ans),visual:picChart(c2,v2,per),story:`${fc.t} ${Q.q}`,hint:'<p>Katso selitettä: yksi kuva tarkoittaa kahta oppilasta. Puolikas kuva tarkoittaa yhtä.</p>',explain:`<p><b>${Q.ex}</b></p><p>Jokainen kokonainen kuva on 2 ja puolikas 1.</p>`}}
+    if(L===2){const fc=DTHEME[0],c2=fc.cats.slice(0,4),vals=c2.map(()=>R(1,9)*(g===3?1:2)+(g===3?R(0,1):0)*0);const per=1,v2=c2.map(()=>R(2,12));const Q=diaQuestion(c2,v2,fc.u,true);
+      return{kind:Q.kind,choices:Q.choices,ans:Q.ans,answerText:Q.kind==='choice'?c2[+Q.ans].n:String(Q.ans),visual:picChart(c2,v2,per),story:`${fc.t} ${Q.q}`,hint:'<p>Jokainen kuva tarkoittaa yhtä oppilasta. Laske kunkin rivin kuvat ja vertaa rivejä.</p>',explain:`<p><b>${Q.ex}</b></p>`}}
     const step=g===3?2:5,vals=cats.map(()=>step*R(1,7)),opts=[vals];
     for(let t=0;opts.length<3&&t<50;t++){const w=[...vals];if(Math.random()<.5){const[a,b]=shuffle([...cats.keys()]).slice(0,2);if(w[a]===w[b])continue;[w[a],w[b]]=[w[b],w[a]]}else{const a=R(0,n-1);w[a]=Math.max(step,w[a]+pick([-step,step]))}if(!opts.some(o=>o.join()===w.join()))opts.push(w)}
     const sh=shuffle(opts.map((o,i)=>({o,i}))),ans=String(sh.findIndex(x=>x.i===0));
-    const table=`<table class="dtab"><tr>${cats.map(c=>`<th>${c.n}</th>`).join('')}</tr><tr>${vals.map(v=>`<td>${v}</td>`).join('')}</tr></table>`;
-    return{kind:'choice',chartopts:true,choices:sh.map((x,k)=>[String(k),barChart(cats,x.o,step,step*8,true)]),ans,answerText:'',visual:`<div class="calc-wrap">${table}</div><p class="ladtxt">Pylväät ovat samassa järjestyksessä kuin taulukossa: ${cats.map(c=>c.n).join(', ')}.</p>`,
+    const table=`<table class="dtab"><tr>${cats.map((c,i)=>`<th style="background:var(${DCOL[i%5]});color:#fff">${c.n}</th>`).join('')}</tr><tr>${vals.map(v=>`<td>${v}</td>`).join('')}</tr></table>`;
+    return{kind:'choice',chartopts:true,choices:sh.map((x,k)=>[String(k),barChart(cats,x.o,step,step*8,true)]),ans,answerText:'',visual:`<div class="calc-wrap">${table}</div><p class="ladtxt">Pylväiden värit vastaavat taulukon otsikoiden värejä.</p>`,
       text:'<span class="bg" style="font-size:.7em">Mikä pylväsdiagrammi esittää taulukon tietoja?</span>',hint:`<p>Tarkista jokainen pylväs vuorollaan. Asteikossa viivat ovat ${step} välein.</p>`,explain:'<p><b>Oikea diagrammi on merkitty vihreällä.</b> Kaikkien pylväiden korkeudet vastaavat taulukkoa.</p>'}}
   if(L===1){const step=10,vals=cats.map(()=>5*R(1,17));return mkQ(barChart(cats,vals,step,step*9),vals,true,'<p>Viivat ovat 10 välein. Jos pylväs päättyy kahden viivan puoliväliin, luku on viiva + 5.</p>')}
   if(L===2){const labels=['tammi','helmi','maalis','huhti','touko','kesä'],base=R(5,20);let v=[base];for(let i=1;i<6;i++)v.push(Math.max(0,v[i-1]+R(-6,12)));const mx=Math.ceil((Math.max(...v)+2)/10)*10;
@@ -1767,7 +1768,7 @@ function diaGen(g){return(L)=>{const th=pick(DTHEME),cats=th.cats.slice(0,g<=2?3
     const h=R(0,2);if((ps[h]*N)%100)continue;const a=ps[h]*N/100;
     return{kind:'int',visual:pieChart(c3,ps,-1),story:`${th.t} Vastaajia oli ${N}. Montako vastaajaa vastasi ”${c3[h].n.toLowerCase()}”?`,ans:a,answerText:String(a),hint:`<p>${ps[h]} % tarkoittaa ${ps[h]} sadasosaa. Laske ${ps[h]} % luvusta ${N}: ensin 1 % on ${N} : 100.</p>`,explain:`<p><b>${ps[h]} % · ${N} = ${a}</b></p>`}}
   return diaGen(g)(1)}}
-const DIALV={1:['Kuvadiagrammi','Kuvadiagrammin vertailu','Pylväsdiagrammi'],2:['Kuvadiagrammi','Kuvadiagrammin vertailu','Pylväät kahden välein'],3:['Pylväsdiagrammi','Yksi kuva = kaksi','Taulukosta diagrammiksi'],4:['Pylväät 5 tai 10 välein','Yksi kuva = kaksi','Taulukosta diagrammiksi'],5:['Puolivälin lukeminen','Viivadiagrammi','Diagrammin keskiarvo'],6:['Puolivälin lukeminen','Viivadiagrammi','Ympyrädiagrammi']};
+const DIALV={1:['Kuvadiagrammi','Kuvadiagrammin vertailu','Pylväsdiagrammi'],2:['Kuvadiagrammi','Kuvadiagrammin vertailu','Pylväät kahden välein'],3:['Pylväsdiagrammi','Kuvadiagrammi','Taulukosta diagrammiksi'],4:['Pylväät 5 tai 10 välein','Kuvadiagrammi','Taulukosta diagrammiksi'],5:['Puolivälin lukeminen','Viivadiagrammi','Diagrammin keskiarvo'],6:['Puolivälin lukeminen','Viivadiagrammi','Ympyrädiagrammi']};
 for(const g of [1,2,3,4,5,6]){const i=GR[g].topics.findIndex(t=>t.id==='tn');GR[g].topics.splice(i,0,{id:'diagrammit',fam:'stat',name:'Diagrammit',levels:DIALV[g],gen:diaGen(g),noWord:true})}
 
 /* ---------- tila ---------- */
@@ -1863,6 +1864,7 @@ function draw(){const t=cur(),pr=prog();const IA=inlineAns();
       <button type="button" class="btn ghost" id="skip">Seuraava</button>
       <button type="button" class="btn next" id="next" hidden>Seuraava tehtävä →</button>
     </div></div>
+    ${P.below?`<div class="below">${P.below}</div>`:''}
     ${padOK()?padHTML():''}
     <div id="fb" hidden></div>
     <div class="panel" id="hint" hidden><h3>Vihje</h3>${P.hint}</div>
