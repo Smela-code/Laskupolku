@@ -1192,7 +1192,7 @@ function seqGen(g){return(L,op,word)=>{
         explain:`<div class="visual">${seqTiles(terms,-1,0,true)}</div><p>Tai lyhyemmin: ${a} ${s>0?'+':'−'} ${n} · ${Math.abs(s)} = ${ansW}.</p>`}}
     if(word)return seqGen(g)(L,op,false);
     const known=terms.filter((_,i)=>i!==miss);if(known.length<3)continue;
-    return{kind:dec?'dec':'int',neg,inline:true,visual:seqTiles(terms,miss,dec,false,true),text:'<span class="bg" style="font-size:.7em">Mikä luku puuttuu jonosta?</span>',ans,answerText:numF(ans,dec),
+    return{kind:dec?'dec':'int',neg,inline:true,visual:seqTiles(terms,miss,dec,false,true),text:`<span class="bg" style="font-size:.7em">${miss===0?'Mikä luku tulee ensimmäiseksi?':miss===terms.length-1?'Mikä luku tulee seuraavaksi?':'Mikä luku puuttuu?'}</span>`,ans,answerText:numF(ans,dec),
       hint:`<p>Katso, miten luku muuttuu aina seuraavaan siirryttäessä. Laske ensin kahden vierekkäisen luvun ero. Jos ero ei pysy samana, kokeile, onko luku aina tietty määrä kertaa edellinen, tai muuttuuko ero säännöllisesti.</p>${miss>1?`<p>Esimerkiksi ${numF(terms[0],dec)} → ${numF(terms[1],dec)}.</p>`:`<p>Esimerkiksi ${numF(terms.at(-2),dec)} → ${numF(terms.at(-1),dec)}.</p>`}${miss===0?'<p>Kun ensimmäinen luku puuttuu, kulje jonoa takaperin: tee sääntö toisin päin.</p>':''}`,
       explain:`<p><b>${ruleText(rule,dec)}</b></p><div class="visual">${seqTiles(terms,-1,dec,['ar','grow','grow2','alt'].includes(rule.type))}</div>`}}
   return seqGen(g)(1,op,word)}}
