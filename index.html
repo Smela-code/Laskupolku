@@ -269,6 +269,22 @@ table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;f
 .simcap.grow{animation:capgrow .8s ease-out}
 @keyframes capgrow{0%{transform:scale(1)}30%{transform:scale(1.6)}100%{transform:scale(1)}}
 .sbl2{font:700 .72rem var(--body);text-align:center;line-height:1.15}
+.ldiv td{width:clamp(30px,8.5vw,42px);height:44px}
+.ldiv .qi{width:100%;font:800 1.55rem var(--display);text-align:center;color:var(--ink);background:var(--paper);border:2px solid var(--blue);border-radius:8px;height:42px;padding:0}
+.ldiv .qi.ok{border-color:var(--good);background:var(--good-bg)}.ldiv .qi.no{border-color:var(--bad);background:var(--bad-bg)}
+.ldiv .dd{border-top:3px solid var(--ink);font-size:1.65rem}
+.ldiv .dd.first{border-left:3px solid var(--ink)}
+.ldiv .dvs{font-size:1.65rem;color:var(--blue);padding-right:8px;text-align:right;width:auto}
+.pad h3{margin:0 0 4px}
+.padtip{font-size:.85rem;color:var(--soft);margin:0 0 8px}
+.padt td{width:clamp(28px,8vw,38px);height:38px;padding:2px}
+.padt td.pop{width:30px}
+.padt .sq{width:100%;height:36px;font:800 1.35rem var(--display);text-align:center;border:1.5px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink);padding:0}
+.padt .sq.small{height:22px;font-size:.85rem;border-style:dashed;color:var(--blue)}
+.padt tr.carry td{height:24px}
+.padt tr.res td{border-top:3px solid var(--ink);padding-top:5px}
+.padop{width:28px;height:32px;border:2px solid var(--blue);border-radius:8px;background:var(--paper);color:var(--blue);font:800 1.3rem var(--display);cursor:pointer;padding:0}
+.padclr{font-size:.9rem;padding:6px 12px;margin-top:8px}
 .simnote{margin:0;font-size:.82rem;color:var(--soft)}
 .simtot{margin:0;color:var(--soft);font-weight:700;font-size:.9rem}
 @media (prefers-reduced-motion:reduce){.sbv{transition:none}}
@@ -786,7 +802,7 @@ function divSteps(a,b){const ds=String(a).split('').map(Number),n=ds.length,out=
 function divProblem(a,b,rem,word,showPv){
   const q=Math.floor(a/b),r=a%b,st=divSteps(a,b);
   const P={kind:rem?'divr':'int',ans:q,rem:r,answerText:rem?`${fmtInt(q)}, jakojäännös ${r}`:fmtInt(q),
-    text:word?null:`<span class="bg">${fmtInt(a)} : ${b} = ${BOX}</span>`,
+    ldiv:!word,dvd:a,dvs:b,text:word?null:`<span class="bg" style="font-size:.7em">Laske jakokulmassa: ${fmtInt(a)} : ${b}</span>`,
     visual:showPv&&!word?`${opnd(pv(a),a,a+' omenaa')}${sign('/')}${opnd(plates(b),b+' osaan',b+' osaan')}${legend(false)}`:null,
     hint:`<p>Jaa luku osissa suurimmasta paikasta alkaen.</p><ol>${st[0]}</ol><p>Jatka samalla tavalla.</p>`,
     explain:`<p><b>${fmtInt(a)} : ${b} = ${fmtInt(q)}${r?`, jakojäännös ${r}`:''}</b></p><ol>${st.join('')}</ol>${r?`<p>Tarkistus: ${fmtInt(q)} · ${b} + ${r} = ${fmtInt(a)}.</p>`:''}`};
@@ -1681,15 +1697,21 @@ function answerHTML(){
     </tbody></table></div>`}
   if(P.steps||P.inline||P.kind==='multi')return '';
   if(P.kind==='choice')return `<div class="choices${P.big?' big':''}${P.pics?' pics':''}" role="group" aria-label="Vastausvaihtoehdot">${P.choices.map(([v,l])=>`<button type="button" class="choice" data-choice="${v}">${l}</button>`).join('')}</div>`;
+  if(P.ldiv){const ds=String(P.dvd).split('');
+    return `<div class="calc-wrap"><table class="calc ldiv" aria-label="Jakokulma"><tbody><tr class="qrow"><td></td>${ds.map((_,i)=>`<td><input class="qi" id="q${i}" data-i="${i}" inputmode="none" maxlength="1" autocomplete="off" aria-label="Osamäärän numero"></td>`).join('')}</tr>
+      <tr class="drow"><td class="dvs">${P.dvs}</td>${ds.map((d,i)=>`<td class="dd${i===0?' first':''}">${d}</td>`).join('')}</tr></tbody></table></div>${P.kind==='divr'?`<div class="answer"><span class="unit">jakojäännös</span><input class="num tb" id="rem" inputmode="none" autocomplete="off" aria-label="Jakojäännös"></div>`:''}`}
   if(P.kind==='divr')return `<div class="answer"><input class="num" id="ans" inputmode="none" autocomplete="off" aria-label="Osamäärä">${P.qLabel?`<span class="unit">${P.qLabel}</span>`:''}<span class="unit">${P.rLabel||'jakojäännös'}</span><input class="num tb" id="rem" inputmode="none" autocomplete="off" aria-label="Jakojäännös"></div>`;
   if(P.kind==='time')return `<div class="answer"><span class="unit">kello</span><input class="num tb" id="th" inputmode="none" autocomplete="off" aria-label="Tunnit"><span class="unit">.</span><input class="num tb" id="tm" inputmode="none" autocomplete="off" aria-label="Minuutit" placeholder="00"></div>${P.m12?'':'<p class="inst"><span>Käytä 24 tunnin kelloa, esimerkiksi 18.05.</span></p>'}`;
   if(P.kind==='dur')return `<div class="answer"><input class="num tb" id="th" inputmode="none" autocomplete="off" aria-label="Tunnit"><span class="unit">h</span><input class="num tb" id="tm" inputmode="none" autocomplete="off" aria-label="Minuutit"><span class="unit">min</span></div>`;
   if(P.kind==='frac')return `<div class="answer"><span class="fin"><input class="num" id="fn" inputmode="none" autocomplete="off" aria-label="Osoittaja"><span class="bar"></span><input class="num" id="fdn" inputmode="none" autocomplete="off" aria-label="Nimittäjä"></span></div>`;
   return `<div class="answer"><input class="num" id="ans" inputmode="none" autocomplete="off" aria-label="Vastaus">${P.unit?`<span class="unit">${P.unit}</span>`:''}</div>`}
-function inlineAns(){if(P.steps||P.inline||!P.text||!P.text.includes(BOX)||!['int','dec','frac'].includes(P.kind))return null;
+function inlineAns(){if(P.ldiv||P.steps||P.inline||!P.text||!P.text.includes(BOX)||!['int','dec','frac'].includes(P.kind))return null;
   if(P.kind==='frac')return `<span class="fin xin"><input class="num" id="fn" inputmode="none" autocomplete="off" aria-label="Osoittaja"><span class="bar"></span><input class="num" id="fdn" inputmode="none" autocomplete="off" aria-label="Nimittäjä"></span>`;
   const w=Math.max(3,String(P.ans).length+1);
   return `<input class="num xin" id="ans" style="width:${w+1}ch" inputmode="none" autocomplete="off" aria-label="Vastaus">`}
+const padOK=()=>P&&!['col','choice','multi'].includes(P.kind)&&!P.ldiv;
+function padHTML(){const C=8,row=(r,cls)=>`<tr class="${cls}"><td class="pop">${r===2?'<button type="button" class="padop" data-padop="0" aria-label="Vaihda laskumerkki">+</button>':''}</td>${Array.from({length:C},(_,c)=>`<td><input class="sq${r===0?' small':''}" inputmode="none" maxlength="1" autocomplete="off" aria-label="Ruutu"></td>`).join('')}</tr>`;
+  return `<div class="panel pad" id="pad" hidden><h3>Ruutupaperi</h3><p class="padtip">Kirjoita luvut allekkain omiin ruutuihinsa. Ylärivi on muistinumeroille. Napauta laskumerkkiä vaihtaaksesi sen.</p><div class="calc-wrap"><table class="calc padt"><tbody>${row(0,'carry')}${row(1,'')}${row(2,'')}${row(3,'res')}</tbody></table></div><button type="button" class="btn ghost padclr" data-padclr="1">Tyhjennä ruudut</button></div>`}
 function draw(){const t=cur(),pr=prog();const IA=inlineAns();
   $('#sheet').innerHTML=`
     ${S.op==='mix'?`<p class="mixlbl">${t.puzzle?`${t.name} · ${FAMN[fam()].toLowerCase()}`:`${FAMN[fam()]} · ${t.name}${typ()==='sov'?' · sanallinen':''}`}</p>`:''}
@@ -1707,16 +1729,23 @@ function draw(){const t=cur(),pr=prog();const IA=inlineAns();
     <div class="actions">
       <button type="button" class="btn" id="check"${P.kind==='choice'?' hidden':''}>Tarkista</button>
       <button type="button" class="btn ghost" id="hintBtn">Vihje</button>
+      ${padOK()?'<button type="button" class="btn ghost" id="padBtn" aria-expanded="false">Ruutupaperi</button>':''}
       <button type="button" class="btn ghost" id="skip">Seuraava</button>
       <button type="button" class="btn next" id="next" hidden>Seuraava tehtävä →</button>
     </div></div>
+    ${padOK()?padHTML():''}
     <div id="fb" hidden></div>
     <div class="panel" id="hint" hidden><h3>Vihje</h3>${P.hint}</div>
     <div class="panel explain" id="explain" hidden><h3>Näin se lasketaan</h3>${P.explain}</div>`;
-  const first=P.steps?$('#sc0'):P.kind==='col'?document.getElementById('r'+(P.L.N-1)):document.querySelector('#ans,#fn,#th');
+  const first=P.ldiv?$('#q0'):P.steps?$('#sc0'):P.kind==='col'?document.getElementById('r'+(P.L.N-1)):document.querySelector('#ans,#fn,#th');
   activeEl=first;if(first)first.focus({preventScroll:true})}
 function fb(msg,cls){const e=$('#fb');e.hidden=false;e.className='fb '+cls;e.innerHTML=msg}
 function evaluate(){
+  if(P.ldiv){const ins=[...document.querySelectorAll('.qi')],v=ins.map(x=>x.value.trim());if(v.every(x=>!x))return{empty:true};
+    const qs=v.join('').replace(/^0+(?=\d)/,'');if(!/^\d+$/.test(qs)||/\d\s*$/.test('')&&false)return{bad:'Kirjoita osamäärän numerot jakokulman yläpuolelle.'};
+    let ok=+qs===P.ans;if(P.kind==='divr'){const rs=$('#rem').value.trim();ok=ok&&+(rs||0)===P.rem;$('#rem').classList.toggle('ok',ok);$('#rem').classList.toggle('no',!ok)}
+    const exp=String(P.ans).padStart(ins.length,' ');ins.forEach((x,i)=>{x.classList.remove('ok','no');const e=exp[i],c=x.value.trim();if(c===''&&e===' ')return;x.classList.add(ok||(c===e)||(c==='0'&&e===' ')||(c===''&&e===' ')?'ok':'no')});return{ok}}
+
   if(P.kind==='int'||P.kind==='dec'){const el=$('#ans');const s=el.value.replace(/[\s ]/g,'').replace(',','.').replace('−','-');
     if(!s)return{empty:true};if(!/^-?(\d+\.?\d*|\.\d+)$/.test(s))return{bad:'Kirjoita vastaukseksi luku, esimerkiksi 12 tai 3,5.'};
     const ok=Math.abs(parseFloat(s)-P.ans)<1e-9;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok);return{ok}}
@@ -1780,20 +1809,24 @@ function keypad(){
   return `<div class="keypad" role="group" aria-label="Numeronäppäimistö">${[1,2,3,4,5,6,7,8,9].map(n=>`<button type="button" class="key" data-key="${n}">${n}</button>`).join('')}${last}<button type="button" class="key" data-key="0">0</button><button type="button" class="key alt" data-key="back" aria-label="Pyyhi">${BACK}</button></div>`}
 function pressKey(k){if(done)return;
   let el=activeEl&&document.body.contains(activeEl)?activeEl:null;
-  if(!el)el=P.kind==='col'?document.getElementById('r'+(P.L.N-1)):document.querySelector('#ans,#fn,#th');
+  if(!el)el=P.ldiv?$('#q0'):P.kind==='col'?document.getElementById('r'+(P.L.N-1)):document.querySelector('#ans,#fn,#th');
   if(!el)return;
   const fire=()=>el.dispatchEvent(new Event('input',{bubbles:true}));
-  if(k==='swap'){const f=P.steps?[...document.querySelectorAll('.step1 .sc'),$('#ans')]:[...document.querySelectorAll('.answer .num')];const i=f.indexOf(el);el=P.steps?f[Math.min(i+1,f.length-1)]:f[(i+1)%f.length]}
+  if(k==='swap'&&el.classList.contains('qi')){el=$('#rem')||el}
+  else if(k==='swap'&&el.classList.contains('sq')){const n=el.closest('td').nextElementSibling;const nx=n&&n.querySelector('.sq');if(nx)el=nx}
+  else if(k==='swap'){const f=P.steps?[...document.querySelectorAll('.step1 .sc'),$('#ans')]:[...document.querySelectorAll('.answer .num')];const i=f.indexOf(el);el=P.steps?f[Math.min(i+1,f.length-1)]:f[(i+1)%f.length]}
+  else if(k==='back'&&(el.classList.contains('qi')||el.classList.contains('sq'))){if(!el.value){const pv=el.closest('td').previousElementSibling,px=pv&&pv.querySelector('input');if(px)el=px}el.value='';el.classList.remove('ok','no')}
   else if(k==='back'){
     if(el.classList.contains('ri')&&!el.value){let j=+el.dataset.i+1;if(P.L.D&&j===P.L.I)j++;const n=document.getElementById('r'+j);if(n)el=n}
     el.value=el.value.slice(0,-1);el.classList.remove('ok','no');if(!el.classList.contains('ri'))fire()}
   else if(k==='neg'){if(el.id==='ans'){el.value=el.value.startsWith('−')||el.value.startsWith('-')?el.value.slice(1):'−'+el.value;fire()}}
   else if(k===','){if(el.id==='ans'&&!el.value.includes(','))el.value+=(el.value?'':'0')+',';}
+  else if(el.classList.contains('qi')||el.classList.contains('sq')){el.value=k;el.classList.remove('ok','no');const n=el.closest('td').nextElementSibling,nx=n&&n.querySelector('input');if(nx){activeEl=nx;nx.focus({preventScroll:true})}return}
   else if(el.classList.contains('ri')||el.classList.contains('ci')||el.classList.contains('pi')){el.value=k;fire();if(!el.classList.contains('ci'))return}
   else if(el.classList.contains('tb')){if(el.value.length<2){el.value+=k;fire()}if(el.id==='th'&&el.value.length===2)el=$('#tm')}
   else if(el.value.replace(/\D/g,'').length<9){el.value+=k;fire()}
   activeEl=el;el.focus({preventScroll:true})}
-document.addEventListener('focusin',e=>{if(e.target.matches('.num,.ri,.ci,.pi'))activeEl=e.target});
+document.addEventListener('focusin',e=>{if(e.target.matches('.num,.ri,.ci,.pi,.qi,.sq'))activeEl=e.target});
 document.addEventListener('pointerdown',e=>{if(e.target.closest('.key'))e.preventDefault()});
 document.addEventListener('mousedown',e=>{if(e.target.closest('.key'))e.preventDefault()});
 
@@ -1812,6 +1845,9 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)r
   else if(b.dataset.choice!=null){if(done)return;P.sel=b.dataset.choice;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));check()}
   else if(b.dataset.key)pressKey(b.dataset.key);
   else if(b.id==='check')check();
+  else if(b.id==='padBtn'){const pd=$('#pad');pd.hidden=!pd.hidden;b.setAttribute('aria-expanded',String(!pd.hidden));b.textContent=pd.hidden?'Ruutupaperi':'Piilota ruudut';if(!pd.hidden){const f=pd.querySelector('tr:nth-child(2) .sq');if(f){activeEl=f;f.focus({preventScroll:true})}}return}
+  else if(b.dataset.padop){const o=['+','−','·',':'],i=(+b.dataset.padop+1)%4;b.dataset.padop=i;b.textContent=o[i];return}
+  else if(b.dataset.padclr){document.querySelectorAll('#pad .sq').forEach(x=>x.value='');return}
   else if(b.id==='hintBtn'){const h=$('#hint');h.hidden=!h.hidden;b.textContent=h.hidden?'Vihje':'Piilota vihje'}
   else if(b.id==='next'||b.id==='skip')newProblem()});
 document.addEventListener('keydown',e=>{const t=e.target;
@@ -1825,7 +1861,7 @@ function updSteps(){if(!P||!P.steps)return;const s1=$('.step1'),q=$('.qbox');if(
   const filled=[...s1.querySelectorAll('.sc')].every(i=>i.value.trim());const was=q.classList.contains('active');
   s1.classList.toggle('active',!filled);q.classList.toggle('active',filled);
   if(filled&&!was&&activeEl&&activeEl.classList.contains('sc')){const a=$('#ans');if(a){activeEl=a;a.focus({preventScroll:true})}}}
-document.addEventListener('input',e=>{const t=e.target;setTimeout(updSteps,0);
+document.addEventListener('input',e=>{const t=e.target;if(t.classList.contains('qi')||t.classList.contains('sq')){t.value=t.value.replace(/\D/g,'').slice(-1);t.classList.remove('ok','no');if(t.value){const n=t.closest('td').nextElementSibling,nx=n&&n.querySelector('input');if(nx){nx.focus();nx.select()}}return}setTimeout(updSteps,0);
   if(t.classList.contains('ri')){t.value=t.value.replace(/\D/g,'').slice(-1);t.classList.remove('ok','no');
     if(t.value){let k=+t.dataset.i-1;if(P.L.D&&k===P.L.I)k--;const el=document.getElementById('r'+k);if(el){el.focus();el.select()}}}
   else if(t.classList.contains('pi')){t.value=t.value.replace(/\D/g,'').slice(-1);if(t.value){const el=document.getElementById(`p${t.dataset.r}_${+t.dataset.i-1}`);if(el){el.focus();el.select()}}}
