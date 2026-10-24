@@ -59,11 +59,13 @@ h1{display:flex;flex-wrap:wrap;align-items:center;gap:.25em .35em}
 .money svg{display:block;flex:none}
 .uicon.sm svg{width:48px;height:48px}
 .num.mb{width:3.8ch}.num.mb.mc{width:3ch}
-.mixbox{display:flex;flex-direction:column}
-.btn.mixbtn{min-height:48px;width:100%;font-size:1.05rem;white-space:nowrap}
+.mixbox{display:flex;grid-column:1/-1;justify-content:flex-end;margin-top:-2px}
+.mixbox .lbl{display:none}
+.btn.mixbtn{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:3px 14px 3px 8px;font-size:.92rem;border-radius:999px;white-space:nowrap;width:auto}
+.mixbtn .hat{width:24px;height:24px;display:block}
 .btn.mixbtn[aria-pressed="true"]{background:var(--sun);border-color:var(--sun);color:#1C2742}
-@media (max-width:639px){section.controls{grid-template-columns:1fr;gap:8px}section.controls>div{display:flex;align-items:center;gap:10px}.controls>div>.lbl{flex:0 0 70px;margin:0}.controls .sel{flex:1;min-width:0}.mixbox{flex-direction:row;justify-content:flex-end}.mixbox .lbl{display:none}.btn.mixbtn{width:auto;min-height:40px;padding:6px 18px}}
-@media (min-width:640px){section.controls{grid-template-columns:1fr 1fr}}
+@media (max-width:639px){section.controls{grid-template-columns:1fr;gap:8px}section.controls>div{display:flex;align-items:center;gap:10px}.controls>div>.lbl{flex:0 0 70px;margin:0}.controls .sel{flex:1;min-width:0}}
+@media (min-width:640px){section.controls{grid-template-columns:1fr 1fr}.mixbox{grid-column:auto;align-items:flex-end}}
 .pav{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;font:800 1.2rem var(--display);background:var(--blue)}
 .pav.has{background:none!important;overflow:hidden}.pav svg{width:100%;height:100%;display:block}
 .pavg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:14px}
@@ -436,7 +438,7 @@ footer p{margin:0 0 6px}
     <div><label class="lbl" for="ops">Alue</label><select class="sel" id="ops" data-sel="top"></select></div>
     <div id="topicBox"><label class="lbl" for="topics">Aihe</label><select class="sel" id="topics" data-sel="sub"></select></div>
     <div id="typeBox"><label class="lbl" for="types">Tehtävä</label><select class="sel" id="types" data-sel="typ"></select></div>
-    <div class="mixbox"><span class="lbl" aria-hidden="true">&nbsp;</span><button type="button" class="btn ghost mixbtn" id="mixBtn" aria-pressed="false"><span aria-hidden="true">🎲</span> <span id="mixTxt">Sekoita</span></button></div>
+    <div class="mixbox"><span class="lbl" aria-hidden="true">&nbsp;</span><button type="button" class="btn ghost mixbtn" id="mixBtn" aria-pressed="false"><svg class="hat" viewBox="0 0 32 32" aria-hidden="true"><path d="M3 24.5c0-1.6 5.8-2.9 13-2.9s13 1.3 13 2.9-5.8 2.9-13 2.9-13-1.3-13-2.9z" fill="#2A2440" stroke="#8E86B5" stroke-width=".7"/><path stroke="#8E86B5" stroke-width=".7" d="M8.5 23.5V9.2c0-1.2 3.4-2.2 7.5-2.2s7.5 1 7.5 2.2v14.3c0 1-3.4 1.8-7.5 1.8s-7.5-.8-7.5-1.8z" fill="#3A3355"/><path d="M8.5 18.2c0 1 3.4 1.8 7.5 1.8s7.5-.8 7.5-1.8v2.8c0 1-3.4 1.8-7.5 1.8s-7.5-.8-7.5-1.8z" fill="#E5484D"/><ellipse cx="16" cy="9.2" rx="7.5" ry="2.2" fill="#4B4470"/><path d="M26.5 3.2l.7 1.6 1.7.2-1.3 1.1.4 1.7-1.5-.9-1.5.9.4-1.7-1.3-1.1 1.7-.2z" fill="#F4C02E"/><path d="M5 5.5l.45 1 1.05.15-.8.7.25 1.05-.95-.55-.95.55.25-1.05-.8-.7 1.05-.15z" fill="#F4C02E"/><circle cx="23.5" cy="12" r=".9" fill="#F4C02E"/></svg><span id="mixTxt">Yllätys</span></button></div>
   </section>
 
   <section class="sheet" id="sheet" aria-live="polite"></section>
@@ -461,7 +463,7 @@ if(EN){const q=s=>document.querySelector(s);
   q('.sub').textContent='Addition, subtraction, multiplication and division with pictures for grades 1–6. Also time, picture puzzles and much more.';
   q('#playerBtn').setAttribute('aria-label',"Player and today's stars");
   document.querySelectorAll('.wrap > section > .lbl')[0].textContent='Grade';
-  q('label[for="ops"]').textContent='Area';q('label[for="topics"]').textContent='Topic';q('label[for="types"]').textContent='Task';q('#mixTxt').textContent='Mix';
+  q('label[for="ops"]').textContent='Area';q('label[for="topics"]').textContent='Topic';q('label[for="types"]').textContent='Task';q('#mixTxt').textContent='Surprise';
   q('footer p').textContent='Three correct answers in a row take you up a level. Two tricky tasks in a row take you down a level. You can also choose the level yourself. Your progress is saved in this browser.';
   q('#ptitle').textContent='Players';const c=q('.pcl');c.textContent='Close';c.setAttribute('aria-label','Close')}
 document.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===LANG)));
@@ -686,12 +688,13 @@ function g1Fruit(L,op,word){
   const tk=pick(FK),t=FRUITS[tk];let a,b;
   if(op==='+'){if(L===1){a=R(1,8);b=R(1,10-a)}else if(L===2){const x=R(0,8);a=10+x;b=R(1,9-x);if(Math.random()<.4)[a,b]=[b,a]}else{a=R(3,9);b=R(11-a,9)}}
   else{if(L===1){a=R(3,10);b=R(1,a-1)}else if(L===2){a=R(11,19);b=R(1,a-10)}else{a=R(11,18);b=R(a%10+1,9)}}
-  let visual=op==='+'?`${group(many(tk,a),a+' '+pf(a,t))}${sign('+')}${group(many(tk,b),b+' '+pf(b,t))}`:group([...many(tk,a-b),...many(tk,b,'x')],E(`${a} ${pf(a,t)}, joista ${b} syödään`,`${a} ${pf(a,t)}, ${b} of them eaten`));
+  let visual=`${group(many(tk,a),a+' '+pf(a,t))}${sign(op)}${group(many(tk,b),b+' '+pf(b,t))}`;
+  const crossed=op==='-'?group([...many(tk,a-b),...many(tk,b,'x')],E(`${a} ${pf(a,t)}, joista ${b} otetaan pois`,`${a} ${pf(a,t)}, ${b} of them taken away`)):'';
   let hint;
   if(op==='+'){if(L<3)hint=E(`<p>Aloita isommasta luvusta ${Math.max(a,b)} ja laske ${Math.min(a,b)} eteenpäin.</p>`,`<p>Start from the bigger number, ${Math.max(a,b)}, and count on ${Math.min(a,b)}.</p>`);
     else{const big=Math.max(a,b),sm=Math.min(a,b),fill=10-big,rest=sm-fill,t2=pick(FK.filter(k=>k!==tk));
       hint=E(`<p>Täydennä ensin kymppiin: ${big} + ${fill} = 10. Toisesta luvusta jää vielä ${rest}. Paljonko on 10 + ${rest}?</p>`,`<p>Make ten first: ${big} + ${fill} = 10. There are still ${rest} left from the other number. What is 10 + ${rest}?</p>`)+`<div class="visual">${group([...many(tk,big),...many(t2,fill)],E('täysi kymppi','a full ten'))}${group([...many(t2,rest),...many(tk,10-rest,'e')],E('loput','the rest'))}</div>`}}
-  else{if(L===1)hint=E('<p>Laske hedelmät, joiden päällä ei ole ruksia.</p>','<p>Count the fruit that are not crossed out.</p>');
+  else{if(L===1)hint=E(`<p>Laske luvusta ${a} taaksepäin ${b} askelta${b>1?`: ${[...Array(b).keys()].map(i=>a-1-i).slice(0,Math.min(b,2)).join(', ')}${b>2?' …':''}`:''}. Voit myös peittää sormilla ${b} hedelmää ja laskea loput.</p>`,`<p>Count back ${b} ${b===1?'step':'steps'} from ${a}${b>1?`: ${[...Array(b).keys()].map(i=>a-1-i).slice(0,Math.min(b,2)).join(', ')}${b>2?' …':''}`:''}. You can also cover ${b} fruit with your fingers and count the rest.</p>`);
     else if(L===2)hint=E(`<p>Vähennä ykkösistä: ${a%10} − ${b} = ${a%10-b}. Kymppi pysyy ennallaan.</p>`,`<p>Subtract from the ones: ${a%10} − ${b} = ${a%10-b}. The ten stays the same.</p>`);
     else{const o=a-10,more=b-o;hint=E(`<p>Vähennä ensin kymppiin: ${a} − ${o} = 10. Vähennettävää on vielä ${more}. Paljonko on 10 − ${more}?</p>`,`<p>Subtract down to ten first: ${a} − ${o} = 10. You still need to take away ${more}. What is 10 − ${more}?</p>`)+`<div class="visual">${group([...many(tk,10-more),...many(tk,more,'x')],E('kymppi','ten'))}${group([...many(tk,o,'x'),...many(tk,10-o,'e')],E('ykköset','ones'))}</div>`}}
   let story;
@@ -701,7 +704,9 @@ function g1Fruit(L,op,word){
       visual=`${opnd(group(many(tk,a),''),K.n,K.n+': '+a)}${opnd(group(many(tk,a-b),''),M.n,M.n+': '+(a-b))}`;
       return intProblem({a,b:a-b,op,visual,story,hint:E(`<p>Vertaile: kuinka monta hedelmää ${K.ll} on yli? Lasketaan ${a} − ${a-b}.</p>`,`<p>Compare: how many extra fruit does ${K.n} have? Work out ${a} − ${a-b}.</p>`),word:{}})}
     else story=E(`Korissa on ${a} ${pf(a,t)}. ${K.n} syö ${b}. Montako ${t.part} koriin jää?`,`There are ${a} ${pf(a,t)} in a basket. ${K.n} eats ${b}. How many ${t.en[1]} are left in the basket?`)}
-  return intProblem({a,b,op,visual,story,text:word?null:`<span class="bg">${a} ${OPS[op]} ${b} = ${BOX}</span>`,hint,word})}
+  const P=intProblem({a,b,op,visual,story,text:word?null:`<span class="bg">${a} ${OPS[op]} ${b} = ${BOX}</span>`,hint,word});
+  if(crossed)P.explain+=`<div class="visual">${crossed}</div>`;
+  return P}
 function g1Missing(L,op,word){
   const tk=pick(FK),t=FRUITS[tk];let a,c,ans,visual,text,hint,story;
   if(op==='+'){if(L===1){c=R(3,10);a=R(1,c-1)}else if(L===2){c=R(12,19);a=R(10,c-1)}else{a=R(3,9);c=R(11,a+9)}
@@ -2306,7 +2311,7 @@ const NAV=[
     {id:'jon',n:'Lukujonot',types:[
       {id:'jon',n:'Mikä luku puuttuu?',f:allG(src('c-jonot','cmp'))},
       {id:'san',n:'Sanalliset',f:allG(src('c-jonot','cmp',1))}]}]},
-  {id:'mitta',n:'Mittaaminen',subs:[
+  {id:'mitta',n:'Mitat ja yksiköt',subs:[
     {id:'aika',n:'Aika',types:[
       {id:'kello',n:'Kellonajat',f:allG(src('kello',['+','-']),2,4)},
       {id:'nop',n:'Nopeus, matka ja aika',f:allG(src('nopeus','*'),5)},
@@ -2344,7 +2349,7 @@ function navPick(g,tid,sid,yid){const tops=navTops(g),top=tops.find(t=>t.id===ti
   const subs=navSubs(g,top),sub=subs.find(s=>s.id===sid)||subs[0];
   const types=navTypes(g,sub),type=types.find(t=>t.id===yid)||types[0];
   return{top,sub,type,tops,subs,types,inst:type.f(g),key:`${g}|${top.id}|${sub.id}|${type.id}`}}
-Object.assign(TR,{'Laskut':'Calculations','Luvut ja jonot':'Numbers and sequences','Mittaaminen':'Measuring','Geometria':'Geometry','Tilastot ja todennäköisyys':'Statistics and probability','Pulmat ja päättely':'Puzzles and logic',
+Object.assign(TR,{'Mitat ja yksiköt':'Measures and units','Laskut':'Calculations','Luvut ja jonot':'Numbers and sequences','Mittaaminen':'Measuring','Geometria':'Geometry','Tilastot ja todennäköisyys':'Statistics and probability','Pulmat ja päättely':'Puzzles and logic',
   'Yhteenlasku':'Addition','Vähennyslasku':'Subtraction','Kertolasku':'Multiplication','Jakolasku':'Division','Lämpötila':'Temperature','Raha':'Money',
   'Kuvilla':'With pictures','Sanalliset':'Word problems','Jakaminen tasan':'Sharing equally','Jakokulma':'Long division','Yhteen- ja vähennyslasku':'Addition and subtraction','Kerto- ja jakolasku':'Multiplication and division',
   'Vertaile lukuja':'Compare numbers','Mikä luku puuttuu?':'Which number is missing?','Kellonajat':'Telling the time','Kolikot ja setelit':'Coins and notes','Muunnokset':'Conversions','Tunnista muodot':'Recognise shapes','Koordinaatit':'Coordinates',
@@ -2374,7 +2379,7 @@ function navGoal(c){const g=S.grade;
 function renderControls(){
   $('#grades').innerHTML=[1,2,3,4,5,6].map(g=>`<button type="button" class="grade" data-grade="${g}" aria-pressed="${g===S.grade}" aria-label="${E(g+'. luokka',g+(['st','nd','rd'][g-1]||'th')+' grade')}">${EN?`<b>${g}<span class="ord">${['st','nd','rd'][g-1]||'th'}</span></b><small>grade</small>`:`<b>${g}.</b><small>luokka</small>`}</button>`).join('');
   const mb=$('#mixBtn');mb.setAttribute('aria-pressed',String(!!S.mix));
-  if(S.mix){$('#goal').innerHTML=E('<b>Sekoita:</b> tehtävät tulevat satunnaisesti kaikista tämän luokan aiheista. Tehtävän aihe näkyy sen yläreunassa. Paina Sekoita uudelleen, niin voit taas valita itse.','<b>Mix:</b> tasks come randomly from all the topics for this grade. The topic is shown at the top of each task. Press Mix again to choose for yourself.');
+  if(S.mix){$('#goal').innerHTML=E('<b>Yllätys:</b> tehtävät tulevat satunnaisesti kaikista tämän luokan aiheista. Tehtävän aihe näkyy sen yläreunassa. Paina Yllätys-nappia uudelleen, niin voit taas valita itse.','<b>Surprise:</b> tasks come randomly from all the topics for this grade. The topic is shown at the top of each task. Press Surprise again to choose for yourself.');
     ['#ops','#topics','#types'].forEach(s=>{$(s).disabled=true;chips($(s),[],'')});updHeader();return}
   const c=cur();
   $('#goal').innerHTML=navGoal(c);
