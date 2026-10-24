@@ -48,6 +48,54 @@ h1{display:flex;flex-wrap:wrap;align-items:center;gap:.25em .35em}
 .opsrow .o1{background:var(--blue)} .opsrow .o2{background:var(--sun)} .opsrow .o3{background:var(--good)} .opsrow .o4{background:var(--berry)}
 .sub{max-width:52ch}
 .sub{margin:6px 0 0;color:var(--soft);font-weight:600}
+.pchip{flex:none;display:flex;align-items:center;gap:8px;background:var(--paper);border:2px solid var(--line);border-radius:999px;padding:4px 12px 4px 4px;cursor:pointer;color:var(--ink);font-family:var(--body);max-width:52vw}
+.pchip.goal{border-color:var(--sun);background:var(--sun-bg)}
+.pchip.pop{animation:pop .5s ease}
+.pav{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;font:800 1.2rem var(--display);background:var(--blue)}
+.pav.has{background:none!important;overflow:hidden}.pav svg{width:100%;height:100%;display:block}
+.pavg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:14px}
+.pavb{aspect-ratio:1;padding:2px;border:3px solid transparent;border-radius:50%;background:none;cursor:pointer;display:grid;place-items:center}
+.pavb svg{width:100%;height:100%;display:block}
+.pavb[aria-pressed="true"]{border-color:var(--blue)}
+.pavb:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.pavn span{width:100%;height:100%;border-radius:50%;display:grid;place-items:center;color:#fff;font:800 1.2rem var(--display)}
+.pav.sm{width:30px;height:30px;font-size:1rem}
+.pinfo{display:flex;flex-direction:column;align-items:flex-start;line-height:1.1;min-width:0}
+.pinfo b{font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
+.ptoday{display:flex;align-items:center;gap:4px;font:800 .9rem var(--display);font-variant-numeric:tabular-nums;color:var(--soft)}
+.ptoday svg{width:22px;height:22px}
+#pring{transition:stroke-dasharray .4s ease}
+.pmodal{position:fixed;inset:0;background:color-mix(in srgb,var(--ink) 45%,transparent);z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 16px max(16px,env(safe-area-inset-left,0px));overflow-y:auto}
+.pbox{background:var(--bg);border-radius:18px;padding:16px;width:100%;max-width:460px;display:flex;flex-direction:column;gap:10px;box-shadow:0 20px 50px -20px rgba(0,0,0,.5)}
+.phead{display:flex;justify-content:space-between;align-items:center}
+.phead h2{margin:0;font:800 1.6rem var(--display)}
+.pcl{font-size:1rem;padding:6px 14px}
+.plist{display:flex;flex-direction:column;gap:6px}
+.prow2{display:flex;align-items:center;gap:10px;padding:8px 10px;border:2px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);cursor:pointer;font:700 1rem var(--body);text-align:left}
+.prow2.on{border-color:var(--blue)}
+.prow2 .pn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prow2 .ps{font-size:.85rem;color:var(--soft)}
+.prowf{display:flex;gap:8px}
+.ptxt{flex:1;min-width:0;font:700 1rem var(--body);padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink)}
+.ph{margin:8px 0 0;font:800 1.3rem var(--display)}
+.pstats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.pstats div{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.pstats b{font:800 1.3rem var(--display);font-variant-numeric:tabular-nums}
+.pstats span{font-size:.72rem;color:var(--soft);font-weight:700;line-height:1.15}
+.pweek{display:flex;gap:6px;align-items:flex-end;height:96px;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:8px}
+.pw{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;height:100%}
+.pwb{width:70%;background:var(--blue);border-radius:4px 4px 0 0}
+.pwb.full{background:var(--sun)}
+.pwn{font-size:.72rem;font-weight:800;color:var(--soft)}
+.pwl{font-size:.75rem;font-weight:700}
+.ptip{font-size:.82rem;color:var(--soft);margin:0}
+.pmed{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px}
+.pmed li{display:flex;align-items:center;gap:6px;font-weight:700;font-size:.92rem}
+.pmed svg{width:22px;height:22px;flex:none}
+.btn.pdelb{align-self:flex-start;font-size:.9rem;padding:6px 12px;color:var(--bad);border-color:var(--bad)}
+.pconf{background:var(--bad-bg);border:2px solid var(--bad);border-radius:12px;padding:10px}
+.pconf p{margin:0 0 8px;font-weight:700}
+.btn.pdel{background:var(--bad);border-color:var(--bad);color:#fff}
 .stars{flex:none;display:flex;align-items:center;gap:6px;background:var(--sun-bg);color:var(--ink);border-radius:999px;padding:6px 14px;font-family:var(--display);font-weight:800;font-size:1.25rem;font-variant-numeric:tabular-nums}
 .stars svg{width:22px;height:22px}
 .stars.pop{animation:pop .5s ease}
@@ -302,6 +350,10 @@ table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;f
 .pkey .fr{width:18px;height:18px}
 .dtab{border-collapse:collapse;margin:0 auto;background:var(--paper);font-weight:800}
 .dtab th,.dtab td{border:1px solid var(--line);padding:6px 10px;text-align:center}
+.cgrid{width:100%;max-width:340px;height:auto;display:block;background:var(--paper);border:1px solid var(--line);border-radius:12px;cursor:pointer;touch-action:manipulation}
+.coordans .unit{font-size:1.8rem}
+.stri{width:180px;height:auto;display:block;margin:6px auto}
+.road{width:100%;max-width:360px;height:auto;display:block;background:var(--paper);border:1px solid var(--line);border-radius:12px}
 .kseq{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 .kseq{flex-wrap:nowrap}
 .ktile{flex:1 1 0;min-width:0;max-width:66px;aspect-ratio:1;display:grid;place-items:center;background:var(--paper);border:2px solid var(--line);border-radius:12px}
@@ -350,10 +402,10 @@ footer p{margin:0 0 6px}
       <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1">+</span><span class="o2">−</span><span class="o3">·</span><span class="o4">:</span></span></h1>
       <p class="sub">Yhteen-, vähennys-, kerto- ja jakolaskua kuvien avulla 1.–6. luokalle. Mukana myös kellolaskut ja kuvapulmat.</p>
     </div>
-    <div class="stars" id="stars" aria-label="Tähdet">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="var(--sun)" stroke="var(--stem)" stroke-width=".8"/></svg>
-      <span id="starN">0</span>
-    </div>
+    <button type="button" class="pchip" id="playerBtn" aria-haspopup="dialog" aria-expanded="false" aria-label="Pelaaja ja päivän tähdet">
+      <span class="pav" id="pav">P</span>
+      <span class="pinfo"><b id="pname">Pelaaja</b><span class="ptoday"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15" fill="none" stroke="var(--line)" stroke-width="5"/><circle id="pring" cx="18" cy="18" r="15" fill="none" stroke="var(--sun)" stroke-width="5" stroke-linecap="round" transform="rotate(-90 18 18)" style="stroke-dasharray:0 100"/><path d="M18 10.5l2.2 4.6 5 .6-3.7 3.4 1 5-4.5-2.5-4.5 2.5 1-5-3.7-3.4 5-.6z" fill="var(--sun)"/></svg><span id="ptoday">0/10</span></span></span>
+    </button>
   </header>
 
   <section>
@@ -375,6 +427,7 @@ footer p{margin:0 0 6px}
     <p>Kolme oikeaa vastausta peräkkäin nostaa tasoa. Kaksi hankalaa tehtävää peräkkäin laskee sitä. Tason voi valita myös itse. Edistyminen tallentuu tähän selaimeen.</p>
   </footer>
 </div>
+<div class="pmodal" id="pmodal" hidden><div class="pbox" role="dialog" aria-modal="true" aria-labelledby="ptitle"><div class="phead"><h2 id="ptitle">Pelaajat</h2><button type="button" class="btn ghost pcl" data-pclose="1" aria-label="Sulje">Sulje</button></div><div id="pbody"></div></div></div>
 
 <script>
 /* ---------- apuvälineet ---------- */
@@ -450,7 +503,7 @@ const ICON={
   auto:'<svg viewBox="0 0 48 48"><path d="M5 31v-7l6-10h21l8 10h3v7z" fill="var(--blue)"/><path d="M13 16h7v8H9zM23 16h8l6 8H23z" fill="var(--paper)" opacity=".85"/><circle cx="14" cy="32" r="5" fill="var(--ink)"/><circle cx="35" cy="32" r="5" fill="var(--ink)"/><circle cx="14" cy="32" r="2" fill="var(--line)"/><circle cx="35" cy="32" r="2" fill="var(--line)"/><path d="M4 41h40" stroke="var(--soft)" stroke-width="2" stroke-dasharray="6 4"/></svg>',
   nuotit:'<svg viewBox="0 0 48 48"><path d="M18 35V12l21-5v23" fill="none" stroke="var(--berry)" stroke-width="3"/><path d="M18 18l21-5" stroke="var(--berry)" stroke-width="3"/><ellipse cx="13.5" cy="35" rx="5.5" ry="4.5" fill="var(--berry)"/><ellipse cx="34.5" cy="30" rx="5.5" ry="4.5" fill="var(--berry)"/></svg>',
   puu:'<svg viewBox="0 0 48 48"><rect x="21" y="28" width="6" height="15" rx="1" fill="var(--stem)"/><circle cx="24" cy="20" r="15" fill="var(--leaf)"/><circle cx="16" cy="16" r="3" fill="var(--apple)"/><circle cx="28" cy="12" r="3" fill="var(--apple)"/><circle cx="31" cy="24" r="3" fill="var(--apple)"/><circle cx="20" cy="26" r="3" fill="var(--apple)"/><path d="M6 43h36" stroke="var(--leaf)" stroke-width="3" stroke-linecap="round"/></svg>',
-  kone:'<svg viewBox="0 0 48 48"><path d="M5 24c0-1.7 1.3-3 3-3h28l8 3-8 3H8c-1.7 0-3-1.3-3-3z" fill="var(--blue)"/><path d="M19 21l7-13h5l-3 13zM19 27l7 13h5l-3-13z" fill="var(--blue)"/><path d="M6 21l-2-8h4l5 8z" fill="var(--blue)"/><path d="M30 23h3M25 23h3M20 23h3" stroke="var(--paper)" stroke-width="2" stroke-linecap="round"/></svg>',
+  kone:'<svg viewBox="0 0 48 48"><path d="M30 22h-7l-9-10h5z" fill="var(--blue)" opacity=".5"/><path d="M7 21L4 9h5l8 12z" fill="var(--sun)"/><path d="M5 26c0-3 3-5 7-5h25c5 0 9 2 9 5s-4 5-9 5H12c-4 0-7-2-7-5z" fill="var(--blue)"/><path d="M31 28h-8l-9 13h6z" fill="var(--blue)" opacity=".75"/><path d="M5 25h8l-3 5H6z" fill="var(--sun)"/><path d="M40 22.5c2.5.3 4.5 1.4 5.3 2.8H40z" fill="var(--paper)"/><g fill="var(--paper)"><circle cx="16" cy="24.5" r="1.4"/><circle cx="20" cy="24.5" r="1.4"/><circle cx="24" cy="24.5" r="1.4"/><circle cx="28" cy="24.5" r="1.4"/><circle cx="32" cy="24.5" r="1.4"/><circle cx="36" cy="24.5" r="1.4"/></g></svg>',
   kolikot:`<svg viewBox="0 0 48 48"><circle cx="31" cy="18" r="11" fill="var(--coin)" stroke="var(--coin-edge)" stroke-width="2"/><circle cx="18" cy="29" r="13" fill="var(--coin)" stroke="var(--coin-edge)" stroke-width="2"/>${NUMTXT(18,35,17,'var(--coin-edge)')}€</text></svg>`,
   pyora:'<svg viewBox="0 0 48 48"><circle cx="12" cy="31" r="8" fill="none" stroke="var(--ink)" stroke-width="3"/><circle cx="36" cy="31" r="8" fill="none" stroke="var(--ink)" stroke-width="3"/><path d="M12 31l7-13h13l4 13M19 18l7 13H12M26 31l6-13M16 14h6M31 14l1 4" fill="none" stroke="var(--blue)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   sakki:`<svg viewBox="0 0 48 48"><path d="M13 13l3-6h16l3 6-2 29H15z" fill="var(--plate)" stroke="var(--stem)" stroke-width="2" stroke-linejoin="round"/><path d="M15 13h18" stroke="var(--stem)" stroke-width="2"/>${NUMTXT(24,33,12,'var(--stem)')}kg</text></svg>`,
@@ -1230,7 +1283,7 @@ function seqGen(g){return(L,op,word)=>{
 const CMPLV={1:['Kuvat','Luvut 0–20','Laskut'],2:['Kymmenet ja ykköset','Lähekkäiset luvut','Laskut'],3:['Luvut 0–1000','Samat sadat','Laskut'],4:['Isot luvut','Desimaaliluvut','Pakkasasteet ja murtoluvut'],5:['Isot luvut','Desimaaliluvut','Murtoluvut'],6:['Desimaaliluvut','Murtoluku vai desimaaliluku','Negatiiviset luvut ja laskut']};
 const SEQLV={1:['Yhden ja kahden välein','Puuttuva luku','Viisi ja kymmenen'],2:['Kahden, viiden ja kymmenen välein','Puuttuva luku','Takaperin'],3:['Isot hypyt','Takaperin ja puuttuva','Kasvava ero ja tuplaus'],4:['Isot luvut','Nollan yli','Kertominen ja kasvava ero'],5:['Desimaaliluvut','Desimaalit takaperin','Neliöt ja kertominen'],6:['Nollan alle','Desimaalit nollan yli','Haastavat säännöt']};
 const GOALC={1:'<b>Lukujonot</b> lukualueella 0–20.',2:'<b>Lukujonot</b> lukualueella 0–100: kahden, viiden ja kymmenen välein.',3:'<b>Säännönmukaisuudet lukujonoissa</b> lukualueella 0–1000.',4:'<b>Lukujonot</b> isoilla luvuilla ja nollan yli negatiivisiin lukuihin.',5:'<b>Lukujonojen säännönmukaisuus</b> desimaaliluvuilla, neliöillä ja kertomalla.',6:'<b>Haastavat lukujonot</b> negatiivisilla luvuilla ja desimaaliluvuilla.'};
-const GOALMIT={1:'<b>Lukujen ja määrien vertailu</b> lukualueella 0–20.',2:'<b>Lukujen vertailu</b> lukualueella 0–100 sekä kellonajat ja viisarit.',3:'<b>Lukujen vertailu</b> lukualueella 0–1000, ajan laskeminen kellosta ja lämpötilat lämpömittarista.',4:'<b>Kellonajat minuutin tarkkuudella</b> ja ajan kesto sekä lämpötilat ja pakkasasteet.',5:'<b>Lämpötilat ja lämpötilojen erot</b> pakkasen ja plussan välillä.',6:'<b>Lämpötilat ja lämpötilojen erot</b> pakkasen ja plussan välillä.'};
+const GOALMIT={1:'<b>Lukujen ja määrien vertailu</b> lukualueella 0–20.',2:'<b>Lukujen vertailu</b> lukualueella 0–100 sekä kellonajat ja viisarit.',3:'<b>Lukujen vertailu</b> lukualueella 0–1000, ajan laskeminen kellosta ja lämpötilat lämpömittarista.',4:'<b>Kellonajat minuutin tarkkuudella</b> ja ajan kesto sekä lämpötilat ja pakkasasteet.',5:'<b>Lämpötilat ja lämpötilojen erot</b> pakkasen ja plussan välillä.',6:'<b>Lämpötilat ja lämpötilojen erot</b> pakkasen ja plussan välillä sekä koordinaatisto negatiivisilla luvuilla.'};
 for(const g of [1,2,3,4,5,6]){if(g<=3)GR[g].topics.push({id:'c-vertailu',fam:'mit',name:'Vertailu',levels:CMPLV[g],gen:cmpGen(g)});GR[g].topics.push({id:'c-jonot',fam:'cmp',name:'Lukujonot',levels:SEQLV[g],gen:seqGen(g)});}
 /* kuviojonot */
 const KCOL={r:['--apple','punainen'],b:['--blue','sininen'],y:['--sun','keltainen'],g:['--good','vihreä'],p:['--candy','violetti']};
@@ -1771,11 +1824,190 @@ function diaGen(g){return(L)=>{const th=pick(DTHEME),cats=th.cats.slice(0,g<=2?3
 const DIALV={1:['Kuvadiagrammi','Kuvadiagrammin vertailu','Pylväsdiagrammi'],2:['Kuvadiagrammi','Kuvadiagrammin vertailu','Pylväät kahden välein'],3:['Pylväsdiagrammi','Kuvadiagrammi','Taulukosta diagrammiksi'],4:['Pylväät 5 tai 10 välein','Kuvadiagrammi','Taulukosta diagrammiksi'],5:['Puolivälin lukeminen','Viivadiagrammi','Diagrammin keskiarvo'],6:['Puolivälin lukeminen','Viivadiagrammi','Ympyrädiagrammi']};
 for(const g of [1,2,3,4,5,6]){const i=GR[g].topics.findIndex(t=>t.id==='tn');GR[g].topics.splice(i,0,{id:'diagrammit',fam:'stat',name:'Diagrammit',levels:DIALV[g],gen:diaGen(g),noWord:true})}
 
+/* ---------- koordinaatisto ---------- */
+const cfmt=(x,y)=>`(${degN(x)}, ${degN(y)})`;
+function cgridSVG(o){const{min,max,pts=[],path=null,id=''}=o,n=max-min,c=n>8?24:30,pad=26,W=n*c+pad*2,X=x=>pad+(x-min)*c,Y=y=>pad+(max-y)*c;
+  let s=`<svg ${id?`id="${id}"`:''} class="cgrid" viewBox="0 0 ${W} ${W}" data-min="${min}" data-max="${max}" data-c="${c}" data-pad="${pad}" role="img" aria-label="Koordinaatisto">`;
+  for(let v=min;v<=max;v++){s+=`<path d="M${X(v)} ${Y(min)}V${Y(max)}M${X(min)} ${Y(v)}H${X(max)}" stroke="var(--line)" stroke-width="1"/>`}
+  const ox=min<0?0:min,oy=min<0?0:min;
+  s+=`<path d="M${X(min)} ${Y(oy)}H${X(max)+12}M${X(ox)} ${Y(min)}V${Y(max)-12}" stroke="var(--ink)" stroke-width="2.2"/><path d="M${X(max)+12} ${Y(oy)}l-7 -4v8z M${X(ox)} ${Y(max)-12}l-4 7h8z" fill="var(--ink)"/>`;
+  s+=`<text x="${X(max)+8}" y="${Y(oy)+16}" font-size="11" font-weight="800" fill="var(--soft)" font-family="Nunito, sans-serif">x</text><text x="${X(ox)+8}" y="${Y(max)-8}" font-size="11" font-weight="800" fill="var(--soft)" font-family="Nunito, sans-serif">y</text>`;
+  for(let v=min;v<=max;v++){if(v===0&&min<0)continue;s+=`<text x="${X(v)}" y="${Y(oy)+14}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--soft)" font-family="Nunito, sans-serif">${degN(v)}</text>`;if(v!==oy||min<0)s+=`<text x="${X(ox)-6}" y="${Y(v)+3.5}" text-anchor="end" font-size="10" font-weight="700" fill="var(--soft)" font-family="Nunito, sans-serif">${degN(v)}</text>`}
+  if(min<0)s+=`<text x="${X(0)-6}" y="${Y(0)+14}" text-anchor="end" font-size="10" font-weight="700" fill="var(--soft)" font-family="Nunito, sans-serif">0</text>`;
+  s+=`<g class="ctap">${path?cpath(path,o):''}</g>`;
+  pts.forEach(p=>{if(p.piece)s+=`<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="9" fill="var(--apple)" stroke="var(--ink)" stroke-width="2"/><circle cx="${X(p.x)-3}" cy="${Y(p.y)-3}" r="2.5" fill="#fff" opacity=".6"/>`;
+    else s+=`<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="5.5" fill="var(--blue)"/><text x="${X(p.x)+7}" y="${Y(p.y)-7}" font-size="14" font-weight="800" fill="var(--blue)" font-family="Baloo 2, sans-serif">${p.l}</text>`});
+  return s+'</svg>'}
+function cpath([x,y],o){const{min,max}=o,n=max-min,c=n>8?24:30,pad=26,X=v=>pad+(v-min)*c,Y=v=>pad+(max-v)*c,ox=min<0?0:min,oy=min<0?0:min;
+  let s=`<path d="M${X(ox)} ${Y(oy)}H${X(x)}V${Y(y)}" fill="none" stroke="var(--sun)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>`;
+  const sx=Math.sign(x-ox),sy=Math.sign(y-oy);for(let i=ox+sx;sx&&i!==x+sx;i+=sx)s+=`<circle cx="${X(i)}" cy="${Y(oy)}" r="3.5" fill="var(--coin-edge)"/>`;for(let j=oy+sy;sy&&j!==y+sy;j+=sy)s+=`<circle cx="${X(x)}" cy="${Y(j)}" r="3.5" fill="var(--coin-edge)"/>`;
+  return s+`<circle cx="${X(x)}" cy="${Y(y)}" r="11" fill="none" stroke="var(--sun)" stroke-width="3.5"/>`}
+const DIRW={r:'oikealle',l:'vasemmalle',u:'ylös',d:'alas'};
+function coordGen(g){return(L)=>{const neg=g===6,min=neg?-5:0,max=neg?5:(g===3?6:g===4?8:10),rnd=()=>R(min,max),inR=v=>v>=min&&v<=max;
+  const ans=(x,y,base)=>({...base,kind:Math.random()<(g===3?.5:.3)?'cchoice':'coord',ax:x,ay:y,neg});
+  const mkChoices=(x,y)=>{const set=new Set([`${x},${y}`]),opts=[[x,y],[y,x]];[[1,0],[0,1],[-1,0],[0,-1],[1,1]].forEach(([a,b])=>opts.push([x+a,y+b]));const out=[];opts.forEach(([a,b])=>{const k=`${a},${b}`;if(inR(a)&&inR(b)&&(out.length===0||!set.has(k))&&out.length<4){set.add(k);out.push([a,b])}});return shuffle(out)};
+  const hintBase=`<p>Ensimmäinen luku (x) kertoo, montako askelta mennään vaakasuunnassa, ja toinen luku (y), montako pystysuunnassa. Aloita origosta ${cfmt(neg?0:0,0)}.</p>${neg?'<p>Negatiivinen x tarkoittaa vasemmalle ja negatiivinen y alas.</p>':''}<p>Napauta koordinaatistossa pistettä, niin näet askeleet siihen.</p>`;
+  const opt={min,max};
+  if(L===1){const x=rnd(),y=rnd();if((x===0&&y===0)||(neg&&(x===0||y===0)&&Math.random()<.6))return coordGen(g)(L);
+    if(Math.random()<.35){const pts=[{x,y,l:'A'}];const ls=['B','C','D'];while(pts.length<4){const p={x:rnd(),y:rnd()};if(!pts.some(q=>q.x===p.x&&q.y===p.y))pts.push({...p,l:ls[pts.length-1]})}const sh=shuffle(pts);const t=sh[0];
+      return{kind:'choice',choices:pts.map(p=>[p.l,p.l]).sort(),ans:t.l,answerText:t.l,visual:cgridSVG({...opt,pts:sh,id:'cgrid'}),text:`<span class="bg" style="font-size:.7em">Mikä piste on kohdassa ${cfmt(t.x,t.y)}?</span>`,hint:hintBase,explain:`<p><b>${t.l} ${cfmt(t.x,t.y)}</b></p>${cgridSVG({...opt,pts:sh,path:[t.x,t.y]})}`}}
+    const P0=ans(x,y,{visual:cgridSVG({...opt,pts:[{x,y,l:'A'}],id:'cgrid'}),text:'<span class="bg" style="font-size:.7em">Mitkä ovat pisteen A koordinaatit?</span>',hint:hintBase,explain:`<p><b>A ${cfmt(x,y)}</b>: ${Math.abs(x)} askelta ${x<0?'vasemmalle':'oikealle'} ja ${Math.abs(y)} ${y<0?'alas':'ylös'}.</p>${cgridSVG({...opt,pts:[{x,y,l:'A'}],path:[x,y]})}`,answerText:cfmt(x,y)});
+    if(P0.kind==='cchoice'){P0.kind='choice';const ch=mkChoices(x,y);P0.choices=ch.map(([a,b])=>[`${a},${b}`,cfmt(a,b)]);P0.ans=`${x},${y}`}return P0}
+  for(let t=0;t<200;t++){const x0=rnd(),y0=rnd(),moves=[];const nm=L===2?1:2,dirs=L===2&&!neg&&g<=4?['r','u']:['r','l','u','d'];let x=x0,y=y0;let ok=true;
+    for(let i=0;i<nm;i++){const used=moves.map(m=>m[0]);const pool=dirs.filter(d=>!used.some(u=>(u==='r'||u==='l')===(d==='r'||d==='l')));
+      if(L===2){const a=R(1,4),b=R(1,4);moves.push(['r',a],['u',b]);x+=a;y+=b;break}
+      const d=pick(pool),k=R(1,neg?6:4);moves.push([d,k]);if(d==='r')x+=k;if(d==='l')x-=k;if(d==='u')y+=k;if(d==='d')y-=k}
+    if(L===2&&dirs.length===4){moves.length=0;x=x0;y=y0;const hd=pick(['r','l']),vd=pick(['u','d']),a=R(1,neg?6:4),b=R(1,neg?6:4);moves.push([hd,a],[vd,b]);x+=hd==='r'?a:-a;y+=vd==='u'?b:-b}
+    if(!inR(x)||!inR(y)||(x===x0&&y===y0))continue;if(neg&&L===3&&Math.sign(x)===Math.sign(x0)&&Math.sign(y)===Math.sign(y0))continue;
+    const desc=moves.map(([d,k])=>`${k} ${k===1?'ruudun':'ruutua'} ${DIRW[d]}`).join(' ja sitten ');
+    const P0=ans(x,y,{visual:cgridSVG({...opt,pts:[{x:x0,y:y0,piece:true}],id:'cgrid'}),story:`Nappula on pisteessä ${cfmt(x0,y0)}. Se siirtyy ${desc}. Missä pisteessä nappula on nyt?`,
+      hint:`<p>Siirtymä oikealle tai vasemmalle muuttaa x-koordinaattia (ensimmäistä lukua). Siirtymä ylös tai alas muuttaa y-koordinaattia (toista lukua).</p><p>x: ${degN(x0)}${moves.filter(m=>m[0]==='r'||m[0]==='l').map(([d,k])=>` ${d==='r'?'+':'−'} ${k}`).join('')} = ?</p><p>Napauta koordinaatistossa pistettä, niin näet askeleet siihen.</p>`,
+      explain:`<p>x: ${degN(x0)}${moves.filter(m=>m[0]==='r'||m[0]==='l').map(([d,k])=>` ${d==='r'?'+':'−'} ${k}`).join('')} = ${degN(x)}</p><p>y: ${degN(y0)}${moves.filter(m=>m[0]==='u'||m[0]==='d').map(([d,k])=>` ${d==='u'?'+':'−'} ${k}`).join('')} = ${degN(y)}</p><p><b>Nappula on pisteessä ${cfmt(x,y)}.</b></p>${cgridSVG({...opt,pts:[{x:x0,y:y0,piece:true}],path:[x,y]})}`,answerText:cfmt(x,y)});
+    if(P0.kind==='cchoice'){P0.kind='choice';const ch=mkChoices(x,y);P0.choices=ch.map(([a,b])=>[`${a},${b}`,cfmt(a,b)]);P0.ans=`${x},${y}`}return P0}
+  return coordGen(g)(1)}}
+function ctap(e){const sv=e.target.closest&&e.target.closest('#cgrid');if(!sv||done)return;const r=sv.getBoundingClientRect(),vb=sv.viewBox.baseVal,sx=(e.clientX-r.left)*vb.width/r.width,sy=(e.clientY-r.top)*vb.height/r.height;
+  const min=+sv.dataset.min,max=+sv.dataset.max,c=+sv.dataset.c,pad=+sv.dataset.pad,x=Math.round((sx-pad)/c)+min,y=max-Math.round((sy-pad)/c);if(x<min||x>max||y<min||y>max)return;
+  sv.querySelector('.ctap').innerHTML=cpath([x,y],{min,max})}
+const CLV={3:['Pisteen koordinaatit','Oikealle ja ylös','Kaikkiin suuntiin'],4:['Pisteen koordinaatit','Oikealle ja ylös','Kaksi siirtoa'],5:['Pisteen koordinaatit','Kaksi suuntaa','Kaksi siirtoa'],6:['Negatiiviset koordinaatit','Siirrot kaikkiin suuntiin','Akselien yli']};
+for(const g of [3,4,5,6])GR[g].topics.push({id:'koord',fam:'mit',name:'Koordinaatisto',noWord:true,levels:CLV[g],gen:coordGen(g)});
+
+/* ---------- nopeus, matka ja aika ---------- */
+const VICON={
+  'kävelijä':'<svg viewBox="0 0 48 48"><path d="M21.5 29v11M27 29v11" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/><path d="M18 42h6M25 42h6" stroke="var(--apple)" stroke-width="4" stroke-linecap="round"/><rect x="14" y="15" width="7" height="12" rx="3" fill="var(--good)"/><path d="M19 15c2-2 9-2 10 0l1 15H18z" fill="var(--blue)"/><path d="M19 18v10M30 18v10" fill="none" stroke="#E8B58C" stroke-width="3.5" stroke-linecap="round"/><path d="M19 16.5v6M30 16.5v6" stroke="var(--blue)" stroke-width="4.5" stroke-linecap="round"/><circle cx="24.5" cy="9" r="5" fill="#E8B58C"/><path d="M19.5 8c0-4 3-6 6-5 3 0 5 2 5 5h-11z" fill="var(--apple)"/><path d="M29.5 8h3" stroke="var(--apple)" stroke-width="2.5" stroke-linecap="round"/></svg>',
+  'pyöräilijä':null,
+  'mopo':'<svg viewBox="0 0 48 48"><circle cx="11" cy="35" r="7" fill="none" stroke="var(--ink)" stroke-width="3.5"/><circle cx="38" cy="35" r="7" fill="none" stroke="var(--ink)" stroke-width="3.5"/><path d="M11 35h13l6-12h-9M30 23l4-11h5M34 12l4 23" fill="none" stroke="var(--good)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><rect x="17" y="18" width="12" height="5" rx="2" fill="var(--ink)"/></svg>',
+  'bussi':'<svg viewBox="0 0 48 48"><rect x="3" y="10" width="42" height="26" rx="5" fill="var(--sun)"/><rect x="7" y="14" width="8" height="9" rx="1.5" fill="var(--paper)"/><rect x="18" y="14" width="8" height="9" rx="1.5" fill="var(--paper)"/><rect x="29" y="14" width="8" height="9" rx="1.5" fill="var(--paper)"/><rect x="39" y="14" width="4" height="15" rx="1" fill="var(--paper)"/><circle cx="13" cy="37" r="5" fill="var(--ink)"/><circle cx="35" cy="37" r="5" fill="var(--ink)"/></svg>',
+  'auto':null,
+  'juna':'<svg viewBox="0 0 48 48"><rect x="6" y="8" width="36" height="28" rx="8" fill="var(--blue)"/><rect x="11" y="13" width="26" height="10" rx="2" fill="var(--paper)"/><circle cx="15" cy="29" r="2.5" fill="var(--sun)"/><circle cx="33" cy="29" r="2.5" fill="var(--sun)"/><path d="M14 36l-5 7M34 36l5 7M8 43h32" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/></svg>',
+  'lentokone':null};
+const vicon=n=>VICON[n]||({'pyöräilijä':ICON.pyora,'auto':ICON.auto,'lentokone':ICON.kone}[n]);
+const VEH=[{n:'kävelijä',a:'Kävelijä',v:[4,6],kind:'kulkee'},{n:'pyöräilijä',a:'Pyöräilijä',v:[12,24],kind:'polkee'},{n:'mopo',a:'Mopo',v:[30,45],kind:'ajaa'},{n:'bussi',a:'Bussi',v:[40,80],kind:'ajaa'},{n:'auto',a:'Auto',v:[50,100],kind:'ajaa'},{n:'juna',a:'Juna',v:[80,200],kind:'kulkee'},{n:'lentokone',a:'Lentokone',v:[500,900],kind:'lentää'}];
+function triSVG(hl){const c=k=>k===hl?'var(--sun)':'var(--paper)';return `<svg class="stri" viewBox="0 0 200 150" aria-hidden="true"><path d="M100 8L192 142H8Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/><path d="M38 96H162M100 96V142" stroke="var(--ink)" stroke-width="3"/>
+  <path d="M100 14L157 92H43Z" fill="${c('m')}" opacity=".9"/><path d="M40 100H96V138H14Z" fill="${c('v')}" opacity=".9"/><path d="M104 100H160L186 138H104Z" fill="${c('t')}" opacity=".9"/>
+  <text x="100" y="72" text-anchor="middle" font-size="18" font-weight="800" fill="var(--ink)" font-family="Baloo 2, sans-serif">matka</text><text x="62" y="126" text-anchor="middle" font-size="15" font-weight="800" fill="var(--ink)" font-family="Baloo 2, sans-serif">nopeus</text><text x="140" y="126" text-anchor="middle" font-size="15" font-weight="800" fill="var(--ink)" font-family="Baloo 2, sans-serif">aika</text><text x="100" y="125" text-anchor="middle" font-size="18" font-weight="800" fill="var(--ink)">·</text></svg>`}
+function roadSVG(segs,lab,icon){const n=segs,W=300,L=20,Rr=W-20,x=i=>L+(Rr-L)*i/n;let s=`<svg class="road" viewBox="0 0 ${W} 70" aria-hidden="true"><path d="M${L} 40H${Rr}" stroke="var(--ink)" stroke-width="6" stroke-linecap="round"/><path d="M${L} 40H${Rr}" stroke="var(--paper)" stroke-width="1.5" stroke-dasharray="8 7"/>`;
+  for(let i=0;i<=n;i++)s+=`<path d="M${x(i)} 32V48" stroke="var(--ink)" stroke-width="2"/>`;
+  lab.forEach((t,i)=>{s+=`<text x="${(x(i)+x(i+1))/2}" y="64" text-anchor="middle" font-size="11" font-weight="800" fill="var(--soft)" font-family="Nunito, sans-serif">${t}</text>`});
+  return s+`<g transform="translate(${L-14} 0)">${icon.replace('<svg ','<svg width="36" height="36" ')}</g><text x="${Rr}" y="22" text-anchor="end" font-size="12" font-weight="800" fill="var(--ink)" font-family="Nunito, sans-serif">perillä</text></svg>`}
+const carIcon='<svg width="34" height="24" viewBox="0 0 48 34"><path d="M4 26v-7l6-10h21l8 10h4v7z" fill="var(--apple)"/><circle cx="13" cy="27" r="5" fill="var(--ink)"/><circle cx="34" cy="27" r="5" fill="var(--ink)"/><path d="M12 11h7v8H8zM22 11h8l6 8H22z" fill="var(--paper)" opacity=".8"/></svg>';
+const hrs=t=>{const h=Math.floor(t),m=Math.round((t-h)*60);return h&&m?`${h} h ${m} min`:h?`${h} ${h===1?'tunti':'tuntia'}`:`${m} minuuttia`};
+const hrsIn=t=>{const h=Math.floor(t),m=Math.round((t-h)*60);return h&&m?`${h} tunnissa ${m} minuutissa`:h?`${h} ${h===1?'tunnissa':'tunnissa'}`:`${m} minuutissa`};
+function speedGen(g){return(L)=>{
+  for(let t=0;t<300;t++){const V=pick(VEH),[K]=two();let v=R(...V.v);if(v>=100)v=Math.round(v/10)*10;else if(v>=20)v=Math.round(v/5)*5;
+    let time,unknown;
+    if(g===5){time=R(2,5);unknown=L===1?'m':L===2?'t':'v'}
+    else{unknown=pick(['m','t','v']);time=L===1?R(2,6):L===2?pick([0.5,1.5,2.5,0.25,0.75,1.25]):pick([1/3,2/3,1/6,1/4,3/4,1/2,5/6])}
+    const m=v*time;if(!Number.isInteger(m)||m<=0)continue;if(unknown==='t'&&L>=2&&g===6&&time<1&&Math.random()<.3)continue;
+    const mins=Math.round(time*60),useMin=time<1,qt=useMin?`${mins} minuutissa`:hrsIn(time);
+    const subj=V.n==='kävelijä'||V.n==='pyöräilijä'?K.n:V.a,verb=V.n==='kävelijä'?'kävelee':V.n==='pyöräilijä'?'pyöräilee':V.kind;
+    let story,ans,unit,ex,hl;
+    if(unknown==='m'){story=`${subj} ${verb} nopeudella ${v} km/h. Kuinka pitkän matkan ${V.n==='kävelijä'||V.n==='pyöräilijä'?'hän':'se'} kulkee ${qt}?`;ans=m;unit='km';hl='m';
+      ex=useMin?`${mins} min on ${frac(mins/gcd(mins,60),60/gcd(mins,60))} tuntia, joten matka = ${v} · ${frac(mins/gcd(mins,60),60/gcd(mins,60))} = ${m} km.`:`Matka = nopeus · aika = ${v} · ${unum(time)} = ${m} km.`}
+    else if(unknown==='t'){story=`${subj} ${verb} ${m} km nopeudella ${v} km/h. Kuinka kauan matkaan menee?`;ans=mins;unit='';
+      ex=useMin?`Aika = matka : nopeus = ${m} : ${v} = ${frac(m/gcd(m,v),v/gcd(m,v))} tuntia = ${mins} minuuttia.`:!Number.isInteger(time)?`Aika = ${m} : ${v} = ${unum(time)} tuntia = ${hrs(time)}.`:`Aika = matka : nopeus = ${m} : ${v} = ${time} h.`;hl='t'}
+    else{story=`${subj} ${verb} ${m} km ${qt.replace('tunnissa','tunnissa')}. Mikä on ${V.n==='kävelijä'||V.n==='pyöräilijä'?'hänen nopeutensa':'sen nopeus'}?`;ans=v;unit='km/h';hl='v';
+      ex=useMin?`Tunnissa on 60 minuuttia. ${mins} minuutissa kuljetaan ${m} km, joten 60 minuutissa kuljetaan ${m} · 60 : ${mins} = ${v} km. Nopeus on ${v} km/h.`:!Number.isInteger(time)?`${hrs(time)} on ${unum(time)} tuntia. Nopeus = ${m} : ${unum(time)} = ${v} km/h.`:`Nopeus = matka : aika = ${m} : ${time} = ${v} km/h.`}
+    const segs=Number.isInteger(time)&&time<=6?time:0;
+    const vis=unknown==='t'?roadSVG(1,[`${m} km · aika ?`],vicon(V.n)):segs?roadSVG(segs,Array.from({length:segs},(_,i)=>`${i+1}. tunti`),vicon(V.n)):'';
+    const tip={m:'Matka saadaan kertomalla nopeus ja aika.',t:'Aika saadaan jakamalla matka nopeudella.',v:'Nopeus saadaan jakamalla matka ajalla.'}[hl];
+    const isT=unknown==='t';
+    return{kind:isT?'dur':Number.isInteger(ans)?'int':'dec',visual:vis||null,story,storyIcon:vicon(V.n),unit,ans,answerText:isT?(mins>=60?`${Math.floor(mins/60)} h ${mins%60} min`:`0 h ${mins} min`):`${unum(ans)} ${unit}`,
+      hint:`<p>${tip} Peitä kolmiosta se, mitä etsit: jäljelle jäävä kertoo laskun.</p>${triSVG(hl)}${useMin||!Number.isInteger(time)?'<p>Muuta minuutit tunneiksi: 60 min = 1 h, 30 min = 1/2 h, 15 min = 1/4 h, 20 min = 1/3 h.</p>':''}${unknown==='m'&&segs?`<p>Joka tunti kuljetaan ${v} km.</p>`:''}`,
+      explain:`<p><b>${ex}</b></p>`}}
+  return speedGen(g)(1)}}
+for(const g of [5,6])GR[g].topics.push({id:'nopeus',fam:'mul',name:'Nopeus, matka ja aika',noWord:true,levels:g===5?['Matka','Aika','Nopeus']:['Kokonaiset tunnit','Puolet ja vartit','Minuutit'],gen:speedGen(g)});
+
 /* ---------- tila ---------- */
-const KEY='laskupolku-v1';
-let S={grade:1,topic:{},op:'+',fam:'add',type:'perus',stars:0,prog:{}};
-try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&typeof s==='object')S={...S,...s}}catch(e){}
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+/* ---------- avatarit ---------- */
+const AVS=(()=>{
+  const SK=['#F5CFA8','#E3AE82','#B97A53'],ORC='#8DBB5C',ORC2='#6E9A43',INK='#2A2440',GOLD='#F4C02E',GOLDE='#C8901A';
+  const body=(c,extra='')=>`<path d="M8 49c0-8.5 6.5-12.5 16-12.5S40 40.5 40 49z" fill="${c}"/>${extra}`;
+  const neck=sk=>`<path d="M21 30h6v8h-6z" fill="${sk}"/>`;
+  const ears=(sk,pt)=>pt?`<path d="M15.5 22.5L8.5 16.5l5.5 11zM32.5 22.5l7-6-5.5 11z" fill="${sk}"/>`:`<circle cx="14.6" cy="25" r="2.3" fill="${sk}"/><circle cx="33.4" cy="25" r="2.3" fill="${sk}"/>`;
+  const head=sk=>`<circle cx="24" cy="24" r="9.6" fill="${sk}"/>`;
+  const face=(girl,o={})=>{const y=o.ey||24.6;
+    let s=`<circle cx="20.4" cy="${y}" r="1.35" fill="${INK}"/><circle cx="27.6" cy="${y}" r="1.35" fill="${INK}"/>`;
+    if(girl)s+=`<path d="M19.3 ${y-.8}l-1-.8M20.1 ${y-1.2}l-.4-1M28.7 ${y-.8}l1-.8M27.9 ${y-1.2}l.4-1" stroke="${INK}" stroke-width=".8" stroke-linecap="round"/>`;
+    if(o.brow)s+=`<path d="M18 ${y-3.2}l4.2 1.4M30 ${y-3.2}l-4.2 1.4" stroke="${o.brow}" stroke-width="1.6" stroke-linecap="round"/>`;
+    s+=`<circle cx="18.6" cy="${y+3.2}" r="1.6" fill="#F07A86" opacity=".45"/><circle cx="29.4" cy="${y+3.2}" r="1.6" fill="#F07A86" opacity=".45"/>`;
+    if(o.tusk)s+=`<path d="M20.3 28.6q3.7 1.6 7.4 0" fill="none" stroke="${INK}" stroke-width="1.1" stroke-linecap="round"/><path d="M20.6 29l.4-${o.tusk}l1.2 ${o.tusk-.3}zM27.4 29l-.4-${o.tusk}l-1.2 ${o.tusk-.3}z" fill="#FFFBEA" stroke="#D9CFA8" stroke-width=".4"/>`;
+    else if(!o.nomouth)s+=`<path d="M21.6 28.6q2.4 2 4.8 0" fill="none" stroke="${girl?'#C2415A':INK}" stroke-width="1.1" stroke-linecap="round"/>`;
+    return s};
+  const longHair=c=>`<path d="M14.2 23c0-8 4.4-12.2 9.8-12.2s9.8 4.2 9.8 12.2v13.5c0 2.2-1.6 3.5-3.6 3.5H17.8c-2 0-3.6-1.3-3.6-3.5z" fill="${c}"/>`;
+  const bangs=c=>`<path d="M14.2 24c-.4-7.4 4.2-11.3 9.8-11.3s10.2 3.9 9.8 11.3c-2.8-1-5.6-3-7-5.6-2.3 3-7.2 5.2-12.6 5.6z" fill="${c}"/>`;
+  const shortHair=c=>`<path d="M14.4 24.4c-1-7.6 3.6-12 9.6-12s10.6 4.4 9.6 12c-1-1.6-1.6-3.4-2-4.8-3.2 1.6-10 1.8-15.2 0-.4 1.4-1 3.2-2 4.8z" fill="${c}"/>`;
+  const wings=(c,e)=>`<g fill="${c}" stroke="${e}" stroke-width=".8"><ellipse cx="11" cy="22" rx="5.5" ry="10" transform="rotate(-28 11 22)"/><ellipse cx="12.5" cy="35" rx="3.6" ry="6.5" transform="rotate(30 12.5 35)"/><ellipse cx="37" cy="22" rx="5.5" ry="10" transform="rotate(28 37 22)"/><ellipse cx="35.5" cy="35" rx="3.6" ry="6.5" transform="rotate(-30 35.5 35)"/></g>`;
+  const crown=`<path d="M16.5 15.5l-.8-7 4.2 3.6L24 6l4.1 6.1 4.2-3.6-.8 7z" fill="${GOLD}" stroke="${GOLDE}" stroke-width=".8" stroke-linejoin="round"/><circle cx="24" cy="12.8" r="1.2" fill="#E5484D"/>`;
+  const tiara=`<path d="M17.6 15.4q6.4-3.2 12.8 0l-1-3.6-2.4 1.6L24 9.2l-3 4.2-2.4-1.6z" fill="${GOLD}" stroke="${GOLDE}" stroke-width=".7" stroke-linejoin="round"/><circle cx="24" cy="12.6" r="1" fill="#E879B9"/>`;
+  const flower=(x,y,c)=>`<g fill="${c}"><circle cx="${x-1.5}" cy="${y}" r="1.5"/><circle cx="${x+1.5}" cy="${y}" r="1.5"/><circle cx="${x}" cy="${y-1.5}" r="1.5"/><circle cx="${x}" cy="${y+1.5}" r="1.5"/></g><circle cx="${x}" cy="${y}" r="1.1" fill="${GOLD}"/>`;
+  const helmet=(steel,edge)=>`<path d="M13.6 33V24c0-7.6 4.6-12.4 10.4-12.4S34.4 16.4 34.4 24v9z" fill="${steel}" stroke="${edge}" stroke-width=".9"/><rect x="17.4" y="19.6" width="13.2" height="12.4" rx="5" fill="SKIN"/><path d="M23.2 12v8.6h1.6V12z" fill="${edge}"/>`;
+  const W=(n,g,s)=>({n,g,s});
+  const L=[
+    W('Prinsessa','t',longHair('#F2C14E')+body('#F08BB6',`<path d="M17 37.5q7 5 14 0" fill="none" stroke="${GOLD}" stroke-width="1.4"/><circle cx="24" cy="41.2" r="1.3" fill="#E5484D"/>`)+neck(SK[0])+head(SK[0])+bangs('#F2C14E')+tiara+face(1)),
+    W('Prinssi','p',body('#3E6FD8',`<path d="M8 49c0-8.5 6.5-12.5 16-12.5S40 40.5 40 49h-5c0-5-3-8-11-8s-11 3-11 8z" fill="#C2343B"/><path d="M18 37q6 3 12 0" fill="none" stroke="${GOLD}" stroke-width="1.6"/>`)+neck(SK[1])+ears(SK[1])+head(SK[1])+shortHair('#5A3A22')+crown+face(0)),
+    W('Keiju','t',wings('#CDEBFF','#7DC0EE')+longHair('#E070B0')+body('#9B6BE0',`<circle cx="24" cy="41" r="1" fill="#fff"/><circle cx="20" cy="43" r=".8" fill="#fff"/><circle cx="28" cy="43" r=".8" fill="#fff"/>`)+neck(SK[0])+ears(SK[0],1)+head(SK[0])+bangs('#E070B0')+flower(30.5,13.5,'#FFE066')+face(1)),
+    W('Keijupoika','p',wings('#D7F5D0','#7CC46A')+body('#3FA35B')+neck(SK[1])+ears(SK[1],1)+head(SK[1])+shortHair('#E07B2E')+`<path d="M14.2 19.4c1.2-5.6 5-8.6 9.8-8.6s8.6 3 9.8 8.6c-6.4-2.2-13.2-2.2-19.6 0z" fill="#3FA35B"/><path d="M24 11c0-3 1.6-4.6 4-5" fill="none" stroke="#2C7A40" stroke-width="1.3" stroke-linecap="round"/>`+face(0)),
+    W('Ritari','p',body('#AEB8C4',`<path d="M24 37v12" stroke="#7D8894" stroke-width="1"/><path d="M8 49c0-5 2-8 5-10l3 10z" fill="#C2343B"/>`)+neck(SK[2])+`<path d="M24 12.4c-.5-5 3-8.4 8-8.4-1.6 2-2.6 4.6-2.2 9.4z" fill="#E5484D"/>`+helmet('#C3CCD6','#7D8894').replace('SKIN',SK[2])+face(0,{ey:25.4})),
+    W('Ritaritar','t',body('#AEB8C4',`<path d="M24 37v12" stroke="#7D8894" stroke-width="1"/><path d="M40 49c0-5-2-8-5-10l-3 10z" fill="#9B6BE0"/>`)+neck(SK[0])+`<g fill="#B5651D"><circle cx="34.5" cy="31" r="2.3"/><circle cx="35.6" cy="34.8" r="2.1"/><circle cx="36.4" cy="38.4" r="1.9"/><circle cx="37" cy="41.6" r="1.7"/></g><path d="M35.6 43.2l1.6 2.4" stroke="#E879B9" stroke-width="2" stroke-linecap="round"/><path d="M24 12.4c-.5-5 3-8.4 8-8.4-1.6 2-2.6 4.6-2.2 9.4z" fill="#E879B9"/>`+helmet('#C3CCD6','#7D8894').replace('SKIN',SK[0])+`<path d="M17.6 23.2c2-2.6 4.4-3.4 5.6-3.4v-.2h-1.8c-2.4 0-4 1.6-3.8 3.6zM30.4 23.2c-2-2.6-4.4-3.4-5.6-3.4" fill="#B5651D"/>`+face(1,{ey:25.4})),
+    W('Örkki','p',body('#8A5A34',`<path d="M12 40l20 9" stroke="#5E3B1F" stroke-width="3"/><circle cx="17" cy="42.3" r="1" fill="#C9C9C9"/>`)+neck(ORC2)+ears(ORC,1)+head(ORC)+`<path d="M19 15.2c1-4 3-6.5 5-9.5 2 3 4 5.5 5 9.5-3.2-1-6.8-1-10 0z" fill="#2B2B2B"/>`+face(0,{tusk:3,brow:'#2F4A1E'})),
+    W('Örkkityttö','t',body('#B0703C',`<path d="M16 38.5h16" stroke="#5E3B1F" stroke-width="1.6"/>`)+`<g fill="#3A2A1E"><circle cx="13.6" cy="30" r="2.6"/><circle cx="13" cy="34.4" r="2.4"/><circle cx="12.6" cy="38.6" r="2.2"/><circle cx="34.4" cy="30" r="2.6"/><circle cx="35" cy="34.4" r="2.4"/><circle cx="35.4" cy="38.6" r="2.2"/></g><path d="M11.2 41.4h3M33.8 41.4h3" stroke="#E5484D" stroke-width="2" stroke-linecap="round"/>`+neck(ORC2)+ears(ORC,1)+head(ORC)+bangs('#3A2A1E')+flower(17.5,15,'#F08BB6')+face(1,{tusk:2})),
+    W('Velho','p',body('#3E4FB8',`<g fill="${GOLD}"><circle cx="13" cy="44" r="1"/><circle cx="35" cy="43" r="1"/></g>`)+neck(SK[0])+ears(SK[0])+head(SK[0])+`<path d="M15.4 26.4c.4 9 3.8 15.6 8.6 15.6s8.2-6.6 8.6-15.6c-2 2.6-4.8 3.6-8.6 3.6s-6.6-1-8.6-3.6z" fill="#EEF1F6" stroke="#C9CFD9" stroke-width=".6"/><path d="M20 29.2q4-2.4 8 0" fill="none" stroke="#C9CFD9" stroke-width="2" stroke-linecap="round"/><ellipse cx="24" cy="17" rx="13" ry="2.8" fill="#2E3C99"/><path d="M15 17L25.5 1.5 33 17z" fill="#3E4FB8"/><path d="M24 9l.7 1.6 1.7.2-1.3 1.1.4 1.7-1.5-.9-1.5.9.4-1.7-1.3-1.1 1.7-.2z" fill="${GOLD}"/><circle cx="28.4" cy="14" r=".8" fill="${GOLD}"/>`+face(0,{ey:23.6,nomouth:1,brow:'#C9CFD9'})),
+    W('Noita','t',longHair('#D9622B')+body('#5B3A8C',`<path d="M19 37l5 5 5-5" fill="none" stroke="#3A2366" stroke-width="1.4"/>`)+neck(SK[1])+head(SK[1])+bangs('#D9622B')+`<ellipse cx="24" cy="15.6" rx="15.5" ry="3" fill="#3A2366"/><path d="M15.6 15.6c1.6-5 3.4-8.4 6-10.6 3-2.6 6-2.8 8.4-1.4-2.6 0-4 1.2-4.4 3.4l2.8 8.6z" fill="#4B2E7A"/><path d="M16.4 14q8 2 16 0" fill="none" stroke="#7FD18B" stroke-width="1.8"/>`+face(1,{ey:25})),
+    W('Haltija','p',body('#2F7D5B',`<path d="M24 36.5l-3.5 5h7z" fill="#E8DFC4"/>`)+neck(SK[1])+ears(SK[1],1)+head(SK[1])+shortHair('#E9D27A')+`<path d="M15.4 18.4q8.6-3.4 17.2 0" fill="none" stroke="#B8C2CC" stroke-width="1.2"/><circle cx="24" cy="16.4" r="1.2" fill="#5AC8E0" stroke="#B8C2CC" stroke-width=".5"/>`+face(0)),
+    W('Haltijatar','t',longHair('#E4E7EF')+body('#2FA3A0',`<path d="M18 37.5q6 4 12 0" fill="none" stroke="#E4E7EF" stroke-width="1.2"/>`)+neck(SK[2])+ears(SK[2],1)+head(SK[2])+bangs('#E4E7EF')+`<g fill="#5CB85C"><ellipse cx="17.6" cy="15.2" rx="2.4" ry="1.2" transform="rotate(-35 17.6 15.2)"/><ellipse cx="21.2" cy="13.2" rx="2.4" ry="1.2" transform="rotate(-15 21.2 13.2)"/><ellipse cx="26.8" cy="13.2" rx="2.4" ry="1.2" transform="rotate(15 26.8 13.2)"/><ellipse cx="30.4" cy="15.2" rx="2.4" ry="1.2" transform="rotate(35 30.4 15.2)"/></g>`+face(1))
+  ];
+  return L})();
+let AVN=0;const avSvg=(i,bg)=>{const k='avc'+(AVN++);return `<svg viewBox="0 0 48 48" aria-hidden="true"><defs><clipPath id="${k}"><circle cx="24" cy="24" r="24"/></clipPath></defs><circle cx="24" cy="24" r="24" style="fill:${bg}"/><g clip-path="url(#${k})">${AVS[i].s}</g></svg>`};
+/* ---------- pelaajat ja pisteet ---------- */
+const KEY='laskupolku-v1',KEY2='laskupolku-v2',GOAL=10,PCOL=['--blue','--apple','--good','--candy','--orange','--sun'];
+const mkState=()=>({grade:1,topic:{},op:'+',fam:'add',type:'perus',stars:0,prog:{},days:{},medals:{}});
+const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let DB={players:[],cur:null};
+try{const d=JSON.parse(localStorage.getItem(KEY2));if(d&&Array.isArray(d.players)&&d.players.length)DB=d}catch(e){}
+if(!DB.players.length){let old=null;try{old=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+  DB={players:[{id:'p'+Date.now(),name:'Pelaaja 1',col:0,state:{...mkState(),...(old&&typeof old==='object'?old:{})}}],cur:null};DB.cur=DB.players[0].id}
+const avBg=p=>`color-mix(in srgb,var(${PCOL[p.col%PCOL.length]}) 30%,var(--paper))`;
+const plAv=p=>p.av!=null&&AVS[p.av]?avSvg(p.av,avBg(p)):esc((p.name.trim()[0]||'?').toUpperCase());
+const curPl=()=>DB.players.find(p=>p.id===DB.cur)||DB.players[0];
+let S=curPl().state;S.days=S.days||{};S.medals=S.medals||{};
+const save=()=>{try{localStorage.setItem(KEY2,JSON.stringify(DB))}catch(e){}};
+const today=(off=0)=>{const d=new Date();d.setDate(d.getDate()-off);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+const dayStreak=st=>{const dd=st.days||{};let n=0,o=dd[today()]?0:1;while(dd[today(o)]){n++;o++}return n};
+function updHeader(){const p=curPl(),t=(S.days||{})[today()]||0,f=Math.min(1,t/GOAL),C=2*Math.PI*15;
+  $('#pav').innerHTML=plAv(p);$('#pav').classList.toggle('has',p.av!=null);$('#pav').style.background=`var(${PCOL[p.col%PCOL.length]})`;$('#pname').textContent=p.name;
+  $('#ptoday').textContent=`${t}/${GOAL}`;$('#pring').style.strokeDasharray=`${(C*f).toFixed(1)} ${C.toFixed(1)}`;$('#playerBtn').classList.toggle('goal',t>=GOAL)}
+function topicName(key){const[g,...r]=key.split('-'),id=r.join('-'),t=(GR[+g]||{topics:[]}).topics.find(x=>x.id===id);return `${g}. lk: ${t?t.name:id.replace(/^(pulma|sana)-.*$/,m=>m.startsWith('pulma')?'Kuvapulmat':'Päättelytehtävät')}`}
+function renderPlayers(confirmDel){const p=curPl(),st=p.state,week=[...Array(7).keys()].reverse().map(o=>({d:today(o),n:(st.days||{})[today(o)]||0})),wm=Math.max(GOAL,...week.map(w=>w.n));
+  const wd=['su','ma','ti','ke','to','pe','la'];
+  $('#pbody').innerHTML=`
+  <div class="plist">${DB.players.map(q=>`<button type="button" class="prow2${q.id===p.id?' on':''}" data-pl="${q.id}"><span class="pav sm${q.av!=null?' has':''}" style="background:var(${PCOL[q.col%PCOL.length]})">${plAv(q)}</span><span class="pn">${esc(q.name)}</span><span class="ps">${q.state.stars||0} tähteä</span></button>`).join('')}</div>
+  ${DB.players.length<8?`<div class="padd"><label class="lbl" for="newName">Uusi pelaaja</label><div class="prowf"><input id="newName" class="ptxt" type="text" maxlength="16" placeholder="Nimi" autocomplete="off"><button type="button" class="btn" data-padd="1">Lisää</button></div></div>`:''}
+  <h3 class="ph">${esc(p.name)}</h3>
+  <p class="lbl">Valitse hahmo</p><div class="pavg" role="group" aria-label="Hahmo"><button type="button" class="pavb pavn" data-pav="none" aria-pressed="${p.av==null}" aria-label="Ei hahmoa, nimen alkukirjain" title="Alkukirjain"><span style="background:var(${PCOL[p.col%PCOL.length]})">${esc((p.name.trim()[0]||'?').toUpperCase())}</span></button>${AVS.map((a,i)=>`<button type="button" class="pavb" data-pav="${i}" aria-pressed="${p.av===i}" aria-label="${a.n}" title="${a.n}">${avSvg(i,avBg(p))}</button>`).join('')}</div>
+  <div class="pstats"><div><b>${(st.days||{})[today()]||0}/${GOAL}</b><span>tänään</span></div><div><b>${dayStreak(st)}</b><span>päivää putkeen</span></div><div><b>${st.stars||0}</b><span>tähteä yhteensä</span></div><div><b>${Object.keys(st.medals||{}).length}</b><span>mitalia</span></div></div>
+  <p class="lbl">Viikko</p><div class="pweek">${week.map(w=>`<div class="pw"><span class="pwn">${w.n||''}</span><span class="pwb${w.n>=GOAL?' full':''}" style="height:${Math.max(3,w.n/wm*60)}px"></span><span class="pwl">${wd[new Date(w.d).getDay()]}</span></div>`).join('')}</div>
+  <p class="ptip">Mitali tulee, kun aiheen ylimmällä tasolla saa kolme oikein peräkkäin.</p>
+  ${Object.keys(st.medals||{}).length?`<ul class="pmed">${Object.keys(st.medals).map(k=>`<li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="14" r="7" fill="var(--sun)" stroke="var(--coin-edge)" stroke-width="1.5"/><path d="M8 2l4 6 4-6" fill="none" stroke="var(--blue)" stroke-width="3"/></svg>${esc(topicName(k))}</li>`).join('')}</ul>`:''}
+  <div class="prename"><label class="lbl" for="renName">Muuta nimeä</label><div class="prowf"><input id="renName" class="ptxt" type="text" maxlength="16" value="${esc(p.name)}" autocomplete="off"><button type="button" class="btn ghost" data-pren="1">Tallenna</button></div></div>
+  ${confirmDel?`<div class="pconf"><p>Poistetaanko ${esc(p.name)}? Kaikki tämän pelaajan tähdet ja tasot häviävät.</p><div class="prowf"><button type="button" class="btn pdel" data-pdelok="1">Poista</button><button type="button" class="btn ghost" data-pdelno="1">Peruuta</button></div></div>`
+    :`<button type="button" class="btn ghost pdelb" data-pdel="1">Poista pelaaja</button>`}
+  <p class="ptip">Tiedot tallentuvat vain tähän selaimeen tällä laitteella. Niitä ei lähetetä minnekään.</p>`}
+function openPlayers(){renderPlayers();$('#pmodal').hidden=false;$('#playerBtn').setAttribute('aria-expanded','true')}
+function closePlayers(){$('#pmodal').hidden=true;$('#playerBtn').setAttribute('aria-expanded','false')}
+function switchPlayer(id){DB.cur=id;S=curPl().state;S.days=S.days||{};S.medals=S.medals||{};RND=null;save();updHeader();renderControls();newProblem();renderPlayers()}
+document.addEventListener('click',e=>{const b=e.target.closest('button');
+  if(e.target.id==='pmodal'){closePlayers();return}if(!b)return;
+  if(b.id==='playerBtn'){openPlayers();return}
+  if(b.dataset.pclose){closePlayers();return}
+  if(b.dataset.pl){switchPlayer(b.dataset.pl);return}
+  if(b.dataset.padd){const nm=$('#newName').value.trim();if(!nm){$('#newName').focus();return}const id='p'+Date.now();DB.players.push({id,name:nm,col:DB.players.length,state:mkState()});switchPlayer(id);return}
+  if(b.dataset.pav){const p=curPl();p.av=b.dataset.pav==='none'?null:+b.dataset.pav;save();updHeader();renderPlayers();const nb=document.querySelector(`[data-pav="${b.dataset.pav}"]`);if(nb)nb.focus();return}
+  if(b.dataset.pren){const nm=$('#renName').value.trim();if(nm){curPl().name=nm;save();updHeader();renderPlayers()}return}
+  if(b.dataset.pdel){renderPlayers(true);return}
+  if(b.dataset.pdelno){renderPlayers();return}
+  if(b.dataset.pdelok){DB.players=DB.players.filter(p=>p.id!==DB.cur);if(!DB.players.length)DB.players.push({id:'p'+Date.now(),name:'Pelaaja 1',col:0,state:mkState()});switchPlayer(DB.players[0].id);return}},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#pmodal').hidden)closePlayers();if(e.key==='Enter'&&e.target.closest&&e.target.closest('#pmodal')){e.stopImmediatePropagation();e.preventDefault();const b=e.target.id==='newName'?$('[data-padd]'):e.target.id==='renName'?$('[data-pren]'):null;if(b)b.click()}},true);
+
 let RND=null;const MIX=()=>S.op==='mix'&&RND;
 const fam=()=>MIX()?RND.fam:S.fam==='cmp'||S.fam==='mit'||S.fam==='stat'?S.fam:S.grade===1?'add':(S.fam||'add');
 const PSEUDO=f=>f==='add'||f==='mul'?[{id:'pulma-'+f,name:'Kuvapulmat',levels:PUZ_LEVELS,gen:(L,op)=>puzzleGen(S.grade)(L,op),noWord:true,puzzle:true},{id:'sana-'+f,name:'Päättelytehtävät',levels:['Kaksi henkilöä','Kolme henkilöä','Tieto vasta lopussa'],gen:L=>wordPuzzleGen(S.grade)(L),noWord:true,puzzle:true}]:[];
@@ -1799,12 +2031,12 @@ function renderControls(){
   const g=GR[S.grade];if(S.grade===1&&(S.op==='*'||S.op==='/'))S.op='+';
   if(S.op==='mix'){$('#goal').innerHTML='<b>Sattuma:</b> tehtävät tulevat satunnaisesti kaikista laskuista, aiheista ja tehtävätyypeistä. Tehtävän aihe näkyy sen yläreunassa.';
     $('#types').disabled=true;chips($('#types'),[['x','Satunnainen']],'x');$('#topics').disabled=true;chips($('#topics'),[['x','Satunnainen']],'x');
-    chips($('#ops'),[['+','Yhteenlasku'],['-','Vähennyslasku'],...(S.grade>1?[['*','Kertolasku'],['/','Jakolasku']]:[]),['cmp','Jonot'],['mit','Mittaaminen'],['stat','Tilastot'],['mix','Sattuma']],S.op,'op');$('#starN').textContent=S.stars;return}
+    chips($('#ops'),[['+','Yhteenlasku'],['-','Vähennyslasku'],...(S.grade>1?[['*','Kertolasku'],['/','Jakolasku']]:[]),['cmp','Jonot'],['mit','Mittaaminen'],['stat','Tilastot'],['mix','Sattuma']],S.op,'op');updHeader();return}
   $('#goal').innerHTML=fam()==='mul'?GOALM[S.grade]:fam()==='cmp'?GOALC[S.grade].replace(/\.$/,' sekä kuviojonot.'):fam()==='stat'?GOALS[S.grade]:fam()==='mit'?GOALMIT[S.grade]+(S.grade>=2?' Lisäksi yksikkömuunnokset: pituus, tilavuus, massa ja raha.':''):g.goal;
   const l=tlist();$('#topics').disabled=l.length<2;chips($('#topics'),l.map(t=>[t.id,t.name]),cur().id,'topic');
   chips($('#ops'),[['+','Yhteenlasku'],['-','Vähennyslasku'],...(S.grade>1?[['*','Kertolasku'],['/','Jakolasku']]:[]),['cmp','Jonot'],['mit','Mittaaminen'],['stat','Tilastot'],['mix','Sattuma']],S.op,'op');
   const ty=typesFor(cur());$('#types').disabled=ty.length<2;chips($('#types'),ty.map(k=>[k,TYPES[k]]),typ(),'type');
-  $('#starN').textContent=S.stars}
+  updHeader()}
 
 /* ---------- tehtävä ---------- */
 let P=null,tries=0,done=false;
@@ -1826,6 +2058,7 @@ function answerHTML(){
     </tbody></table></div>`}
   if(P.steps||P.inline||P.kind==='multi')return '';
   if(P.kind==='choice')return `<div class="choices${P.big?' big':''}${P.pics?' pics':''}${P.chartopts?' charts':''}" role="group" aria-label="Vastausvaihtoehdot">${P.choices.map(([v,l])=>`<button type="button" class="choice" data-choice="${v}">${l}</button>`).join('')}</div>`;
+  if(P.kind==='coord')return `<div class="answer coordans"><span class="unit">(</span><input class="num tb" id="cx" inputmode="none" autocomplete="off" aria-label="x-koordinaatti"><span class="unit">,</span><input class="num tb" id="cy" inputmode="none" autocomplete="off" aria-label="y-koordinaatti"><span class="unit">)</span></div>`;
   if(P.ldiv){const ds=String(P.dvd).split('');
     return `<div class="calc-wrap"><table class="calc ldiv" aria-label="Jakokulma"><tbody><tr class="qrow"><td></td>${ds.map((_,i)=>`<td><input class="qi" id="q${i}" data-i="${i}" inputmode="none" maxlength="1" autocomplete="off" aria-label="Osamäärän numero"></td>`).join('')}</tr>
       <tr class="drow"><td class="dvs">${P.dvs}</td>${ds.map((d,i)=>`<td class="dd${i===0?' first':''}">${d}</td>`).join('')}</tr></tbody></table></div>${P.kind==='divr'?`<div class="answer"><span class="unit">jakojäännös</span><input class="num tb" id="rem" inputmode="none" autocomplete="off" aria-label="Jakojäännös"></div>`:''}`}
@@ -1869,10 +2102,12 @@ function draw(){const t=cur(),pr=prog();const IA=inlineAns();
     <div id="fb" hidden></div>
     <div class="panel" id="hint" hidden><h3>Vihje</h3>${P.hint}</div>
     <div class="panel explain" id="explain" hidden><h3>Näin se lasketaan</h3>${P.explain}</div>`;
-  const first=P.ldiv?$('#q0'):P.steps?$('#sc0'):P.kind==='col'?document.getElementById('r'+(P.L.N-1)):document.querySelector('#ans,#fn,#th');
+  const first=P.kind==='coord'?$('#cx'):P.ldiv?$('#q0'):P.steps?$('#sc0'):P.kind==='col'?document.getElementById('r'+(P.L.N-1)):document.querySelector('#ans,#fn,#th');
   activeEl=first;if(first)first.focus({preventScroll:true})}
 function fb(msg,cls){const e=$('#fb');e.hidden=false;e.className='fb '+cls;e.innerHTML=msg}
 function evaluate(){
+  if(P.kind==='coord'){const xs=$('#cx').value.trim().replace('−','-'),ys=$('#cy').value.trim().replace('−','-');if(!xs&&!ys)return{empty:true};if(!/^-?\d+$/.test(xs)||!/^-?\d+$/.test(ys))return{bad:'Kirjoita molemmat koordinaatit: ensin x, sitten y.'};
+    const okx=+xs===P.ax,oky=+ys===P.ay,ok=okx&&oky;$('#cx').classList.toggle('ok',okx);$('#cx').classList.toggle('no',!okx);$('#cy').classList.toggle('ok',oky);$('#cy').classList.toggle('no',!oky);return{ok}}
   if(P.ldiv){const ins=[...document.querySelectorAll('.qi')],v=ins.map(x=>x.value.trim());if(v.every(x=>!x))return{empty:true};
     const qs=v.join('').replace(/^0+(?=\d)/,'');if(!/^\d+$/.test(qs)||/\d\s*$/.test('')&&false)return{bad:'Kirjoita osamäärän numerot jakokulman yläpuolelle.'};
     let ok=+qs===P.ans;if(P.kind==='divr'){const rs=$('#rem').value.trim();ok=ok&&+(rs||0)===P.rem;$('#rem').classList.toggle('ok',ok);$('#rem').classList.toggle('no',!ok)}
@@ -1911,10 +2146,11 @@ const PRAISE=['Oikein!','Hienoa!','Mahtavaa!','Juuri niin!','Loistavaa!','Hyvin 
 function check(){if(done)return;const r=evaluate(),pr=prog();
   if(r.empty){fb('Kirjoita ensin vastaus.','info');return}
   if(r.bad){fb(r.bad,'info');return}
-  if(r.ok){done=true;S.stars++;pr.streak++;pr.fails=0;let msg=pick(PRAISE)+' Sait tähden.';
+  if(r.ok){done=true;S.stars++;const td=today();S.days[td]=(S.days[td]||0)+1;pr.streak++;pr.fails=0;let msg=pick(PRAISE)+' Sait tähden.';
     if(pr.streak>=3&&pr.level<3){pr.level++;pr.streak=0;msg+=` Siirryt tasolle ${pr.level}.`}
-    else if(pr.streak>=3){pr.streak=0;msg+=' Olet ylimmällä tasolla. Upeaa!'}
-    fb(msg,'good');const st=$('#stars');st.classList.remove('pop');void st.offsetWidth;st.classList.add('pop');$('#starN').textContent=S.stars;finish()}
+    else if(pr.streak>=3){pr.streak=0;const mk=S.grade+'-'+cur().id;if(!S.medals[mk]){S.medals[mk]=1;msg+=' Sait mitalin tästä aiheesta!'}else msg+=' Olet ylimmällä tasolla. Upeaa!'}
+    if(S.days[td]===GOAL)msg+=' Päivän tavoite täynnä!';
+    fb(msg,'good');const st=$('#playerBtn');st.classList.remove('pop');void st.offsetWidth;st.classList.add('pop');updHeader();finish()}
   else{tries++;
     if(tries===1){fb(P.kind==='multi'&&P.multiMsg?P.multiMsg:'Ei vielä ihan. Tarkista vastaus tai katso vihje.','bad')}
     else{done=true;pr.streak=0;pr.fails++;let msg=P.answerText?`Oikea vastaus on ${P.answerText}.`:'Oikea vaihtoehto on merkitty vihreällä.';if(P.kind==='choice'){const cb=document.querySelector(`.choice[data-choice="${P.ans}"]`);if(cb)cb.classList.add('ok')}if(P.kind==='multi')P.ans.forEach(i=>{const t=document.querySelector(`.gtile[data-pick="${i}"]`);if(t&&!t.classList.contains('ok'))t.classList.add('miss')});
@@ -1933,6 +2169,7 @@ function updateStreak(){const e=$('#streak');if(e)e.innerHTML=streakHTML()}
 let activeEl=null;
 const BACK='<svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M9 5h11v14H9l-6-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 9l5 6M17 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
 function keypad(){
+  if(P.kind==='coord'){const ks=[1,2,3,4,5,6,7,8,9].map(n=>`<button type="button" class="key" data-key="${n}">${n}</button>`).join('');return `<div class="keypad" role="group" aria-label="Numeronäppäimistö">${ks}${P.neg?'<button type="button" class="key alt" data-key="neg" aria-label="Miinusmerkki">−</button>':'<span></span>'}<button type="button" class="key" data-key="0">0</button><button type="button" class="key alt" data-key="back" aria-label="Pyyhi">${BACK}</button><button type="button" class="key alt wide" data-key="swap" aria-label="Vaihda x ja y">x ↔ y</button></div>`}
   if(P.kind==='choice'||P.kind==='multi')return '';
   if(P.neg&&P.kind==='dec')return `<div class="keypad" role="group" aria-label="Numeronäppäimistö">${[1,2,3,4,5,6,7,8,9].map(n=>`<button type="button" class="key" data-key="${n}">${n}</button>`).join('')}<button type="button" class="key alt" data-key="neg" aria-label="Miinusmerkki">−</button><button type="button" class="key" data-key="0">0</button><button type="button" class="key" data-key="," aria-label="Pilkku">,</button><button type="button" class="key alt wide" data-key="back" aria-label="Pyyhi">${BACK}</button></div>`;
   const last=P.neg?'<button type="button" class="key alt" data-key="neg" aria-label="Miinusmerkki">−</button>':P.kind==='dec'?'<button type="button" class="key" data-key="," aria-label="Pilkku">,</button>'
@@ -1941,17 +2178,18 @@ function keypad(){
   return `<div class="keypad" role="group" aria-label="Numeronäppäimistö">${[1,2,3,4,5,6,7,8,9].map(n=>`<button type="button" class="key" data-key="${n}">${n}</button>`).join('')}${last}<button type="button" class="key" data-key="0">0</button><button type="button" class="key alt" data-key="back" aria-label="Pyyhi">${BACK}</button></div>`}
 function pressKey(k){if(done)return;
   let el=activeEl&&document.body.contains(activeEl)?activeEl:null;
-  if(!el)el=P.ldiv?$('#q0'):P.kind==='col'?document.getElementById('r'+(P.L.N-1)):document.querySelector('#ans,#fn,#th');
+  if(!el)el=P.kind==='coord'?$('#cx'):P.ldiv?$('#q0'):P.kind==='col'?document.getElementById('r'+(P.L.N-1)):document.querySelector('#ans,#fn,#th');
   if(!el)return;
   const fire=()=>el.dispatchEvent(new Event('input',{bubbles:true}));
-  if(k==='swap'&&el.classList.contains('qi')){el=$('#rem')||el}
+  if(k==='swap'&&(el.id==='cx'||el.id==='cy')){el=el.id==='cx'?$('#cy'):$('#cx')}
+  else if(k==='swap'&&el.classList.contains('qi')){el=$('#rem')||el}
   else if(k==='swap'&&el.classList.contains('sq')){const n=el.closest('td').nextElementSibling;const nx=n&&n.querySelector('.sq');if(nx)el=nx}
   else if(k==='swap'){const f=P.steps?[...document.querySelectorAll('.step1 .sc'),$('#ans')]:[...document.querySelectorAll('.answer .num')];const i=f.indexOf(el);el=P.steps?f[Math.min(i+1,f.length-1)]:f[(i+1)%f.length]}
   else if(k==='back'&&(el.classList.contains('qi')||el.classList.contains('sq'))){if(!el.value){const pv=el.closest('td').previousElementSibling,px=pv&&pv.querySelector('input');if(px)el=px}el.value='';el.classList.remove('ok','no')}
   else if(k==='back'){
     if(el.classList.contains('ri')&&!el.value){let j=+el.dataset.i+1;if(P.L.D&&j===P.L.I)j++;const n=document.getElementById('r'+j);if(n)el=n}
     el.value=el.value.slice(0,-1);el.classList.remove('ok','no');if(!el.classList.contains('ri'))fire()}
-  else if(k==='neg'){if(el.id==='ans'){el.value=el.value.startsWith('−')||el.value.startsWith('-')?el.value.slice(1):'−'+el.value;fire()}}
+  else if(k==='neg'){if(el.id==='ans'||el.id==='cx'||el.id==='cy'){el.value=el.value.startsWith('−')||el.value.startsWith('-')?el.value.slice(1):'−'+el.value;fire()}}
   else if(k===','){if(el.id==='ans'&&!el.value.includes(','))el.value+=(el.value?'':'0')+',';}
   else if(el.classList.contains('qi')||el.classList.contains('sq')){el.value=k;el.classList.remove('ok','no');const n=el.closest('td').nextElementSibling,nx=n&&n.querySelector('input');if(nx){activeEl=nx;nx.focus({preventScroll:true})}return}
   else if(el.classList.contains('ri')||el.classList.contains('ci')||el.classList.contains('pi')){el.value=k;fire();if(!el.classList.contains('ci'))return}
@@ -1963,7 +2201,7 @@ document.addEventListener('pointerdown',e=>{if(e.target.closest('.key'))e.preven
 document.addEventListener('mousedown',e=>{if(e.target.closest('.key'))e.preventDefault()});
 
 /* ---------- tapahtumat ---------- */
-document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#cgrid')){ctap(e);return}const b=e.target.closest('button');if(!b)return;
   if(b.dataset.help){const h=$('#pzh');h.hidden=!h.hidden;b.setAttribute('aria-expanded',String(!h.hidden));b.setAttribute('aria-label',h.hidden?'Näytä ohje':'Piilota ohje');return}
   if(b.dataset.turn){const f=$('#sheet .visual .arr'),ex=$('#sheet .ex');if(!f||!ex)return;const t=f.classList.toggle('tr'),A=+f.dataset.a,B=+f.dataset.b;ex.textContent=t?`${B} · ${A}`:`${A} · ${B}`;return}
   if(b.dataset.grade){S.grade=+b.dataset.grade;renderControls();newProblem();save()}
@@ -1983,6 +2221,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)r
   else if(b.id==='hintBtn'){const h=$('#hint');h.hidden=!h.hidden;b.textContent=h.hidden?'Vihje':'Piilota vihje'}
   else if(b.id==='next'||b.id==='skip')newProblem()});
 document.addEventListener('keydown',e=>{const t=e.target;
+  if(t.closest&&t.closest('#pmodal'))return;
   if(e.key==='Enter'&&t.matches('input')){e.preventDefault();if(done)newProblem();else check();return}
   if(!t.classList||!t.classList.contains('ri'))return;
   const i=+t.dataset.i,go=j=>{let k=j;if(P.L.D&&k===P.L.I)k+=(j>i?1:-1);const el=document.getElementById('r'+k);if(el){el.focus();el.select()}};
@@ -2000,7 +2239,7 @@ document.addEventListener('input',e=>{const t=e.target;if(t.classList.contains('
   else if(t.classList.contains('ci')){t.value=t.value.replace(/[^\d−-]/g,'').slice(0,2);t.classList.remove('hinted')}
   else if(t.matches('.num'))t.classList.remove('ok','no')});
 
-renderControls();newProblem();
+updHeader();renderControls();newProblem();
 </script>
 
 </body>
