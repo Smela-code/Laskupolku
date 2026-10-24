@@ -340,6 +340,19 @@ table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;f
 .simcap.grow{animation:capgrow .8s ease-out}
 @keyframes capgrow{0%{transform:scale(1)}30%{transform:scale(1.6)}100%{transform:scale(1)}}
 .sbl2{font:700 .72rem var(--body);text-align:center;line-height:1.15}
+.ldv{flex:none;border-collapse:collapse;background:var(--paper);border-radius:12px;font-family:var(--display);font-weight:800;font-variant-numeric:tabular-nums;margin:0 auto}
+.ldv td{width:clamp(26px,7.5vw,36px);height:36px;text-align:center;font-size:1.55rem;padding:2px;line-height:1}
+.ldv td.sg{width:18px;color:var(--blue)}
+.ldv td.ex{width:auto;text-align:left;white-space:nowrap;padding-left:8px}
+.ldv td.ln{border-top:3px solid var(--ink)}
+.ldv .sq{width:100%;height:30px;font:800 1.15rem var(--display);text-align:center;border:1.5px dashed var(--line);border-radius:6px;background:var(--paper);color:var(--ink);padding:0}
+.ldv.done td{height:30px;font-size:1.3rem}
+.ldans{display:inline-flex;vertical-align:middle}.ldans .num{width:5ch;font-size:1.5rem;padding:2px 6px}
+.ldtip{text-align:center;margin:0}
+.mixn{display:inline-block;margin-right:.08em;vertical-align:middle}
+.num.mw{width:2.6ch;font-size:1.8rem;align-self:center}
+.answer.mixin{display:inline-flex;gap:6px;vertical-align:middle;align-items:center}.mixin .num.mw{font-size:1.6rem;padding:10px 4px;width:2.4ch}
+.calc-wrap{justify-content:safe center}
 .ldiv td{width:clamp(30px,8.5vw,42px);height:44px}
 .ldiv .qi{width:100%;font:800 1.55rem var(--display);text-align:center;color:var(--ink);background:var(--paper);border:2px solid var(--blue);border-radius:8px;height:42px;padding:0}
 .ldiv .qi.ok{border-color:var(--good);background:var(--good-bg)}.ldiv .qi.no{border-color:var(--bad);background:var(--bad-bg)}
@@ -929,6 +942,15 @@ function mulCol(a,b,word){
       hint:E(`<p>Tässä lasketaan kertolasku: <b>${expr}</b>.</p><p>Laske allekkain paperille. Aloita oikealta.</p>`,`<p>This is a multiplication: <b>${expr}</b>.</p><p>Work it out in columns on paper. Start from the right.</p>`),explain}}
   return{kind:'col',L,op:'*',carries,partials:bs.length>1?bs.length:0,ans:a*b,answerText:fmtInt(a*b),
     hint:E(`<p>Aloita oikealta ja etene vasemmalle.</p><ol>${out[0]}</ol><p>Jatka samalla tavalla.</p>`,`<p>Start from the right and work to the left.</p><ol>${out[0]}</ol><p>Carry on the same way.</p>`),explain}}
+function ldivSteps(a,b){const ds=String(a).split('').map(Number),n=ds.length,rows=[];let i=0,cur=0;
+  while(i<n){cur=cur*10+ds[i];if(cur>=b||i===n-1)break;i++}
+  for(;;){const q=Math.floor(cur/b),p=q*b,rem=cur-p,ps=String(p);rows.push({t:'p',v:ps,end:i});
+    const next=i+1<n,rs=next?(rem?String(rem):'')+ds[i+1]:String(rem);rows.push({t:'r',v:rs,end:next?i+1:i,pe:i,pl:ps.length});
+    if(!next)break;cur=rem*10+ds[i+1];i++}
+  return rows}
+function ldivWorked(a,b){const st=ldivSteps(a,b),ds=String(a).split(''),n=ds.length,q=Math.floor(a/b),r=a%b;
+  const cells=(v,end)=>[...Array(n).keys()].map(c=>{const k=c-(end-v.length+1);return k>=0&&k<v.length?v[k]:''});
+  return `<div class="calc-wrap"><table class="ldv done"><tbody><tr><td class="sg"></td>${ds.map(d=>`<td>${d}</td>`).join('')}<td class="ex">: ${b} = <b>${q}</b></td></tr>${st.map(x=>`<tr class="${x.t}"><td class="sg">${x.t==='p'?'−':''}</td>${cells(x.v,x.end).map((v,c)=>`<td class="${x.t==='r'&&c<=x.pe&&c>x.pe-x.pl?'ln':''}">${v}</td>`).join('')}<td class="ex"></td></tr>`).join('')}</tbody></table></div>`}
 function divSteps(a,b){const ds=String(a).split('').map(Number),n=ds.length,out=[];let r=0;
   ds.forEach((d,i)=>{const e=n-1-i,cur=r*10+d,q=Math.floor(cur/b),nr=cur%b;
     out.push(`<li><b>${PLACE[e]}:</b> ${r?E(`edellisestä jäi ${r}, ja se vaihdetaan pienempiin: ${r} · 10 + ${d} = ${cur}. `,`${r} was left over from before, so exchange it for smaller units: ${r} · 10 + ${d} = ${cur}. `):''}${cur} : ${b} = ${q}${nr?E(`, jää ${nr}`,`, remainder ${nr}`):''}.</li>`);r=nr});
@@ -937,10 +959,10 @@ function divProblem(a,b,rem,word,showPv){
   const q=Math.floor(a/b),r=a%b,st=divSteps(a,b);
   const JJ=E('jakojäännös','remainder'),osaan=E(b+' osaan','into '+b+' parts');
   const P={kind:rem?'divr':'int',ans:q,rem:r,answerText:rem?`${fmtInt(q)}, ${JJ} ${r}`:fmtInt(q),
-    ldiv:!word,dvd:a,dvs:b,text:word?null:`<span class="bg" style="font-size:.7em">${E('Laske jakokulmassa','Use long division')}: ${fmtInt(a)} : ${b}</span>`,
+    ldiv:!word,dvd:a,dvs:b,text:word?null:`<span class="bg" style="font-size:.7em">${E('Laske allekkain','Work it out in columns')}</span>`,
     visual:showPv&&!word?`${opnd(pv(a),a,a+E(' omenaa',' apples'))}${sign('/')}${opnd(plates(b),osaan,osaan)}${legend(false)}`:null,
     hint:E(`<p>Jaa luku osissa suurimmasta paikasta alkaen.</p><ol>${st[0]}</ol><p>Jatka samalla tavalla.</p>`,`<p>Divide the number in parts, starting from the biggest place value.</p><ol>${st[0]}</ol><p>Carry on the same way.</p>`),
-    explain:`<p><b>${fmtInt(a)} : ${b} = ${fmtInt(q)}${r?`, ${JJ} ${r}`:''}</b></p><ol>${st.join('')}</ol>${r?`<p>${E('Tarkistus','Check')}: ${fmtInt(q)} · ${b} + ${r} = ${fmtInt(a)}.</p>`:''}`};
+    explain:`<p><b>${fmtInt(a)} : ${b} = ${fmtInt(q)}${r?`, ${JJ} ${r}`:''}</b></p>${word?'':ldivWorked(a,b)}<ol>${st.join('')}</ol>${r?`<p>${E('Tarkistus','Check')}: ${fmtInt(q)} · ${b} + ${r} = ${fmtInt(a)}.</p>`:''}`};
   if(word){if(rem){P.story=E(`${fmtInt(a)} omenaa pakataan pusseihin, ${b} omenaa jokaiseen. Montako täyttä pussia tulee, ja montako omenaa jää yli?`,`${fmtInt(a)} apples are packed into bags, ${b} apples in each bag. How many full bags are there, and how many apples are left over?`);P.storyIcon=ICON.puu;P.qLabel=E('pussia','bags');P.rLabel=E('jää yli','left over')}
     else{const w=pick(EN?[{icon:'kolikot',unit:'€',t:`${fmtInt(a)} euros are shared equally between ${b} winners. How much does each winner get?`},
       {icon:'kirjat',t:`A ${fmtInt(a)}-page book is read in ${b} days, with the same number of pages each day. How many pages are read each day?`}]:[{icon:'kolikot',unit:'€',t:`${fmtInt(a)} euroa jaetaan tasan ${b} voittajan kesken. Paljonko kukin saa?`},
@@ -988,6 +1010,117 @@ function decMulDiv(g){return(L,op,word)=>{const[K]=two();let A,k=null,B=null,res
   return{kind:'dec',story,storyIcon:icon?ICON[icon]:null,unit,text:word?null:`<span class="bg">${text} = ${BOX}</span>`,ans:val(res),answerText:at+(unit?' '+unit:''),
     hint:(word?E(`<p>Tässä lasketaan ${op==='*'?'kertolasku':'jakolasku'}: <b>${text}</b>.</p>`,`<p>This is a ${op==='*'?'multiplication':'division'}: <b>${text}</b>.</p>`):'')+hint,explain:`<p><b>${text} = ${at}</b></p>`}}}
 
+const mixed=(w,n,d)=>`<span class="mixn">${w}</span>${n?frac(n,d):''}`;
+function fdGen(g){return L=>{
+  const T=[...Array(9).keys()].map(i=>[i+1,10]),H=[...Array(99).keys()].map(i=>[i+1,100]).filter(([n])=>n%10),HF=[[1,2],[1,5],[2,5],[3,5],[4,5]],
+    Q=[[1,4],[3,4],[1,20],[3,20],[7,20],[9,20],[1,25],[2,25],[6,25],[1,50],[3,50],[7,50]],EI=[[1,8],[3,8],[5,8],[7,8]];
+  const P={4:[[T,0],[[...T,...HF],0],[[...H,[1,4],[3,4]],0]],5:[[[...T,...H],0],[[...HF,...Q],0],[[...T,...HF,...Q],1]],6:[[[...HF,...Q],0],[[...Q,...EI],0],[[...HF,...Q,...EI],1]]}[g][L-1];
+  for(let t=0;t<50;t++){let[n,d]=pick(P[0]);if(gcd(n,d)!==1&&d!==100&&d!==10)continue;if(P[1]&&Math.random()<.7)n+=d*R(1,3);
+    let k=0;while(k<3&&(n*10**k)%d)k++;const u=n*10**k/d,D=10**k,dec=fd({u,d:k});
+    const toDec=Math.random()<.5,ex=`<p><b>${frac(n,d)}${d!==D?` = ${frac(u,D)}`:''} = ${dec}</b></p>`;
+    if(toDec)return{kind:'dec',text:`<span class="bg">${frac(n,d)} = ${BOX}</span>`,ans:u/D,answerText:dec,
+      hint:d===D?E(`<p>Nimittäjä ${D} kertoo, montako desimaalia luvussa on: 10 → yksi desimaali, 100 → kaksi desimaalia.</p><p>Esimerkiksi ${frac(3,10)} = 0,3 ja ${frac(3,100)} = 0,03.</p>`,`<p>The denominator ${D} tells you how many decimal places there are: 10 → one place, 100 → two places.</p><p>For example, ${frac(3,10)} = 0,3 and ${frac(3,100)} = 0,03.</p>`)
+        :E(`<p>Lavenna murtoluku niin, että nimittäjä on ${D}: kerro osoittaja ja nimittäjä luvulla ${D/d}.</p><p>Muista: ${frac(1,10)} = 0,1, ${frac(1,100)} = 0,01 ja ${frac(1,1000)} = 0,001.</p>`,`<p>Change the fraction so that the denominator is ${D}: multiply the numerator and the denominator by ${D/d}.</p><p>Remember: ${frac(1,10)} = 0,1, ${frac(1,100)} = 0,01 and ${frac(1,1000)} = 0,001.</p>`),explain:ex};
+    return{kind:'frac',text:`<span class="bg">${dec} = ${BOX}</span>`,ans:{n:u,d:D},answerText:fracRes(u,D),
+      hint:E(`<p>Katso, montako desimaalia luvussa on: yksi desimaali → nimittäjä 10, kaksi → 100, kolme → 1000.</p><p>${dec} on ${fmtInt(u)} ${u===1?unitWord(k).replace(/aa$/,'a').replace(/s$/,''):unitWord(k)}.${gcd(u,D)>1?' Voit myös supistaa.':''}</p>`,`<p>Look at how many decimal places the number has: one place → denominator 10, two → 100, three → 1000.</p><p>${dec} is ${fmtInt(u)} ${u===1?unitWord(k).replace(/aa$/,'a').replace(/s$/,''):unitWord(k)}.${gcd(u,D)>1?' You can also simplify.':''}</p>`),explain:ex+(gcd(u,D)>1?`<p>${E('Supistettuna','Simplified')}: ${fracRes(u,D)}</p>`:'')}}
+  return fdGen(g)(1)}}
+const pcf=p=>String(+p.toFixed(3)).replace('.',',');
+function pgrid(N,c){const[cols,rows]={100:[10,10],50:[10,5],25:[5,5],20:[5,4],10:[5,2],5:[5,1],4:[2,2]}[N],s=cols>5?20:28;let p='';
+  for(let i=0;i<N;i++){const x=(i%cols)*s,y=Math.floor(i/cols)*s;p+=`<rect x="${x+1.5}" y="${y+1.5}" width="${s-3}" height="${s-3}" rx="3" fill="${i<c?'var(--cake)':'var(--plate)'}"/>`}
+  return `<svg viewBox="0 0 ${cols*s} ${rows*s}" width="${cols*s}" height="${rows*s}" role="img" aria-label="${c}/${N}">${p}</svg>`}
+const decOf=(n,d)=>{let k=0;while(k<3&&(n*10**k)%d)k++;return fd({u:n*10**k/d,d:k})};
+const plbl=(t,x)=>`<span class="bg" style="display:block;font-size:.55em;margin-bottom:.3em">${t}</span><span class="bg">${x}</span>`;
+function pctConv(g,hard){
+  const base=[[1,2],[1,4],[3,4],[1,5],[2,5],[3,5],[4,5],[1,10],[3,10],[7,10],[9,10],[1,1]],
+    pool=g===5?(hard?[...base,[3,2],[5,4],[1,20],[3,20]]:base):(hard?[[1,8],[3,8],[5,8],[3,2],[5,4],[7,4],[1,100],[1,20],[7,20],[1,25],[3,50]]:[...base,[1,20],[3,20],[1,25],[1,50],[1,100]]);
+  let n,d;if(Math.random()<.3&&!hard){n=R(1,99);d=100;if(n%10===0)n++}else[n,d]=pick(pool);
+  const p=100*n/d,P=pcf(p),dec=decOf(n,d),G=gcd(n,d),grid=Number.isInteger(p)&&p<=100?`<div class="visual">${pgrid(100,p)}</div>`:'';
+  const ex=`<p><b>${P} % = ${Number.isInteger(p)?frac(p,100)+' = ':''}${G>1||d!==100?frac(n/G,d/G)+' = ':''}${dec}</b></p>${grid}`;
+  const hP=E(`<p>Prosentti tarkoittaa sadasosaa: ${P} % = ${P} sadasosaa.</p>`,`<p>Per cent means hundredths: ${P} % = ${P} hundredths.</p>`);
+  const dir=R(0,3);
+  if(dir===0)return{kind:'dec',text:plbl(E('Kirjoita desimaalilukuna','Write as a decimal'),`${P} % = ${BOX}`),ans:n/d,answerText:dec,
+    hint:hP+E(`<p>Jaa luku 100:lla: siirrä pilkkua kaksi askelta vasemmalle. Esimerkiksi 35 % = 0,35 ja 8 % = 0,08.</p>`,`<p>Divide by 100: move the decimal comma two places to the left. For example, 35 % = 0,35 and 8 % = 0,08.</p>`),explain:ex};
+  if(dir===1)return{kind:Number.isInteger(p)?'int':'dec',text:`<span class="bg">${dec} = ${BOX} %</span>`,ans:p,answerText:`${P} %`,
+    hint:E(`<p>Kerro luku 100:lla: siirrä pilkkua kaksi askelta oikealle.</p><p>Esimerkiksi 0,4 = 0,40 = 40 sadasosaa = 40 %.</p>`,`<p>Multiply by 100: move the decimal comma two places to the right.</p><p>For example, 0,4 = 0,40 = 40 hundredths = 40 %.</p>`),explain:ex};
+  if(dir===2&&Number.isInteger(p))return{kind:'frac',text:plbl(E('Kirjoita murtolukuna','Write as a fraction'),`${P} % = ${BOX}`),ans:{n,d},answerText:fracRes(p,100),
+    hint:hP+E(`<p>Kirjoita murtoluku, jonka nimittäjä on 100. Voit myös supistaa.</p>`,`<p>Write a fraction with the denominator 100. You can also simplify it.</p>`),explain:ex};
+  return{kind:Number.isInteger(p)?'int':'dec',text:`<span class="bg">${frac(n,d)} = ${BOX} %</span>`,ans:p,answerText:`${P} %`,
+    hint:100%d===0?E(`<p>Lavenna murtoluku niin, että nimittäjä on 100: kerro osoittaja ja nimittäjä luvulla ${100/d}.</p><p>Kun nimittäjä on 100, osoittaja kertoo prosentit.</p>`,`<p>Change the fraction so that the denominator is 100: multiply the numerator and the denominator by ${100/d}.</p><p>When the denominator is 100, the numerator tells you the percentage.</p>`)
+      :E(`<p>Muuta murtoluku ensin desimaaliluvuksi: ${n} : ${d}. Kerro sitten 100:lla.</p>`,`<p>First turn the fraction into a decimal: ${n} : ${d}. Then multiply by 100.</p>`),explain:ex}}
+function convGen(g){return L=>{if(g===4)return fdGen(4)(L);
+  if(L===1)return fdGen(g)(R(1,2));if(L===2)return pctConv(g,false);return Math.random()<.35?fdGen(g)(3):pctConv(g,true)}}
+const CONVT={id:'fd',pk:'laskut|mur|fd',n:'Muunnokset',f:g=>g>=4?{oid:'murtodes',levels:g===4?[['Kymmenesosat ja sadasosat'],['Tutut murtoluvut'],['Haastavammat']]:[['Murtoluku ja desimaaliluku'],['Prosentit'],['Kaikki sekaisin']],gen:L=>convGen(g)(L)}:null};
+function shareHint(a,b){return E(`<p>Muodosta murtoluku: ${frac(a,b)}. Supista tai lavenna se niin, että nimittäjä on 100.</p><p>Kun nimittäjä on 100, osoittaja kertoo prosentit.</p>`,`<p>Make a fraction: ${frac(a,b)}. Simplify or change it so that the denominator is 100.</p><p>When the denominator is 100, the numerator tells you the percentage.</p>`)}
+function shareEx(a,b){const p=100*a/b,G=gcd(a,b),n=a/G,d=b/G;return `<p><b>${frac(a,b)}${G>1?' = '+frac(n,d):''}${Number.isInteger(p)&&d!==100?' = '+frac(p,100):''}${!Number.isInteger(p)?' = '+decOf(n,d):''} = ${pcf(p)} %</b></p>`}
+function shareNums(g,L){for(let t=0;t<300;t++){let b,p;
+  if(L===2){b=pick(g===5?[10,20,25,50,100,200,300,400,500,1000]:[20,25,40,50,60,80,100,200,250,300,400,500,800,1000]);p=g===5?pick([10,20,25,30,40,50,60,70,75,80,90]):R(1,99)}
+  else{b=pick(g===5?[4,5,8,12,15,16,24,30,36,40,45,60,80,120]:[8,12,16,24,32,36,40,48,60,64,75,120,150,160,240]);p=g===5?pick([10,20,25,30,40,50,60,70,75,80,90]):Math.random()<.2?pick([125,150,200,12.5,37.5,62.5]):R(1,99)}
+  const a=b*p/100;if(Number.isInteger(a)&&a>0)return[a,b,p]}return[1,4,25]}
+function shareGen(g){return L=>{
+  if(L===1){const N=pick(g===5?[100,100,50,25,20,10,4]:[100,50,25,20,10,5,4]),c=R(1,N-1),p=100*c/N;
+    return{kind:'int',visual:`<div class="visual">${pgrid(N,c)}</div>`,text:plbl(E('Montako prosenttia ruuduista on väritetty?','What percentage of the squares is shaded?'),`${BOX} %`),ans:p,answerText:`${p} %`,
+      hint:N===100?E('<p>Ruutuja on yhteensä 100, joten jokainen ruutu on 1 %. Laske väritetyt ruudut.</p>','<p>There are 100 squares in total, so each square is 1 %. Count the shaded squares.</p>')
+        :E(`<p>Ruutuja on yhteensä ${N}. Koko ruudukko on 100 %, joten yksi ruutu on 100 : ${N} = ${100/N} %.</p>`,`<p>There are ${N} squares in total. The whole grid is 100 %, so one square is 100 : ${N} = ${100/N} %.</p>`),
+      explain:`<p><b>${frac(c,N)}${N!==100?' = '+frac(p,100):''} = ${p} %</b></p>${N!==100?`<p>${c} · ${100/N} % = ${p} %</p>`:''}`}}
+  const[a,b,p]=shareNums(g,L);
+  return{kind:Number.isInteger(p)?'int':'dec',text:`<span class="bg">${fmtInt(a)} ${E('on','is')} ${BOX} % ${E('luvusta','of')} ${fmtInt(b)}</span>`,ans:p,answerText:`${pcf(p)} %`,hint:shareHint(a,b),explain:shareEx(a,b)}}}
+function ofHint(p,b){const bb=fmtInt(b);
+  const M={50:E(`50 % on puolet. Laske ${bb} : 2.`,`50 % is a half. Work out ${bb} : 2.`),25:E(`25 % on neljäsosa. Laske ${bb} : 4.`,`25 % is a quarter. Work out ${bb} : 4.`),
+    75:E(`75 % on kolme neljäsosaa. Laske ensin ${bb} : 4 ja kerro tulos kolmella.`,`75 % is three quarters. First work out ${bb} : 4, then multiply by 3.`),100:E('100 % on koko luku.','100 % is the whole number.'),
+    10:E(`10 % on kymmenesosa. Laske ${bb} : 10.`,`10 % is a tenth. Work out ${bb} : 10.`),20:E(`20 % on viidesosa. Laske ${bb} : 5.`,`20 % is a fifth. Work out ${bb} : 5.`),
+    1:E(`1 % on sadasosa. Laske ${bb} : 100.`,`1 % is a hundredth. Work out ${bb} : 100.`),5:E(`5 % on puolet 10 %:sta. Laske ensin 10 %: ${bb} : 10, ja ota siitä puolet.`,`5 % is half of 10 %. First work out 10 %: ${bb} : 10, then halve it.`)};
+  if(M[p])return `<p>${M[p]}</p>`;
+  if(p%10===0)return E(`<p>Laske ensin 10 %: ${bb} : 10 = ${pcf(b/10)}.</p><p>${p} % on ${p/10} kertaa niin paljon.</p>`,`<p>First work out 10 %: ${bb} : 10 = ${pcf(b/10)}.</p><p>${p} % is ${p/10} times as much.</p>`);
+  return E(`<p>Laske ensin 1 %: ${bb} : 100 = ${pcf(b/100)}.</p><p>${p} % on ${p} kertaa niin paljon.</p>`,`<p>First work out 1 %: ${bb} : 100 = ${pcf(b/100)}.</p><p>${p} % is ${p} times as much.</p>`)}
+function ofNums(g,L,word){for(let t=0;t<400;t++){let p;
+  if(L===1)p=pick(g===5?[50,25,10,100,50,25,10,50,25,10]:[50,25,10,20,75]);
+  else if(L===2)p=pick(g===5?[20,30,40,60,70,75,80,90,5,1]:[5,15,30,35,45,60,65,85,95,1,2,4,8]);
+  else p=g===5?R(1,19)*5:Math.random()<.6?R(1,19)*5:R(1,9);
+  const b=g===5?(L===1?R(2,word?40:60)*2:R(1,word?20:30)*10):L===3&&!word?R(10,200):R(2,word?60:100)*(L===1?4:10);
+  const a=b*p/100;if(b<4)continue;if(g===5||L<3||word)if(!Number.isInteger(a))continue;if(!Number.isInteger(a*100))continue;return[p,b,a]}return[50,20,10]}
+function ofGen(g){return L=>{const[p,b,a]=ofNums(g,L);const A=Number.isInteger(a)?fmtInt(a):pcf(a);
+  return{kind:Number.isInteger(a)?'int':'dec',text:`<span class="bg">${p} % ${E('luvusta','of')} ${fmtInt(b)} = ${BOX}</span>`,ans:a,answerText:A,hint:ofHint(p,b),
+    explain:`<p><b>${p} % ${E('luvusta','of')} ${fmtInt(b)} = ${A}</b></p><p>${frac(p,100)} · ${fmtInt(b)} = ${fmtInt(p*b)} : 100 = ${A}</p>`}}}
+const PITEMS=[['Takki','takki','A coat','the coat'],['Pyörä','pyörä','A bike','the bike'],['Kypärä','kypärä','A helmet','the helmet'],['Lautapeli','lautapeli','A board game','the board game'],['Reppu','reppu','A backpack','the backpack'],['Kitara','kitara','A guitar','the guitar'],['Rullalauta','rullalauta','A skateboard','the skateboard']];
+const eur=c=>c%100?fd({u:c,d:2}):fmtInt(c/100);
+function pwGen(g){return L=>{const K=pick(KIDS),it=pick(PITEMS),[I,i]=EN?[it[2],it[3]]:[it[0],it[1]],Ic=I.replace(/^A /,'');
+  if(L===1){const[p,b,a]=ofNums(g,Math.random()<.5?1:2,1);
+    const S=[{icon:'pyora',t:E(`Koulussa on ${b*5} oppilasta. Heistä ${p} % tulee kouluun pyörällä. Montako oppilasta tulee pyörällä?`,`A school has ${b*5} pupils. ${p} % of them cycle to school. How many pupils cycle to school?`),m:5},
+      {icon:'kirjat',t:E(`Kirjaston hyllyssä on ${b} kirjaa. Niistä ${p} % on sarjakuvia. Montako sarjakuvaa hyllyssä on?`,`A library shelf has ${b} books. ${p} % of them are comics. How many comics are on the shelf?`),m:1},
+      {icon:'puu',t:E(`Puistossa kasvaa ${b} puuta. Niistä ${p} % on koivuja. Montako koivua puistossa on?`,`There are ${b} trees in a park. ${p} % of them are birches. How many birches are there?`),m:1},
+      {icon:'kolikot',unit:'€',t:E(`${I} maksaa ${b*5} €. Alennusmyynnissä hinnasta saa ${p} % alennusta. Montako euroa alennus on?`,`${I} costs ${b*5} €. In a sale, there is ${p} % off the price. How many euros is the discount?`),m:5}],w=pick(S),B=b*w.m,A=B*p/100;
+    return{kind:'int',story:w.t,storyIcon:ICON[w.icon],unit:w.unit||'',ans:A,answerText:fmtInt(A)+(w.unit?' €':''),hint:E(`<p>Laske ${p} % luvusta ${fmtInt(B)}.</p>`,`<p>Work out ${p} % of ${fmtInt(B)}.</p>`)+ofHint(p,B),
+      explain:`<p><b>${p} % ${E('luvusta','of')} ${fmtInt(B)} = ${fmtInt(A)}</b></p>`}}
+  if(L===2||Math.random()<.4){for(let t=0;t<300;t++){const up=Math.random()<.35,price=g===5?R(2,30)*5:R(8,150),p=up?pick([5,10,20,25,50]):g===5?pick([10,20,25,50,30,40]):R(1,14)*5;
+      const ch=price*p;if(g===5&&ch%100)continue;if(L===3)continue;const nc=price*100+(up?ch:-ch),C=eur(ch),N=eur(nc);
+      const st=up?E(`${I} maksoi ${price} €. Hinta nousee ${p} %. Paljonko ${i} maksaa hinnankorotuksen jälkeen?`,`${I} cost ${price} €. The price goes up by ${p} %. How much does ${i} cost after the price rise?`)
+        :E(`${I} maksaa ${price} €. Alennusmyynnissä hinnasta saa ${p} % alennusta. Paljonko ${i} maksaa alennuksen jälkeen?`,`${I} costs ${price} €. In a sale, there is ${p} % off the price. How much does ${i} cost after the discount?`);
+      return{kind:nc%100?'dec':'int',story:st,storyIcon:ICON.kolikot,unit:'€',ans:nc/100,answerText:N+' €',
+        hint:E(`<p>Laske ensin, montako euroa ${up?'korotus':'alennus'} on: ${p} % luvusta ${price}.</p><p>${up?'Lisää se alkuperäiseen hintaan.':'Vähennä se alkuperäisestä hinnasta.'}</p>`,`<p>First work out how many euros the ${up?'price rise':'discount'} is: ${p} % of ${price}.</p><p>${up?'Add it to the original price.':'Subtract it from the original price.'}</p>`),
+        explain:`<p>${p} % ${E('luvusta','of')} ${price} € = ${C} €</p><p><b>${price} € ${up?'+':'−'} ${C} € = ${N} €</b></p>`}}}
+  for(let t=0;t<300;t++){if(Math.random()<.5){const[a,b,p]=shareNums(g,2);if(b>100||!Number.isInteger(p))continue;
+      const S=[E(`Luokassa on ${b} oppilasta. Heistä ${a} pelaa jalkapalloa. Montako prosenttia luokan oppilaista pelaa jalkapalloa?`,`There are ${b} pupils in a class. ${a} of them play football. What percentage of the pupils play football?`),
+        E(`${K.n} heitti koripalloa ${b} kertaa, ja ${a} heittoa meni koriin. Montako prosenttia heitoista meni koriin?`,`${K.n} threw a basketball ${b} times, and ${a} throws went in. What percentage of the throws went in?`)];
+      return{kind:'int',story:pick(S),storyIcon:ICON.pokaali,unit:'%',ans:p,answerText:p+' %',hint:E(`<p>Montako prosenttia ${a} on luvusta ${b}?</p>`,`<p>What percentage of ${b} is ${a}?</p>`)+shareHint(a,b),explain:shareEx(a,b)}}
+    const up=Math.random()<.3,price=pick(g===5?[10,20,40,50,80,100,200]:[20,40,50,60,80,120,150,200,250]),p=up?pick([10,20,25,50]):g===5?pick([10,20,25,50]):R(1,9)*5,ch=price*p/100;if(!Number.isInteger(ch))continue;
+    const np=up?price+ch:price-ch;
+    return{kind:'int',story:up?E(`${I} maksoi ennen ${price} €. Nyt ${i} maksaa ${np} €. Montako prosenttia hinta nousi?`,`${I} used to cost ${price} €. Now ${i} costs ${np} €. By what percentage did the price go up?`)
+        :E(`${I} maksoi ennen ${price} €. Alennusmyynnissä ${i} maksaa ${np} €. Montako prosenttia hinta laski?`,`${I} used to cost ${price} €. In a sale, ${i} costs ${np} €. By what percentage did the price go down?`),storyIcon:ICON.kolikot,unit:'%',ans:p,answerText:p+' %',
+      hint:E(`<p>Laske ensin, paljonko hinta muuttui: ${up?`${np} − ${price}`:`${price} − ${np}`} = ${ch} €.</p><p>Montako prosenttia ${ch} on alkuperäisestä hinnasta ${price}?</p>`,`<p>First work out how much the price changed: ${up?`${np} − ${price}`:`${price} − ${np}`} = ${ch} €.</p><p>What percentage of the original price ${price} is ${ch}?</p>`),
+      explain:`<p>${E('Muutos','Change')}: ${ch} €</p>${shareEx(ch,price)}`}}
+  return pwGen(g)(1)}}
+function mixGen(g){return L=>{const[dMax,wMax]={4:[6,2],5:[10,4],6:[12,5]}[g];
+  for(let t=0;t<100;t++){const d=R(2,dMax),w=R(1,wMax),r=R(1,d-1);if(gcd(r,d)!==1)continue;const N=w*d+r;
+    const toMixed=L===1?true:L===2?false:Math.random()<.5,pic=L<3&&w<=3;
+    const vis=pic?`<div class="visual">${cakes(N,d)}</div>`:null;
+    const cakeTxt=E('kakkua','cakes');
+    if(toMixed)return{kind:'mixed',visual:vis,text:`<span class="bg">${frac(N,d)} = ${BOX}</span>`,ans:{n:N,d},answerText:mixed(w,r,d),
+      hint:E(`<p>Yhdessä kokonaisessa on ${frac(d,d)}. Montako kokonaista mahtuu lukuun ${frac(N,d)}?</p><p>Laske ${N} : ${d} = ${w}, jää ${r}. Kokonaisia on ${w}, ja yli jää ${frac(r,d)}.</p>`,`<p>One whole is ${frac(d,d)}. How many wholes fit into ${frac(N,d)}?</p><p>Work out ${N} : ${d} = ${w}, remainder ${r}. That makes ${w} ${w===1?'whole':'wholes'} with ${frac(r,d)} left over.</p>`),
+      explain:`<p><b>${frac(N,d)} = ${mixed(w,r,d)}</b></p>${pic?'':`<div class="visual">${cakes(N,d)}</div>`}<p>${E(`${w} · ${d} = ${w*d}, ja ${N} − ${w*d} = ${r}.`,`${w} · ${d} = ${w*d}, and ${N} − ${w*d} = ${r}.`)}</p>`};
+    return{kind:'frac',visual:vis,text:`<span class="bg">${mixed(w,r,d)} = ${BOX}</span>`,ans:{n:N,d},answerText:frac(N,d),
+      hint:E(`<p>Yhdessä kokonaisessa on ${d} osaa eli ${frac(d,d)}. ${w} kokonaista on siis ${w} · ${d} = ${w*d} osaa.</p><p>Lisää vielä ${r} osaa: ${w*d} + ${r} = ?. Nimittäjä pysyy samana.</p>`,`<p>One whole has ${d} parts, which is ${frac(d,d)}. So ${w} ${w===1?'whole is':'wholes are'} ${w} · ${d} = ${w*d} parts.</p><p>Add ${r} more parts: ${w*d} + ${r} = ?. The denominator stays the same.</p>`),
+      explain:`<p><b>${mixed(w,r,d)} = ${frac(N,d)}</b></p>${pic?'':`<div class="visual">${cakes(N,d)}</div>`}<p>${w} · ${d} + ${r} = ${N}</p>`}}
+  return mixGen(g)(1)}}
 function fracMulDiv(L,op,word){const[K]=two();let n,d,k;
   if(op==='*'){
     if(L<3){for(let t=0;t<300;t++){d=pick([2,3,4,5,6,8,10]);n=R(1,d-1);k=R(2,5);if(gcd(n,d)===1&&(L===1?n*k<=d:n*k>d))break}
@@ -2311,16 +2444,24 @@ const NAV=[
     {id:'yht',n:'Yhteenlasku',types:addSub('+')},
     {id:'vah',n:'Vähennyslasku',types:addSub('-')},
     {id:'ker',n:'Kertolasku',types:mulDiv('*','Kertotaulut','Allekkain')},
-    {id:'jak',n:'Jakolasku',types:mulDiv('/','Jakaminen tasan','Jakokulma')},
+    {id:'jak',n:'Jakolasku',types:mulDiv('/','Jakaminen tasan','Allekkain')},
     {id:'des',n:'Desimaaliluvut',types:[
       {id:'ys',n:'Yhteen- ja vähennyslasku',f:allG(src('desimaalit',['+','-']),4)},
       {id:'kj',n:'Kerto- ja jakolasku',f:allG(src('m-desimaalit',['*','/']),5)},
+      CONVT,
       {id:'san',n:'Sanalliset',f:allG(src('desimaalit',['+','-'],1),4)}]},
     {id:'mur',n:'Murtoluvut',types:[
       {id:'ys',n:'Yhteen- ja vähennyslasku',f:allG(src('murto',['+','-']),4)},
       {id:'kj',n:'Kerto- ja jakolasku',f:allG(src('m-murto',['*','/']),6)},
+      {id:'sek',n:'Sekaluvut',f:g=>g>=4?{oid:'sekaluku',levels:[['Murtoluvusta sekaluvuksi'],['Sekaluvusta murtoluvuksi'],['Molemmat suunnat']],gen:L=>mixGen(g)(L)}:null},
+      CONVT,
       {id:'ver',n:'Vertailu',f:allG(src('murtovert','+'),5)},
-      {id:'san',n:'Sanalliset',f:allG(src('murto',['+','-'],1),4)}]}]},
+      {id:'san',n:'Sanalliset',f:allG(src('murto',['+','-'],1),4)}]},
+    {id:'pro',n:'Prosentit',types:[
+      CONVT,
+      {id:'osuus',n:'Montako prosenttia?',f:g=>g>=5?{oid:'prososuus',levels:[['Ruudukko'],['Luvut'],['Haastavammat']],gen:L=>shareGen(g)(L)}:null},
+      {id:'luvusta',n:'Prosentti luvusta',f:g=>g>=5?{oid:'prosluvusta',levels:[['Puolet, neljäsosat ja kymmenesosat'],['Muut prosentit'],['Haastavammat']],gen:L=>ofGen(g)(L)}:null},
+      {id:'san',n:'Sanalliset',f:g=>g>=5?{oid:'prossan',levels:[['Osa määrästä'],['Alennukset ja korotukset'],['Montako prosenttia?']],gen:L=>pwGen(g)(L)}:null}]}]},
   {id:'luvut',n:'Luvut ja jonot',subs:[
     {id:'ver',n:'Vertailu',types:[
       {id:'ver',n:'Vertaile lukuja',f:allG(src('c-vertailu','mit'),1,3)},
@@ -2365,13 +2506,13 @@ const navTops=g=>NAV.filter(t=>navSubs(g,t).length);
 function navPick(g,tid,sid,yid){const tops=navTops(g),top=tops.find(t=>t.id===tid)||tops[0];
   const subs=navSubs(g,top),sub=subs.find(s=>s.id===sid)||subs[0];
   const types=navTypes(g,sub),type=types.find(t=>t.id===yid)||types[0];
-  return{top,sub,type,tops,subs,types,inst:type.f(g),key:`${g}|${top.id}|${sub.id}|${type.id}`}}
+  return{top,sub,type,tops,subs,types,inst:type.f(g),key:`${g}|${type.pk||top.id+'|'+sub.id+'|'+type.id}`}}
 Object.assign(TR,{'Mitat ja yksiköt':'Measures and units','Laskut':'Calculations','Luvut ja jonot':'Numbers and sequences','Mittaaminen':'Measuring','Geometria':'Geometry','Tilastot ja todennäköisyys':'Statistics and probability','Pulmat ja päättely':'Puzzles and logic',
   'Yhteenlasku':'Addition','Vähennyslasku':'Subtraction','Kertolasku':'Multiplication','Jakolasku':'Division','Lämpötila':'Temperature','Raha':'Money',
   'Kuvilla':'With pictures','Sanalliset':'Word problems','Jakaminen tasan':'Sharing equally','Jakokulma':'Long division','Yhteen- ja vähennyslasku':'Addition and subtraction','Kerto- ja jakolasku':'Multiplication and division',
   'Vertaile lukuja':'Compare numbers','Mikä luku puuttuu?':'Which number is missing?','Kellonajat':'Telling the time','Kolikot ja setelit':'Coins and notes','Muunnokset':'Conversions','Tunnista muodot':'Recognise shapes','Koordinaatit':'Coordinates',
   'Lue diagrammia':'Read the chart','Laske keskiarvo':'Work out the average','Pallot, pussit ja noppa':'Balls, bags and dice','Kokeile nopilla':'Experiment with dice',
-  'Plus- ja miinuspulmat':'Plus and minus puzzles','Kertopulmat':'Times puzzles','Kaikki laskut':'All operations','Enemmän ja vähemmän':'More and fewer','Kertaa ja osuudet':'Times and fractions','Mikä kuva tulee seuraavaksi?':'Which picture comes next?','Kaupan kassa':'Change at the till'});
+  'Plus- ja miinuspulmat':'Plus and minus puzzles','Kertopulmat':'Times puzzles','Sekaluvut':'Mixed numbers','Murtoluku ja desimaaliluku':'Fractions and decimals','Muunnokset':'Conversions','Prosentit':'Percentages','Kaikki sekaisin':'All mixed','Montako prosenttia?':'What percentage?','Prosentti luvusta':'Percentage of a number','Ruudukko':'Grid','Luvut':'Numbers','Puolet, neljäsosat ja kymmenesosat':'Halves, quarters and tenths','Muut prosentit':'Other percentages','Osa määrästä':'Part of an amount','Alennukset ja korotukset':'Discounts and price rises','Kymmenesosat ja sadasosat':'Tenths and hundredths','Tutut murtoluvut':'Familiar fractions','Haastavammat':'Harder ones','Murtoluvusta sekaluvuksi':'Fraction to mixed number','Sekaluvusta murtoluvuksi':'Mixed number to fraction','Molemmat suunnat':'Both ways','Kaikki laskut':'All operations','Enemmän ja vähemmän':'More and fewer','Kertaa ja osuudet':'Times and fractions','Mikä kuva tulee seuraavaksi?':'Which picture comes next?','Kaupan kassa':'Change at the till'});
 const andJoin=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+E(' ja ',' and ')+a[a.length-1];
 
 let RND=null;
@@ -2431,17 +2572,20 @@ function answerHTML(){
   if(P.steps||P.inline||P.kind==='multi')return '';
   if(P.kind==='choice')return `<div class="choices${P.big?' big':''}${P.pics?' pics':''}${P.chartopts?' charts':''}" role="group" aria-label="${E('Vastausvaihtoehdot','Answer options')}">${P.choices.map(([v,l])=>`<button type="button" class="choice" data-choice="${v}">${l}</button>`).join('')}</div>`;
   if(P.kind==='coord')return `<div class="answer coordans"><span class="unit">(</span><input class="num tb" id="cx" inputmode="none" autocomplete="off" aria-label="${E('x-koordinaatti','x-coordinate')}"><span class="unit">,</span><input class="num tb" id="cy" inputmode="none" autocomplete="off" aria-label="${E('y-koordinaatti','y-coordinate')}"><span class="unit">)</span></div>`;
-  if(P.ldiv){const ds=String(P.dvd).split('');
-    return `<div class="calc-wrap"><table class="calc ldiv" aria-label="${E('Jakokulma','Long division')}"><tbody><tr class="qrow"><td></td>${ds.map((_,i)=>`<td><input class="qi" id="q${i}" data-i="${i}" inputmode="none" maxlength="1" autocomplete="off" aria-label="${E('Osamäärän numero','Quotient digit')}"></td>`).join('')}</tr>
-      <tr class="drow"><td class="dvs">${P.dvs}</td>${ds.map((d,i)=>`<td class="dd${i===0?' first':''}">${d}</td>`).join('')}</tr></tbody></table></div>${P.kind==='divr'?`<div class="answer"><span class="unit">${E('jakojäännös','remainder')}</span><input class="num tb" id="rem" inputmode="none" autocomplete="off" aria-label="${E('Jakojäännös','Remainder')}"></div>`:''}`}
+  if(P.ldiv){const st=ldivSteps(P.dvd,P.dvs),n=String(P.dvd).length;
+    return `<div class="calc-wrap"><table class="ldv" aria-label="${E('Jakolasku allekkain','Division in columns')}"><tbody><tr><td class="sg"></td>${String(P.dvd).split('').map(d=>`<td>${d}</td>`).join('')}<td class="ex">: ${P.dvs} = <span class="answer ldans"><input class="num" id="ans" inputmode="none" autocomplete="off" aria-label="${E('Osamäärä','Quotient')}"></span></td></tr>
+      ${st.map(r=>`<tr class="${r.t}"><td class="sg">${r.t==='p'?'−':''}</td>${[...Array(n).keys()].map(c=>`<td class="${r.t==='r'&&c<=r.pe&&c>r.pe-r.pl?'ln':''}"><input class="sq small" inputmode="none" maxlength="1" autocomplete="off" aria-label="${E('Välivaihe','Working')}"></td>`).join('')}<td class="ex"></td></tr>`).join('')}
+      </tbody></table></div><p class="ladtxt ldtip">${E('Välivaiheet: kirjoita kertolaskun tulo jaettavan alle ja vähennä. Pudota sitten seuraava numero alas.','Working: write the product under the number and subtract. Then bring down the next digit.')}</p>${P.kind==='divr'?`<div class="answer"><span class="unit">${E('jakojäännös','remainder')}</span><input class="num tb" id="rem" inputmode="none" autocomplete="off" aria-label="${E('Jakojäännös','Remainder')}"></div>`:''}`}
   if(P.kind==='divr')return `<div class="answer"><input class="num" id="ans" inputmode="none" autocomplete="off" aria-label="${E('Osamäärä','Quotient')}">${P.qLabel?`<span class="unit">${P.qLabel}</span>`:''}<span class="unit">${P.rLabel||E('jakojäännös','remainder')}</span><input class="num tb" id="rem" inputmode="none" autocomplete="off" aria-label="${E('Jakojäännös','Remainder')}"></div>`;
   const AH=E('Tunnit','Hours'),AM=E('Minuutit','Minutes'),AN=E('Osoittaja','Numerator'),AD=E('Nimittäjä','Denominator');
   if(P.kind==='time')return `<div class="answer"><span class="unit">${E('kello','time')}</span><input class="num tb" id="th" inputmode="none" autocomplete="off" aria-label="${AH}"><span class="unit">.</span><input class="num tb" id="tm" inputmode="none" autocomplete="off" aria-label="${AM}" placeholder="00"></div>${P.m12?'':`<p class="inst"><span>${E('Käytä 24 tunnin kelloa, esimerkiksi 18.05.','Use the 24-hour clock, for example 18.05.')}</span></p>`}`;
   if(P.kind==='money')return `<div class="answer"><input class="num mb" id="me" inputmode="none" autocomplete="off" aria-label="${E('Eurot','Euros')}"><span class="unit">€</span><input class="num mb mc" id="mc" inputmode="none" autocomplete="off" aria-label="${E('Sentit','Cents')}"><span class="unit">${SNT}</span></div>`;
   if(P.kind==='dur')return `<div class="answer"><input class="num tb" id="th" inputmode="none" autocomplete="off" aria-label="${AH}"><span class="unit">h</span><input class="num tb" id="tm" inputmode="none" autocomplete="off" aria-label="${AM}"><span class="unit">min</span></div>`;
+  if(P.kind==='mixed')return `<div class="answer"><input class="num tb mw" id="mw" inputmode="none" autocomplete="off" aria-label="${E('Kokonaiset','Wholes')}"><span class="fin"><input class="num" id="fn" inputmode="none" autocomplete="off" aria-label="${E('Osoittaja','Numerator')}"><span class="bar"></span><input class="num" id="fdn" inputmode="none" autocomplete="off" aria-label="${E('Nimittäjä','Denominator')}"></span></div>`;
   if(P.kind==='frac')return `<div class="answer"><span class="fin"><input class="num" id="fn" inputmode="none" autocomplete="off" aria-label="${AN}"><span class="bar"></span><input class="num" id="fdn" inputmode="none" autocomplete="off" aria-label="${AD}"></span></div>`;
   return `<div class="answer"><input class="num" id="ans" inputmode="none" autocomplete="off" aria-label="${E('Vastaus','Answer')}">${P.unit?`<span class="unit">${P.unit}</span>`:''}</div>`}
-function inlineAns(){if(P.ldiv||P.steps||P.inline||!P.text||!P.text.includes(BOX)||!['int','dec','frac'].includes(P.kind))return null;
+function inlineAns(){if(P.ldiv||P.steps||P.inline||!P.text||!P.text.includes(BOX)||!['int','dec','frac','mixed'].includes(P.kind))return null;
+  if(P.kind==='mixed')return `<span class="answer mixin"><input class="num tb mw" id="mw" inputmode="none" autocomplete="off" aria-label="${E('Kokonaiset','Wholes')}"><span class="fin xin"><input class="num" id="fn" inputmode="none" autocomplete="off" aria-label="${E('Osoittaja','Numerator')}"><span class="bar"></span><input class="num" id="fdn" inputmode="none" autocomplete="off" aria-label="${E('Nimittäjä','Denominator')}"></span></span>`;
   if(P.kind==='frac')return `<span class="fin xin"><input class="num" id="fn" inputmode="none" autocomplete="off" aria-label="${E('Osoittaja','Numerator')}"><span class="bar"></span><input class="num" id="fdn" inputmode="none" autocomplete="off" aria-label="${E('Nimittäjä','Denominator')}"></span>`;
   const w=Math.max(3,String(P.ans).length+1);
   return `<input class="num xin" id="ans" style="width:${w+1}ch" inputmode="none" autocomplete="off" aria-label="${E('Vastaus','Answer')}">`}
@@ -2476,13 +2620,13 @@ function draw(){const t=cur(),pr=prog();const IA=inlineAns();
     <div id="fb" hidden></div>
     <div class="panel" id="hint" hidden><h3>${E('Vihje','Hint')}</h3>${P.hint}</div>
     <div class="panel explain" id="explain" hidden><h3>${E('Näin se lasketaan','How to work it out')}</h3>${P.explain}</div>`;
-  const first=P.kind==='coord'?$('#cx'):P.ldiv?$('#q0'):P.steps?$('#sc0'):P.kind==='col'?document.getElementById('r'+(P.L.N-1)):document.querySelector('#ans,#fn,#th,#me');
+  const first=P.kind==='coord'?$('#cx'):P.steps?$('#sc0'):P.kind==='col'?document.getElementById('r'+(P.L.N-1)):document.querySelector('#mw,#ans,#fn,#th,#me');
   activeEl=first;if(first)first.focus({preventScroll:true})}
 function fb(msg,cls){const e=$('#fb');e.hidden=false;e.className='fb '+cls;e.innerHTML=msg}
 function evaluate(){
   if(P.kind==='coord'){const xs=$('#cx').value.trim().replace('−','-'),ys=$('#cy').value.trim().replace('−','-');if(!xs&&!ys)return{empty:true};if(!/^-?\d+$/.test(xs)||!/^-?\d+$/.test(ys))return{bad:E('Kirjoita molemmat koordinaatit: ensin x, sitten y.','Write both coordinates: x first, then y.')};
     const okx=+xs===P.ax,oky=+ys===P.ay,ok=okx&&oky;$('#cx').classList.toggle('ok',okx);$('#cx').classList.toggle('no',!okx);$('#cy').classList.toggle('ok',oky);$('#cy').classList.toggle('no',!oky);return{ok}}
-  if(P.ldiv){const ins=[...document.querySelectorAll('.qi')],v=ins.map(x=>x.value.trim());if(v.every(x=>!x))return{empty:true};
+  if(false){const ins=[...document.querySelectorAll('.qi')],v=ins.map(x=>x.value.trim());if(v.every(x=>!x))return{empty:true};
     const qs=v.join('').replace(/^0+(?=\d)/,'');if(!/^\d+$/.test(qs)||/\d\s*$/.test('')&&false)return{bad:E('Kirjoita osamäärän numerot jakokulman yläpuolelle.','Write the digits of the answer above the division bracket.')};
     let ok=+qs===P.ans;if(P.kind==='divr'){const rs=$('#rem').value.trim();ok=ok&&+(rs||0)===P.rem;$('#rem').classList.toggle('ok',ok);$('#rem').classList.toggle('no',!ok)}
     const exp=String(P.ans).padStart(ins.length,' ');ins.forEach((x,i)=>{x.classList.remove('ok','no');const e=exp[i],c=x.value.trim();if(c===''&&e===' ')return;x.classList.add(ok||(c===e)||(c==='0'&&e===' ')||(c===''&&e===' ')?'ok':'no')});return{ok}}
@@ -2506,6 +2650,11 @@ function evaluate(){
     if(!/^\d*$/.test(es)||!/^\d*$/.test(cs))return{bad:E('Kirjoita eurot ja sentit numeroina.','Write the euros and cents as numbers.')};
     if(+(cs||0)>99)return{bad:E('Senttejä voi olla korkeintaan 99. 100 senttiä on 1 euro.','There can be at most 99 cents. 100 cents make 1 euro.')};
     const ok=+(es||0)*100+ +(cs||0)===P.ans;['#me','#mc'].forEach(s=>{$(s).classList.toggle('ok',ok);$(s).classList.toggle('no',!ok)});return{ok}}
+  if(P.kind==='mixed'){const ws=$('#mw').value.trim(),ns=$('#fn').value.trim(),ds=$('#fdn').value.trim();if(!ws&&!ns)return{empty:true};
+    if(!/^\d*$/.test(ws)||!/^\d*$/.test(ns)||!/^\d*$/.test(ds))return{bad:E('Kirjoita kokonaiset ja murto-osa kokonaislukuina.','Write the wholes and the fraction part as whole numbers.')};
+    if(ns&&!ds)return{bad:E('Kirjoita myös nimittäjä.','Write the denominator too.')};const w=+(ws||0),n=+(ns||0),d=ds?+ds:1;if(d===0)return{bad:E('Nimittäjä ei voi olla 0.','The denominator cannot be 0.')};
+    if(n>=d&&ns)return{bad:E('Sekaluvun murto-osan osoittajan pitää olla pienempi kuin nimittäjä.','In a mixed number, the numerator must be smaller than the denominator.')};
+    const ok=(w*d+n)*P.ans.d===P.ans.n*d;['#mw','#fn','#fdn'].forEach(s=>{$(s).classList.toggle('ok',ok);$(s).classList.toggle('no',!ok)});return{ok}}
   if(P.kind==='frac'){const n=$('#fn').value.trim(),d=$('#fdn').value.trim();if(!n)return{empty:true};
     if(!/^\d+$/.test(n)||(d&&!/^\d+$/.test(d)))return{bad:E('Kirjoita osoittajaan ja nimittäjään kokonaisluvut.','Write whole numbers in the numerator and the denominator.')};
     const nn=+n,dd=d?+d:1;if(dd===0)return{bad:E('Nimittäjä ei voi olla 0.','The denominator cannot be 0.')};
@@ -2557,17 +2706,17 @@ function keypad(){const KP=E('Numeronäppäimistö','Number keypad'),MS=E('Miinu
   if(P.neg&&P.kind==='dec')return `<div class="keypad" role="group" aria-label="${KP}">${[1,2,3,4,5,6,7,8,9].map(n=>`<button type="button" class="key" data-key="${n}">${n}</button>`).join('')}<button type="button" class="key alt" data-key="neg" aria-label="${MS}">−</button><button type="button" class="key" data-key="0">0</button><button type="button" class="key" data-key="," aria-label="${E('Pilkku','Comma')}">,</button><button type="button" class="key alt wide" data-key="back" aria-label="${PY}">${BACK}</button></div>`;
   const last=P.neg?`<button type="button" class="key alt" data-key="neg" aria-label="${MS}">−</button>`:P.kind==='dec'?`<button type="button" class="key" data-key="," aria-label="${E('Pilkku','Comma')}">,</button>`
     :P.kind==='frac'?`<button type="button" class="key alt" data-key="swap" aria-label="${E('Vaihda osoittajan ja nimittäjän välillä','Switch between numerator and denominator')}">↕</button>`
-    :(P.steps||P.kind==='time'||P.kind==='dur'||P.kind==='divr'||P.kind==='money')?`<button type="button" class="key alt" data-key="swap" aria-label="${E('Seuraava ruutu','Next box')}">→</button>`:'<span></span>';
+    :(P.steps||P.kind==='time'||P.kind==='dur'||P.kind==='divr'||P.kind==='money'||P.kind==='mixed')?`<button type="button" class="key alt" data-key="swap" aria-label="${E('Seuraava ruutu','Next box')}">→</button>`:'<span></span>';
   return `<div class="keypad" role="group" aria-label="${KP}">${[1,2,3,4,5,6,7,8,9].map(n=>`<button type="button" class="key" data-key="${n}">${n}</button>`).join('')}${last}<button type="button" class="key" data-key="0">0</button><button type="button" class="key alt" data-key="back" aria-label="${PY}">${BACK}</button></div>`}
 function pressKey(k){if(done)return;
   let el=activeEl&&document.body.contains(activeEl)?activeEl:null;
-  if(!el)el=P.kind==='coord'?$('#cx'):P.ldiv?$('#q0'):P.kind==='col'?document.getElementById('r'+(P.L.N-1)):document.querySelector('#ans,#fn,#th,#me');
+  if(!el)el=P.kind==='coord'?$('#cx'):P.kind==='col'?document.getElementById('r'+(P.L.N-1)):document.querySelector('#mw,#ans,#fn,#th,#me');
   if(!el)return;
   const fire=()=>el.dispatchEvent(new Event('input',{bubbles:true}));
   if(k==='swap'&&(el.id==='cx'||el.id==='cy')){el=el.id==='cx'?$('#cy'):$('#cx')}
   else if(k==='swap'&&el.classList.contains('qi')){el=$('#rem')||el}
   else if(k==='swap'&&el.classList.contains('sq')){const n=el.closest('td').nextElementSibling;const nx=n&&n.querySelector('.sq');if(nx)el=nx}
-  else if(k==='swap'){const f=P.steps?[...document.querySelectorAll('.step1 .sc'),$('#ans')]:[...document.querySelectorAll('.answer .num')];const i=f.indexOf(el);el=P.steps?f[Math.min(i+1,f.length-1)]:f[(i+1)%f.length]}
+  else if(k==='swap'){const f=P.steps?[...document.querySelectorAll('.step1 .sc'),$('#ans')]:[...document.querySelectorAll('.answer .num,.xin .num')];const i=f.indexOf(el);el=P.steps?f[Math.min(i+1,f.length-1)]:f[(i+1)%f.length]}
   else if(k==='back'&&(el.classList.contains('qi')||el.classList.contains('sq'))){if(!el.value){const pv=el.closest('td').previousElementSibling,px=pv&&pv.querySelector('input');if(px)el=px}el.value='';el.classList.remove('ok','no')}
   else if(k==='back'){
     if(el.classList.contains('ri')&&!el.value){let j=+el.dataset.i+1;if(P.L.D&&j===P.L.I)j++;const n=document.getElementById('r'+j);if(n)el=n}
