@@ -1025,6 +1025,8 @@ const OPSYM={'+':'+','−':'−','·':'·'};
 function canon(l){const terms=[];let sg='+',fs=[];const key=x=>typeof x==='number'?'n'+x:'i'+x.i+(x.d?'/'+x.d:'');
   l.forEach(x=>{if(x==='+'||x==='−'){terms.push(sg+fs.sort().join('*'));fs=[];sg=x}else if(x!=='·')fs.push(key(x))});
   terms.push(sg+fs.sort().join('*'));return terms.sort().join('|')}
+function posFirst(l){const T=[];let c={s:'+',f:[]};l.forEach(x=>{if(x==='+'||x==='−'){T.push(c);c={s:x,f:[]}}else c.f.push(x)});T.push(c);
+  if(!T.some(t=>t.s==='−'))return l;const out=[];[...T.filter(t=>t.s==='+'),...T.filter(t=>t.s==='−')].forEach((t,k)=>{if(k)out.push(t.s);out.push(...t.f)});return out}
 function puzzleGen(g,mul){return(L,op)=>{
   const k=L===1?2:3,lim=g===1?20:g===2?100:1000;
   const pMul=g===1?0:mul?.75:g===2?.3:.5;
@@ -1056,6 +1058,8 @@ function puzzleGen(g,mul){return(L,op)=>{
     const fin=[];let fracUsed=false;
     ord.forEach((ix,j)=>{if(j){const ops=['+','+'];if(sub&&L>1)ops.push('−');if(useMul)ops.push('·','·');fin.push(pick(ops))}
       if(useFrac&&!fracUsed&&Math.random()<.5){fin.push(F(ix,pick(DEN)));fracUsed=true}else fin.push(I[ix])});
+    /* plus-termit ensin, jotta lasku ei käy välillä miinuksella */
+    lines.forEach((l,i)=>{lines[i]=posFirst(l)});{const pf=[...posFirst(fin)];fin.length=0;fin.push(...pf)}
     /* arvot: murtolukuosoittajien pitää jakautua tasan */
     const div=[1,1,1],mulIc=new Set();
     [...lines,fin].forEach(l=>l.forEach((x,j)=>{if(typeof x==='object'){if(x.d)div[x.i]=lcm(div[x.i],x.d);if(l[j-1]==='·'||l[j+1]==='·')mulIc.add(x.i)}}));
