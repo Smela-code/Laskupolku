@@ -59,6 +59,11 @@ h1{display:flex;flex-wrap:wrap;align-items:center;gap:.25em .35em}
 .money svg{display:block;flex:none}
 .uicon.sm svg{width:48px;height:48px}
 .num.mb{width:3.8ch}.num.mb.mc{width:3ch}
+.mixbox{display:flex;flex-direction:column}
+.btn.mixbtn{min-height:48px;width:100%;font-size:1.05rem;white-space:nowrap}
+.btn.mixbtn[aria-pressed="true"]{background:var(--sun);border-color:var(--sun);color:#1C2742}
+@media (max-width:639px){section.controls{grid-template-columns:1fr;gap:8px}section.controls>div{display:flex;align-items:center;gap:10px}.controls>div>.lbl{flex:0 0 70px;margin:0}.controls .sel{flex:1;min-width:0}.mixbox{flex-direction:row;justify-content:flex-end}.mixbox .lbl{display:none}.btn.mixbtn{width:auto;min-height:40px;padding:6px 18px}}
+@media (min-width:640px){section.controls{grid-template-columns:1fr 1fr}}
 .pav{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;font:800 1.2rem var(--display);background:var(--blue)}
 .pav.has{background:none!important;overflow:hidden}.pav svg{width:100%;height:100%;display:block}
 .pavg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:14px}
@@ -428,9 +433,10 @@ footer p{margin:0 0 6px}
   <p class="goal" id="goal"></p>
 
   <section class="controls">
-    <div><label class="lbl" for="ops">Lasku</label><select class="sel" id="ops" data-sel="op"></select></div>
-    <div id="topicBox"><label class="lbl" for="topics">Aihe</label><select class="sel" id="topics" data-sel="topic"></select></div>
-    <div id="typeBox"><label class="lbl" for="types">Tyyppi</label><select class="sel" id="types" data-sel="type"></select></div>
+    <div><label class="lbl" for="ops">Alue</label><select class="sel" id="ops" data-sel="top"></select></div>
+    <div id="topicBox"><label class="lbl" for="topics">Aihe</label><select class="sel" id="topics" data-sel="sub"></select></div>
+    <div id="typeBox"><label class="lbl" for="types">Tehtävä</label><select class="sel" id="types" data-sel="typ"></select></div>
+    <div class="mixbox"><span class="lbl" aria-hidden="true">&nbsp;</span><button type="button" class="btn ghost mixbtn" id="mixBtn" aria-pressed="false"><span aria-hidden="true">🎲</span> <span id="mixTxt">Sekoita</span></button></div>
   </section>
 
   <section class="sheet" id="sheet" aria-live="polite"></section>
@@ -455,7 +461,7 @@ if(EN){const q=s=>document.querySelector(s);
   q('.sub').textContent='Addition, subtraction, multiplication and division with pictures for grades 1–6. Also time, picture puzzles and much more.';
   q('#playerBtn').setAttribute('aria-label',"Player and today's stars");
   document.querySelectorAll('.wrap > section > .lbl')[0].textContent='Grade';
-  q('label[for="ops"]').textContent='Calculation';q('label[for="topics"]').textContent='Topic';q('label[for="types"]').textContent='Type';
+  q('label[for="ops"]').textContent='Area';q('label[for="topics"]').textContent='Topic';q('label[for="types"]').textContent='Task';q('#mixTxt').textContent='Mix';
   q('footer p').textContent='Three correct answers in a row take you up a level. Two tricky tasks in a row take you down a level. You can also choose the level yourself. Your progress is saved in this browser.';
   q('#ptitle').textContent='Players';const c=q('.pcl');c.textContent='Close';c.setAttribute('aria-label','Close')}
 document.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===LANG)));
@@ -995,13 +1001,13 @@ const GOALM=EN?{
   2:'<b>The idea of multiplication</b>, the 0–5 and 10 times tables, and sharing equally.',
   3:'<b>The 2–10 times tables</b> and division using the times tables.',
   4:'<b>Column multiplication</b> and division by place value, including remainders.',
-  5:'<b>Multiplication and division with bigger numbers</b>, multiplying and dividing decimals, and the mean.',
-  6:'<b>Multiplying and dividing fractions</b> by whole numbers, multiplying and dividing decimals, and the mean.'}:{
+  5:'<b>Multiplication and division with bigger numbers</b>, and multiplying and dividing decimals.',
+  6:'<b>Multiplying and dividing fractions</b> by whole numbers, and multiplying and dividing decimals.'}:{
   2:'<b>Kertolaskun periaate</b> ja kertotaulut 0–5 ja 10 sekä jakaminen tasan.',
   3:'<b>Kertotaulut 2–10</b> ja jakolasku kertotaulujen avulla.',
   4:'<b>Kertolasku allekkain</b> ja jakaminen lukuyksiköittäin, myös jakojäännös.',
-  5:'<b>Kerto- ja jakolasku isommilla luvuilla</b>, desimaaliluvun kertominen ja jakaminen sekä keskiarvo.',
-  6:'<b>Murtoluvun kertominen ja jakaminen</b> kokonaisluvulla, desimaalilukujen kerto- ja jakolasku sekä keskiarvo.'};
+  5:'<b>Kerto- ja jakolasku isommilla luvuilla</b> sekä desimaaliluvun kertominen ja jakaminen.',
+  6:'<b>Murtoluvun kertominen ja jakaminen</b> kokonaisluvulla sekä desimaalilukujen kerto- ja jakolasku.'};
 
 /* ---------- kuvapulmat ---------- */
 const PUZ_ICONS=()=>[...FK.map(k=>fruitSVG(k,'n')),UNITS.karkki.one,UNITS.tarra.one,UNITS.pullo.one];
@@ -1014,9 +1020,9 @@ const OPSYM={'+':'+','−':'−','·':'·'};
 function canon(l){const terms=[];let sg='+',fs=[];const key=x=>typeof x==='number'?'n'+x:'i'+x.i+(x.d?'/'+x.d:'');
   l.forEach(x=>{if(x==='+'||x==='−'){terms.push(sg+fs.sort().join('*'));fs=[];sg=x}else if(x!=='·')fs.push(key(x))});
   terms.push(sg+fs.sort().join('*'));return terms.sort().join('|')}
-function puzzleGen(g){return(L,op)=>{
+function puzzleGen(g,mul){return(L,op)=>{
   const k=L===1?2:3,lim=g===1?20:g===2?100:1000;
-  const pMul=g===1?0:fam()==='mul'?.75:g===2?.3:.5;
+  const pMul=g===1?0:mul?.75:g===2?.3:.5;
   const pFrac=g>=5?(L===1?.35:.5):0;
   const DEN=g===5?[2,3,4,5]:[2,3,4,5,6,8,10];
   const COEF=g===2?[2,3,4,5,10]:[2,3,4,5,6,7,8,9];
@@ -1077,7 +1083,7 @@ function puzzleGen(g){return(L,op)=>{
     const hint=`<p>${E('Aloita riviltä, jossa on vain yhtä kuvaa:','Start from the row with only one kind of picture:')}</p><div class="puz">${row(lines[0],s1)}</div>${how}<p>${E('Etsi sitten rivi, jossa on vain yksi kuva, jota et vielä tiedä.',"Then find a row with only one picture you don't know yet.")}</p>${fin.includes('·')&&fin.some(x=>x==='+'||x==='−')?E('<p>Tehtävärivillä kertolasku lasketaan ensin.</p>','<p>In the task row, do the multiplication first.</p>'):''}`;
     const explain=`<div class="scratch">${ic.map((c,i)=>`<span class="scit"><span class="pic sm">${c.s}</span>= <b>${v[i]}</b></span>`).join('')}</div><div class="puz"><div class="pline">${tok(fin,true)}<span class="pop">=</span><b>${ans}</b></div></div>`;
     return{kind:'int',steps:true,visual,story:null,ans,answerText:String(ans),hint,explain}}
-  return puzzleGen(g)(1,op)}}
+  return puzzleGen(g,mul)(1,op)}}
 
 /* ---------- sanapulmat ---------- */
 const GEN={Aino:'Ainon',Eetu:'Eetun',Siiri:'Siirin',Leo:'Leon',Venla:'Venlan',Onni:'Onnin',Helmi:'Helmin',Elias:'Eliaksen',Lilja:'Liljan','Väinö':'Väinön'};
@@ -1091,8 +1097,8 @@ const CW={2:'kaksi',3:'kolme',4:'neljä',5:'viisi',10:'kymmenen'},CWE={2:'twice'
 const FWE={'1/2':'half','1/3':'a third','1/4':'a quarter','1/5':'a fifth','2/3':'two thirds','3/4':'three quarters','2/5':'two fifths','3/5':'three fifths'};
 const FW={'1/2':'puolet','1/3':'kolmasosa','1/4':'neljäsosa','1/5':'viidesosa','2/3':'kaksi kolmasosaa','3/4':'kolme neljäsosaa','2/5':'kaksi viidesosaa','3/5':'kolme viidesosaa'};
 const DIVW={2:'kahdella',3:'kolmella',4:'neljällä',5:'viidellä'},MULW={2:'kahdella',3:'kolmella',4:'neljällä',5:'viidellä',10:'kymmenellä'};
-function wordPuzzleGen(g){return(L)=>{
-  const mulBias=fam()==='mul';
+function wordPuzzleGen(g,mul){return(L)=>{
+  const mulBias=!!mul;
   const n=L===1?2:L===2?3:(g>=5?4:3),reverse=L===3;
   const lim={1:20,2:100,3:200,4:500,5:1000,6:1000}[g];
   const v0r={1:[5,15],2:[10,60],3:[10,100],4:[20,300],5:[20,400],6:[20,500]}[g];
@@ -1143,7 +1149,7 @@ function wordPuzzleGen(g){return(L)=>{
       :`<p>${P[0].ll} on ${vals[0]} ${it.part}. Laske sen avulla seuraavan henkilön määrä, ja jatka siitä eteenpäin.</p>`)+`<ul class="wlist">${[...why].join('')}</ul>`;
     const explain=`<ol>${calc.map(c=>`<li>${c}</li>`).join('')}${askTotal?`<li>${E('Yhteensä','In total')}: ${vals.join(' + ')} = ${total}</li>`:''}</ol>`;
     return{kind:'int',story:order.map(i=>sent[i]).join(' ')+' <b>'+q+'</b>',storyIcon:it.svg(),after:'',ans,answerText:String(ans),hint,explain}}
-  return wordPuzzleGen(g)(1)}}
+  return wordPuzzleGen(g,mul)(1)}}
 
 /* ---------- lämpömittari ---------- */
 const degF=t=>t<0?`−${-t} °C`:t>0?`+${t} °C`:'0 °C';
@@ -1346,15 +1352,26 @@ function ruleText(r,dec){if(EN)switch(r.type){case 'ar':return r.s>0?`Each numbe
   case 'mul':return `Jokainen luku on ${r.m} kertaa edellinen.`;case 'div':return 'Jokainen luku on puolet edellisestä.';
   case 'sq':return 'Luvut ovat neliölukuja: 1 · 1, 2 · 2, 3 · 3, …';case 'fib':return 'Jokainen luku on kahden edellisen luvun summa.';
   case 'alt':return `Vuorotellen lisätään ${r.p} ja vähennetään ${r.q}.`}}
+function seqWordMake(g,L){const C={1:[[0,8,1,2],[0,12,1,3],[5,15,2,5]],2:[[0,20,2,5],[10,50,3,10],[20,80,5,10]],3:[[10,100,5,20],[50,300,10,50],[100,500,20,100]],
+    4:[[100,500,25,100],[200,1000,50,200],[-10,10,2,6]],5:[[500,2000,100,500],[1000,5000,250,1000],[-15,10,3,8]],6:[[-20,20,3,9],[1000,9000,500,2500],[-20,5,4,10]]}[g][L-1];
+  for(let t=0;t<200;t++){let a=R(C[0],C[1]),s=R(C[2],C[3]);const temp=C[0]<0;
+    if(temp)s=-s;else if(Math.random()<.5&&a-3*s>=0)s=-s;
+    const st=C[2]>=100?50:C[2]>=25?25:C[2]>=10?5:1;
+    if(!temp){s=Math.round(s/st)*st;a=Math.round(a/st)*st;if(a<=0||s===0||a+3*s<0)continue}
+    if(temp&&(a+3*s<-30||a+3*s>=0&&Math.random()<.7))continue;
+    return{terms:[0,1,2,3].map(i=>a+i*s),rule:{type:'ar',s},dec:0}}
+  return{terms:[5,7,9,11],rule:{type:'ar',s:2},dec:0}}
 function seqGen(g){return(L,op,word)=>{
-  for(let t=0;t<50;t++){const mk=seqMake(g,L),{rule,dec}=mk;const LEN={ar:4,mul:4,div:4,sq:4,grow:5,grow2:5,fib:5,alt:6}[rule.type]||4;const terms=mk.terms.slice(0,LEN);
+  for(let t=0;t<50;t++){const mk=word?seqWordMake(g,L):seqMake(g,L),{rule,dec}=mk;const LEN={ar:4,mul:4,div:4,sq:4,grow:5,grow2:5,fib:5,alt:6}[rule.type]||4;const terms=mk.terms.slice(0,LEN);
     const pos=L===1?pick(['last','last','mid','first']):pick(['last','mid','mid','first','first']);let miss=pos==='last'?terms.length-1:pos==='first'?0:(L===1?Math.floor((terms.length-1)/2):R(1,terms.length-2));if(rule.type==='fib'&&miss<2)miss=terms.length-1;
     const ans=terms[miss],neg=terms.some(x=>x<0);
-    if(word&&rule.type==='ar'&&!dec){const s=rule.s,a=terms[0],n=terms.length-1,[K]=two();let story;
-      if(EN){if(s>0)story=pick([`${K.n} has saved ${a} euros. Every week ${K.n} saves ${s} euros more. How much money will ${K.n} have after ${n} weeks?`,`A tree is ${a} cm tall now. It grows ${s} cm every year. How tall will the tree be after ${n} years?`]);
+    if(word&&rule.type==='ar'&&!dec){const s=rule.s,a=terms[0],n=terms.length-1,[K]=two();let story;const big=a>300;
+      if(big&&terms.at(-1)>=0)story=s>0?E(`Kaupungin kirjastossa on ${fmtInt(a)} kirjaa. Sinne tulee joka kuukausi ${fmtInt(s)} uutta kirjaa. Montako kirjaa kirjastossa on ${n} kuukauden kuluttua?`,`The town library has ${fmtInt(a)} books. ${fmtInt(s)} new books arrive every month. How many books will the library have after ${n} months?`)
+        :E(`Varastossa on ${fmtInt(a)} pulloa. Joka päivä niitä myydään ${fmtInt(-s)}. Montako pulloa varastossa on ${n} päivän jälkeen?`,`A warehouse has ${fmtInt(a)} bottles. ${fmtInt(-s)} bottles are sold every day. How many bottles are left after ${n} days?`);
+      else if(EN){if(s>0)story=pick([`${K.n} has saved ${a} euros. Every week ${K.n} saves ${s} euros more. How much money will ${K.n} have after ${n} weeks?`,`A tree is ${a} cm tall now. It grows ${s} cm every year. How tall will the tree be after ${n} years?`]);
       else if(terms.at(-1)>=0)story=pick([`There are ${a} sweets in a jar. ${K.n} eats ${-s} sweets every day. How many sweets are in the jar after ${n} days?`,`A book has ${a} pages left to read. ${K.n} reads ${-s} pages every evening. How many pages are left after ${n} evenings?`]);
       else story=`In the morning the temperature is ${degF(a)}. The temperature falls ${-s} degrees every hour. What is the temperature after ${n} hours?`}
-      else if(s>0)story=pick([`${K.ll} on säästössä ${a} euroa. Hän laittaa säästöön joka viikko ${s} euroa lisää. Paljonko rahaa hänellä on ${n} viikon kuluttua?`,`Puu on nyt ${a} cm pitkä. Se kasvaa joka vuosi ${s} cm. Kuinka pitkä puu on ${n} vuoden kuluttua?`]);
+      else if(s>0&&!big)story=pick([`${K.ll} on säästössä ${a} euroa. Hän laittaa säästöön joka viikko ${s} euroa lisää. Paljonko rahaa hänellä on ${n} viikon kuluttua?`,`Puu on nyt ${a} cm pitkä. Se kasvaa joka vuosi ${s} cm. Kuinka pitkä puu on ${n} vuoden kuluttua?`]);
       else if(terms.at(-1)>=0)story=pick([`Purkissa on ${a} karkkia. ${K.n} syö joka päivä ${-s} karkkia. Montako karkkia purkissa on ${n} päivän jälkeen?`,`Kirjassa on ${a} sivua lukematta. ${K.n} lukee joka ilta ${-s} sivua. Montako sivua on lukematta ${n} illan jälkeen?`]);
       else story=`Aamulla lämpötila on ${degF(a)}. Lämpötila laskee joka tunti ${-s} astetta. Mikä lämpötila on ${n} tunnin kuluttua?`;
       const ansW=terms.at(-1),dg=story.includes('°C');
@@ -2099,8 +2116,8 @@ const mlong=c=>{const e=Math.floor(c/100),s=c%100;return [e?`${fmtInt(e)} €`:'
 const MSETS={
   1:[[[200,100],1000,3,6],[[500,200,100],2000,3,6],[[1000,500,200,100],2000,4,7]],
   2:[[[2000,1000,500,200,100],5000,4,7],[[5000,2000,1000,500,200,100],10000,4,8],[[500,200,100,50,20,10],1000,4,8]],
-  3:[[[200,100,50,20,10],1000,4,8],[[200,100,50,20,10,5,2,1],1000,5,9],[[2000,1000,500,200,100,50,20,10,5],5000,6,10]],
-  4:[[[500,200,100,50,20,10,5,2,1],2000,5,9],[[5000,2000,1000,500,200,100,50,20,10,5,2,1],10000,6,10],[[10000,5000,2000,1000,500,200,100,50,20,10,5,2,1],20000,7,12]]};
+  3:[[[200,100,50,20,10],1000,4,8],[[200,100,50,20,10,5],1000,5,9],[[2000,1000,500,200,100,50,20,10,5],5000,6,10]],
+  4:[[[500,200,100,50,20,10,5],2000,5,9],[[5000,2000,1000,500,200,100,50,20,10,5],10000,6,10],[[10000,5000,2000,1000,500,200,100,50,20,10,5],20000,7,12]]};
 const MITEMS=[{fi:['Karkkipussi','karkkipussin'],en:'bag of sweets',r:[80,500],svg:()=>UNITS.karkki.ten},{fi:['Mehupullo','mehupullon'],en:'bottle of juice',r:[50,300],svg:()=>UNITS.pullo.one},{fi:['Tarra-arkki','tarra-arkin'],en:'sheet of stickers',r:[100,600],svg:()=>UNITS.tarra.ten},
   {fi:['Kirja','kirjan'],en:'book',r:[500,3000],svg:()=>ICON.kirjat},
   {fi:['Jalkapallo','jalkapallon'],en:'football',r:[700,4000],svg:()=>'<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="19" fill="#fff" stroke="var(--ink)" stroke-width="2.5"/><path d="M24 16l7.6 5.5-2.9 9H19.3l-2.9-9z" fill="var(--ink)"/><path d="M24 16V6M31.6 21.5l9.5-3M28.7 30.5l5.8 8M19.3 30.5l-5.8 8M16.4 21.5l-9.5-3" stroke="var(--ink)" stroke-width="2"/></svg>'},
@@ -2213,7 +2230,8 @@ const dayStreak=st=>{const dd=st.days||{};let n=0,o=dd[today()]?0:1;while(dd[tod
 function updHeader(){const p=curPl(),t=(S.days||{})[today()]||0,f=Math.min(1,t/GOAL),C=2*Math.PI*15;
   $('#pav').innerHTML=plAv(p);$('#pav').classList.toggle('has',p.av!=null);$('#pav').style.background=`var(${PCOL[p.col%PCOL.length]})`;$('#pname').textContent=p.name;
   $('#ptoday').textContent=`${t}/${GOAL}`;$('#pring').style.strokeDasharray=`${(C*f).toFixed(1)} ${C.toFixed(1)}`;$('#playerBtn').classList.toggle('goal',t>=GOAL)}
-function topicName(key){const[g,...r]=key.split('-'),id=r.join('-'),t=(GR[+g]||{topics:[]}).topics.find(x=>x.id===id);const nm=t?t.name:id.replace(/^(pulma|sana)-.*$/,m=>m.startsWith('pulma')?'Kuvapulmat':'Päättelytehtävät');return EN?`Grade ${g}: ${tr(nm)}`:`${g}. lk: ${nm}`}
+function topicName(key){if(key.includes('|')){const[g,t,s,y]=key.split('|'),T=NAV.find(x=>x.id===t),Sb=T&&T.subs.find(x=>x.id===s),Y=Sb&&Sb.types.find(x=>x.id===y);
+    const nm=Sb?`${tr(Sb.n)}${Y&&Sb.types.length>1?' · '+tr(Y.n):''}`:key;return EN?`Grade ${g}: ${nm}`:`${g}. lk: ${nm}`}const[g,...r]=key.split('-'),id=r.join('-'),t=(GR[+g]||{topics:[]}).topics.find(x=>x.id===id);const nm=t?t.name:id.replace(/^(pulma|sana)-.*$/,m=>m.startsWith('pulma')?'Kuvapulmat':'Päättelytehtävät');return EN?`Grade ${g}: ${tr(nm)}`:`${g}. lk: ${nm}`}
 function renderPlayers(confirmDel){const p=curPl(),st=p.state,week=[...Array(7).keys()].reverse().map(o=>({d:today(o),n:(st.days||{})[today(o)]||0})),wm=Math.max(GOAL,...week.map(w=>w.n));
   const wd=E(['su','ma','ti','ke','to','pe','la'],['Su','Mo','Tu','We','Th','Fr','Sa']);
   $('#pbody').innerHTML=`
@@ -2245,47 +2263,136 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');
   if(b.dataset.pdelok){DB.players=DB.players.filter(p=>p.id!==DB.cur);if(!DB.players.length)DB.players.push({id:'p'+Date.now(),name:E('Pelaaja 1','Player 1'),col:0,state:mkState()});switchPlayer(DB.players[0].id);return}},true);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#pmodal').hidden)closePlayers();if(e.key==='Enter'&&e.target.closest&&e.target.closest('#pmodal')){e.stopImmediatePropagation();e.preventDefault();const b=e.target.id==='newName'?$('[data-padd]'):e.target.id==='renName'?$('[data-pren]'):null;if(b)b.click()}},true);
 
-let RND=null;const MIX=()=>S.op==='mix'&&RND;
-const fam=()=>MIX()?RND.fam:S.fam==='cmp'||S.fam==='mit'||S.fam==='stat'?S.fam:S.grade===1?'add':(S.fam||'add');
-const PSEUDO=f=>f==='add'||f==='mul'?[{id:'pulma-'+f,name:'Kuvapulmat',levels:PUZ_LEVELS,gen:(L,op)=>puzzleGen(S.grade)(L,op),noWord:true,puzzle:true},{id:'sana-'+f,name:'Päättelytehtävät',levels:['Kaksi henkilöä','Kolme henkilöä','Tieto vasta lopussa'],gen:L=>wordPuzzleGen(S.grade)(L),noWord:true,puzzle:true}]:[];
-const tlist=()=>[...GR[S.grade].topics.filter(t=>(t.fam||'add')===fam()),...PSEUDO(fam())];
-const PUZ_LEVELS=['Kaksi kuvaa','Kolme kuvaa','Rivit sekaisin'];
-const TYPES=EN?{perus:'Basic tasks',sov:'Word tasks'}:{perus:'Perustehtävät',sov:'Sanalliset tehtävät'};
-const OPLIST=()=>EN?[['+','Addition'],['-','Subtraction'],...(S.grade>1?[['*','Multiplication'],['/','Division']]:[]),['cmp','Sequences'],['mit','Measuring'],['stat','Statistics'],['mix','Random']]:[['+','Yhteenlasku'],['-','Vähennyslasku'],...(S.grade>1?[['*','Kertolasku'],['/','Jakolasku']]:[]),['cmp','Jonot'],['mit','Mittaaminen'],['stat','Tilastot'],['mix','Sattuma']];
-const NOWORD=new Set(['muodot','c-kuviot','tn','kokeilu','kaksipalloa']);
-const typesFor=t=>t.noWord||NOWORD.has(t.id)?['perus']:['perus','sov'];
-const typ=()=>MIX()?RND.type:typesFor(cur()).includes(S.type)?S.type:'perus';
-const cur=()=>{const l=tlist();return l.find(t=>t.id===(MIX()?RND.topic:S.topic[S.grade+fam()]))||l[0]};
-const prog=()=>{const k=S.grade+'-'+cur().id;return S.prog[k]||(S.prog[k]={level:1,streak:0,fails:0})};
+/* ---------- valikkorakenne: alue › aihe › tehtävä ---------- */
+const PUZ_LEVELS=['Kaksi kuvaa','Kolme kuvaa','Rivit sekaisin'],WP_LEVELS=['Kaksi henkilöä','Kolme henkilöä','Tieto vasta lopussa'];
+const ot=(g,id)=>GR[g].topics.find(t=>t.id===id);
+const lvn=(l,op)=>typeof l==='object'?(l[op]||l['*']):l;
+/* src: käyttää olemassa olevaa aihetta tietyllä laskutoimituksella (tai arpoo listasta) */
+const src=(id,ops,word)=>g=>{const t=ot(g,id);if(!t)return null;const O=[].concat(ops);
+  return{oid:id,levels:t.levels.map(l=>[...new Set(O.map(o=>lvn(l,o)))]),gen:L=>{const op=pick(O);const P=t.gen(L,op,!!word);P.opUsed=op;return P}}};
+const byG=m=>g=>m[g]?m[g](g):null;
+const allG=(f,from=1,to=6)=>g=>g>=from&&g<=to?f(g):null;
+const puz=(mul,from)=>g=>g<from?null:{oid:'pulma',levels:PUZ_LEVELS.map(x=>[x]),gen:L=>puzzleGen(g,mul)(L)};
+const wpz=(mul,from)=>g=>g<from?null:{oid:'sana',levels:WP_LEVELS.map(x=>[x]),gen:L=>wordPuzzleGen(g,mul)(L)};
+const addSub=op=>[
+  {id:'kuva',n:'Kuvilla',f:byG({1:src('hedelmat',op),2:src('kymmenet',op)})},
+  {id:'puut',n:'Puuttuva luku',f:byG({1:src('puuttuva',op)})},
+  {id:'paa',n:'Päässälasku',f:byG({3:src('paassa',op)})},
+  {id:'all',n:'Allekkain',f:byG({3:src('allekkain',op),4:src('allekkain',op),5:src('isot',op)})},
+  {id:'san',n:'Sanalliset',f:byG({1:src('hedelmat',op,1),2:src('kymmenet',op,1),3:src('paassa',op,1),4:src('allekkain',op,1),5:src('isot',op,1)})}];
+const mulDiv=(op,a,b)=>[
+  {id:'tau',n:a,f:byG({2:src('m-taulut',op),3:src('m-taulut',op)})},
+  {id:'all',n:b,f:byG({4:src('m-isot',op),5:src('m-isot',op)})},
+  {id:'san',n:'Sanalliset',f:byG({2:src('m-taulut',op,1),3:src('m-taulut',op,1),4:src('m-isot',op,1),5:src('m-isot',op,1)})}];
+const NAV=[
+  {id:'laskut',n:'Laskut',subs:[
+    {id:'yht',n:'Yhteenlasku',types:addSub('+')},
+    {id:'vah',n:'Vähennyslasku',types:addSub('-')},
+    {id:'ker',n:'Kertolasku',types:mulDiv('*','Kertotaulut','Allekkain')},
+    {id:'jak',n:'Jakolasku',types:mulDiv('/','Jakaminen tasan','Jakokulma')},
+    {id:'des',n:'Desimaaliluvut',types:[
+      {id:'ys',n:'Yhteen- ja vähennyslasku',f:allG(src('desimaalit',['+','-']),4)},
+      {id:'kj',n:'Kerto- ja jakolasku',f:allG(src('m-desimaalit',['*','/']),5)},
+      {id:'san',n:'Sanalliset',f:allG(src('desimaalit',['+','-'],1),4)}]},
+    {id:'mur',n:'Murtoluvut',types:[
+      {id:'ys',n:'Yhteen- ja vähennyslasku',f:allG(src('murto',['+','-']),4)},
+      {id:'kj',n:'Kerto- ja jakolasku',f:allG(src('m-murto',['*','/']),6)},
+      {id:'ver',n:'Vertailu',f:allG(src('murtovert','+'),5)},
+      {id:'san',n:'Sanalliset',f:allG(src('murto',['+','-'],1),4)}]}]},
+  {id:'luvut',n:'Luvut ja jonot',subs:[
+    {id:'ver',n:'Vertailu',types:[
+      {id:'ver',n:'Vertaile lukuja',f:allG(src('c-vertailu','mit'),1,3)},
+      {id:'san',n:'Sanalliset',f:allG(src('c-vertailu','mit',1),1,3)}]},
+    {id:'jon',n:'Lukujonot',types:[
+      {id:'jon',n:'Mikä luku puuttuu?',f:allG(src('c-jonot','cmp'))},
+      {id:'san',n:'Sanalliset',f:allG(src('c-jonot','cmp',1))}]}]},
+  {id:'mitta',n:'Mittaaminen',subs:[
+    {id:'aika',n:'Aika',types:[
+      {id:'kello',n:'Kellonajat',f:allG(src('kello',['+','-']),2,4)},
+      {id:'nop',n:'Nopeus, matka ja aika',f:allG(src('nopeus','*'),5)},
+      {id:'san',n:'Sanalliset',f:allG(src('kello',['+','-'],1),2,4)}]},
+    {id:'lampo',n:'Lämpötila',types:[
+      {id:'mit',n:'Lämpömittari',f:allG(src('lampo','mit'),3)},
+      {id:'san',n:'Sanalliset',f:allG(src('lampo','mit',1),3,4)}]},
+    {id:'raha',n:'Raha',types:[
+      {id:'kol',n:'Kolikot ja setelit',f:allG(src('raha','+'),1,4)},
+      {id:'kas',n:'Kaupan kassa',f:allG(src('raha','-'),1,4)}]},
+    {id:'yks',n:'Yksikkömuunnokset',types:[
+      {id:'muu',n:'Muunnokset',f:allG(src('yksikot','mit'),2)},
+      {id:'san',n:'Sanalliset',f:allG(src('yksikot','mit',1),2)}]}]},
+  {id:'geom',n:'Geometria',subs:[
+    {id:'muo',n:'Muodot',types:[{id:'muo',n:'Tunnista muodot',f:allG(src('muodot','mit'))}]},
+    {id:'koo',n:'Koordinaatisto',types:[{id:'koo',n:'Koordinaatit',f:allG(src('koord','mit'),3)}]}]},
+  {id:'tilastot',n:'Tilastot ja todennäköisyys',subs:[
+    {id:'dia',n:'Diagrammit',types:[{id:'dia',n:'Lue diagrammia',f:allG(src('diagrammit','stat'))}]},
+    {id:'ka',n:'Keskiarvo',types:[
+      {id:'ka',n:'Laske keskiarvo',f:allG(src('keskiarvo','stat'),5)},
+      {id:'san',n:'Sanalliset',f:allG(src('keskiarvo','stat',1),5)}]},
+    {id:'tn',n:'Todennäköisyys',types:[
+      {id:'tn',n:'Pallot, pussit ja noppa',f:allG(src('tn','stat'))},
+      {id:'kp',n:'Kaksi palloa',f:allG(src('kaksipalloa','stat'),5)},
+      {id:'kok',n:'Kokeile nopilla',f:allG(src('kokeilu','stat'),3)}]}]},
+  {id:'pulmat',n:'Pulmat ja päättely',subs:[
+    {id:'kuv',n:'Kuvapulmat',types:[{id:'pm',n:'Plus- ja miinuspulmat',f:puz(false,1)},{id:'ker',n:'Kertopulmat',f:puz(true,2)}]},
+    {id:'pää',n:'Päättelytehtävät',types:[{id:'ev',n:'Enemmän ja vähemmän',f:wpz(false,1)},{id:'ko',n:'Kertaa ja osuudet',f:wpz(true,2)}]},
+    {id:'kj',n:'Kuviojonot',types:[{id:'kj',n:'Mikä kuva tulee seuraavaksi?',f:allG(src('c-kuviot','cmp'))}]}]}];
+/* mitä luokalla näkyy */
+const navTypes=(g,sub)=>sub.types.filter(t=>t.f(g));
+const navSubs=(g,top)=>top.subs.filter(s=>navTypes(g,s).length);
+const navTops=g=>NAV.filter(t=>navSubs(g,t).length);
+function navPick(g,tid,sid,yid){const tops=navTops(g),top=tops.find(t=>t.id===tid)||tops[0];
+  const subs=navSubs(g,top),sub=subs.find(s=>s.id===sid)||subs[0];
+  const types=navTypes(g,sub),type=types.find(t=>t.id===yid)||types[0];
+  return{top,sub,type,tops,subs,types,inst:type.f(g),key:`${g}|${top.id}|${sub.id}|${type.id}`}}
+Object.assign(TR,{'Laskut':'Calculations','Luvut ja jonot':'Numbers and sequences','Mittaaminen':'Measuring','Geometria':'Geometry','Tilastot ja todennäköisyys':'Statistics and probability','Pulmat ja päättely':'Puzzles and logic',
+  'Yhteenlasku':'Addition','Vähennyslasku':'Subtraction','Kertolasku':'Multiplication','Jakolasku':'Division','Lämpötila':'Temperature','Raha':'Money',
+  'Kuvilla':'With pictures','Sanalliset':'Word problems','Jakaminen tasan':'Sharing equally','Jakokulma':'Long division','Yhteen- ja vähennyslasku':'Addition and subtraction','Kerto- ja jakolasku':'Multiplication and division',
+  'Vertaile lukuja':'Compare numbers','Mikä luku puuttuu?':'Which number is missing?','Kellonajat':'Telling the time','Kolikot ja setelit':'Coins and notes','Muunnokset':'Conversions','Tunnista muodot':'Recognise shapes','Koordinaatit':'Coordinates',
+  'Lue diagrammia':'Read the chart','Laske keskiarvo':'Work out the average','Pallot, pussit ja noppa':'Balls, bags and dice','Kokeile nopilla':'Experiment with dice',
+  'Plus- ja miinuspulmat':'Plus and minus puzzles','Kertopulmat':'Times puzzles','Enemmän ja vähemmän':'More and fewer','Kertaa ja osuudet':'Times and fractions','Mikä kuva tulee seuraavaksi?':'Which picture comes next?','Kaupan kassa':'Change at the till'});
+const andJoin=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+E(' ja ',' and ')+a[a.length-1];
+
+let RND=null;
+const cur=()=>{if(S.mix&&RND)return RND;S.subs=S.subs||{};S.typs=S.typs||{};const g=S.grade;
+  const a=navPick(g,S.top);const b=navPick(g,a.top.id,S.subs[g+'|'+a.top.id]);return navPick(g,b.top.id,b.sub.id,S.typs[g+'|'+b.top.id+'|'+b.sub.id])};
+const prog=()=>{const c=cur(),k=c.key;if(!S.prog[k]){const old=S.prog[S.grade+'-'+c.inst.oid];S.prog[k]={level:old?old.level:1,streak:0,fails:0}}return S.prog[k]};
+const lvLabel=(c,L)=>c.inst.levels[L-1].map(tr).join(' / ');
+const pathLabel=c=>`${tr(c.top.n)} › ${tr(c.sub.n)}${c.types.length>1?` › ${tr(c.type.n)}`:''}`;
 
 const $=s=>document.querySelector(s);
 function chips(el,items,active){if(el.disabled){el.innerHTML='<option value=""></option>';return}el.innerHTML=items.map(([v,l])=>`<option value="${v}"${v===active?' selected':''}>${l}</option>`).join('')}
-document.addEventListener('change',e=>{const t=e.target;if(!t.dataset||!t.dataset.sel)return;const v=t.value;
-  if(t.dataset.sel==='op'){S.op=v;if(v==='+'||v==='-')S.fam='add';else if(v==='cmp'||v==='mit'||v==='stat')S.fam=v;else if(v!=='mix')S.fam='mul'}
-  else if(t.dataset.sel==='topic')S.topic[S.grade+fam()]=v;else S.type=v;
+document.addEventListener('change',e=>{const t=e.target;if(!t.dataset||!t.dataset.sel)return;const v=t.value,c=cur(),g=S.grade;
+  S.subs=S.subs||{};S.typs=S.typs||{};
+  if(t.dataset.sel==='top')S.top=v;
+  else if(t.dataset.sel==='sub')S.subs[g+'|'+c.top.id]=v;
+  else S.typs[g+'|'+c.top.id+'|'+c.sub.id]=v;
   renderControls();newProblem();save()});
+function navGoal(c){const g=S.grade;
+  if(c.top.id==='laskut')return c.sub.id==='ker'||c.sub.id==='jak'?GOALM[g]:EN?GOALG[g]:GR[g].goal;
+  if(c.top.id==='tilastot')return GOALS[g];
+  return `<b>${tr(c.top.n)}:</b> ${andJoin(c.subs.map(s=>tr(s.n).toLowerCase()))}.`}
 function renderControls(){
   $('#grades').innerHTML=[1,2,3,4,5,6].map(g=>`<button type="button" class="grade" data-grade="${g}" aria-pressed="${g===S.grade}" aria-label="${E(g+'. luokka',g+(['st','nd','rd'][g-1]||'th')+' grade')}">${EN?`<b>${g}<span class="ord">${['st','nd','rd'][g-1]||'th'}</span></b><small>grade</small>`:`<b>${g}.</b><small>luokka</small>`}</button>`).join('');
-  const g=GR[S.grade];if(S.grade===1&&(S.op==='*'||S.op==='/'))S.op='+';
-  if(S.op==='mix'){$('#goal').innerHTML=E('<b>Sattuma:</b> tehtävät tulevat satunnaisesti kaikista laskuista, aiheista ja tehtävätyypeistä. Tehtävän aihe näkyy sen yläreunassa.','<b>Random:</b> tasks come randomly from all calculations, topics and task types. The topic is shown at the top of each task.');
-    $('#types').disabled=true;chips($('#types'),[['x',E('Satunnainen','Random')]],'x');$('#topics').disabled=true;chips($('#topics'),[['x',E('Satunnainen','Random')]],'x');
-    chips($('#ops'),OPLIST(),S.op,'op');updHeader();return}
-  $('#goal').innerHTML=fam()==='mul'?GOALM[S.grade]:fam()==='cmp'?GOALC[S.grade].replace(/\.$/,E(' sekä kuviojonot.',', and pattern sequences.')):fam()==='stat'?GOALS[S.grade]:fam()==='mit'?GOALMIT[S.grade]+(S.grade>=2?E(' Lisäksi yksikkömuunnokset: pituus, tilavuus, massa ja raha.',' Also unit conversions: length, volume, mass and money.'):''):EN?GOALG[S.grade]:g.goal;
-  const l=tlist();$('#topics').disabled=l.length<2;chips($('#topics'),l.map(t=>[t.id,tr(t.name)]),cur().id,'topic');
-  chips($('#ops'),OPLIST(),S.op,'op');
-  const ty=typesFor(cur());$('#types').disabled=ty.length<2;chips($('#types'),ty.map(k=>[k,TYPES[k]]),typ(),'type');
+  const mb=$('#mixBtn');mb.setAttribute('aria-pressed',String(!!S.mix));
+  if(S.mix){$('#goal').innerHTML=E('<b>Sekoita:</b> tehtävät tulevat satunnaisesti kaikista tämän luokan aiheista. Tehtävän aihe näkyy sen yläreunassa. Paina Sekoita uudelleen, niin voit taas valita itse.','<b>Mix:</b> tasks come randomly from all the topics for this grade. The topic is shown at the top of each task. Press Mix again to choose for yourself.');
+    ['#ops','#topics','#types'].forEach(s=>{$(s).disabled=true;chips($(s),[],'')});updHeader();return}
+  const c=cur();
+  $('#goal').innerHTML=navGoal(c);
+  $('#ops').disabled=false;chips($('#ops'),c.tops.map(t=>[t.id,tr(t.n)]),c.top.id);
+  $('#topics').disabled=c.subs.length<2;chips($('#topics'),c.subs.map(s=>[s.id,tr(s.n)]),c.sub.id);
+  $('#types').disabled=c.types.length<2;chips($('#types'),c.types.map(t=>[t.id,tr(t.n)]),c.type.id);
   updHeader()}
 
 /* ---------- tehtävä ---------- */
 let P=null,tries=0,done=false;
-const FAMN=EN?{add:'Addition and subtraction',mul:'Multiplication and division',cmp:'Sequences',mit:'Measuring',stat:'Statistics'}:{add:'Yhteen- ja vähennyslasku',mul:'Kerto- ja jakolasku',cmp:'Jonot',mit:'Mittaaminen',stat:'Tilastot'};
 function newProblem(keep){
-  if(S.op==='mix'&&!(keep&&RND)){const f=pick(['add',...(S.grade>1?['mul']:[]),'cmp','mit','stat']);RND={fam:f,type:'perus',topic:null};
-    const tl=tlist();const tp=pick(tl.flatMap(t=>t.puzzle?[t]:[t,t]));RND.topic=tp.id;RND.type=pick(typesFor(tp))}
-  const t=cur(),pr=prog();const op=S.op==='mix'?pick(fam()==='mul'?['*','/']:fam()==='cmp'?['cmp']:fam()==='mit'?['mit']:fam()==='stat'?['stat']:['+','-']):S.op;
-  P=t.gen(pr.level,op,typ()==='sov');P.opUsed=op;tries=0;done=false;
+  if(S.mix&&!(keep&&RND)){const g=S.grade,all=[];navTops(g).forEach(t=>navSubs(g,t).forEach(s=>navTypes(g,s).forEach(y=>all.push([t,s,y]))));
+    const[t,s,y]=pick(all);RND=navPick(g,t.id,s.id,y.id)}
+  const c=cur(),pr=prog();
+  P=c.inst.gen(pr.level);tries=0;done=false;
   if(EN)['story','text','hint','explain','answerText','unit','visual'].forEach(k=>{if(typeof P[k]==='string')P[k]=enFix(P[k])});
   draw()}
+
 const SING={degrees:'degree',euros:'euro',stickers:'sticker',sweets:'sweet',points:'point',shells:'shell',beads:'bead','trading cards':'trading card',pages:'page',bottles:'bottle',books:'book',minutes:'minute',hours:'hour',squares:'square',steps:'step',balls:'ball',apples:'apple',pears:'pear',oranges:'orange',strawberries:'strawberry',pupils:'pupil',loans:'loan',answers:'answer',parts:'part',days:'day',weeks:'week',years:'year',evenings:'evening',kilometres:'kilometre',metres:'metre',litres:'litre',ways:'way',tests:'test',games:'game',listeners:'listener',passengers:'passenger',seats:'seat',levels:'level',tickets:'ticket',winners:'winner',friends:'friend',boxes:'box',bags:'bag',crates:'crate',sheets:'sheet',baskets:'basket',blocks:'block',rows:'row',groups:'group',numbers:'number'};
 const SINGRE=new RegExp('(^|[^\\d,.\\/−-])1 ((?:more |fewer |new |full |other )?)('+Object.keys(SING).join('|')+')\\b','g');
 function enFix(s){return s.replace(SINGRE,(m,a,b,w)=>`${a}1 ${b}${SING[w]}`).replace(/\b([Tt]here) are 1 /g,'$1 is 1 ').replace(/\b1 ([a-z]+) are (shared|put|packed|sold)/g,'1 $1 is $2')}
@@ -2318,14 +2425,14 @@ function inlineAns(){if(P.ldiv||P.steps||P.inline||!P.text||!P.text.includes(BOX
   return `<input class="num xin" id="ans" style="width:${w+1}ch" inputmode="none" autocomplete="off" aria-label="${E('Vastaus','Answer')}">`}
 const NOPAD=new Set(['raha','kello','lampo','tn','kokeilu','kaksipalloa','hedelmat','puuttuva']);
 function maxDigits(){const t=((P.text||'')+' '+(P.story||'')+' '+(P.steps?P.visual:'')).replace(/<svg[\s\S]*?<\/svg>/g,' ').replace(/<[^>]+>/g,' ').replace(/(\d)[\u00A0 ](?=\d{3})/g,'$1');return Math.max(0,...(t.match(/\d+(?:,\d+)?/g)||[]).map(x=>x.replace(',','').length))}
-const padOK=()=>P&&!['col','choice','multi'].includes(P.kind)&&!P.ldiv&&!NOPAD.has(cur().id)&&(cur().id==='keskiarvo'||maxDigits()>=3);
+const padOK=()=>P&&!['col','choice','multi'].includes(P.kind)&&!P.ldiv&&!NOPAD.has(cur().inst.oid)&&(cur().inst.oid==='keskiarvo'||maxDigits()>=3);
 function padHTML(){const C=8,row=(r,cls)=>`<tr class="${cls}"><td class="pop">${r===2?`<button type="button" class="padop" data-padop="0" aria-label="${E('Vaihda laskumerkki','Change the operation sign')}">+</button>`:''}</td>${Array.from({length:C},(_,c)=>`<td><input class="sq${r===0?' small':''}" inputmode="none" maxlength="1" autocomplete="off" aria-label="${E('Ruutu','Square')}"></td>`).join('')}</tr>`;
   return `<div class="panel pad" id="pad" hidden><h3>${E('Ruutupaperi','Squared paper')}</h3><p class="padtip">${E('Kirjoita luvut allekkain omiin ruutuihinsa. Ylärivi on muistinumeroille. Napauta laskumerkkiä vaihtaaksesi sen.','Write the numbers in columns, one digit in each square. The top row is for carried digits. Tap the sign to change it.')}</p><div class="calc-wrap"><table class="calc padt"><tbody>${row(0,'carry')}${row(1,'')}${row(2,'')}${row(3,'res')}</tbody></table></div><button type="button" class="btn ghost padclr" data-padclr="1">${E('Tyhjennä ruudut','Clear the squares')}</button></div>`}
 function draw(){const t=cur(),pr=prog();const IA=inlineAns();
   $('#sheet').innerHTML=`
-    ${S.op==='mix'?`<p class="mixlbl">${t.puzzle?`${tr(t.name)} · ${FAMN[fam()].toLowerCase()}`:`${FAMN[fam()]} · ${tr(t.name)}${typ()==='sov'?E(' · sanallinen',' · word problem'):''}`}</p>`:''}
+    ${S.mix?`<p class="mixlbl">${pathLabel(t)}</p>`:''}
     <div class="status">
-      <div class="levels" role="group" aria-label="${E('Taso','Level')}"><span class="stlbl">${E('Taso','Level')}</span>${[1,2,3].map(l=>`<button type="button" class="lv" data-level="${l}" aria-pressed="${l===pr.level}" aria-label="${E('Taso','Level')} ${l}">${l}</button>`).join('')}<span class="lvname">${tr((ln=>typeof ln==='object'?ln[P.opUsed]||ln['*']:ln)(t.levels[pr.level-1]))}</span></div>
+      <div class="levels" role="group" aria-label="${E('Taso','Level')}"><span class="stlbl">${E('Taso','Level')}</span>${[1,2,3].map(l=>`<button type="button" class="lv" data-level="${l}" aria-pressed="${l===pr.level}" aria-label="${E('Taso','Level')} ${l}">${l}</button>`).join('')}<span class="lvname">${lvLabel(t,pr.level)}</span></div>
       <div class="streak" id="streak">${streakHTML()}</div>
     </div>
     ${P.visual?`<div class="visual">${P.visual}</div>`:''}
@@ -2397,7 +2504,7 @@ function check(){if(done)return;const r=evaluate(),pr=prog();
   if(r.bad){fb(r.bad,'info');return}
   if(r.ok){done=true;S.stars++;const td=today();S.days[td]=(S.days[td]||0)+1;pr.streak++;pr.fails=0;let msg=pick(PRAISE)+E(' Sait tähden.',' You got a star.');
     if(pr.streak>=3&&pr.level<3){pr.level++;pr.streak=0;msg+=E(` Siirryt tasolle ${pr.level}.`,` You move up to level ${pr.level}.`)}
-    else if(pr.streak>=3){pr.streak=0;const mk=S.grade+'-'+cur().id;if(!S.medals[mk]){S.medals[mk]=1;msg+=E(' Sait mitalin tästä aiheesta!',' You got a medal for this topic!')}else msg+=E(' Olet ylimmällä tasolla. Upeaa!'," You're on the top level. Amazing!")}
+    else if(pr.streak>=3){pr.streak=0;const mk=cur().key;if(!S.medals[mk]){S.medals[mk]=1;msg+=E(' Sait mitalin tästä aiheesta!',' You got a medal for this topic!')}else msg+=E(' Olet ylimmällä tasolla. Upeaa!'," You're on the top level. Amazing!")}
     if(S.days[td]===GOAL)msg+=E(' Päivän tavoite täynnä!'," Today's goal reached!");
     fb(msg,'good');const st=$('#playerBtn');st.classList.remove('pop');void st.offsetWidth;st.classList.add('pop');updHeader();finish()}
   else{tries++;
@@ -2454,10 +2561,8 @@ document.addEventListener('mousedown',e=>{if(e.target.closest('.key'))e.preventD
 document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#cgrid')){ctap(e);return}const b=e.target.closest('button');if(!b)return;
   if(b.dataset.help){const h=$('#pzh');h.hidden=!h.hidden;b.setAttribute('aria-expanded',String(!h.hidden));b.setAttribute('aria-label',h.hidden?E('Näytä ohje','Show help'):E('Piilota ohje','Hide help'));return}
   if(b.dataset.turn){const f=$('#sheet .visual .arr'),ex=$('#sheet .ex');if(!f||!ex)return;const t=f.classList.toggle('tr'),A=+f.dataset.a,B=+f.dataset.b;ex.textContent=t?`${B} · ${A}`:`${A} · ${B}`;return}
-  if(b.dataset.grade){S.grade=+b.dataset.grade;renderControls();newProblem();save()}
-  else if(b.dataset.topic){S.topic[S.grade+fam()]=b.dataset.topic;renderControls();newProblem();save()}
-  else if(b.dataset.op){S.op=b.dataset.op;if(S.op==='+'||S.op==='-')S.fam='add';else if(S.op==='cmp')S.fam='cmp';else if(S.op!=='mix')S.fam='mul';renderControls();newProblem();save()}
-  else if(b.dataset.type){S.type=b.dataset.type;renderControls();newProblem();save()}
+  if(b.id==='mixBtn'){S.mix=!S.mix;RND=null;renderControls();newProblem();save();return}
+  if(b.dataset.grade){S.grade=+b.dataset.grade;RND=null;renderControls();newProblem();save()}
   else if(b.dataset.level){const pr=prog();pr.level=+b.dataset.level;pr.streak=0;pr.fails=0;newProblem(true);save()}
   else if(b.dataset.pick!=null){if(done)return;b.setAttribute('aria-pressed',String(b.getAttribute('aria-pressed')!=='true'));b.classList.remove('ok','no')}
   else if(b.dataset.sim){simRun(+b.dataset.sim);return}
