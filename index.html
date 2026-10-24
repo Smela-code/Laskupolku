@@ -2294,7 +2294,7 @@ const src=(id,ops,word)=>g=>{const t=ot(g,id);if(!t)return null;const O=[].conca
   return{oid:id,levels:t.levels.map(l=>[...new Set(O.map(o=>lvn(l,o)))]),gen:L=>{const op=pick(O);const P=t.gen(L,op,!!word);P.opUsed=op;return P}}};
 const byG=m=>g=>m[g]?m[g](g):null;
 const allG=(f,from=1,to=6)=>g=>g>=from&&g<=to?f(g):null;
-const puz=(mul,from)=>g=>g<from?null:{oid:'pulma',levels:PUZ_LEVELS.map(x=>[x]),gen:L=>puzzleGen(g,mul)(L)};
+const puz=(mul,from,to=6)=>g=>g<from||g>to?null:{oid:'pulma',levels:PUZ_LEVELS.map(x=>[x]),gen:L=>puzzleGen(g,mul)(L)};
 const wpz=(mul,from)=>g=>g<from?null:{oid:'sana',levels:WP_LEVELS.map(x=>[x]),gen:L=>wordPuzzleGen(g,mul)(L)};
 const addSub=op=>[
   {id:'kuva',n:'Kuvilla',f:byG({1:src('hedelmat',op),2:src('kymmenet',op)})},
@@ -2355,7 +2355,7 @@ const NAV=[
       {id:'kp',n:'Kaksi palloa',f:allG(src('kaksipalloa','stat'),5)},
       {id:'kok',n:'Kokeile nopilla',f:allG(src('kokeilu','stat'),3)}]}]},
   {id:'pulmat',n:'Pulmat ja päättely',subs:[
-    {id:'kuv',n:'Kuvapulmat',types:[{id:'pm',n:'Plus- ja miinuspulmat',f:puz(false,1)},{id:'ker',n:'Kertopulmat',f:puz(true,2)}]},
+    {id:'kuv',n:'Kuvapulmat',types:[{id:'pm',n:'Plus- ja miinuspulmat',f:puz(false,1,4)},{id:'ker',n:'Kertopulmat',f:puz(true,2,4)},{id:'kaikki',n:'Kaikki laskut',f:puz(false,5)}]},
     {id:'pää',n:'Päättelytehtävät',types:[{id:'ev',n:'Enemmän ja vähemmän',f:wpz(false,1)},{id:'ko',n:'Kertaa ja osuudet',f:wpz(true,2)}]},
     {id:'kj',n:'Kuviojonot',types:[{id:'kj',n:'Mikä kuva tulee seuraavaksi?',f:allG(src('c-kuviot','cmp'))}]}]}];
 /* mitä luokalla näkyy */
@@ -2371,7 +2371,7 @@ Object.assign(TR,{'Mitat ja yksiköt':'Measures and units','Laskut':'Calculation
   'Kuvilla':'With pictures','Sanalliset':'Word problems','Jakaminen tasan':'Sharing equally','Jakokulma':'Long division','Yhteen- ja vähennyslasku':'Addition and subtraction','Kerto- ja jakolasku':'Multiplication and division',
   'Vertaile lukuja':'Compare numbers','Mikä luku puuttuu?':'Which number is missing?','Kellonajat':'Telling the time','Kolikot ja setelit':'Coins and notes','Muunnokset':'Conversions','Tunnista muodot':'Recognise shapes','Koordinaatit':'Coordinates',
   'Lue diagrammia':'Read the chart','Laske keskiarvo':'Work out the average','Pallot, pussit ja noppa':'Balls, bags and dice','Kokeile nopilla':'Experiment with dice',
-  'Plus- ja miinuspulmat':'Plus and minus puzzles','Kertopulmat':'Times puzzles','Enemmän ja vähemmän':'More and fewer','Kertaa ja osuudet':'Times and fractions','Mikä kuva tulee seuraavaksi?':'Which picture comes next?','Kaupan kassa':'Change at the till'});
+  'Plus- ja miinuspulmat':'Plus and minus puzzles','Kertopulmat':'Times puzzles','Kaikki laskut':'All operations','Enemmän ja vähemmän':'More and fewer','Kertaa ja osuudet':'Times and fractions','Mikä kuva tulee seuraavaksi?':'Which picture comes next?','Kaupan kassa':'Change at the till'});
 const andJoin=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+E(' ja ',' and ')+a[a.length-1];
 
 let RND=null;
@@ -2604,6 +2604,7 @@ document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#cg
   else if(b.id==='next'||b.id==='skip')newProblem()});
 document.addEventListener('keydown',e=>{const t=e.target;
   if(t.closest&&t.closest('#pmodal'))return;
+  if(e.key==='Enter'&&t.matches('input.sc')&&!done){e.preventDefault();pressKey('swap');return}
   if(e.key==='Enter'&&t.matches('input')){e.preventDefault();if(done)newProblem();else check();return}
   if(!t.classList||!t.classList.contains('ri'))return;
   const i=+t.dataset.i,go=j=>{let k=j;if(P.L.D&&k===P.L.I)k+=(j>i?1:-1);const el=document.getElementById('r'+k);if(el){el.focus();el.select()}};
@@ -2612,8 +2613,7 @@ document.addEventListener('keydown',e=>{const t=e.target;
   else if(e.key==='ArrowRight'){e.preventDefault();go(i+1)}});
 function updSteps(){if(!P||!P.steps)return;const s1=$('.step1'),q=$('.qbox');if(!s1||!q)return;
   const filled=[...s1.querySelectorAll('.sc')].every(i=>i.value.trim());const was=q.classList.contains('active');
-  s1.classList.toggle('active',!filled);q.classList.toggle('active',filled);
-  if(filled&&!was&&activeEl&&activeEl.classList.contains('sc')){const a=$('#ans');if(a){activeEl=a;a.focus({preventScroll:true})}}}
+  s1.classList.toggle('active',!filled);q.classList.toggle('active',filled);}
 document.addEventListener('input',e=>{const t=e.target;if(t.classList.contains('qi')||t.classList.contains('sq')){t.value=t.value.replace(/\D/g,'').slice(-1);t.classList.remove('ok','no');if(t.value){const n=t.closest('td').nextElementSibling,nx=n&&n.querySelector('input');if(nx){nx.focus();nx.select()}}return}setTimeout(updSteps,0);
   if(t.classList.contains('ri')){t.value=t.value.replace(/\D/g,'').slice(-1);t.classList.remove('ok','no');
     if(t.value){let k=+t.dataset.i-1;if(P.L.D&&k===P.L.I)k--;const el=document.getElementById('r'+k);if(el){el.focus();el.select()}}}
