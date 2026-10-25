@@ -265,7 +265,7 @@ table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;f
 .choices.symopts{display:grid;grid-template-columns:repeat(2,minmax(0,160px));gap:10px;justify-content:center}
 .choices.symopts .choice{padding:8px;display:grid;place-items:center}
 .choices.symopts svg{max-width:100%;height:auto}
-.choices.drawopts{grid-template-columns:repeat(4,minmax(0,84px));gap:8px}
+.choices.drawopts{grid-template-columns:repeat(4,minmax(0,92px));gap:6px}
 .choices.drawopts .choice{padding:4px}
 .wardrobe{display:grid;gap:6px;padding:10px 14px;background:var(--paper);border-radius:12px;box-shadow:0 0 0 1px var(--line)}
 .wrow{display:flex;align-items:center;gap:10px}
@@ -1549,7 +1549,7 @@ function symVariants(sp,given){const ox=sp.ax!=null?(sp.gx===0?sp.ax:0):0,oy=sp.
   const good=T((x,y)=>[mx(x),my(y)]);
   const trans=T((x,y)=>sp.ax!=null?[x-(sp.gx===0?0:sp.ax),y]:[x,y-(sp.gy===0?0:sp.ay)]);
   const wrong=T((x,y)=>sp.ax!=null?[mx(x),rh-1-y]:[rw-1-x,my(y)]);
-  const odd=()=>{const M=new Map(good);const ks=[...M.keys()];const k=pick(ks);if(sp.ncol>1&&Math.random()<.5){M.set(k,(M.get(k)+1)%sp.ncol)}else{M.delete(k);for(let t=0;t<40;t++){const[x,y]=pick(ks).split(',').map(Number),[dx,dy]=pick(NB4),nk=skey(x+dx,y+dy);if(x+dx>=0&&y+dy>=0&&x+dx<rw&&y+dy<rh&&!M.has(nk)&&nk!==k){M.set(nk,M.get(pick([...M.keys()]))??0);break}}}return M};
+  const odd=(base=good)=>{const M=new Map(base);const ks=[...M.keys()];const k=pick(ks);if(sp.ncol>1&&Math.random()<.5){M.set(k,(M.get(k)+1)%sp.ncol)}else{M.delete(k);for(let t=0;t<40;t++){const[x,y]=pick(ks).split(',').map(Number),[dx,dy]=pick(NB4),nk=skey(x+dx,y+dy);if(x+dx>=0&&y+dy>=0&&x+dx<rw&&y+dy<rh&&!M.has(nk)&&nk!==k){M.set(nk,M.get(pick([...M.keys()]))??0);break}}}return M};
   return{rs,good,trans,wrong,odd}}
 const ser=M=>M?[...M].map(([k,v])=>k+':'+v).sort().join('|'):'';
 const DINK='var(--ink)',DSW='stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"';
@@ -1596,8 +1596,9 @@ function drawFold(A,p,badge){const id='dc'+Math.random().toString(36).slice(2,8)
   const b=badge?`<g class="cin" style="--d:1.8s"><circle cx="${2*DR-rr-4}" cy="${rr+4}" r="${rr}" fill="var(--good)" stroke="var(--paper)" stroke-width="3"/><path d="M${2*DR-rr-4-rr*.45} ${rr+4}l${rr*.3} ${rr*.32}l${rr*.55} ${-rr*.6}" fill="none" stroke="var(--paper)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g>`:'';
   return `<svg class="pa" viewBox="0 0 ${2*DR} ${DH}" width="${2*DR}" height="${DH}" role="img" aria-label="${A.n}">${clipL(id)}<rect x="${DR}" y="0" width="${DR}" height="${DH}" fill="var(--bg)"/>${drawHalf(A,p,'left',id)}<g class="symV" style="transform-origin:${DR}px 0;--d:.3s"><rect x="${DR}" y="0" width="${DR}" height="${DH}" fill="var(--paper)" fill-opacity=".8"/>${drawHalf(A,p,'right',id)}</g>${axisD(DR)}${b}</svg>`}
 function drawPick(g,L,subtle,shiftOK){const k=pick(Object.keys(ANIMS)),A=ANIMS[k],F=A.f,p={};for(const f in F)p[f]=pick(F[f]);
-  const feats=shuffle(Object.keys(F)),opts=[{p,s:0}];if(shiftOK)opts.push({p,s:1});
-  const base=A.d(p);for(const f of feats){if(opts.length>=4)break;const alt=shuffle(F[f].filter(v=>v!==p[f]));for(const v of alt){const np=Object.assign({},p,{[f]:v});if(A.d(np)!==base){opts.push({p:np,s:0});break}}}
+  const opts=[{p,s:0}],seen=new Set([A.d(p)]),kk=subtle?1:2,FS=Object.keys(F).filter(f=>!subtle||!['brow','tooth'].includes(f));
+  for(let t=0;t<200&&opts.length<4;t++){const fs=shuffle(FS).slice(0,kk),np={...p};let ch=0;for(const f of fs){const alt=F[f].filter(v=>v!==p[f]);if(!alt.length)continue;np[f]=pick(alt);const one={...p,[f]:np[f]};if(A.d(one)!==A.d(p))ch++}
+    if(ch<kk)continue;const d=A.d(np);if(seen.has(d))continue;seen.add(d);opts.push({p:np,s:0})}
   if(opts.length<4)return drawPick(g,L,subtle,shiftOK);
   const ord=shuffle([0,1,2,3]);
   return{kind:'choice',confirm:1,symopts:1,drawopts:1,okVis:drawFold(A,p,1),choices:ord.map(i=>[String(i),drawOpt(A,opts[i].p,opts[i].s)]),ans:'0',visual:drawMain(A,p),
@@ -1608,7 +1609,7 @@ function symPickGen(g){return L=>{
   if(g<=2?(L===3||(L===1&&Math.random()<.5)):(L!==2&&Math.random()<.5))return drawPick(g,L,L===3,L===1);
   for(let t=0;t<60;t++){const sp=symSpec(g,L,'pick'),B=symBuild(sp);if(!B)continue;const V=symVariants(sp,B.given);if(!V.good)continue;
     const opts=[V.good];const add=M=>{if(M&&M.size&&!opts.some(o=>ser(o)===ser(M)))opts.push(M)};
-    if(L===3&&g>=3){for(let i=0;i<10&&opts.length<4;i++)add(V.odd())}else{add(V.trans);add(V.wrong);for(let i=0;i<10&&opts.length<4;i++)add(V.odd())}
+    if(L===3&&g>=3){for(let i=0;i<10&&opts.length<4;i++)add(V.odd())}else{add(V.trans);add(V.wrong);for(let i=0;i<10&&opts.length<4;i++)add(V.odd(V.odd()))}
     if(opts.length<4)continue;const ord=shuffle([0,1,2,3]),sm={W:V.rs.W,H:V.rs.H,ax:sp.ax!=null?(sp.gx===0?0:V.rs.W):null,ay:sp.ay!=null?(sp.gy===0?0:V.rs.H):null};
     return{kind:'choice',confirm:1,symopts:1,okVis:foldSVG(sp,B.full),choices:ord.map(i=>[String(i),symSVG(sm,opts[i],{c:22})]),ans:'0',
       visual:symSVG(sp,B.given,{q:1}),text:plbl(E('Mikä kuva on oikea toinen puoli? Katkoviiva on symmetria-akseli.','Which picture is the correct other half? The dashed line is the line of symmetry.'),''),answerText:'',
