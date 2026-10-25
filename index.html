@@ -2047,7 +2047,7 @@ function holeWall(hole){const hk=new Set(hole.map(p=>p.join(',')));const HY=Math
 function holeScene(pc,dx,o={}){const f=holeFit(pcProj(pc),P.hole),my=Math.min(...pc.map(p=>p[1]));const hy=f.dy-my;const tw=pc.map(([x,y,z])=>({x:x+dx,y:y+hy,z,front:1}));
   const HY=Math.max(...P.hole.map(p=>p[0])),HZ=Math.max(...P.hole.map(p=>p[1]));const ys=[-1,HY+2,...tw.map(c=>c.y),...tw.map(c=>c.y+1)];
   const box=[-.3,HWX+4.3,Math.min(...ys)-.3,Math.max(...ys)+.3,Math.max(HZ+2,...pc.map(p=>p[2]+1))];
-  const mx=Math.max(...tw.map(c=>c.x))+1;if(!o.cubes&&dx===0)o.arrow=[mx+.15,HWX-.15,(Math.min(...tw.map(c=>c.y))+Math.max(...tw.map(c=>c.y))+1)/2];
+  const mx=Math.max(...tw.map(c=>c.x))+1;if(!o.cubes&&dx===0)o.arrow=[(mx+HWX)/2-.75,(mx+HWX)/2+.75,(Math.min(...tw.map(c=>c.y))+Math.max(...tw.map(c=>c.y))+1)/2];
   return holeCubesSVG([...holeWall(P.hole),...(o.cubes||tw)],box,o)}
 let HDR=null;
 document.addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest('#hbox');if(!b||!P||P.kind!=='turn'||P.running)return;HDR={id:e.pointerId,x:e.clientX,y:e.clientY,th:P.hth??HTH,ph:P.hph??HPH};try{b.setPointerCapture(e.pointerId)}catch(_){}});
