@@ -264,6 +264,8 @@ table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;f
 .choices.symopts{display:grid;grid-template-columns:repeat(2,minmax(0,160px));gap:10px;justify-content:center}
 .choices.symopts .choice{padding:8px;display:grid;place-items:center}
 .choices.symopts svg{max-width:100%;height:auto}
+.choices.drawopts{grid-template-columns:repeat(4,minmax(0,84px));gap:8px}
+.choices.drawopts .choice{padding:4px}
 .pacap{margin:0;font-weight:800;color:var(--soft);width:100%;text-align:center}
 .panel.explain{border-color:var(--good)}
 .clock{width:150px;height:150px;display:block}
@@ -315,6 +317,7 @@ table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;f
 .choices{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
 .choice{min-width:76px;min-height:58px;padding:6px 18px;border-radius:14px;border:3px solid var(--line);background:var(--paper);color:var(--ink);font:800 1.3rem var(--display);cursor:pointer;touch-action:manipulation}
 .choices.big .choice{font-size:2.2rem;min-width:84px}
+.choices.yn .choice{font-size:1.2rem;min-width:96px;min-height:48px}
 .choice.ok{border-color:var(--good);background:var(--good-bg)}
 .choice.no{border-color:var(--bad);background:var(--bad-bg)}
 .mixlbl{margin:0;align-self:flex-start;font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
@@ -1059,7 +1062,7 @@ function pgrid(N,c){const[cols,rows]={100:[10,10],50:[10,5],25:[5,5],20:[5,4],10
   for(let i=0;i<N;i++){const x=(i%cols)*s,y=Math.floor(i/cols)*s;p+=`<rect x="${x+1.5}" y="${y+1.5}" width="${s-3}" height="${s-3}" rx="3" fill="${i<c?'var(--cake)':'var(--plate)'}"/>`}
   return `<svg viewBox="0 0 ${cols*s} ${rows*s}" width="${cols*s}" height="${rows*s}" role="img" aria-label="${c}/${N}">${p}</svg>`}
 const decOf=(n,d)=>{let k=0;while(k<3&&(n*10**k)%d)k++;return fd({u:n*10**k/d,d:k})};
-const plbl=(t,x)=>`<span class="bg" style="display:block;font-size:.55em;margin-bottom:.3em">${t}</span><span class="bg">${x}</span>`;
+const plbl=(t,x)=>x===''?`<span class="bg" style="display:block;font-size:.55em">${t}</span>`:`<span class="bg" style="display:block;font-size:.55em;margin-bottom:.3em">${t}</span><span class="bg">${x}</span>`;
 function pctConv(g,hard,dirs=[0,1,2,3]){
   const base=[[1,2],[1,4],[3,4],[1,5],[2,5],[3,5],[4,5],[1,10],[3,10],[7,10],[9,10],[1,1]],
     pool=g===5?(hard?[...base,[3,2],[5,4],[1,20],[3,20]]:base):(hard?[[1,8],[3,8],[5,8],[3,2],[5,4],[7,4],[1,100],[1,20],[7,20],[1,25],[3,50]]:[...base,[1,20],[3,20],[1,25],[1,50],[1,100]]);
@@ -1481,10 +1484,64 @@ function symVariants(sp,given){const ox=sp.ax!=null?(sp.gx===0?sp.ax:0):0,oy=sp.
   const odd=()=>{const M=new Map(good);const ks=[...M.keys()];const k=pick(ks);if(sp.ncol>1&&Math.random()<.5){M.set(k,(M.get(k)+1)%sp.ncol)}else{M.delete(k);for(let t=0;t<40;t++){const[x,y]=pick(ks).split(',').map(Number),[dx,dy]=pick(NB4),nk=skey(x+dx,y+dy);if(x+dx>=0&&y+dy>=0&&x+dx<rw&&y+dy<rh&&!M.has(nk)&&nk!==k){M.set(nk,M.get(pick([...M.keys()]))??0);break}}}return M};
   return{rs,good,trans,wrong,odd}}
 const ser=M=>M?[...M].map(([k,v])=>k+':'+v).sort().join('|'):'';
-function symPickGen(g){return L=>{for(let t=0;t<60;t++){const sp=symSpec(g,L,'pick'),B=symBuild(sp);if(!B)continue;const V=symVariants(sp,B.given);if(!V.good)continue;
+const DINK='var(--ink)',DSW='stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"';
+const eyeD=(t,x,y)=>t==='big'?`<circle cx="${x}" cy="${y}" r="10" fill="#fff" ${DSW}/><circle cx="${x+1}" cy="${y+1}" r="5" fill="${DINK}"/>`:t==='line'?`<path d="M${x-8} ${y}q8 7 16 0" fill="none" ${DSW}/>`:t==='oval'?`<ellipse cx="${x}" cy="${y}" rx="6" ry="10" fill="hsl(95,55%,45%)" ${DSW}/><ellipse cx="${x}" cy="${y}" rx="2" ry="7" fill="${DINK}"/>`:t==='round'?`<circle cx="${x}" cy="${y}" r="8" fill="hsl(95,55%,45%)" ${DSW}/><circle cx="${x}" cy="${y}" r="3.5" fill="${DINK}"/>`:`<circle cx="${x}" cy="${y}" r="6" fill="${DINK}"/>`;
+const whisk=(n,x,y,len)=>[...Array(n)].map((_,i)=>`<path d="M${x} ${y}L${x-len} ${y+(i-(n-1)/2)*10-2}" ${DSW} fill="none"/>`).join('');
+const cheekD=(x,y)=>`<circle cx="${x}" cy="${y}" r="9" fill="hsl(345,80%,72%)" opacity=".75"/>`;
+const ANIMS={
+  nalle:{n:E('nalle','teddy bear'),f:{ear:['small','big'],earIn:[1,0],eye:['dot','big','line'],cheek:[1,0],brow:[0,1],bow:[0,1]},
+    d:p=>{const B='hsl(28,45%,50%)',L='hsl(32,55%,78%)',r=p.ear==='big'?25:18;let s=`<circle cx="-48" cy="-46" r="${r}" fill="${B}" ${DSW}/>`;
+      if(p.earIn)s+=`<circle cx="-48" cy="-46" r="${r-8}" fill="${L}"/>`;if(p.bow)s+=`<path d="M-70 -70l-14 -8v18zM-70 -70l12 -10v20z" fill="var(--berry)" ${DSW}/>`;
+      s+=`<circle cx="0" cy="0" r="60" fill="${B}" ${DSW}/>`+eyeD(p.eye,-22,-14);if(p.brow)s+=`<path d="M-32 -30l16 -4" ${DSW}/>`;if(p.cheek)s+=cheekD(-38,10);
+      return s+`<ellipse cx="0" cy="20" rx="26" ry="19" fill="${L}" ${DSW}/><ellipse cx="0" cy="9" rx="9" ry="6" fill="${DINK}"/><path d="M0 15v9q-8 8 -15 2" fill="none" ${DSW}/>`}},
+  janis:{n:E('jänis','rabbit'),f:{ear:['up','tilt','fold'],earIn:[1,0],whisk:[2,3],tooth:[1,0],eye:['dot','big'],cheek:[1,0]},
+    d:p=>{const B='hsl(30,12%,90%)',P='hsl(345,75%,80%)';let s='';
+      if(p.ear==='fold')s+=`<ellipse cx="-24" cy="-66" rx="13" ry="28" fill="${B}" ${DSW}/><ellipse cx="-44" cy="-96" rx="10" ry="22" transform="rotate(-55 -44 -96)" fill="${B}" ${DSW}/>`;
+      else{const a=p.ear==='tilt'?-28:-8;s+=`<g transform="rotate(${a} -24 -45)"><ellipse cx="-24" cy="-85" rx="14" ry="42" fill="${B}" ${DSW}/>${p.earIn?`<ellipse cx="-24" cy="-83" rx="7" ry="32" fill="${P}"/>`:''}</g>`}
+      s+=`<ellipse cx="0" cy="0" rx="56" ry="52" fill="${B}" ${DSW}/>`+eyeD(p.eye,-22,-12);if(p.cheek)s+=cheekD(-36,12);
+      s+=`<path d="M-8 6h16l-8 8z" fill="${P}" ${DSW}/><path d="M0 14v7q-7 7 -14 2" fill="none" ${DSW}/>`;if(p.tooth)s+=`<rect x="-7" y="22" width="7" height="10" fill="#fff" ${DSW}/>`;
+      return s+whisk(p.whisk,-16,16,40)}},
+  kissa:{n:E('kissa','cat'),f:{ear:['point','round','tall'],earIn:[1,0],whisk:[2,3],stripe:[1,2],eye:['oval','round','line'],cheek:[1,0]},
+    d:p=>{const B='hsl(30,85%,62%)',P='hsl(345,75%,80%)',tip=p.ear==='tall'?-96:-80;let s='';
+      s+=p.ear==='round'?`<path d="M-54 -24Q-58 -86 -40 -80Q-26 -74 -14 -50Z" fill="${B}" ${DSW}/>`:`<path d="M-54 -24L-46 ${tip}L-14 -50Z" fill="${B}" ${DSW}/>`;
+      if(p.earIn)s+=p.ear==='round'?`<path d="M-46 -34Q-48 -70 -38 -68Q-30 -64 -24 -50Z" fill="${P}"/>`:`<path d="M-46 -34L-42 ${tip+18}L-24 -50Z" fill="${P}"/>`;
+      s+=`<circle cx="0" cy="0" r="56" fill="${B}" ${DSW}/>`;for(let i=0;i<p.stripe;i++)s+=`<path d="M${-14-i*12} -54v14" ${DSW}/>`;
+      s+=eyeD(p.eye,-22,-10);if(p.cheek)s+=cheekD(-36,14);
+      return s+`<path d="M-7 8h14l-7 7z" fill="${P}" ${DSW}/><path d="M0 15v5q-6 7 -12 1" fill="none" ${DSW}/>`+whisk(p.whisk,-18,18,40)}},
+  perhonen:{n:E('perhonen','butterfly'),f:{spots:[1,2,3],spotCol:['sun','berry'],upper:['round','point'],lower:['round','tail'],ant:['curl','dot']},
+    d:p=>{const W='hsl(200,70%,62%)',sc=p.spotCol==='sun'?'var(--sun)':'var(--berry)';let s='';
+      s+=p.lower==='tail'?`<path d="M-4 10Q-60 10 -58 40Q-56 62 -30 54L-40 82L-18 50Q-6 40 -4 30Z" fill="${W}" ${DSW}/>`:`<ellipse cx="-34" cy="32" rx="30" ry="24" fill="${W}" ${DSW}/>`;
+      s+=p.upper==='point'?`<path d="M-4 0Q-40 -80 -96 -62Q-80 -10 -4 8Z" fill="${W}" ${DSW}/>`:`<ellipse cx="-48" cy="-22" rx="46" ry="34" transform="rotate(-18 -48 -22)" fill="${W}" ${DSW}/>`;
+      [[-52,-28],[-74,-16],[-34,-40]].slice(0,p.spots).forEach(([x,y])=>s+=`<circle cx="${x}" cy="${y}" r="8" fill="${sc}" ${DSW}/>`);
+      s+=`<path d="M-2 -36Q-10 -60 -24 -72" fill="none" ${DSW}/>`+(p.ant==='curl'?`<path d="M-24 -72q-8 -4 -4 -10q6 -2 6 5" fill="none" ${DSW}/>`:`<circle cx="-24" cy="-72" r="4.5" fill="${DINK}"/>`);
+      return s+`<ellipse cx="0" cy="4" rx="7" ry="42" fill="hsl(25,30%,30%)" ${DSW}/>`}}};
+const DR=104,DT=142,DH=240;
+function drawHalf(A,p,mode,id){const g=`<g transform="translate(${DR},${DT})"><g clip-path="url(#${id})">${A.d(p)}</g></g>`;
+  if(mode==='right')return `<g transform="translate(${2*DR},0) scale(-1,1)">${g}</g>`;if(mode==='shift')return `<g transform="translate(${DR},0)">${g}</g>`;return g}
+const clipL=id=>`<defs><clipPath id="${id}"><rect x="${-DR-20}" y="${-DT-20}" width="${DR+20}" height="${DH+40}"/></clipPath></defs>`;
+const axisD=x=>`<line x1="${x}" y1="4" x2="${x}" y2="${DH-4}" stroke="var(--bad)" stroke-width="3" stroke-dasharray="7 5"/>`;
+function drawMain(A,p){const id='dc'+Math.random().toString(36).slice(2,8);
+  return `<svg class="pa" viewBox="0 0 ${2*DR} ${DH}" width="${2*DR}" height="${DH}" role="img" aria-label="${A.n}">${clipL(id)}${drawHalf(A,p,'left',id)}${axisD(DR)}<text x="${DR*1.5}" y="${DT}" text-anchor="middle" style="font-size:44px;fill:var(--soft)">?</text></svg>`}
+function drawOpt(A,p,shift){const id='dc'+Math.random().toString(36).slice(2,8);
+  return `<svg class="pa" viewBox="${DR} 0 ${DR} ${DH}" width="${DR}" height="${DH}" role="img" aria-label="${A.n}">${clipL(id)}${drawHalf(A,p,shift?'shift':'right',id)}${axisD(DR)}</svg>`}
+function drawFold(A,p,badge){const id='dc'+Math.random().toString(36).slice(2,8),rr=20;
+  const b=badge?`<g class="cin" style="--d:1.8s"><circle cx="${2*DR-rr-4}" cy="${rr+4}" r="${rr}" fill="var(--good)" stroke="var(--paper)" stroke-width="3"/><path d="M${2*DR-rr-4-rr*.45} ${rr+4}l${rr*.3} ${rr*.32}l${rr*.55} ${-rr*.6}" fill="none" stroke="var(--paper)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g>`:'';
+  return `<svg class="pa" viewBox="0 0 ${2*DR} ${DH}" width="${2*DR}" height="${DH}" role="img" aria-label="${A.n}">${clipL(id)}<rect x="${DR}" y="0" width="${DR}" height="${DH}" fill="var(--bg)"/>${drawHalf(A,p,'left',id)}<g class="symV" style="transform-origin:${DR}px 0;--d:.3s"><rect x="${DR}" y="0" width="${DR}" height="${DH}" fill="var(--paper)" fill-opacity=".8"/>${drawHalf(A,p,'right',id)}</g>${axisD(DR)}${b}</svg>`}
+function drawPick(g,L,subtle,shiftOK){const k=pick(Object.keys(ANIMS)),A=ANIMS[k],F=A.f,p={};for(const f in F)p[f]=pick(F[f]);
+  const feats=shuffle(Object.keys(F)),opts=[{p,s:0}];if(shiftOK)opts.push({p,s:1});
+  const base=A.d(p);for(const f of feats){if(opts.length>=4)break;const alt=shuffle(F[f].filter(v=>v!==p[f]));for(const v of alt){const np=Object.assign({},p,{[f]:v});if(A.d(np)!==base){opts.push({p:np,s:0});break}}}
+  if(opts.length<4)return drawPick(g,L,subtle,shiftOK);
+  const ord=shuffle([0,1,2,3]);
+  return{kind:'choice',symopts:1,drawopts:1,okVis:drawFold(A,p,1),choices:ord.map(i=>[String(i),drawOpt(A,opts[i].p,opts[i].s)]),ans:'0',visual:drawMain(A,p),
+    text:plbl(E(`Mikä kuva on ${A.n==='perhonen'?'perhosen':A.n==='nalle'?'nallen':A.n==='jänis'?'jäniksen':'kissan'} oikea toinen puoli? Etsi erot!`,`Which picture is the correct other half of the ${A.n}? Spot the differences!`),''),answerText:'',
+    hint:E('<p>Vertaa yksityiskohtia: korvat, silmät, viikset, posket ja täplät. Oikean puolen pitää olla vasemman puolen peilikuva, kuin kuva taitettaisiin keskeltä.</p>','<p>Compare the details: ears, eyes, whiskers, cheeks and spots. The right half must be a mirror image of the left half, as if the picture were folded down the middle.</p>'),
+    explain:`<p>${E('Oikea puoli on vasemman puolen peilikuva:','The correct half is a mirror image of the left half:')}</p>${vis(drawFold(A,p,0))}`}}
+function symPickGen(g){return L=>{
+  if(g<=2?(L===3||(L===1&&Math.random()<.5)):(L!==2&&Math.random()<.5))return drawPick(g,L,L===3,L===1);
+  for(let t=0;t<60;t++){const sp=symSpec(g,L,'pick'),B=symBuild(sp);if(!B)continue;const V=symVariants(sp,B.given);if(!V.good)continue;
     const opts=[V.good];const add=M=>{if(M&&M.size&&!opts.some(o=>ser(o)===ser(M)))opts.push(M)};
     if(L===3&&g>=3){for(let i=0;i<10&&opts.length<4;i++)add(V.odd())}else{add(V.trans);add(V.wrong);for(let i=0;i<10&&opts.length<4;i++)add(V.odd())}
-    if(opts.length<4)continue;const ord=shuffle([0,1,2,3]),sm={W:V.rs.W,H:V.rs.H,ax:null,ay:null};
+    if(opts.length<4)continue;const ord=shuffle([0,1,2,3]),sm={W:V.rs.W,H:V.rs.H,ax:sp.ax!=null?(sp.gx===0?0:V.rs.W):null,ay:sp.ay!=null?(sp.gy===0?0:V.rs.H):null};
     return{kind:'choice',symopts:1,okVis:foldSVG(sp,B.full),choices:ord.map(i=>[String(i),symSVG(sm,opts[i],{c:22})]),ans:'0',
       visual:symSVG(sp,B.given,{q:1}),text:plbl(E('Mikä kuva on oikea toinen puoli? Katkoviiva on symmetria-akseli.','Which picture is the correct other half? The dashed line is the line of symmetry.'),''),answerText:'',
       hint:E('<p>Peilikuvassa ruudut, jotka ovat lähellä viivaa, pysyvät lähellä viivaa myös toisella puolella. Kuva kääntyy, se ei vain siirry.</p>','<p>In a mirror image, squares close to the line stay close to the line on the other side too. The picture flips over; it does not just slide across.</p>'),
@@ -1520,7 +1577,7 @@ function symIsGen(g){return L=>{const YN=[['1',E('Kyllä','Yes')],['0',E('Ei','N
     if(!yes){const k=[...B.given.keys()];for(let i=0;i<R(1,2);i++){const kk=pick(k);const[x,y]=kk.split(',').map(Number);const m=sp.ax!=null?skey(mirV(sp,x),y):skey(x,mirH(sp,y));
         if(sp.ncol>1&&Math.random()<.5){F.set(m,(F.get(kk)+1)%sp.ncol)}else F.delete(m);bad.push(m)}}
     const mark=(X,Y,c)=>bad.map(k=>{const[x,y]=k.split(',').map(Number);return `<rect class="cin" style="--d:1.6s" x="${X(x)+2}" y="${Y(y)+2}" width="${c-4}" height="${c-4}" fill="none" stroke="var(--bad)" stroke-width="3" rx="3"/>`}).join('');
-    return{kind:'choice',big:1,okVis:foldSVG(sp,F,{bad:yes?[]:bad}),choices:YN,ans:yes?'1':'0',visual:symSVG(sp,F),text:plbl(E('Onko kuvio symmetrinen katkoviivan suhteen?','Is the shape symmetrical about the dashed line?'),''),answerText:'',
+    return{kind:'choice',yn:1,okVis:foldSVG(sp,F,{bad:yes?[]:bad}),choices:YN,ans:yes?'1':'0',visual:symSVG(sp,F),text:plbl(E('Onko kuvio symmetrinen katkoviivan suhteen?','Is the shape symmetrical about the dashed line?'),''),answerText:'',
       hint:E('<p>Vertaa ruutuja viivan molemmin puolin: jokaisella ruudulla pitää olla pari yhtä kaukana viivasta toisella puolella, samanvärisenä.</p>','<p>Compare the squares on both sides of the line: each square needs a partner of the same colour, the same distance from the line on the other side.</p>'),
       explain:yes?`<p>${E('Kyllä. Puolikkaat ovat toistensa peilikuvia.','Yes. The two halves are mirror images.')}</p>${vis(symFlip(sp,B.given,B.full))}`
         :`<p>${E('Ei. Punaisella merkityt ruudut eivät vastaa toista puolta.','No. The squares marked in red do not match the other side.')}</p>${vis(symSVG(sp,F,{inner:mark}))}`}}
@@ -2910,7 +2967,7 @@ const NAV=[
       {id:'sar',n:'Suorakulmainen särmiö',f:g=>g>=5?{oid:'sarmio',levels:[['Kuutioista'],['Mitoista'],[g===5?'Puuttuva mitta':'Litroina']],gen:L=>boxGen(g)(L)}:null}]},
     {id:'sym',n:'Symmetria',types:[
       {id:'tay',n:'Täydennä kuvio',f:g=>({oid:'symtay',levels:g<=2?[['Pystysuora akseli'],['Vaakasuora akseli'],['Isompi kuvio']]:g<=4?[['Yksi väri'],['Kaksi väriä'],['Kolme väriä']]:[['Monta väriä'],['Akseli sivussa'],['Kaksi akselia']],gen:L=>symFillGen(g)(L)})},
-      {id:'val',n:'Valitse toinen puoli',f:g=>({oid:'symval',levels:g<=2?[['Pystysuora akseli'],['Vaakasuora akseli'],['Kaksi väriä']]:[['Yksi väri'],['Kaksi väriä'],['Pienet erot']],gen:L=>symPickGen(g)(L)})},
+      {id:'val',n:'Valitse toinen puoli',f:g=>({oid:'symval',levels:g<=2?[['Pystysuora akseli'],['Vaakasuora akseli'],['Piirrokset']]:[['Selvät erot'],['Kaksi väriä'],['Pienet erot']],gen:L=>symPickGen(g)(L)})},
       {id:'onko',n:'Onko symmetrinen?',f:g=>({oid:'symonko',levels:g<=2?[['Kyllä vai ei?'],['Mikä viiva on akseli?'],['Isompi kuvio']]:[['Kyllä vai ei?'],['Mikä viiva on akseli?'],['Montako akselia?']],gen:L=>symIsGen(g)(L)})}]},
     {id:'koo',n:'Koordinaatisto',types:[{id:'koo',n:'Koordinaatit',f:allG(src('koord','mit'),3)}]}]},
   {id:'tilastot',n:'Tilastot ja todennäköisyys',subs:[
@@ -2939,7 +2996,7 @@ Object.assign(TR,{'Mitat ja yksiköt':'Measures and units','Laskut':'Calculation
   'Kuvilla':'With pictures','Sanalliset':'Word problems','Jakaminen tasan':'Sharing equally','Jakokulma':'Long division','Yhteen- ja vähennyslasku':'Addition and subtraction','Kerto- ja jakolasku':'Multiplication and division',
   'Vertaile lukuja':'Compare numbers','Mikä luku puuttuu?':'Which number is missing?','Kellonajat':'Telling the time','Kolikot ja setelit':'Coins and notes','Muunnokset':'Conversions','Tunnista muodot':'Recognise shapes','Koordinaatit':'Coordinates',
   'Lue diagrammia':'Read the chart','Laske keskiarvo':'Work out the average','Pallot, pussit ja noppa':'Balls, bags and dice','Kokeile nopilla':'Experiment with dice',
-  'Plus- ja miinuspulmat':'Plus and minus puzzles','Kertopulmat':'Times puzzles','Sekaluvut':'Mixed numbers','Murtoluku ja desimaaliluku':'Fractions and decimals','Prosentit':'Percentages','Symmetria':'Symmetry','Täydennä kuvio':'Complete the shape','Valitse toinen puoli':'Choose the other half','Onko symmetrinen?':'Is it symmetrical?','Pystysuora akseli':'Vertical line','Vaakasuora akseli':'Horizontal line','Isompi kuvio':'Bigger shape','Yksi väri':'One colour','Kaksi väriä':'Two colours','Kolme väriä':'Three colours','Monta väriä':'Several colours','Akseli sivussa':'Line off-centre','Kaksi akselia':'Two lines','Pienet erot':'Small differences','Kyllä vai ei?':'Yes or no?','Mikä viiva on akseli?':'Which line is the line of symmetry?','Montako akselia?':'How many lines?','Tilavuus':'Volume','Palikkatornit':'Block towers','Suorakulmainen särmiö':'Cuboids','Pienet tornit':'Small towers','Isommat tornit':'Bigger towers','Korkeat tornit':'Tall towers','Montako puuttuu?':'How many are missing?','Kuutioista':'Made of cubes','Mitoista':'From measurements','Puuttuva mitta':'Missing measurement','Litroina':'In litres','Piiri ja pinta-ala':'Perimeter and area','Piiri':'Perimeter','Pinta-ala':'Area','Suorakulmio ja neliö':'Rectangles and squares','Monikulmio':'Polygons','Puuttuva sivu':'Missing side','Yhdistetyt kuviot':'Composite shapes','Ruutujen laskeminen':'Counting squares','Suorakulmio ruudukolla':'Rectangles on a grid','Puolikkaat ruudut':'Half squares','Kolmio':'Triangles','Sekaisin':'Mixed','Hinnat':'Prices','Murtoluku ja prosentti':'Fractions and percentages','Desimaaliluku ja murtoluku':'Decimals and fractions','Desimaaliluku ja prosentti':'Decimals and percentages','Prosentti ja desimaaliluku':'Percentages and decimals','Prosentti ja murtoluku':'Percentages and fractions','Kaikki sekaisin':'All mixed','Montako prosenttia?':'What percentage?','Prosentti luvusta':'Percentage of a number','Ruudukko':'Grid','Luvut':'Numbers','Puolet, neljäsosat ja kymmenesosat':'Halves, quarters and tenths','Muut prosentit':'Other percentages','Osa määrästä':'Part of an amount','Alennukset ja korotukset':'Discounts and price rises','Kymmenesosat ja sadasosat':'Tenths and hundredths','Tutut murtoluvut':'Familiar fractions','Haastavammat':'Harder ones','Murtoluvusta sekaluvuksi':'Fraction to mixed number','Sekaluvusta murtoluvuksi':'Mixed number to fraction','Molemmat suunnat':'Both ways','Kaikki laskut':'All operations','Enemmän ja vähemmän':'More and fewer','Kertaa ja osuudet':'Times and fractions','Mikä kuva tulee seuraavaksi?':'Which picture comes next?','Kaupan kassa':'Change at the till'});
+  'Plus- ja miinuspulmat':'Plus and minus puzzles','Kertopulmat':'Times puzzles','Sekaluvut':'Mixed numbers','Murtoluku ja desimaaliluku':'Fractions and decimals','Prosentit':'Percentages','Symmetria':'Symmetry','Täydennä kuvio':'Complete the shape','Valitse toinen puoli':'Choose the other half','Onko symmetrinen?':'Is it symmetrical?','Pystysuora akseli':'Vertical line','Vaakasuora akseli':'Horizontal line','Isompi kuvio':'Bigger shape','Yksi väri':'One colour','Kaksi väriä':'Two colours','Kolme väriä':'Three colours','Monta väriä':'Several colours','Akseli sivussa':'Line off-centre','Kaksi akselia':'Two lines','Pienet erot':'Small differences','Piirrokset':'Drawings','Selvät erot':'Clear differences','Kyllä vai ei?':'Yes or no?','Mikä viiva on akseli?':'Which line is the line of symmetry?','Montako akselia?':'How many lines?','Tilavuus':'Volume','Palikkatornit':'Block towers','Suorakulmainen särmiö':'Cuboids','Pienet tornit':'Small towers','Isommat tornit':'Bigger towers','Korkeat tornit':'Tall towers','Montako puuttuu?':'How many are missing?','Kuutioista':'Made of cubes','Mitoista':'From measurements','Puuttuva mitta':'Missing measurement','Litroina':'In litres','Piiri ja pinta-ala':'Perimeter and area','Piiri':'Perimeter','Pinta-ala':'Area','Suorakulmio ja neliö':'Rectangles and squares','Monikulmio':'Polygons','Puuttuva sivu':'Missing side','Yhdistetyt kuviot':'Composite shapes','Ruutujen laskeminen':'Counting squares','Suorakulmio ruudukolla':'Rectangles on a grid','Puolikkaat ruudut':'Half squares','Kolmio':'Triangles','Sekaisin':'Mixed','Hinnat':'Prices','Murtoluku ja prosentti':'Fractions and percentages','Desimaaliluku ja murtoluku':'Decimals and fractions','Desimaaliluku ja prosentti':'Decimals and percentages','Prosentti ja desimaaliluku':'Percentages and decimals','Prosentti ja murtoluku':'Percentages and fractions','Kaikki sekaisin':'All mixed','Montako prosenttia?':'What percentage?','Prosentti luvusta':'Percentage of a number','Ruudukko':'Grid','Luvut':'Numbers','Puolet, neljäsosat ja kymmenesosat':'Halves, quarters and tenths','Muut prosentit':'Other percentages','Osa määrästä':'Part of an amount','Alennukset ja korotukset':'Discounts and price rises','Kymmenesosat ja sadasosat':'Tenths and hundredths','Tutut murtoluvut':'Familiar fractions','Haastavammat':'Harder ones','Murtoluvusta sekaluvuksi':'Fraction to mixed number','Sekaluvusta murtoluvuksi':'Mixed number to fraction','Molemmat suunnat':'Both ways','Kaikki laskut':'All operations','Enemmän ja vähemmän':'More and fewer','Kertaa ja osuudet':'Times and fractions','Mikä kuva tulee seuraavaksi?':'Which picture comes next?','Kaupan kassa':'Change at the till'});
 const andJoin=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+E(' ja ',' and ')+a[a.length-1];
 
 let RND=null;
@@ -2998,7 +3055,7 @@ function answerHTML(){
     </tbody></table></div>`}
   if(P.steps||P.inline||P.kind==='multi')return '';
   if(P.kind==='sym')return P.ncol>1?`<div class="sympal" role="group" aria-label="${E('Väri','Colour')}">${[...Array(P.ncol).keys()].map(i=>`<button type="button" data-symcol="${i}" aria-pressed="${i===P.cur}" aria-label="${SYN[i]}" style="background:${SYC[i]}"></button>`).join('')}</div>`:'';
-  if(P.kind==='choice')return `<div class="choices${P.big?' big':''}${P.symopts?' symopts':''}${P.pics?' pics':''}${P.chartopts?' charts':''}" role="group" aria-label="${E('Vastausvaihtoehdot','Answer options')}">${P.choices.map(([v,l])=>`<button type="button" class="choice" data-choice="${v}">${l}</button>`).join('')}</div>`;
+  if(P.kind==='choice')return `<div class="choices${P.big?' big':''}${P.yn?' yn':''}${P.symopts?' symopts':''}${P.drawopts?' drawopts':''}${P.pics?' pics':''}${P.chartopts?' charts':''}" role="group" aria-label="${E('Vastausvaihtoehdot','Answer options')}">${P.choices.map(([v,l])=>`<button type="button" class="choice" data-choice="${v}">${l}</button>`).join('')}</div>`;
   if(P.kind==='coord')return `<div class="answer coordans"><span class="unit">(</span><input class="num tb" id="cx" inputmode="none" autocomplete="off" aria-label="${E('x-koordinaatti','x-coordinate')}"><span class="unit">,</span><input class="num tb" id="cy" inputmode="none" autocomplete="off" aria-label="${E('y-koordinaatti','y-coordinate')}"><span class="unit">)</span></div>`;
   if(P.ldiv){const st=ldivSteps(P.dvd,P.dvs),n=String(P.dvd).length;
     return `<div class="calc-wrap"><table class="ldv" aria-label="${E('Jakolasku allekkain','Division in columns')}"><tbody><tr><td class="sg"></td>${String(P.dvd).split('').map(d=>`<td>${d}</td>`).join('')}<td class="ex">: ${P.dvs} = <span class="answer ldans"><input class="num" id="ans" inputmode="none" autocomplete="off" aria-label="${E('Osamäärä','Quotient')}"></span></td></tr>
