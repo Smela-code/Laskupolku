@@ -1758,11 +1758,11 @@ function walk(sp,steps,stopRock=true){let[x,y]=sp.start;const path=[[x,y]];for(c
 function robSize(g){return g<=2?[5,5]:g<=4?[6,6]:[7,6]}
 function traceGen(g){return L=>{const[W,H]=robSize(g),DS=['N','E','S','W'];
   for(let t=0;t<500;t++){const sp={W,H,start:[R(0,W-1),R(0,H-1)]};let pr=[];
-    if(L===1){const n=g<=2?R(3,4):R(4,6);for(let i=0;i<n;i++)pr.push({d:pick(DS),n:1})}
-    else if(L===2){const n=g<=2?R(2,3):R(3,4);let last='';for(let i=0;i<n;i++){let d;do d=pick(DS);while(d===last);last=d;pr.push({d,n:R(1,g<=2?3:4)})}}
+    const OPP={N:'S',S:'N',E:'W',W:'E'};if(L===1){const n=g<=2?R(4,5):R(5,7);let last='';for(let i=0;i<n;i++){let d;do d=pick(DS);while(d===OPP[last]);last=d;pr.push({d,n:1})}}
+    else if(L===2){const n=g<=2?R(3,4):R(3,5);let last='';for(let i=0;i<n;i++){let d;do d=pick(DS);while(d===last||d===OPP[last]);last=d;pr.push({d,n:R(g<=2?1:2,g<=2?3:4)})}}
     else{const k=R(2,g<=2?3:4),b1=pick(DS);let b2;do b2=pick(DS);while(b2===b1||RDIR[b2][0]===-RDIR[b1][0]&&RDIR[b2][1]===-RDIR[b1][1]);
       pr=[{loop:k,body:[{d:b1,n:1},{d:b2,n:g<=2?1:R(1,2)}]}];if(g>=3&&Math.random()<.6)pr[Math.random()<.5?'push':'unshift']({d:pick(DS),n:R(1,2)})}
-    const steps=flatProg(pr),r=walk(sp,steps);if(!r.end||steps.length<3)continue;if(r.end[0]===sp.start[0]&&r.end[1]===sp.start[1])continue;
+    const steps=flatProg(pr),r=walk(sp,steps);if(!r.end||steps.length<3)continue;if(new Set(r.path.map(q=>q+'')).size!==r.path.length)continue;if(r.end[0]===sp.start[0]&&r.end[1]===sp.start[1])continue;
     const alt=[];const add=st=>{const q=walk(sp,st);if(q.end&&!(q.end[0]===sp.start[0]&&q.end[1]===sp.start[1])&&![r.end,...alt].some(a=>a[0]===q.end[0]&&a[1]===q.end[1]))alt.push(q.end)};
     const swapEW=steps.map(d=>d==='E'?'W':d==='W'?'E':d),swapNS=steps.map(d=>d==='N'?'S':d==='S'?'N':d);add(swapEW);add(swapNS);add(steps.slice(0,-1));
     if(pr[0].loop||pr[pr.length-1].loop){const pr2=pr.map(it=>it.loop?{...it,loop:it.loop-1}:it);add(flatProg(pr2))}
