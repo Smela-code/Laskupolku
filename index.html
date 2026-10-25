@@ -1781,9 +1781,14 @@ function bfs(sp,needKey){const k=(x,y,h)=>x+','+y+','+h;const st=[[...sp.start,n
 function progGen(g){return L=>{const[W,H]=robSize(g);
   for(let t=0;t<500;t++){const cells=shuffle([...Array(W*H).keys()].map(i=>[i%W,Math.floor(i/W)]));const sp={W,H,start:cells[0],star:cells[1],rocks:[]};
     const md=Math.abs(sp.start[0]-sp.star[0])+Math.abs(sp.start[1]-sp.star[1]);if(md<(g<=2?3:4))continue;
-    if(L>=2){const nr=g<=2?R(2,3):R(3,6);sp.rocks=cells.slice(2,2+nr)}
-    if(L===3){sp.key=cells[2+sp.rocks.length]}
-    const sol=bfs(sp,L===3);if(!sol)continue;if(L>=2&&sol.length<=md&&L===2&&Math.random()<.7)continue;if(sol.length>(g<=2?8:12))continue;
+    if(L===3){sp.key=cells[2]}
+    const inRect=(c,a,b)=>c[0]>=Math.min(a[0],b[0])&&c[0]<=Math.max(a[0],b[0])&&c[1]>=Math.min(a[1],b[1])&&c[1]<=Math.max(a[1],b[1]);
+    const free=c=>!(c+''===sp.start+''||c+''===sp.star+''||(sp.key&&c+''===sp.key+''));
+    if(L>=2){const segs=L===3?[[sp.start,sp.key],[sp.key,sp.star]]:[[sp.start,sp.star]],nr=g<=2?R(2,3):R(3,6),rk=[];
+      for(const[a,b]of segs){const cand=shuffle(cells.filter(c=>free(c)&&inRect(c,a,b)&&!rk.some(r=>r+''===c+'')));const k=Math.min(cand.length,R(1,g<=2?2:3));rk.push(...cand.slice(0,k))}
+      if(!rk.length)continue;rk.push(...cells.filter(c=>free(c)&&!rk.some(r=>r+''===c+'')).slice(0,Math.max(0,nr-rk.length)));sp.rocks=rk}
+    const sol=bfs(sp,L===3);if(!sol)continue;if(sol.length>(g<=2?9:13))continue;
+    if(L===2){const need=Math.random()<.8;if(need!==(sol.length>md))continue}
     if(L===3){const direct=bfs({...sp,key:null},false);if(direct&&direct.length===sol.length)continue}
     return{kind:'prog',sp,sol,prog:[],showOk:0,visual:`<div class="robwrap">${robSVG(sp,{id:1})}${compassSVG()}</div>`,
       text:plbl(L===3?E('Ohjelmoi robotti hakemaan ensin avain ja sitten tähti. Robotti ei pääse kivien läpi.','Program the robot to fetch the key first and then the star. The robot cannot go through rocks.'):L===2?E('Ohjelmoi robotti tähden luo. Robotti ei pääse kivien läpi.','Program the robot to reach the star. The robot cannot go through rocks.'):E('Ohjelmoi robotti tähden luo.','Program the robot to reach the star.'),''),
