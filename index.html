@@ -1871,7 +1871,7 @@ const NLPLACE={1:[{a:0,b:10,M:5,m:1,snap:1},{a:0,b:20,M:10,m:1,snap:1},{a:0,b:20
   6:[{a:0,b:10,M:5,m:1,tol:.2,dec:1},{a:0,b:4,M:1,m:0,tol:.1,fr:[3,4,5,6,8]},{a:-2,b:2,M:1,m:.5,tol:.06,dec:2}]};
 function nlTargetTxt(sp,t){if(sp.fr){const f=nlFmt(t,sp.fdn);return f.w&&f.w!=='0'?mixed(f.w,f.n,f.d):frac(f.n,f.d)}return (t<0?'−':'')+(sp.dec?String(+Math.abs(t).toFixed(sp.dec)).replace('.',','):fmtInt(Math.abs(t)))}
 function nlPlaceGen(g){return L=>{const sp={...NLPLACE[g][L-1]};let t;
-  for(let k=0;k<200;k++){if(sp.fr){const d=pick(sp.fr),n=R(1,Math.round(sp.b*d)-1);if(n%d===0)continue;sp.fdn=d;t=n/d}
+  for(let k=0;k<200;k++){if(sp.fr){const d=pick(sp.fr),n=R(1,Math.round(sp.b*d)-1);if(n%d===0||gcd(n%d,d)!==1)continue;sp.fdn=d;t=n/d}
     else if(sp.dec){const u=10**sp.dec;t=R(Math.round(sp.a*u)+1,Math.round(sp.b*u)-1)/u;if(Math.abs(t*u)%(sp.m*u)<1e-9)continue}
     else{const st=sp.st||1;t=R(Math.ceil(sp.a/st)+1,Math.floor(sp.b/st)-1)*st;if(sp.m&&!sp.snap&&t%sp.m===0)continue;if(t===0&&sp.a<0)continue}
     if(Math.abs(t-sp.a)<(sp.b-sp.a)*.04||Math.abs(t-sp.b)<(sp.b-sp.a)*.04)continue;break}
