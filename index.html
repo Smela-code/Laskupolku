@@ -319,6 +319,7 @@ table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;f
 .choice{min-width:76px;min-height:58px;padding:6px 18px;border-radius:14px;border:3px solid var(--line);background:var(--paper);color:var(--ink);font:800 1.3rem var(--display);cursor:pointer;touch-action:manipulation}
 .choices.big .choice{font-size:2.2rem;min-width:84px}
 .choices.yn .choice{font-size:1.2rem;min-width:96px;min-height:48px}
+.choice[aria-pressed=true]{border-color:var(--blue);background:var(--chip);box-shadow:0 0 0 2px var(--blue)}
 .choice.ok{border-color:var(--good);background:var(--good-bg)}
 .choice.no{border-color:var(--bad);background:var(--bad-bg)}
 .mixlbl{margin:0;align-self:flex-start;font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
@@ -1537,7 +1538,7 @@ function drawPick(g,L,subtle,shiftOK){const k=pick(Object.keys(ANIMS)),A=ANIMS[k
   const base=A.d(p);for(const f of feats){if(opts.length>=4)break;const alt=shuffle(F[f].filter(v=>v!==p[f]));for(const v of alt){const np=Object.assign({},p,{[f]:v});if(A.d(np)!==base){opts.push({p:np,s:0});break}}}
   if(opts.length<4)return drawPick(g,L,subtle,shiftOK);
   const ord=shuffle([0,1,2,3]);
-  return{kind:'choice',symopts:1,drawopts:1,okVis:drawFold(A,p,1),choices:ord.map(i=>[String(i),drawOpt(A,opts[i].p,opts[i].s)]),ans:'0',visual:drawMain(A,p),
+  return{kind:'choice',confirm:1,symopts:1,drawopts:1,okVis:drawFold(A,p,1),choices:ord.map(i=>[String(i),drawOpt(A,opts[i].p,opts[i].s)]),ans:'0',visual:drawMain(A,p),
     text:plbl(E(`Mikä kuva on ${A.n==='perhonen'?'perhosen':A.n==='nalle'?'nallen':A.n==='jänis'?'jäniksen':'kissan'} oikea toinen puoli? Etsi erot!`,`Which picture is the correct other half of the ${A.n}? Spot the differences!`),''),answerText:'',
     hint:E('<p>Vertaa yksityiskohtia: korvat, silmät, viikset, posket ja täplät. Oikean puolen pitää olla vasemman puolen peilikuva, kuin kuva taitettaisiin keskeltä.</p>','<p>Compare the details: ears, eyes, whiskers, cheeks and spots. The right half must be a mirror image of the left half, as if the picture were folded down the middle.</p>'),
     explain:`<p>${E('Oikea puoli on vasemman puolen peilikuva:','The correct half is a mirror image of the left half:')}</p>${vis(drawFold(A,p,0))}`}}
@@ -1547,7 +1548,7 @@ function symPickGen(g){return L=>{
     const opts=[V.good];const add=M=>{if(M&&M.size&&!opts.some(o=>ser(o)===ser(M)))opts.push(M)};
     if(L===3&&g>=3){for(let i=0;i<10&&opts.length<4;i++)add(V.odd())}else{add(V.trans);add(V.wrong);for(let i=0;i<10&&opts.length<4;i++)add(V.odd())}
     if(opts.length<4)continue;const ord=shuffle([0,1,2,3]),sm={W:V.rs.W,H:V.rs.H,ax:sp.ax!=null?(sp.gx===0?0:V.rs.W):null,ay:sp.ay!=null?(sp.gy===0?0:V.rs.H):null};
-    return{kind:'choice',symopts:1,okVis:foldSVG(sp,B.full),choices:ord.map(i=>[String(i),symSVG(sm,opts[i],{c:22})]),ans:'0',
+    return{kind:'choice',confirm:1,symopts:1,okVis:foldSVG(sp,B.full),choices:ord.map(i=>[String(i),symSVG(sm,opts[i],{c:22})]),ans:'0',
       visual:symSVG(sp,B.given,{q:1}),text:plbl(E('Mikä kuva on oikea toinen puoli? Katkoviiva on symmetria-akseli.','Which picture is the correct other half? The dashed line is the line of symmetry.'),''),answerText:'',
       hint:E('<p>Peilikuvassa ruudut, jotka ovat lähellä viivaa, pysyvät lähellä viivaa myös toisella puolella. Kuva kääntyy, se ei vain siirry.</p>','<p>In a mirror image, squares close to the line stay close to the line on the other side too. The picture flips over; it does not just slide across.</p>'),
       explain:`<p>${E('Kuvio taittuu akselin yli kuin paperi.','The shape folds over the line like paper.')}</p>${vis(symFlip(sp,B.given,B.full))}`}}
@@ -1574,7 +1575,7 @@ function symIsGen(g){return L=>{const YN=[['1',E('Kyllä','Yes')],['0',E('Ei','N
       const symAbout=(a)=>{for(const[k,v]of B.full){const[x,y]=k.split(',').map(Number);const m=a.ax!=null?skey(2*a.ax-1-x,y):skey(x,2*a.ay-1-y);if(B.full.get(m)!==v)return false}return true};
       const ws=shuffle(wrongs).filter(a=>!symAbout(a)).slice(0,2);if(ws.length<2)continue;
       const opts=[{ax:sp.ax,ay:sp.ay},...ws],ord=shuffle([0,1,2]);
-      return{kind:'choice',symopts:1,okChoice:foldSVG(sp,B.full,{c:18}),choices:ord.map(i=>[String(i),symSVG(Object.assign({},sp,opts[i]),B.full,{c:18})]),ans:'0',visual:null,
+      return{kind:'choice',confirm:1,symopts:1,okChoice:foldSVG(sp,B.full,{c:18}),choices:ord.map(i=>[String(i),symSVG(Object.assign({},sp,opts[i]),B.full,{c:18})]),ans:'0',visual:null,
         text:plbl(E('Missä kuvassa katkoviiva on symmetria-akseli?','In which picture is the dashed line a line of symmetry?'),''),answerText:'',
         hint:E('<p>Kuvittele taittavasi kuvan katkoviivaa pitkin. Osuvatko kaikki väritetyt ruudut toistensa päälle?</p>','<p>Imagine folding the picture along the dashed line. Do all the coloured squares land on top of each other?</p>'),
         explain:`<p>${E('Tässä kuvassa puolikkaat ovat toistensa peilikuvia:','In this picture the two halves are mirror images:')}</p>${vis(symFlip(sp,B.given,B.full))}`}}
@@ -1582,7 +1583,7 @@ function symIsGen(g){return L=>{const YN=[['1',E('Kyllä','Yes')],['0',E('Ei','N
     if(!yes){const k=[...B.given.keys()];for(let i=0;i<R(1,2);i++){const kk=pick(k);const[x,y]=kk.split(',').map(Number);const m=sp.ax!=null?skey(mirV(sp,x),y):skey(x,mirH(sp,y));
         if(sp.ncol>1&&Math.random()<.5){F.set(m,(F.get(kk)+1)%sp.ncol)}else F.delete(m);bad.push(m)}}
     const mark=(X,Y,c)=>bad.map(k=>{const[x,y]=k.split(',').map(Number);return `<rect class="cin" style="--d:1.6s" x="${X(x)+2}" y="${Y(y)+2}" width="${c-4}" height="${c-4}" fill="none" stroke="var(--bad)" stroke-width="3" rx="3"/>`}).join('');
-    return{kind:'choice',yn:1,okVis:foldSVG(sp,F,{bad:yes?[]:bad}),choices:YN,ans:yes?'1':'0',visual:symSVG(sp,F),text:plbl(E('Onko kuvio symmetrinen katkoviivan suhteen?','Is the shape symmetrical about the dashed line?'),''),answerText:'',
+    return{kind:'choice',confirm:1,yn:1,okVis:foldSVG(sp,F,{bad:yes?[]:bad}),choices:YN,ans:yes?'1':'0',visual:symSVG(sp,F),text:plbl(E('Onko kuvio symmetrinen katkoviivan suhteen?','Is the shape symmetrical about the dashed line?'),''),answerText:'',
       hint:E('<p>Vertaa ruutuja viivan molemmin puolin: jokaisella ruudulla pitää olla pari yhtä kaukana viivasta toisella puolella, samanvärisenä.</p>','<p>Compare the squares on both sides of the line: each square needs a partner of the same colour, the same distance from the line on the other side.</p>'),
       explain:yes?`<p>${E('Kyllä. Puolikkaat ovat toistensa peilikuvia.','Yes. The two halves are mirror images.')}</p>${vis(symFlip(sp,B.given,B.full))}`
         :`<p>${E('Ei. Punaisella merkityt ruudut eivät vastaa toista puolta.','No. The squares marked in red do not match the other side.')}</p>${vis(symSVG(sp,F,{inner:mark}))}`}}
@@ -2971,9 +2972,9 @@ const NAV=[
       {id:'tor',n:'Palikkatornit',f:g=>({oid:'palikat',levels:g<=2?[['Pienet tornit'],['Isommat tornit'],['Korkeat tornit']]:[['Pienet tornit'],['Isommat tornit'],['Montako puuttuu?']],gen:L=>towerGen(g)(L)})},
       {id:'sar',n:'Suorakulmainen särmiö',f:g=>g>=5?{oid:'sarmio',levels:[['Kuutioista'],['Mitoista'],[g===5?'Puuttuva mitta':'Litroina']],gen:L=>boxGen(g)(L)}:null}]},
     {id:'sym',n:'Symmetria',types:[
-      {id:'tay',n:'Täydennä kuvio',f:g=>({oid:'symtay',levels:g<=2?[['Pystysuora akseli'],['Vaakasuora akseli'],['Isompi kuvio']]:g<=4?[['Yksi väri'],['Kaksi väriä'],['Kolme väriä']]:[['Monta väriä'],['Akseli sivussa'],['Kaksi akselia']],gen:L=>symFillGen(g)(L)})},
+      {id:'onko',n:'Onko symmetrinen?',f:g=>({oid:'symonko',levels:g<=2?[['Kyllä vai ei?'],['Mikä viiva on akseli?'],['Isompi kuvio']]:[['Kyllä vai ei?'],['Mikä viiva on akseli?'],['Montako akselia?']],gen:L=>symIsGen(g)(L)})},
       {id:'val',n:'Valitse toinen puoli',f:g=>({oid:'symval',levels:g<=2?[['Pystysuora akseli'],['Vaakasuora akseli'],['Piirrokset']]:[['Selvät erot'],['Kaksi väriä'],['Pienet erot']],gen:L=>symPickGen(g)(L)})},
-      {id:'onko',n:'Onko symmetrinen?',f:g=>({oid:'symonko',levels:g<=2?[['Kyllä vai ei?'],['Mikä viiva on akseli?'],['Isompi kuvio']]:[['Kyllä vai ei?'],['Mikä viiva on akseli?'],['Montako akselia?']],gen:L=>symIsGen(g)(L)})}]},
+      {id:'tay',n:'Täydennä kuvio',f:g=>({oid:'symtay',levels:g<=2?[['Pystysuora akseli'],['Vaakasuora akseli'],['Isompi kuvio']]:g<=4?[['Yksi väri'],['Kaksi väriä'],['Kolme väriä']]:[['Monta väriä'],['Akseli sivussa'],['Kaksi akselia']],gen:L=>symFillGen(g)(L)})}]},
     {id:'koo',n:'Koordinaatisto',types:[{id:'koo',n:'Koordinaatit',f:allG(src('koord','mit'),3)}]}]},
   {id:'tilastot',n:'Tilastot ja todennäköisyys',subs:[
     {id:'dia',n:'Diagrammit',types:[{id:'dia',n:'Lue diagrammia',f:allG(src('diagrammit','stat'))}]},
@@ -3099,7 +3100,7 @@ function draw(){const t=cur(),pr=prog();const IA=inlineAns();
     ${IA?'':answerHTML()}
     ${(kp=>`<div class="kpwrap${kp?' side':''}">${kp}`)(keypad())}
     <div class="actions">
-      <button type="button" class="btn" id="check"${P.kind==='choice'?' hidden':''}>${E('Tarkista','Check')}</button>
+      <button type="button" class="btn" id="check">${E('Tarkista','Check')}</button>
       <button type="button" class="btn ghost" id="hintBtn">${E('Vihje','Hint')}</button>
       ${padOK()?`<button type="button" class="btn ghost" id="padBtn" aria-expanded="false">${E('Ruutupaperi','Squared paper')}</button>`:''}
       <button type="button" class="btn ghost" id="skip">${E('Seuraava','Next')}</button>
@@ -3167,7 +3168,7 @@ function confetti(){if(window.matchMedia('(prefers-reduced-motion: reduce)').mat
     h+=`<i style="left:${x}%;--dx:${dx}px;--rot:${R(360,1080)}deg;animation-duration:${d}ms;animation-delay:${dl}ms;width:${w}px;height:${r?w:w*1.8}px;border-radius:${r?'50%':'2px'};background:var(${pick(cols)})"></i>`}
   box.innerHTML=h;document.body.appendChild(box);setTimeout(()=>box.remove(),3500)}
 function check(){if(done)return;const r=evaluate(),pr=prog();
-  if(r.empty){fb(E('Kirjoita ensin vastaus.','Write your answer first.'),'info');return}
+  if(r.empty){fb(P.kind==='choice'?E('Valitse ensin vaihtoehto.','Choose an option first.'):E('Kirjoita ensin vastaus.','Write your answer first.'),'info');return}
   if(r.bad){fb(r.bad,'info');return}
   if(r.ok){done=true;S.stars++;const td=today();S.days[td]=(S.days[td]||0)+1;pr.streak++;pr.fails=0;let msg=pick(PRAISE)+E(' Sait tähden.',' You got a star.');
     if(pr.streak>=3&&pr.level<3){pr.level++;pr.streak=0;msg+=E(` Siirryt tasolle ${pr.level}.`,` You move up to level ${pr.level}.`)}
@@ -3240,7 +3241,7 @@ document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#cg
   else if(b.dataset.pick!=null){if(done)return;b.setAttribute('aria-pressed',String(b.getAttribute('aria-pressed')!=='true'));b.classList.remove('ok','no')}
   else if(b.dataset.sim){simRun(+b.dataset.sim);return}
   else if(b.dataset.simreset){SIM.counts={};SIM.n=0;SIM.cap=25;SIM.mode=null;SIM.batches=0;simUpdate();simBtns();return}
-  else if(b.dataset.choice!=null){if(done)return;P.sel=b.dataset.choice;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));check()}
+  else if(b.dataset.choice!=null){if(done)return;P.sel=b.dataset.choice;document.querySelectorAll('.choice').forEach(x=>{x.setAttribute('aria-pressed',String(x===b));x.classList.remove('ok','no')});$('#fb').hidden=true}
   else if(b.dataset.key)pressKey(b.dataset.key);
   else if(b.id==='check')check();
   else if(b.id==='padBtn'){const pd=$('#pad');pd.hidden=!pd.hidden;b.setAttribute('aria-expanded',String(!pd.hidden));b.textContent=pd.hidden?E('Ruutupaperi','Squared paper'):E('Piilota ruudut','Hide squares');if(!pd.hidden){const f=pd.querySelector('tr:nth-child(2) .sq');if(f){activeEl=f;f.focus({preventScroll:true})}}return}
