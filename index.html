@@ -1627,7 +1627,7 @@ function outfitTree(cats){const tot=cats.reduce((a,c)=>a*c.n,1),collapse=tot>16,
 const ASUK=['paita','housut','kengat','hattu','lasit'];
 function pickCats(nc,maxP,minEach=2){for(let t=0;t<300;t++){let ks=nc===2?['paita',pick(['housut','kengat','hattu'])]:shuffle(ASUK).slice(0,nc);ks=ASUK.filter(k=>ks.includes(k));
     const cats=ks.map(k=>({k,n:k==='lasit'?2:R(minEach,nc>=4&&maxP<=48?3:4),cols:shuffle(k==='lasit'?GCOL.slice(0,6).concat([GCOL[7]]):GCOL)}));const P=cats.reduce((a,c)=>a*c.n,1);if(P<=maxP)return cats}return[{k:'paita',n:2,cols:GCOL},{k:'housut',n:2,cols:shuffle(GCOL)}]}
-function asuGen(g){return L=>{if(g>=3&&L===3)return tarveGen(g)(g<=4?R(1,2):R(2,3));const K=pick(KIDS);const cfg={1:[[2,6],[2,9],[3,8]],2:[[2,9],[2,12],[3,12]],3:[[2,12],[3,24]],4:[[2,16],[3,24]],5:[[3,64],[4,96]],6:[[3,64],[5,96]]}[g][L-1];
+function asuGen(g){return L=>{if(g>=3&&L===3)return tarveGen(g)(g<=4?R(1,2):R(2,3));const K=pick(KIDS);const cfg={1:[[2,6],[2,9],[3,8]],2:[[2,9],[2,12],[3,12]],3:[[2,16],[3,36]],4:[[2,16],[3,36]],5:[[3,64],[4,96]],6:[[3,64],[5,96]]}[g][L-1];
   const cats=pickCats(cfg[0],cfg[1]),tot=cats.reduce((a,c)=>a*c.n,1),list=cats.map(c=>`${c.n} ${c.n===1?GARM[c.k].n:GARM[c.k].p}`);
   const lst=EN?list.slice(0,-1).join(', ')+' and '+list[list.length-1]:list.slice(0,-1).join(', ')+' ja '+list[list.length-1];
   const prod=cats.map(c=>c.n).join(' · ');
