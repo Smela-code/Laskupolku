@@ -284,6 +284,8 @@ table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;f
 .progshow{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:4px 0 8px}
 .pchipc{display:inline-flex;align-items:center;gap:3px;padding:4px 8px;border-radius:10px;background:var(--chip);border:2px solid var(--line);font:800 1rem var(--display);white-space:nowrap}
 .pchipc b{font-size:1.15rem;color:var(--blue)}
+.progshow .pchipc,.expr .progshow{font-size:1rem}
+.expr .progshow{margin:6px 0}
 .pchipc i{font-style:normal;background:var(--blue);color:var(--on-blue);border-radius:6px;padding:0 5px;font-size:.85rem}
 .ploop{display:inline-flex;flex-wrap:wrap;align-items:center;gap:5px;padding:6px 8px;border:2px dashed var(--sun);border-radius:12px;background:var(--sun-bg)}
 .plt{font-weight:800;font-size:.85rem}
@@ -1738,7 +1740,8 @@ function robSVG(sp,o={}){const W=sp.W,H=sp.H;let s='';for(let y=0;y<H;y++)for(le
     const e=o.path[o.path.length-1];s+=`<g class="cin" style="--d:${(o.path.length*.35).toFixed(1)}s">${roboG(...e)}</g>`;s+=`<g opacity=".35">${roboG(...o.path[0])}</g>`}
   else s+=roboG(...sp.start,o.id?'robo':'');
   const w=W*RC+2*RM,h=H*RC+2*RM;return `<svg class="pa rob" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="${E('Robotti ruudukossa','Robot on a grid')}">${s}</svg>`}
-const cmdChip=(d,n)=>`<span class="pchipc"><b>${RARR[d]}</b>${n>1?`<i>${n}</i>`:''}${RLAB[d]}</span>`;
+const miniComp=d=>`<svg class="mcomp" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="var(--paper)" stroke="var(--line)" stroke-width="1.6"/><circle cx="12" cy="2.6" r="1.6" fill="var(--bad)"/><g transform="rotate(${{N:0,E:90,S:180,W:270}[d]} 12 12)"><path d="M12 4.5l4.8 6.5h-3v7.5h-3.6V11h-3z" fill="var(--blue)"/></g></svg>`;
+const cmdChip=(d,n)=>`<span class="pchipc">${miniComp(d)}${n>1?`<i>${n}</i>`:''}${RLAB[d]}</span>`;
 function progHTML(pr){return pr.map(it=>it.loop?`<span class="ploop"><span class="plt">${E('Toista','Repeat')} ${it.loop} ×</span>${it.body.map(b=>cmdChip(b.d,b.n)).join('')}</span>`:cmdChip(it.d,it.n)).join('')}
 const flatProg=pr=>pr.flatMap(it=>it.loop?[...Array(it.loop)].flatMap(()=>it.body.flatMap(b=>Array(b.n).fill(b.d))):Array(it.n).fill(it.d));
 function walk(sp,steps,stopRock=true){let[x,y]=sp.start;const path=[[x,y]];for(const d of steps){const nx=x+RDIR[d][0],ny=y+RDIR[d][1];if(nx<0||ny<0||nx>=sp.W||ny>=sp.H)return{path,out:1};if(stopRock&&(sp.rocks||[]).some(r=>r[0]===nx&&r[1]===ny))return{path,rock:1,at:[nx,ny]};x=nx;y=ny;path.push([x,y])}return{path,end:[x,y]}}
@@ -1756,7 +1759,7 @@ function traceGen(g){return L=>{const[W,H]=robSize(g),DS=['N','E','S','W'];
     for(let i=0;i<20&&alt.length<3;i++){const st=[...steps];st[R(0,st.length-1)]=pick(DS);add(st)}
     if(alt.length<3)continue;const cand=shuffle([r.end,...alt.slice(0,3)]),Ls=['A','B','C','D'],ans=Ls[cand.findIndex(c=>c===r.end)];
     return{kind:'choice',confirm:1,big:0,choices:Ls.map(l=>[l,l]),ans,visual:`<div class="robwrap">${robSVG(sp,{letters:cand.map((c,i)=>[c[0],c[1],Ls[i]])})}${compassSVG()}</div>`,
-      text:plbl(E('Robotti suorittaa ohjelman. Mihin kirjaimeen se päätyy?','The robot runs the program. Which letter does it end up on?'),''),after:`<div class="progshow">${progHTML(pr)}</div>`,answerText:'',
+      text:`<span class="bg" style="display:block;font-size:.55em">${E('Robotti suorittaa seuraavat komennot:','The robot carries out these commands:')}</span><div class="progshow">${progHTML(pr)}</div><span class="bg" style="display:block;font-size:.55em">${E('Mihin kirjaimeen se päätyy?','Which letter does it end up on?')}</span>`,answerText:'',
       okVis:robSVG(sp,{path:r.path,letters:cand.map((c,i)=>[c[0],c[1],Ls[i]]).filter(c=>!(c[0]===r.end[0]&&c[1]===r.end[1]))}),
       hint:E(`<p>Kompassin suunnat: ${RLAB.N} = pohjoinen (ylös), ${RLAB.E} = itä (oikealle), ${RLAB.S} = etelä (alas), ${RLAB.W} = länsi (vasemmalle).</p><p>Kuljeta sormella robottia ruutu kerrallaan.${L===3?' Toista-laatikon komennot tehdään niin monta kertaa kuin laatikossa lukee.':L===2?' Pieni numero kertoo, montako askelta mennään samaan suuntaan.':''}</p>`,
         `<p>Compass directions: ${RLAB.N} = north (up), ${RLAB.E} = east (right), ${RLAB.S} = south (down), ${RLAB.W} = west (left).</p><p>Move the robot with your finger one square at a time.${L===3?' The commands in the Repeat box are done as many times as the box says.':L===2?' The small number tells you how many steps to go in the same direction.':''}</p>`),
