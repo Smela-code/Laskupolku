@@ -1258,7 +1258,7 @@ function addHalves(sh,k){const out=[],used=new Set();
     out.push(tri)}return out}
 const nf=x=>Number.isInteger(x)?fmtInt(x):pcf(x);
 function polySVG(pts,labels,o={}){const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]),mnx=Math.min(...xs),mny=Math.min(...ys),W=Math.max(...xs)-mnx,H=Math.max(...ys)-mny;
-  const k=o.k||Math.min(240/W,190/H,o.kmax||40),kx=o.grid||o.k?k:Math.max(k,48/W),ky=o.grid||o.k?k:Math.max(k,48/H),m=40,X=x=>m+(x-mnx)*kx,Y=y=>m+(y-mny)*ky,n=pts.length;
+  const k=o.k||Math.min(220/W,190/H,o.kmax||40),kx=o.grid||o.k?k:Math.max(k,48/W),ky=o.grid||o.k?k:Math.max(k,48/H),m=56,X=x=>m+(x-mnx)*kx,Y=y=>m+(y-mny)*ky,n=pts.length;
   const cx=pts.reduce((s,p)=>s+X(p[0]),0)/n,cy=pts.reduce((s,p)=>s+Y(p[1]),0)/n;
   const inside=(px,py)=>{let c=false;for(let i=0,j=n-1;i<n;j=i++){const xi=X(pts[i][0]),yi=Y(pts[i][1]),xj=X(pts[j][0]),yj=Y(pts[j][1]);if(((yi>py)!==(yj>py))&&px<(xj-xi)*(py-yi)/(yj-yi)+xi)c=!c}return c};
   let g='',l='',a='';
@@ -2078,7 +2078,7 @@ function holeUI(){const B=(m,ic,lab)=>`<button type="button" class="hbtn" data-h
   return `<div class="hmoves">${P.moves.includes('roll')?B('roll','⟳',E('Kierrä','Spin')):''}${P.moves.includes('yaw')?B('yaw','↔',E('Käännä sivulle','Turn sideways')):''}${P.moves.includes('pitch')?B('pitch','↕',E('Kallista','Tip over')):''}</div>`}
 function holeEval(){if(P.running)return{wait:1};const ok=holeFit(pcProj(P.pc),P.hole).ok;if(!P.ran){holeAnim(ok,()=>{P.ran=true;check();P.ran=false;if(!done)setTimeout(holeRender,300)});return{wait:1}}
   P.holeMsg=ok?'':E('Torni osui seinään ja hajosi! Punaiset palikat eivät mahtuneet aukkoon. Käännä tornia ja kokeile uudelleen.','The tower hit the wall and broke! The red blocks did not fit the hole. Turn the tower and try again.');return{ok}}
-function rectiShape(L,g){for(let t=0;t<300;t++){const sh=L===1?polyo(2,2,3):polyo(3,3,R(4,6));const loop=bloop(sh);const mx=g<=4?9:14;
+function rectiShape(L,g){for(let t=0;t<300;t++){const sh=L===1?polyo(2,2,3):polyo(3,3,R(4,6));{let slot=false;for(let y=0;y<sh.H;y++)for(let x=0;x<sh.W;x++)if(!sh.has(x,y)&&((sh.has(x-1,y)&&sh.has(x+1,y))||(sh.has(x,y-1)&&sh.has(x,y+1))))slot=true;if(slot)continue}const loop=bloop(sh);const mx=g<=4?9:14;
     const cw=[...Array(sh.W+1)].map(()=>R(3,mx)),rh=[...Array(sh.H+1)].map(()=>R(3,mx));const px=[0],py=[0];cw.forEach((w,i)=>px.push(px[i]+w));rh.forEach((h,i)=>py.push(py[i]+h));
     let pts=loop.map(([gx,gy])=>[px[gx],py[gy]]);pts=pts.filter((p,i)=>{const a=pts[(i-1+pts.length)%pts.length],b=pts[(i+1)%pts.length];return!((a[0]===p[0]&&p[0]===b[0])||(a[1]===p[1]&&p[1]===b[1]))});
     if(pts.length<6||(L>1&&pts.length<8&&Math.random()<.7))continue;
