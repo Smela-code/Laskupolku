@@ -1456,13 +1456,15 @@ function foldSVG(sp,F,o={}){const c=o.c||30,m=14,X=x=>m+x*c,Y=y=>m+y*c;
   const sub=f=>new Map([...F].filter(([k])=>{const[x,y]=k.split(',').map(Number);return!inGiven(sp,x,y)&&f(x,y)}));
   const gV=(M,d)=>`<g class="symV" style="transform-origin:${X(sp.ax)}px 0;--d:${d}s">${M}</g>`,gH=(M,d)=>`<g class="symH" style="transform-origin:0 ${Y(sp.ay)}px;--d:${d}s">${M}</g>`;
   const two=sp.ax!=null&&sp.ay!=null,gx=sp.gx||0,gy=sp.gy||0,isR=x=>gx===0?x>=sp.ax:x<sp.ax,isB=y=>gy===0?y>=sp.ay:y<sp.ay;let mv;
-  if(two)mv=gV(RR(sub((x,y)=>isR(x)&&!isB(y))),.3)+gH(RR(sub((x,y)=>!isR(x)&&isB(y)))+gV(RR(sub((x,y)=>isR(x)&&isB(y))),.3),1.7);
-  else if(sp.ax!=null)mv=gV(RR(sub(()=>true)),.3);else mv=gH(RR(sub(()=>true)),.3);
+  const flap=f=>{let t='';for(let y=0;y<sp.H;y++)for(let x=0;x<sp.W;x++)if(!inGiven(sp,x,y)&&f(x,y))t+=`<rect x="${X(x)}" y="${Y(y)}" width="${c}" height="${c}" fill="var(--paper)" fill-opacity=".8" stroke="var(--line)" stroke-width="1"/>`;return t+RR(sub(f))};
+  if(two)mv=gV(flap((x,y)=>isR(x)&&!isB(y)),.3)+gH(flap((x,y)=>!isR(x)&&isB(y))+gV(flap((x,y)=>isR(x)&&isB(y)),.3),1.7);
+  else if(sp.ax!=null)mv=gV(flap(()=>true),.3);else mv=gH(flap(()=>true),.3);
   const T=two?3:1.8,x0=sp.ax!=null?(gx===0?0:sp.ax):0,x1=sp.ax!=null?(gx===0?sp.ax:sp.W):sp.W,y0=sp.ay!=null?(gy===0?0:sp.ay):0,y1=sp.ay!=null?(gy===0?sp.ay:sp.H):sp.H;
   const rr=Math.min(24,c*.8),bx=X(sp.W)-rr*.6,by=Y(0)+rr*.6;
   const bad=(o.bad||[]).map(k=>{const[x,y]=k.split(',').map(Number);const mx=sp.ax!=null?2*sp.ax-1-x:x,my=sp.ay!=null?2*sp.ay-1-y:y;return `<rect class="cin" style="--d:${T}s" x="${X(mx)+2}" y="${Y(my)+2}" width="${c-4}" height="${c-4}" rx="3" fill="none" stroke="var(--bad)" stroke-width="3"/>`}).join('');
   const badge=o.bad&&o.bad.length?'':`<g class="cin" style="--d:${T}s"><circle cx="${bx}" cy="${by}" r="${rr}" fill="var(--good)" stroke="var(--paper)" stroke-width="3"/><path d="M${bx-rr*.45} ${by}l${rr*.3} ${rr*.32}l${rr*.55} ${-rr*.6}" fill="none" stroke="var(--paper)" stroke-width="${Math.max(3,rr*.18)}" stroke-linecap="round" stroke-linejoin="round"/></g>`;
-  return symSVG(sp,F,{c,lines:()=>mv+bad+badge})}
+  const G=new Map([...F].filter(([k])=>{const[x,y]=k.split(',').map(Number);return inGiven(sp,x,y)}));
+  return symSVG(sp,G,{c,shade:1,lines:()=>mv+bad+badge})}
 function symFillGen(g){return L=>{let sp,B;for(let t=0;t<20&&!B;t++){sp=symSpec(g,L,'fill');B=symBuild(sp)}
   const exp=new Map([...B.full].filter(([k])=>{const[x,y]=k.split(',').map(Number);return!inGiven(sp,x,y)}));
   return{kind:'sym',okFold:()=>foldSVG(sp,new Map([...B.given,...P.st])),failMsg:E('Puuttuvat ruudut näkyvät nyt vihreällä reunuksella.','The missing squares are now shown with a green border.'),sp,full:exp,ncol:sp.ncol,cur:0,st:new Map(),visual:symSVG(sp,B.given,{edit:1,id:'symg',shade:1}),
