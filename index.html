@@ -320,6 +320,8 @@ table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;f
 @media (prefers-reduced-motion:reduce){.nlroll{animation:none;transform:translateX(var(--dx))}.nf.E{animation:none;transform:rotateY(90deg)}.nf.W{animation:none;transform:rotateY(-90deg)}.nf.N{animation:none;transform:rotateX(90deg)}.nf.S{animation:none;transform:rotateX(-90deg)}.n3cube{animation:none;transform:rotateX(-28deg) rotateY(-38deg)}.vbeam,.vpan{transition:none}}
 .choices.netopts{display:grid;grid-template-columns:repeat(2,minmax(0,150px));gap:10px;justify-content:center}
 .choices.netopts .choice{padding:8px;display:grid;place-items:center}
+.hwrap{display:flex;flex-direction:column;align-items:center;gap:4px}
+#hbox{touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
 .holewrap{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap}
 .hpanel{display:flex;flex-direction:column;align-items:center;gap:4px}
 .hcap{font-size:.8rem;font-weight:800;color:var(--soft);text-align:center;max-width:220px}
@@ -2023,12 +2025,11 @@ function polycube(n,flat){for(let t=0;t<200;t++){const S=new Set(['1,1,1']),cl=[
     const c=pcNorm(cl);if(!flat){const ext=[0,1,2].map(i=>Math.max(...c.map(p=>p[i])));if(ext.filter(e=>e>0).length<3)continue}return c}return pcNorm([[0,0,0],[0,1,0],[0,1,1],[0,2,1]])}
 function holeFit(sil,hole){const hk=new Set(hole.map(p=>p.join(',')));const HW=Math.max(...hole.map(p=>p[0]));let best=null;
   for(let dy=-3;dy<=HW;dy++){const sh=sil.map(([y,z])=>[y+dy,z]),inn=sh.filter(p=>hk.has(p.join(','))).length;if(!best||inn>best.inn||(inn===best.inn&&Math.abs(dy)<Math.abs(best.dy)))best={inn,sh,dy}}return{ok:best.inn===sil.length,sh:best.sh,dy:best.dy}}
-const HTH=.62,HPH=.52,HWX=4;
-function holeCubesSVG(cubes,box,o={}){const cs=Math.cos(HTH),sn=Math.sin(HTH),cp=Math.cos(HPH),sp=Math.sin(HPH);
+const HTH=.62,HPH=.52,HWX=6;
+function holeCubesSVG(cubes,box,o={}){const th=(P&&P.hth!=null)?P.hth:HTH,ph=(P&&P.hph!=null)?P.hph:HPH,cs=Math.cos(th),sn=Math.sin(th),cp=Math.cos(ph),sp=Math.sin(ph);
   const P3=(x,y,z)=>{const X=x*cs-y*sn,Y=x*sn+y*cs;return[X,-z*cp-Y*sp,Y*cp-z*sp]};
-  const corners=[];for(const x of[box[0],box[1]])for(const y of[box[2],box[3]])for(const z of[0,box[4]])corners.push(P3(x,y,z));
-  const minU=Math.min(...corners.map(c=>c[0])),maxU=Math.max(...corners.map(c=>c[0])),minV=Math.min(...corners.map(c=>c[1])),maxV=Math.max(...corners.map(c=>c[1]));
-  const W=330,s=Math.min((W-20)/(maxU-minU),230/(maxV-minV)),H=(maxV-minV)*s+20,ox=10-minU*s+((W-20)-(maxU-minU)*s)/2,oy=10-minV*s;
+  const RR=Math.hypot(box[1]-box[0],box[3]-box[2],box[4])/2,c0=P3((box[0]+box[1])/2,(box[2]+box[3])/2,box[4]/2);
+  const W=340,s=(W-16)/(2*RR),H=Math.round(2*RR*s*.82+16),ox=W/2-c0[0]*s,oy=H/2-c0[1]*s;
   const pt=a=>a.map(([x,y,z])=>{const p=P3(x,y,z);return(ox+p[0]*s).toFixed(1)+','+(oy+p[1]*s).toFixed(1)}).join(' ');
   let out=`<polygon points="${pt([[box[0],box[2],0],[box[1],box[2],0],[box[1],box[3],0],[box[0],box[3],0]])}" fill="var(--plate)" stroke="var(--line)" stroke-width="1.5"/>`;
   if(o.arrow){const[a0,a1,ay]=o.arrow;out+=`<polygon points="${pt([[a0,ay-.18,0],[a1-.55,ay-.18,0],[a1-.55,ay-.42,0],[a1,ay,0],[a1-.55,ay+.42,0],[a1-.55,ay+.18,0],[a0,ay+.18,0]])}" fill="var(--sun)" stroke="var(--ink)" stroke-width="1.2" stroke-linejoin="round"/>`}
@@ -2045,9 +2046,13 @@ function holeWall(hole){const hk=new Set(hole.map(p=>p.join(',')));const HY=Math
   for(let y=-1;y<=HY+1;y++)for(let z=0;z<=HZ+1;z++)if(!hk.has(y+','+z))w.push({x:HWX,y,z,hue:22,sat:45,wall:1});return w}
 function holeScene(pc,dx,o={}){const f=holeFit(pcProj(pc),P.hole),my=Math.min(...pc.map(p=>p[1]));const hy=f.dy-my;const tw=pc.map(([x,y,z])=>({x:x+dx,y:y+hy,z,front:1}));
   const HY=Math.max(...P.hole.map(p=>p[0])),HZ=Math.max(...P.hole.map(p=>p[1]));const ys=[-1,HY+2,...tw.map(c=>c.y),...tw.map(c=>c.y+1)];
-  const box=[-.5,HWX+5,Math.min(...ys)-.3,Math.max(...ys)+.3,Math.max(HZ+2,...pc.map(p=>p[2]+1))];
+  const box=[-.3,HWX+4.3,Math.min(...ys)-.3,Math.max(...ys)+.3,Math.max(HZ+2,...pc.map(p=>p[2]+1))];
   const mx=Math.max(...tw.map(c=>c.x))+1;if(!o.cubes&&dx===0)o.arrow=[mx+.15,HWX-.15,(Math.min(...tw.map(c=>c.y))+Math.max(...tw.map(c=>c.y))+1)/2];
   return holeCubesSVG([...holeWall(P.hole),...(o.cubes||tw)],box,o)}
+let HDR=null;
+document.addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest('#hbox');if(!b||!P||P.kind!=='turn'||P.running)return;HDR={id:e.pointerId,x:e.clientX,y:e.clientY,th:P.hth??HTH,ph:P.hph??HPH};try{b.setPointerCapture(e.pointerId)}catch(_){}});
+document.addEventListener('pointermove',e=>{if(!HDR||e.pointerId!==HDR.id||!P||P.kind!=='turn')return;P.hth=HDR.th+(e.clientX-HDR.x)*.012;P.hph=Math.max(.15,Math.min(1.3,HDR.ph+(e.clientY-HDR.y)*.01));holeRender()});
+['pointerup','pointercancel'].forEach(t=>document.addEventListener(t,e=>{if(HDR&&e.pointerId===HDR.id)HDR=null}));
 function holeRender(){const b=$('#hbox');if(b)b.innerHTML=holeScene(P.pc,0)}
 function holeAnim(ok,cb){const pc=P.pc,maxX=Math.max(...pc.map(p=>p[0])),red=window.matchMedia('(prefers-reduced-motion: reduce)').matches;P.running=true;const b=$('#hbox');
   const hit=HWX-(maxX+1),end=HWX+2,T0=performance.now(),dur=ok?1700:900*Math.max(.4,hit/4);
@@ -2063,7 +2068,7 @@ function holeGen(g){return L=>{const moves=L===1?['roll']:L===2?['roll','yaw']:[
     if(hole.length===c.length&&L>1&&Math.random()<.6)continue;
     let st=c;for(let i=0;i<R(1,3);i++)st=pcNorm(st.map(PCROT[pick(moves)]));if(holeFit(pcProj(st),hole).ok)continue;if(Math.max(...hole.map(p=>p[0]))>4)continue;
     const Q={hole};const prevP=P;P=Q;const vis=holeScene(st,0),ex=holeScene(tg,HWX+2,{badge:1});P=prevP;
-    return{kind:'turn',pc:st,hole,moves,tg,answerText:'',visual:`<div id="hbox">${vis}</div>`,
+    return{kind:'turn',pc:st,hole,moves,tg,answerText:'',visual:`<div class="hwrap"><div id="hbox">${vis}</div><span class="hcap">${E('Pyöritä näkymää sormella','Drag to turn the view')}</span></div>`,
       text:plbl(E('Käännä torni niin, että se mahtuu seinän aukosta, kun se liukuu nuolen suuntaan.','Turn the tower so that it fits through the hole in the wall when it slides in the direction of the arrow.'),''),
       failMsg:E('Oikea asento näkyy alla kohdassa Näin se lasketaan.','The right position is shown below.'),
       hint:E('<p>Kuvittele katsovasi tornia seinän aukon läpi, eli nuolen suunnasta vastaan. Miltä tornin ääriviiva näyttää sieltä katsottuna? Sen pitää mahtua aukon muotoon.</p><p>Kokeile napeilla: kierrä tornia tai käännä sitä.</p>','<p>Imagine looking at the tower through the hole in the wall, against the arrow. What does the tower’s outline look like from there? It must fit the shape of the hole.</p><p>Try the buttons: spin the tower or turn it.</p>'),
