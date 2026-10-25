@@ -279,6 +279,21 @@ table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;f
 .ljc{font:800 1.15rem var(--display);white-space:nowrap}
 .choices.ljopts{display:grid;grid-template-columns:repeat(2,minmax(0,170px));gap:10px;justify-content:center}
 .choices.ljopts .choice{padding:8px 6px}
+.robwrap{display:flex;align-items:flex-start;gap:8px;justify-content:center;flex-wrap:wrap}
+.comp text{font:800 13px var(--display);fill:var(--ink)}
+.progshow{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:4px 0 8px}
+.pchipc{display:inline-flex;align-items:center;gap:3px;padding:4px 8px;border-radius:10px;background:var(--chip);border:2px solid var(--line);font:800 1rem var(--display);white-space:nowrap}
+.pchipc b{font-size:1.15rem;color:var(--blue)}
+.pchipc i{font-style:normal;background:var(--blue);color:var(--on-blue);border-radius:6px;padding:0 5px;font-size:.85rem}
+.ploop{display:inline-flex;flex-wrap:wrap;align-items:center;gap:5px;padding:6px 8px;border:2px dashed var(--sun);border-radius:12px;background:var(--sun-bg)}
+.plt{font-weight:800;font-size:.85rem}
+.progui{display:grid;gap:10px;justify-items:center}
+.pstrip{display:flex;gap:5px;overflow-x:auto;min-height:44px;align-items:center;padding:4px 8px;border:2px solid var(--line);border-radius:12px;background:var(--paper);width:min(100%,360px)}
+.pempty{color:var(--soft);font-size:.85rem}
+.pcross{display:grid;grid-template-columns:repeat(3,60px);gap:6px}
+.pdir{height:52px;border-radius:12px;border:2px solid var(--line);background:var(--chip);font:800 1rem var(--display);color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;touch-action:manipulation}
+.pdir b{font-size:1.3rem;color:var(--blue)}
+.pdel,.pclr{background:var(--paper)}
 .pacap{margin:0;font-weight:800;color:var(--soft);width:100%;text-align:center}
 .panel.explain{border-color:var(--good)}
 .clock{width:150px;height:150px;display:block}
@@ -1707,6 +1722,81 @@ function ljWordGen(g){return L=>{const K=pick(KIDS);for(let t=0;t<300;t++){const
       hint:`<p>${E('Kirjoita tehtävästä yksi lasku ja laske se laskujärjestyksen mukaan.','Write the problem as one calculation and work it out using the order of operations.')}</p>${LJRULE}`,
       explain:`<p>${E('Lasku','Calculation')}: <b>${ljFmt(ljTok(s))}</b></p>${ljSteps(sol)}`}}
   return ljGen(g)(1)}}
+const RDIR={N:[0,-1],E:[1,0],S:[0,1],W:[-1,0]},RLAB=E({N:'P',E:'I',S:'E',W:'L'},{N:'N',E:'E',S:'S',W:'W'}),RNAME=E({N:'pohjoinen',E:'itä',S:'etelä',W:'länsi'},{N:'north',E:'east',S:'south',W:'west'}),RARR={N:'↑',E:'→',S:'↓',W:'←'};
+const RC=40,RM=12;const rX=x=>RM+x*RC+RC/2;
+const roboG=(x,y,id)=>`<g${id?` id="${id}"`:''} class="robo" style="transform:translate(${rX(x)}px,${rX(y)}px)"><line x1="0" y1="-14" x2="0" y2="-19" stroke="var(--ink)" stroke-width="2"/><circle cx="0" cy="-20" r="2.6" fill="var(--bad)"/><rect x="-13" y="-14" width="26" height="22" rx="6" fill="var(--blk)" stroke="var(--ink)" stroke-width="2"/><circle cx="-5" cy="-4" r="3.4" fill="#fff"/><circle cx="5" cy="-4" r="3.4" fill="#fff"/><circle cx="-5" cy="-4" r="1.6" fill="var(--ink)"/><circle cx="5" cy="-4" r="1.6" fill="var(--ink)"/><path d="M-5 3h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/><rect x="-9" y="8" width="18" height="7" rx="2" fill="var(--blk2)" stroke="var(--ink)" stroke-width="1.6"/></g>`;
+const starG=(x,y,lock)=>`<g transform="translate(${rX(x)},${rX(y)})"><path d="M0 -15l4.4 9 9.9 1.4-7.2 7 1.7 9.8L0 7.6l-8.8 4.6 1.7-9.8-7.2-7 9.9-1.4z" fill="var(--sun)" stroke="var(--ink)" stroke-width="1.8" stroke-linejoin="round" class="starp"${lock?' opacity=".45"':''}/>${lock?'<g class="slock"><rect x="-5" y="-2" width="10" height="8" rx="1.5" fill="var(--ink)"/><path d="M-3 -2v-3a3 3 0 0 1 6 0v3" fill="none" stroke="var(--ink)" stroke-width="1.8"/></g>':''}</g>`;
+const rockG=(x,y)=>`<g transform="translate(${rX(x)},${rX(y)})"><path d="M-15 11q-3-9 3-15 5-8 13-5 9 1 12 9 3 7-2 11z" fill="hsl(25,10%,55%)" stroke="var(--ink)" stroke-width="1.8" stroke-linejoin="round"/><path d="M-6-4q4-3 8-1" fill="none" stroke="#fff" stroke-width="1.5" opacity=".5"/></g>`;
+const keyG=(x,y)=>`<g class="keyg" transform="translate(${rX(x)},${rX(y)}) rotate(-30)"><circle cx="-7" cy="0" r="6" fill="none" stroke="hsl(42,90%,45%)" stroke-width="4"/><path d="M-1 0h15M10 0v5M14 0v4" fill="none" stroke="hsl(42,90%,45%)" stroke-width="4" stroke-linecap="round"/></g>`;
+function compassSVG(){const L=RLAB;return `<svg class="pa comp" viewBox="0 0 90 90" width="90" height="90" role="img" aria-label="${E('Kompassi','Compass')}"><circle cx="45" cy="45" r="30" fill="var(--paper)" stroke="var(--line)" stroke-width="2"/><path d="M45 18l6 27h-12z" fill="var(--bad)"/><path d="M45 72l6-27h-12z" fill="var(--soft)"/><text x="45" y="12" text-anchor="middle">${L.N}</text><text x="45" y="88" text-anchor="middle">${L.S}</text><text x="83" y="50" text-anchor="middle">${L.E}</text><text x="7" y="50" text-anchor="middle">${L.W}</text></svg>`}
+function robSVG(sp,o={}){const W=sp.W,H=sp.H;let s='';for(let y=0;y<H;y++)for(let x=0;x<W;x++)s+=`<rect x="${RM+x*RC}" y="${RM+y*RC}" width="${RC}" height="${RC}" fill="${(x+y)%2?'var(--paper)':'var(--bg)'}" stroke="var(--line)"/>`;
+  (sp.rocks||[]).forEach(([x,y])=>s+=rockG(x,y));if(sp.key&&!o.noKey)s+=keyG(...sp.key);if(sp.star)s+=starG(...sp.star,sp.key&&!o.noKey);
+  (o.letters||[]).forEach(([x,y,t])=>s+=`<g transform="translate(${rX(x)},${rX(y)})"><circle r="13" fill="var(--paper)" stroke="var(--blue)" stroke-width="2.5"/><text y="5" text-anchor="middle" style="font-size:15px;fill:var(--blue)">${t}</text></g>`);
+  if(o.path){const pts=o.path.map(([x,y])=>rX(x)+','+rX(y)).join(' ');let L=0;for(let i=1;i<o.path.length;i++)L+=RC*(Math.abs(o.path[i][0]-o.path[i-1][0])+Math.abs(o.path[i][1]-o.path[i-1][1]));
+    s+=`<polyline class="trace" style="--L:${L};--t:${(o.path.length*.35).toFixed(1)}s" points="${pts}" fill="none" stroke="var(--sun)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>`;
+    o.path.slice(1).forEach(([x,y],i)=>s+=`<circle class="cin" style="--d:${((i+1)*.35).toFixed(2)}s" cx="${rX(x)}" cy="${rX(y)}" r="4" fill="var(--ink)"/>`);
+    const e=o.path[o.path.length-1];s+=`<g class="cin" style="--d:${(o.path.length*.35).toFixed(1)}s">${roboG(...e)}</g>`;s+=`<g opacity=".35">${roboG(...o.path[0])}</g>`}
+  else s+=roboG(...sp.start,o.id?'robo':'');
+  const w=W*RC+2*RM,h=H*RC+2*RM;return `<svg class="pa rob" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="${E('Robotti ruudukossa','Robot on a grid')}">${s}</svg>`}
+const cmdChip=(d,n)=>`<span class="pchipc"><b>${RARR[d]}</b>${n>1?`<i>${n}</i>`:''}${RLAB[d]}</span>`;
+function progHTML(pr){return pr.map(it=>it.loop?`<span class="ploop"><span class="plt">${E('Toista','Repeat')} ${it.loop} ×</span>${it.body.map(b=>cmdChip(b.d,b.n)).join('')}</span>`:cmdChip(it.d,it.n)).join('')}
+const flatProg=pr=>pr.flatMap(it=>it.loop?[...Array(it.loop)].flatMap(()=>it.body.flatMap(b=>Array(b.n).fill(b.d))):Array(it.n).fill(it.d));
+function walk(sp,steps,stopRock=true){let[x,y]=sp.start;const path=[[x,y]];for(const d of steps){const nx=x+RDIR[d][0],ny=y+RDIR[d][1];if(nx<0||ny<0||nx>=sp.W||ny>=sp.H)return{path,out:1};if(stopRock&&(sp.rocks||[]).some(r=>r[0]===nx&&r[1]===ny))return{path,rock:1,at:[nx,ny]};x=nx;y=ny;path.push([x,y])}return{path,end:[x,y]}}
+function robSize(g){return g<=2?[5,5]:g<=4?[6,6]:[7,6]}
+function traceGen(g){return L=>{const[W,H]=robSize(g),DS=['N','E','S','W'];
+  for(let t=0;t<500;t++){const sp={W,H,start:[R(0,W-1),R(0,H-1)]};let pr=[];
+    if(L===1){const n=g<=2?R(3,4):R(4,6);for(let i=0;i<n;i++)pr.push({d:pick(DS),n:1})}
+    else if(L===2){const n=g<=2?R(2,3):R(3,4);let last='';for(let i=0;i<n;i++){let d;do d=pick(DS);while(d===last);last=d;pr.push({d,n:R(1,g<=2?3:4)})}}
+    else{const k=R(2,g<=2?3:4),b1=pick(DS);let b2;do b2=pick(DS);while(b2===b1||RDIR[b2][0]===-RDIR[b1][0]&&RDIR[b2][1]===-RDIR[b1][1]);
+      pr=[{loop:k,body:[{d:b1,n:1},{d:b2,n:g<=2?1:R(1,2)}]}];if(g>=3&&Math.random()<.6)pr[Math.random()<.5?'push':'unshift']({d:pick(DS),n:R(1,2)})}
+    const steps=flatProg(pr),r=walk(sp,steps);if(!r.end||steps.length<3)continue;if(r.end[0]===sp.start[0]&&r.end[1]===sp.start[1])continue;
+    const alt=[];const add=st=>{const q=walk(sp,st);if(q.end&&!(q.end[0]===sp.start[0]&&q.end[1]===sp.start[1])&&![r.end,...alt].some(a=>a[0]===q.end[0]&&a[1]===q.end[1]))alt.push(q.end)};
+    const swapEW=steps.map(d=>d==='E'?'W':d==='W'?'E':d),swapNS=steps.map(d=>d==='N'?'S':d==='S'?'N':d);add(swapEW);add(swapNS);add(steps.slice(0,-1));
+    if(pr[0].loop||pr[pr.length-1].loop){const pr2=pr.map(it=>it.loop?{...it,loop:it.loop-1}:it);add(flatProg(pr2))}
+    for(let i=0;i<20&&alt.length<3;i++){const st=[...steps];st[R(0,st.length-1)]=pick(DS);add(st)}
+    if(alt.length<3)continue;const cand=shuffle([r.end,...alt.slice(0,3)]),Ls=['A','B','C','D'],ans=Ls[cand.findIndex(c=>c===r.end)];
+    return{kind:'choice',confirm:1,big:0,choices:Ls.map(l=>[l,l]),ans,visual:`<div class="robwrap">${robSVG(sp,{letters:cand.map((c,i)=>[c[0],c[1],Ls[i]])})}${compassSVG()}</div>`,
+      text:plbl(E('Robotti suorittaa ohjelman. Mihin kirjaimeen se päätyy?','The robot runs the program. Which letter does it end up on?'),''),after:`<div class="progshow">${progHTML(pr)}</div>`,answerText:'',
+      okVis:robSVG(sp,{path:r.path,letters:cand.map((c,i)=>[c[0],c[1],Ls[i]]).filter(c=>!(c[0]===r.end[0]&&c[1]===r.end[1]))}),
+      hint:E(`<p>Kompassin suunnat: ${RLAB.N} = pohjoinen (ylös), ${RLAB.E} = itä (oikealle), ${RLAB.S} = etelä (alas), ${RLAB.W} = länsi (vasemmalle).</p><p>Kuljeta sormella robottia ruutu kerrallaan.${L===3?' Toista-laatikon komennot tehdään niin monta kertaa kuin laatikossa lukee.':L===2?' Pieni numero kertoo, montako askelta mennään samaan suuntaan.':''}</p>`,
+        `<p>Compass directions: ${RLAB.N} = north (up), ${RLAB.E} = east (right), ${RLAB.S} = south (down), ${RLAB.W} = west (left).</p><p>Move the robot with your finger one square at a time.${L===3?' The commands in the Repeat box are done as many times as the box says.':L===2?' The small number tells you how many steps to go in the same direction.':''}</p>`),
+      explain:`<p>${E('Robotin reitti:','The robot’s route:')} ${steps.map(d=>RLAB[d]).join(' ')}</p>${vis(robSVG(sp,{path:r.path}))}`}}
+  return traceGen(g)(1)}}
+function bfs(sp,needKey){const k=(x,y,h)=>x+','+y+','+h;const st=[[...sp.start,needKey?0:1,[]]],seen=new Set([k(...sp.start,needKey?0:1)]);
+  while(st.length){const[x,y,h,p]=st.shift();if(h&&x===sp.star[0]&&y===sp.star[1])return p;for(const d of['N','E','S','W']){const nx=x+RDIR[d][0],ny=y+RDIR[d][1];if(nx<0||ny<0||nx>=sp.W||ny>=sp.H||(sp.rocks||[]).some(r=>r[0]===nx&&r[1]===ny))continue;
+    const nh=h||(sp.key&&nx===sp.key[0]&&ny===sp.key[1])?1:0;if(seen.has(k(nx,ny,nh)))continue;seen.add(k(nx,ny,nh));st.push([nx,ny,nh,[...p,d]])}}return null}
+function progGen(g){return L=>{const[W,H]=robSize(g);
+  for(let t=0;t<500;t++){const cells=shuffle([...Array(W*H).keys()].map(i=>[i%W,Math.floor(i/W)]));const sp={W,H,start:cells[0],star:cells[1],rocks:[]};
+    const md=Math.abs(sp.start[0]-sp.star[0])+Math.abs(sp.start[1]-sp.star[1]);if(md<(g<=2?3:4))continue;
+    if(L>=2){const nr=g<=2?R(2,3):R(3,6);sp.rocks=cells.slice(2,2+nr)}
+    if(L===3){sp.key=cells[2+sp.rocks.length]}
+    const sol=bfs(sp,L===3);if(!sol)continue;if(L>=2&&sol.length<=md&&L===2&&Math.random()<.7)continue;if(sol.length>(g<=2?8:12))continue;
+    if(L===3){const direct=bfs({...sp,key:null},false);if(direct&&direct.length===sol.length)continue}
+    return{kind:'prog',sp,sol,prog:[],showOk:0,visual:`<div class="robwrap">${robSVG(sp,{id:1})}${compassSVG()}</div>`,
+      text:plbl(L===3?E('Ohjelmoi robotti hakemaan ensin avain ja sitten tähti. Robotti ei pääse kivien läpi.','Program the robot to fetch the key first and then the star. The robot cannot go through rocks.'):L===2?E('Ohjelmoi robotti tähden luo. Robotti ei pääse kivien läpi.','Program the robot to reach the star. The robot cannot go through rocks.'):E('Ohjelmoi robotti tähden luo.','Program the robot to reach the star.'),''),
+      answerText:sol.map(d=>RLAB[d]).join(' '),failMsg:E(`Yksi toimiva ohjelma on: ${sol.map(d=>RLAB[d]).join(' ')}`,`One program that works is: ${sol.map(d=>RLAB[d]).join(' ')}`),
+      hint:E(`<p>Kompassin suunnat: ${RLAB.N} = pohjoinen (ylös), ${RLAB.E} = itä (oikealle), ${RLAB.S} = etelä (alas), ${RLAB.W} = länsi (vasemmalle).</p><p>Katso ensin, montako ruutua tähti on robotista sivulle ja ylös tai alas.${L>=2?' Kierrä kivet.':''}</p><p>Kun painat Tarkista, robotti kulkee ohjelmasi.</p>`,`<p>Compass directions: ${RLAB.N} = north (up), ${RLAB.E} = east (right), ${RLAB.S} = south (down), ${RLAB.W} = west (left).</p><p>First look at how many squares the star is from the robot sideways and up or down.${L>=2?' Go around the rocks.':''}</p><p>When you press Check, the robot follows your program.</p>`),
+      explain:`<p>${E('Yksi toimiva ohjelma:','One program that works:')}</p><div class="progshow">${progHTML(sol.map(d=>({d,n:1})))}</div>${vis(robSVG(sp,{path:walk(sp,sol).path,noKey:false}))}`}}
+  return traceGen(g)(1)}}
+function progRender(){const s=$('#pstrip');if(!s)return;s.innerHTML=P.prog.length?P.prog.map(d=>cmdChip(d,1)).join(''):`<span class="pempty">${E('Napauta suuntia lisätäksesi komentoja','Tap the directions to add commands')}</span>`;s.scrollLeft=s.scrollWidth}
+function progUI(){const b=d=>`<button type="button" class="pdir" data-pcmd="${d}" aria-label="${RNAME[d]}"><b>${RARR[d]}</b>${RLAB[d]}</button>`;
+  return `<div class="progui"><div class="pstrip" id="pstrip"><span class="pempty">${E('Napauta suuntia lisätäksesi komentoja','Tap the directions to add commands')}</span></div><div class="pcross">${'<span></span>'+b('N')+'<span></span>'+b('W')+`<button type="button" class="pdir pdel" data-pdel="1" aria-label="${E('Poista viimeinen','Delete last')}">⌫</button>`+b('E')+'<span></span>'+b('S')+`<button type="button" class="pdir pclr" data-pclr="1" aria-label="${E('Tyhjennä','Clear')}">✕</button>`}</div></div>`}
+function progRun(done_){const sp=P.sp,el=document.getElementById('robo');P.running=true;let[x,y]=sp.start,hasKey=!sp.key,i=0;const steps=P.prog;const red=window.matchMedia('(prefers-reduced-motion: reduce)').matches,T=red?60:380;
+  if(el){el.style.transition='none';el.style.transform=`translate(${rX(x)}px,${rX(y)}px)`;void el.getBoundingClientRect();el.style.transition=`transform ${T*.85}ms ease-in-out`}
+  const fin=(ok,msg)=>{P.running=false;P.runRes={ok,msg};done_()};
+  const step=()=>{if(i>=steps.length){const ok=hasKey&&x===sp.star[0]&&y===sp.star[1];fin(ok,ok?'':x===sp.star[0]&&y===sp.star[1]&&!hasKey?E('Robotti pääsi tähdelle, mutta avain jäi hakematta.','The robot reached the star but did not fetch the key.'):E('Robotti ei päätynyt tähdelle.','The robot did not end up on the star.'));return}
+    const d=steps[i++],nx=x+RDIR[d][0],ny=y+RDIR[d][1];const bump=nx<0||ny<0||nx>=sp.W||ny>=sp.H||(sp.rocks||[]).some(r=>r[0]===nx&&r[1]===ny);
+    if(bump){if(el){el.style.transform=`translate(${rX(x)+RDIR[d][0]*12}px,${rX(y)+RDIR[d][1]*12}px)`;setTimeout(()=>{el.style.transform=`translate(${rX(x)}px,${rX(y)}px)`},T*.5)}
+      setTimeout(()=>fin(false,(nx<0||ny<0||nx>=sp.W||ny>=sp.H)?E(`Komento ${i}: robotti olisi pudonnut ruudukon reunalta.`,`Command ${i}: the robot would have fallen off the grid.`):E(`Komento ${i}: robotti törmäsi kiveen.`,`Command ${i}: the robot bumped into a rock.`)),T);return}
+    x=nx;y=ny;if(sp.key&&x===sp.key[0]&&y===sp.key[1]&&!hasKey){hasKey=true;const k=document.querySelector('#sheet .keyg'),l=document.querySelector('#sheet .slock'),sp2=document.querySelector('#sheet .starp');if(k)k.style.opacity=0;if(l)l.style.opacity=0;if(sp2)sp2.setAttribute('opacity','1')}
+    if(el)el.style.transform=`translate(${rX(x)}px,${rX(y)}px)`;setTimeout(step,T)};
+  setTimeout(step,red?0:150)}
+
+function progReset(){const el=document.getElementById('robo');if(el){el.style.transition='none';el.style.transform=`translate(${rX(P.sp.start[0])}px,${rX(P.sp.start[1])}px)`}
+  ['.keyg','.slock'].forEach(q=>{const e=document.querySelector('#sheet '+q);if(e)e.style.opacity=1});const sp2=document.querySelector('#sheet .starp');if(sp2&&P.sp.key)sp2.setAttribute('opacity','.45');const f=$('#fb');if(f)f.hidden=true}
+function progEdit(fn){if(done||P.running)return;fn();progReset();progRender()}
+document.addEventListener('keydown',e=>{if(!P||P.kind!=='prog'||done)return;const t=e.target;if(t&&t.matches&&t.matches('input,select,textarea'))return;
+  const m={ArrowUp:'N',ArrowRight:'E',ArrowDown:'S',ArrowLeft:'W'}[e.key];if(m){e.preventDefault();progEdit(()=>P.prog.push(m))}else if(e.key==='Backspace'){e.preventDefault();progEdit(()=>P.prog.pop())}});
 function mixGen(g){return L=>{const[dMax,wMax]={4:[6,2],5:[10,4],6:[12,5]}[g];
   for(let t=0;t<100;t++){const d=R(2,dMax),w=R(1,wMax),r=R(1,d-1);if(gcd(r,d)!==1)continue;const N=w*d+r;
     const toMixed=L===1?true:L===2?false:Math.random()<.5,pic=L<3&&w<=3;
@@ -3113,7 +3203,10 @@ const NAV=[
   {id:'pulmat',n:'Pulmat ja päättely',subs:[
     {id:'kuv',n:'Kuvapulmat',types:[{id:'pm',n:'Plus- ja miinuspulmat',f:puz(false,1,4)},{id:'ker',n:'Kertopulmat',f:puz(true,2,4)},{id:'kaikki',n:'Kaikki laskut',f:puz(false,5)}]},
     {id:'pää',n:'Päättelytehtävät',types:[{id:'ev',n:'Enemmän ja vähemmän',f:wpz(false,1)},{id:'ko',n:'Kertaa ja osuudet',f:wpz(true,2)}]},
-    {id:'kj',n:'Kuviojonot',types:[{id:'kj',n:'Mikä kuva tulee seuraavaksi?',f:allG(src('c-kuviot','cmp'))}]}]}];
+    {id:'kj',n:'Kuviojonot',types:[{id:'kj',n:'Mikä kuva tulee seuraavaksi?',f:allG(src('c-kuviot','cmp'))}]},
+    {id:'ohj',n:'Ohjelmointi',types:[
+      {id:'mihin',n:'Mihin robotti päätyy?',f:g=>({oid:'robtrace',levels:[['Yksittäiset komennot'],['Monta askelta'],['Toistot']],gen:L=>traceGen(g)(L)})},
+      {id:'ohjr',n:'Ohjelmoi robotti',f:g=>({oid:'robprog',levels:[['Suora reitti'],['Kivet tiellä'],['Avain ja tähti']],gen:L=>progGen(g)(L)})}]}]}];
 /* mitä luokalla näkyy */
 const navTypes=(g,sub)=>sub.types.filter(t=>t.f(g));
 const navSubs=(g,top)=>top.subs.filter(s=>navTypes(g,s).length);
@@ -3127,7 +3220,7 @@ Object.assign(TR,{'Mitat ja yksiköt':'Measures and units','Laskut':'Calculation
   'Kuvilla':'With pictures','Sanalliset':'Word problems','Jakaminen tasan':'Sharing equally','Jakokulma':'Long division','Yhteen- ja vähennyslasku':'Addition and subtraction','Kerto- ja jakolasku':'Multiplication and division',
   'Vertaile lukuja':'Compare numbers','Mikä luku puuttuu?':'Which number is missing?','Kellonajat':'Telling the time','Kolikot ja setelit':'Coins and notes','Muunnokset':'Conversions','Tunnista muodot':'Recognise shapes','Koordinaatit':'Coordinates',
   'Lue diagrammia':'Read the chart','Laske keskiarvo':'Work out the average','Pallot, pussit ja noppa':'Balls, bags and dice','Kokeile nopilla':'Experiment with dice',
-  'Plus- ja miinuspulmat':'Plus and minus puzzles','Kertopulmat':'Times puzzles','Sekaluvut':'Mixed numbers','Murtoluku ja desimaaliluku':'Fractions and decimals','Prosentit':'Percentages','Laskujärjestys':'Order of operations','Laske':'Calculate','Mihin sulkeet?':'Where do the brackets go?','Kertolasku ensin':'Multiplication first','Kerto- ja jakolasku ensin':'Multiplication and division first','Sulkeet':'Brackets','Sulkeet ja neljä lukua':'Brackets and four numbers','Plus ja kertaa':'Plus and times','Kaikki laskut':'All operations','Neljä lukua':'Four numbers','Kaksi laskua':'Two operations','Kolme laskua':'Three operations','Yhdistelmät':'Combinations','Asukokonaisuudet':'Outfits','Montako tarvitaan?':'How many are needed?','Kaksi vaatetta':'Two kinds of clothes','Enemmän vaihtoehtoja':'More choices','Kolme vaatetta':'Three kinds of clothes','Neljä vaatetta':'Four kinds of clothes','Monta vaatetta':'Many kinds of clothes','Tasan riittää':'Exactly enough','Vähintään':'At least','Symmetria':'Symmetry','Täydennä kuvio':'Complete the shape','Valitse toinen puoli':'Choose the other half','Onko symmetrinen?':'Is it symmetrical?','Pystysuora akseli':'Vertical line','Vaakasuora akseli':'Horizontal line','Isompi kuvio':'Bigger shape','Yksi väri':'One colour','Kaksi väriä':'Two colours','Kolme väriä':'Three colours','Monta väriä':'Several colours','Akseli sivussa':'Line off-centre','Kaksi akselia':'Two lines','Pienet erot':'Small differences','Piirrokset':'Drawings','Selvät erot':'Clear differences','Kyllä vai ei?':'Yes or no?','Mikä viiva on akseli?':'Which line is the line of symmetry?','Montako akselia?':'How many lines?','Tilavuus':'Volume','Palikkatornit':'Block towers','Suorakulmainen särmiö':'Cuboids','Pienet tornit':'Small towers','Isommat tornit':'Bigger towers','Korkeat tornit':'Tall towers','Montako puuttuu?':'How many are missing?','Kuutioista':'Made of cubes','Mitoista':'From measurements','Puuttuva mitta':'Missing measurement','Litroina':'In litres','Piiri ja pinta-ala':'Perimeter and area','Piiri':'Perimeter','Pinta-ala':'Area','Suorakulmio ja neliö':'Rectangles and squares','Monikulmio':'Polygons','Puuttuva sivu':'Missing side','Yhdistetyt kuviot':'Composite shapes','Ruutujen laskeminen':'Counting squares','Suorakulmio ruudukolla':'Rectangles on a grid','Puolikkaat ruudut':'Half squares','Kolmio':'Triangles','Sekaisin':'Mixed','Hinnat':'Prices','Murtoluku ja prosentti':'Fractions and percentages','Desimaaliluku ja murtoluku':'Decimals and fractions','Desimaaliluku ja prosentti':'Decimals and percentages','Prosentti ja desimaaliluku':'Percentages and decimals','Prosentti ja murtoluku':'Percentages and fractions','Kaikki sekaisin':'All mixed','Montako prosenttia?':'What percentage?','Prosentti luvusta':'Percentage of a number','Ruudukko':'Grid','Luvut':'Numbers','Puolet, neljäsosat ja kymmenesosat':'Halves, quarters and tenths','Muut prosentit':'Other percentages','Osa määrästä':'Part of an amount','Alennukset ja korotukset':'Discounts and price rises','Kymmenesosat ja sadasosat':'Tenths and hundredths','Tutut murtoluvut':'Familiar fractions','Haastavammat':'Harder ones','Murtoluvusta sekaluvuksi':'Fraction to mixed number','Sekaluvusta murtoluvuksi':'Mixed number to fraction','Molemmat suunnat':'Both ways','Kaikki laskut':'All operations','Enemmän ja vähemmän':'More and fewer','Kertaa ja osuudet':'Times and fractions','Mikä kuva tulee seuraavaksi?':'Which picture comes next?','Kaupan kassa':'Change at the till'});
+  'Plus- ja miinuspulmat':'Plus and minus puzzles','Kertopulmat':'Times puzzles','Sekaluvut':'Mixed numbers','Murtoluku ja desimaaliluku':'Fractions and decimals','Prosentit':'Percentages','Ohjelmointi':'Programming','Mihin robotti päätyy?':'Where does the robot end up?','Ohjelmoi robotti':'Program the robot','Yksittäiset komennot':'Single commands','Monta askelta':'Several steps','Toistot':'Repeats','Suora reitti':'Clear path','Kivet tiellä':'Rocks in the way','Avain ja tähti':'Key and star','Laskujärjestys':'Order of operations','Laske':'Calculate','Mihin sulkeet?':'Where do the brackets go?','Kertolasku ensin':'Multiplication first','Kerto- ja jakolasku ensin':'Multiplication and division first','Sulkeet':'Brackets','Sulkeet ja neljä lukua':'Brackets and four numbers','Plus ja kertaa':'Plus and times','Kaikki laskut':'All operations','Neljä lukua':'Four numbers','Kaksi laskua':'Two operations','Kolme laskua':'Three operations','Yhdistelmät':'Combinations','Asukokonaisuudet':'Outfits','Montako tarvitaan?':'How many are needed?','Kaksi vaatetta':'Two kinds of clothes','Enemmän vaihtoehtoja':'More choices','Kolme vaatetta':'Three kinds of clothes','Neljä vaatetta':'Four kinds of clothes','Monta vaatetta':'Many kinds of clothes','Tasan riittää':'Exactly enough','Vähintään':'At least','Symmetria':'Symmetry','Täydennä kuvio':'Complete the shape','Valitse toinen puoli':'Choose the other half','Onko symmetrinen?':'Is it symmetrical?','Pystysuora akseli':'Vertical line','Vaakasuora akseli':'Horizontal line','Isompi kuvio':'Bigger shape','Yksi väri':'One colour','Kaksi väriä':'Two colours','Kolme väriä':'Three colours','Monta väriä':'Several colours','Akseli sivussa':'Line off-centre','Kaksi akselia':'Two lines','Pienet erot':'Small differences','Piirrokset':'Drawings','Selvät erot':'Clear differences','Kyllä vai ei?':'Yes or no?','Mikä viiva on akseli?':'Which line is the line of symmetry?','Montako akselia?':'How many lines?','Tilavuus':'Volume','Palikkatornit':'Block towers','Suorakulmainen särmiö':'Cuboids','Pienet tornit':'Small towers','Isommat tornit':'Bigger towers','Korkeat tornit':'Tall towers','Montako puuttuu?':'How many are missing?','Kuutioista':'Made of cubes','Mitoista':'From measurements','Puuttuva mitta':'Missing measurement','Litroina':'In litres','Piiri ja pinta-ala':'Perimeter and area','Piiri':'Perimeter','Pinta-ala':'Area','Suorakulmio ja neliö':'Rectangles and squares','Monikulmio':'Polygons','Puuttuva sivu':'Missing side','Yhdistetyt kuviot':'Composite shapes','Ruutujen laskeminen':'Counting squares','Suorakulmio ruudukolla':'Rectangles on a grid','Puolikkaat ruudut':'Half squares','Kolmio':'Triangles','Sekaisin':'Mixed','Hinnat':'Prices','Murtoluku ja prosentti':'Fractions and percentages','Desimaaliluku ja murtoluku':'Decimals and fractions','Desimaaliluku ja prosentti':'Decimals and percentages','Prosentti ja desimaaliluku':'Percentages and decimals','Prosentti ja murtoluku':'Percentages and fractions','Kaikki sekaisin':'All mixed','Montako prosenttia?':'What percentage?','Prosentti luvusta':'Percentage of a number','Ruudukko':'Grid','Luvut':'Numbers','Puolet, neljäsosat ja kymmenesosat':'Halves, quarters and tenths','Muut prosentit':'Other percentages','Osa määrästä':'Part of an amount','Alennukset ja korotukset':'Discounts and price rises','Kymmenesosat ja sadasosat':'Tenths and hundredths','Tutut murtoluvut':'Familiar fractions','Haastavammat':'Harder ones','Murtoluvusta sekaluvuksi':'Fraction to mixed number','Sekaluvusta murtoluvuksi':'Mixed number to fraction','Molemmat suunnat':'Both ways','Kaikki laskut':'All operations','Enemmän ja vähemmän':'More and fewer','Kertaa ja osuudet':'Times and fractions','Mikä kuva tulee seuraavaksi?':'Which picture comes next?','Kaupan kassa':'Change at the till'});
 const andJoin=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+E(' ja ',' and ')+a[a.length-1];
 
 let RND=null;
@@ -3185,6 +3278,7 @@ function answerHTML(){
       <tr class="res"><td class="sg">${P.partials?'+':''}</td>${rng.map(i=>isC(i)?'<td class="cm">,</td>':`<td><input class="ri" id="r${i}" data-i="${i}" inputmode="none" maxlength="1" autocomplete="off" aria-label="${E('Vastauksen numero','Answer digit')}"></td>`).join('')}</tr>
     </tbody></table></div>`}
   if(P.steps||P.inline||P.kind==='multi')return '';
+  if(P.kind==='prog')return progUI();
   if(P.kind==='sym')return P.ncol>1?`<div class="sympal" role="group" aria-label="${E('Väri','Colour')}">${[...Array(P.ncol).keys()].map(i=>`<button type="button" data-symcol="${i}" aria-pressed="${i===P.cur}" aria-label="${SYN[i]}" style="background:${SYC[i]}"></button>`).join('')}</div>`:'';
   if(P.kind==='choice')return `<div class="choices${P.ljopts?' ljopts':''}${P.big?' big':''}${P.yn?' yn':''}${P.symopts?' symopts':''}${P.drawopts?' drawopts':''}${P.pics?' pics':''}${P.chartopts?' charts':''}" role="group" aria-label="${E('Vastausvaihtoehdot','Answer options')}">${P.choices.map(([v,l])=>`<button type="button" class="choice" data-choice="${v}">${l}</button>`).join('')}</div>`;
   if(P.kind==='coord')return `<div class="answer coordans"><span class="unit">(</span><input class="num tb" id="cx" inputmode="none" autocomplete="off" aria-label="${E('x-koordinaatti','x-coordinate')}"><span class="unit">,</span><input class="num tb" id="cy" inputmode="none" autocomplete="off" aria-label="${E('y-koordinaatti','y-coordinate')}"><span class="unit">)</span></div>`;
@@ -3240,6 +3334,7 @@ function draw(){const t=cur(),pr=prog();const IA=inlineAns();
   activeEl=first;if(first)first.focus({preventScroll:true})}
 function fb(msg,cls){const e=$('#fb');e.hidden=false;e.className='fb '+cls;e.innerHTML=msg}
 function evaluate(){
+  if(P.kind==='prog'){if(!P.prog.length)return{bad:E('Lisää ensin komentoja napauttamalla suuntia.','First add commands by tapping the directions.')};if(P.running)return{wait:1};if(!P.ran){progReset();progRun(()=>{P.ran=true;check();P.ran=false});return{wait:1}}P.progMsg=P.runRes.msg;return{ok:P.runRes.ok}}
   if(P.kind==='sym')return symEval();
   if(P.kind==='coord'){const xs=$('#cx').value.trim().replace('−','-'),ys=$('#cy').value.trim().replace('−','-');if(!xs&&!ys)return{empty:true};if(!/^-?\d+$/.test(xs)||!/^-?\d+$/.test(ys))return{bad:E('Kirjoita molemmat koordinaatit: ensin x, sitten y.','Write both coordinates: x first, then y.')};
     const okx=+xs===P.ax,oky=+ys===P.ay,ok=okx&&oky;$('#cx').classList.toggle('ok',okx);$('#cx').classList.toggle('no',!okx);$('#cy').classList.toggle('ok',oky);$('#cy').classList.toggle('no',!oky);return{ok}}
@@ -3292,7 +3387,7 @@ function confetti(){if(window.matchMedia('(prefers-reduced-motion: reduce)').mat
   for(let i=0;i<90;i++){const x=R(0,100),dx=R(-120,120),d=R(1600,2800),dl=R(0,500),w=R(6,11),r=R(0,1);
     h+=`<i style="left:${x}%;--dx:${dx}px;--rot:${R(360,1080)}deg;animation-duration:${d}ms;animation-delay:${dl}ms;width:${w}px;height:${r?w:w*1.8}px;border-radius:${r?'50%':'2px'};background:var(${pick(cols)})"></i>`}
   box.innerHTML=h;document.body.appendChild(box);setTimeout(()=>box.remove(),3500)}
-function check(){if(done)return;const r=evaluate(),pr=prog();
+function check(){if(done)return;const r=evaluate(),pr=prog();if(r.wait)return;
   if(r.empty){fb(P.kind==='choice'?E('Valitse ensin vaihtoehto.','Choose an option first.'):E('Kirjoita ensin vastaus.','Write your answer first.'),'info');return}
   if(r.bad){fb(r.bad,'info');return}
   if(r.ok){done=true;S.stars++;const td=today();S.days[td]=(S.days[td]||0)+1;pr.streak++;pr.fails=0;let msg=pick(PRAISE)+E(' Sait tähden.',' You got a star.');
@@ -3304,7 +3399,7 @@ function check(){if(done)return;const r=evaluate(),pr=prog();
     if(P.okChoice){const cb=document.querySelector(`.choice[data-choice="${P.ans}"]`);if(cb)cb.innerHTML=P.okChoice}
     fb(msg,'good');const st=$('#playerBtn');st.classList.remove('pop');void st.offsetWidth;st.classList.add('pop');updHeader();finish()}
   else{tries++;
-    if(tries===1){fb(P.kind==='sym'&&P.symMsg?P.symMsg:P.kind==='multi'&&P.multiMsg?P.multiMsg:E('Ei vielä ihan. Tarkista vastaus tai katso vihje.','Not quite yet. Check your answer or look at the hint.'),'bad')}
+    if(tries===1){fb(P.kind==='prog'&&P.progMsg?P.progMsg+' '+E('Korjaa ohjelmaa ja kokeile uudelleen.','Fix the program and try again.'):P.kind==='sym'&&P.symMsg?P.symMsg:P.kind==='multi'&&P.multiMsg?P.multiMsg:E('Ei vielä ihan. Tarkista vastaus tai katso vihje.','Not quite yet. Check your answer or look at the hint.'),'bad')}
     else{done=true;pr.streak=0;pr.fails++;if(P.kind==='sym')symReveal();let msg=P.failMsg||(P.answerText?E(`Oikea vastaus on ${P.answerText}.`,`The correct answer is ${P.answerText}.`):E('Oikea vaihtoehto on merkitty vihreällä.','The correct option is marked in green.'));if(P.kind==='choice'){const cb=document.querySelector(`.choice[data-choice="${P.ans}"]`);if(cb)cb.classList.add('ok')}if(P.kind==='multi')P.ans.forEach(i=>{const t=document.querySelector(`.gtile[data-pick="${i}"]`);if(t&&!t.classList.contains('ok'))t.classList.add('miss')});
       if(pr.fails>=2&&pr.level>1){pr.level--;pr.fails=0;msg+=E(' Harjoitellaan välillä vähän helpompia.'," Let's practise some easier ones for a while.")}
       fb(msg,'bad');$('#explain').hidden=false;$('#hint').hidden=true;
@@ -3322,7 +3417,7 @@ let activeEl=null;
 const BACK='<svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M9 5h11v14H9l-6-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 9l5 6M17 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
 function keypad(){const KP=E('Numeronäppäimistö','Number keypad'),MS=E('Miinusmerkki','Minus sign'),PY=E('Pyyhi','Delete');
   if(P.kind==='coord'){const ks=[1,2,3,4,5,6,7,8,9].map(n=>`<button type="button" class="key" data-key="${n}">${n}</button>`).join('');return `<div class="keypad" role="group" aria-label="${KP}">${ks}${P.neg?`<button type="button" class="key alt" data-key="neg" aria-label="${MS}">−</button>`:'<span></span>'}<button type="button" class="key" data-key="0">0</button><button type="button" class="key alt" data-key="back" aria-label="${PY}">${BACK}</button><button type="button" class="key alt wide" data-key="swap" aria-label="${E('Vaihda x ja y','Switch between x and y')}">x ↔ y</button></div>`}
-  if(P.kind==='choice'||P.kind==='multi'||P.kind==='sym')return '';
+  if(P.kind==='choice'||P.kind==='multi'||P.kind==='sym'||P.kind==='prog')return '';
   if(P.neg&&P.kind==='dec')return `<div class="keypad" role="group" aria-label="${KP}">${[1,2,3,4,5,6,7,8,9].map(n=>`<button type="button" class="key" data-key="${n}">${n}</button>`).join('')}<button type="button" class="key alt" data-key="neg" aria-label="${MS}">−</button><button type="button" class="key" data-key="0">0</button><button type="button" class="key" data-key="," aria-label="${E('Pilkku','Comma')}">,</button><button type="button" class="key alt wide" data-key="back" aria-label="${PY}">${BACK}</button></div>`;
   const last=P.neg?`<button type="button" class="key alt" data-key="neg" aria-label="${MS}">−</button>`:P.kind==='dec'?`<button type="button" class="key" data-key="," aria-label="${E('Pilkku','Comma')}">,</button>`
     :P.kind==='frac'?`<button type="button" class="key alt" data-key="swap" aria-label="${E('Vaihda osoittajan ja nimittäjän välillä','Switch between numerator and denominator')}">↕</button>`
@@ -3357,6 +3452,9 @@ document.addEventListener('mousedown',e=>{if(e.target.closest('.key'))e.preventD
 document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#cgrid')){ctap(e);return}{const sg=e.target.closest&&e.target.closest('#symg .se');if(sg){symTap(sg);return}}const b=e.target.closest('button');if(!b)return;
   if(b.dataset.symcol!=null){P.cur=+b.dataset.symcol;document.querySelectorAll('.sympal button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));return}
   if(b.dataset.rot){c3dTurn(b.closest('.c3d'),+b.dataset.rot);return}
+  if(b.dataset.pcmd){progEdit(()=>P.prog.push(b.dataset.pcmd));return}
+  if(b.dataset.pdel){progEdit(()=>P.prog.pop());return}
+  if(b.dataset.pclr){progEdit(()=>{P.prog=[]});return}
   if(b.dataset.tilt){c3dTurn(b.closest('.c3d'),0,+b.dataset.tilt);return}
   if(b.dataset.help){const h=$('#pzh');h.hidden=!h.hidden;b.setAttribute('aria-expanded',String(!h.hidden));b.setAttribute('aria-label',h.hidden?E('Näytä ohje','Show help'):E('Piilota ohje','Hide help'));return}
   if(b.dataset.turn){const f=$('#sheet .visual .arr'),ex=$('#sheet .ex');if(!f||!ex)return;const t=f.classList.toggle('tr'),A=+f.dataset.a,B=+f.dataset.b;ex.textContent=t?`${B} · ${A}`:`${A} · ${B}`;return}
