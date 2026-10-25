@@ -1876,7 +1876,7 @@ function nlPlaceGen(g){return L=>{const sp={...NLPLACE[g][L-1]};let t;
     else{const st=sp.st||1;t=R(Math.ceil(sp.a/st)+1,Math.floor(sp.b/st)-1)*st;if(sp.m&&!sp.snap&&t%sp.m===0)continue;if(t===0&&sp.a<0)continue}
     if(Math.abs(t-sp.a)<(sp.b-sp.a)*.04||Math.abs(t-sp.b)<(sp.b-sp.a)*.04)continue;break}
   sp.t=t;const txt=nlTargetTxt(sp,t);
-  return{kind:'nline',nl:sp,nv:null,visual:nlSVG(sp,{drag:1}),text:plbl(E('Vedä merkki lukusuoralle kohtaan','Drag the marker on the number line to'),`<span class="bg">${txt}</span>`),answerText:'',
+  return{kind:'nline',nl:sp,nv:null,visual:nlSVG(sp,{drag:1}),text:plbl(E('Vedä merkki lukusuoralle kohtaan','Drag the marker on the number line to'),`<span class="bg">${txt}</span>`)+(sp.snap?'':`<span class="bg" style="display:block;font-size:.5em;color:var(--soft);margin-top:.3em">${E('Arvioi mahdollisimman tarkasti. Pieni heitto hyväksytään.','Estimate as accurately as you can. A small difference is fine.')}</span>`),answerText:'',
     failMsg:E('Oikea kohta näkyy nyt vihreällä.','The right place is now shown in green.'),
     onOk:()=>nlShowT(),onFail:()=>nlShowT(),
     explain:`<p>${txt} ${E('on tässä:','is here:')}</p>${nlSVG(sp,{mark:t,markCol:'var(--good)'})}`,hint:E(`<p>Katso ensin, mitkä luvut lukusuoran päissä ja keskellä on. Onko luku lähempänä alkua, keskikohtaa vai loppua?</p>${sp.m?'<p>Laske väliviivoja: jokainen väli on yhtä suuri.</p>':'<p>Jaa väli mielessäsi puoliksi ja vielä puoliksi.</p>'}`,`<p>First look at the numbers at the ends and the middle of the line. Is the number closer to the start, the middle or the end?</p>${sp.m?'<p>Count the marks: every gap is the same size.</p>':'<p>Split the gap in half in your head, and then in half again.</p>'}`)}}}
