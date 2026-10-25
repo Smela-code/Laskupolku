@@ -1451,9 +1451,21 @@ function symEval(){const st=symState();if(!st.size)return{bad:E('Väritä ruudut
 function symReveal(){document.querySelectorAll('#symg .se').forEach(r=>{const k=r.dataset.k,t=P.full.get(k),v=symState().get(k);if(t!=null&&v!==t){r.classList.add('ms');r.setAttribute('fill',SYC[t])}})}
 function symAxisTxt(sp){return sp.ax!=null&&sp.ay!=null?E('kahden akselin','two lines'):sp.ax!=null?E('pystysuoran akselin','a vertical line'):E('vaakasuoran akselin','a horizontal line')}
 const plbl0=t=>`<span class="bg" style="display:block;font-size:.55em;margin-bottom:.3em">${t}</span>`;
+function foldSVG(sp,F,o={}){const c=o.c||30,m=14,X=x=>m+x*c,Y=y=>m+y*c;
+  const RR=M=>[...M].map(([k,v])=>{const[x,y]=k.split(',').map(Number);return `<rect x="${X(x)}" y="${Y(y)}" width="${c}" height="${c}" fill="${SYC[v]}" stroke="var(--paper)" stroke-width="1.5"/>`}).join('');
+  const sub=f=>new Map([...F].filter(([k])=>{const[x,y]=k.split(',').map(Number);return!inGiven(sp,x,y)&&f(x,y)}));
+  const gV=(M,d)=>`<g class="symV" style="transform-origin:${X(sp.ax)}px 0;--d:${d}s">${M}</g>`,gH=(M,d)=>`<g class="symH" style="transform-origin:0 ${Y(sp.ay)}px;--d:${d}s">${M}</g>`;
+  const two=sp.ax!=null&&sp.ay!=null,gx=sp.gx||0,gy=sp.gy||0,isR=x=>gx===0?x>=sp.ax:x<sp.ax,isB=y=>gy===0?y>=sp.ay:y<sp.ay;let mv;
+  if(two)mv=gV(RR(sub((x,y)=>isR(x)&&!isB(y))),.3)+gH(RR(sub((x,y)=>!isR(x)&&isB(y)))+gV(RR(sub((x,y)=>isR(x)&&isB(y))),.3),1.7);
+  else if(sp.ax!=null)mv=gV(RR(sub(()=>true)),.3);else mv=gH(RR(sub(()=>true)),.3);
+  const T=two?3:1.8,x0=sp.ax!=null?(gx===0?0:sp.ax):0,x1=sp.ax!=null?(gx===0?sp.ax:sp.W):sp.W,y0=sp.ay!=null?(gy===0?0:sp.ay):0,y1=sp.ay!=null?(gy===0?sp.ay:sp.H):sp.H;
+  const rr=Math.min(24,c*.8),bx=X(sp.W)-rr*.6,by=Y(0)+rr*.6;
+  const bad=(o.bad||[]).map(k=>{const[x,y]=k.split(',').map(Number);const mx=sp.ax!=null?2*sp.ax-1-x:x,my=sp.ay!=null?2*sp.ay-1-y:y;return `<rect class="cin" style="--d:${T}s" x="${X(mx)+2}" y="${Y(my)+2}" width="${c-4}" height="${c-4}" rx="3" fill="none" stroke="var(--bad)" stroke-width="3"/>`}).join('');
+  const badge=o.bad&&o.bad.length?'':`<g class="cin" style="--d:${T}s"><circle cx="${bx}" cy="${by}" r="${rr}" fill="var(--good)" stroke="var(--paper)" stroke-width="3"/><path d="M${bx-rr*.45} ${by}l${rr*.3} ${rr*.32}l${rr*.55} ${-rr*.6}" fill="none" stroke="var(--paper)" stroke-width="${Math.max(3,rr*.18)}" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+  return symSVG(sp,F,{c,lines:()=>mv+bad+badge})}
 function symFillGen(g){return L=>{let sp,B;for(let t=0;t<20&&!B;t++){sp=symSpec(g,L,'fill');B=symBuild(sp)}
   const exp=new Map([...B.full].filter(([k])=>{const[x,y]=k.split(',').map(Number);return!inGiven(sp,x,y)}));
-  return{kind:'sym',showOk:1,failMsg:E('Puuttuvat ruudut näkyvät nyt vihreällä reunuksella.','The missing squares are now shown with a green border.'),sp,full:exp,ncol:sp.ncol,cur:0,st:new Map(),visual:symSVG(sp,B.given,{edit:1,id:'symg',shade:1}),
+  return{kind:'sym',okFold:()=>foldSVG(sp,new Map([...B.given,...P.st])),failMsg:E('Puuttuvat ruudut näkyvät nyt vihreällä reunuksella.','The missing squares are now shown with a green border.'),sp,full:exp,ncol:sp.ncol,cur:0,st:new Map(),visual:symSVG(sp,B.given,{edit:1,id:'symg',shade:1}),
     text:plbl0(sp.ax!=null&&sp.ay!=null?E('Täydennä kuvio symmetriseksi molempien katkoviivojen suhteen.','Complete the shape so that it is symmetrical about both dashed lines.'):E('Täydennä kuvio symmetriseksi. Katkoviiva on symmetria-akseli.','Complete the shape so that it is symmetrical. The dashed line is the line of symmetry.'))+`<span class="bg" style="display:block;font-size:.5em;color:var(--soft)">${E('Napauta ruutuja värittääksesi ne.','Tap the squares to colour them.')}</span>`,
     answerText:'',hint:E(`<p>Kuvittele, että taitat paperin katkoviivaa pitkin. Jokainen väritetty ruutu osuu toiselle puolelle yhtä kauas viivasta.</p><p>Aloita viivan vierestä ja etene ruutu kerrallaan poispäin.${sp.ncol>1?' Muista myös värit.':''}</p>`,`<p>Imagine folding the paper along the dashed line. Each coloured square lands the same distance from the line on the other side.</p><p>Start next to the line and work outwards one square at a time.${sp.ncol>1?' Remember the colours too.':''}</p>`),
     explain:`<p>${E('Kuvio taittuu akselin yli kuin paperi.','The shape folds over the line like paper.')}</p>${vis(symFlip(sp,B.given,B.full))}`}}}
@@ -1471,7 +1483,7 @@ function symPickGen(g){return L=>{for(let t=0;t<60;t++){const sp=symSpec(g,L,'pi
     const opts=[V.good];const add=M=>{if(M&&M.size&&!opts.some(o=>ser(o)===ser(M)))opts.push(M)};
     if(L===3&&g>=3){for(let i=0;i<10&&opts.length<4;i++)add(V.odd())}else{add(V.trans);add(V.wrong);for(let i=0;i<10&&opts.length<4;i++)add(V.odd())}
     if(opts.length<4)continue;const ord=shuffle([0,1,2,3]),sm={W:V.rs.W,H:V.rs.H,ax:null,ay:null};
-    return{kind:'choice',symopts:1,showOk:1,choices:ord.map(i=>[String(i),symSVG(sm,opts[i],{c:22})]),ans:'0',
+    return{kind:'choice',symopts:1,okVis:foldSVG(sp,B.full),choices:ord.map(i=>[String(i),symSVG(sm,opts[i],{c:22})]),ans:'0',
       visual:symSVG(sp,B.given,{q:1}),text:plbl(E('Mikä kuva on oikea toinen puoli? Katkoviiva on symmetria-akseli.','Which picture is the correct other half? The dashed line is the line of symmetry.'),''),answerText:'',
       hint:E('<p>Peilikuvassa ruudut, jotka ovat lähellä viivaa, pysyvät lähellä viivaa myös toisella puolella. Kuva kääntyy, se ei vain siirry.</p>','<p>In a mirror image, squares close to the line stay close to the line on the other side too. The picture flips over; it does not just slide across.</p>'),
       explain:`<p>${E('Kuvio taittuu akselin yli kuin paperi.','The shape folds over the line like paper.')}</p>${vis(symFlip(sp,B.given,B.full))}`}}
@@ -1489,7 +1501,7 @@ function shapeSVG(S,anim){const k=70,m=24,cx=m+1.3*k,cy=m+1.25*k,w=2*cx,h=2*cy;l
   return `<svg class="pa" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="${S.n}"><polygon points="${S.p.map(([x,y])=>(cx+x*k).toFixed(1)+','+(cy+y*k).toFixed(1)).join(' ')}" fill="var(--blk2)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>${anim?a:''}</svg>`}
 function symIsGen(g){return L=>{const YN=[['1',E('Kyllä','Yes')],['0',E('Ei','No')]];
   if(L===3&&g>=3){const S=pick(SHAPES().filter(s=>s.g<=g)),n=S.ax.length;
-    return{kind:'int',showOk:1,visual:vis(shapeSVG(S,0)),text:plbl(E('Montako symmetria-akselia kuviolla on?','How many lines of symmetry does the shape have?'),`${BOX} ${E('kpl','')}`.trim()),ans:n,answerText:String(n),
+    return{kind:'int',okVis:shapeSVG(S,1),visual:vis(shapeSVG(S,0)),text:plbl(E('Montako symmetria-akselia kuviolla on?','How many lines of symmetry does the shape have?'),`${BOX} ${E('kpl','')}`.trim()),ans:n,answerText:String(n),
       hint:E('<p>Symmetria-akseli jakaa kuvion kahteen puolikkaaseen, jotka ovat toistensa peilikuvia. Kokeile mielessäsi taittaa kuvio eri suunnista: osuvatko puolikkaat täsmälleen päällekkäin?</p><p>Muista myös vinot akselit.</p>','<p>A line of symmetry splits the shape into two halves that are mirror images. Imagine folding the shape in different directions: do the halves match exactly?</p><p>Remember the diagonal lines too.</p>'),
       explain:`<p>${E('Kuvio on','The shape is a')} ${S.n}.</p>`+vis(shapeSVG(S,1))+`<p><b>${n===0?E('Kuviolla ei ole yhtään symmetria-akselia.','The shape has no lines of symmetry.'):E(`Akseleita on ${n}.`,`There ${n===1?'is 1 line':'are '+n+' lines'} of symmetry.`)}</b></p>`}}
   for(let t=0;t<60;t++){const sp=symSpec(g,L,'is'),B=symBuild(sp);if(!B)continue;
@@ -1498,7 +1510,7 @@ function symIsGen(g){return L=>{const YN=[['1',E('Kyllä','Yes')],['0',E('Ei','N
       const symAbout=(a)=>{for(const[k,v]of B.full){const[x,y]=k.split(',').map(Number);const m=a.ax!=null?skey(2*a.ax-1-x,y):skey(x,2*a.ay-1-y);if(B.full.get(m)!==v)return false}return true};
       const ws=shuffle(wrongs).filter(a=>!symAbout(a)).slice(0,2);if(ws.length<2)continue;
       const opts=[{ax:sp.ax,ay:sp.ay},...ws],ord=shuffle([0,1,2]);
-      return{kind:'choice',symopts:1,showOk:1,choices:ord.map(i=>[String(i),symSVG(Object.assign({},sp,opts[i]),B.full,{c:18})]),ans:'0',visual:null,
+      return{kind:'choice',symopts:1,okChoice:foldSVG(sp,B.full,{c:18}),choices:ord.map(i=>[String(i),symSVG(Object.assign({},sp,opts[i]),B.full,{c:18})]),ans:'0',visual:null,
         text:plbl(E('Missä kuvassa katkoviiva on symmetria-akseli?','In which picture is the dashed line a line of symmetry?'),''),answerText:'',
         hint:E('<p>Kuvittele taittavasi kuvan katkoviivaa pitkin. Osuvatko kaikki väritetyt ruudut toistensa päälle?</p>','<p>Imagine folding the picture along the dashed line. Do all the coloured squares land on top of each other?</p>'),
         explain:`<p>${E('Tässä kuvassa puolikkaat ovat toistensa peilikuvia:','In this picture the two halves are mirror images:')}</p>${vis(symFlip(sp,B.given,B.full))}`}}
@@ -1506,7 +1518,7 @@ function symIsGen(g){return L=>{const YN=[['1',E('Kyllä','Yes')],['0',E('Ei','N
     if(!yes){const k=[...B.given.keys()];for(let i=0;i<R(1,2);i++){const kk=pick(k);const[x,y]=kk.split(',').map(Number);const m=sp.ax!=null?skey(mirV(sp,x),y):skey(x,mirH(sp,y));
         if(sp.ncol>1&&Math.random()<.5){F.set(m,(F.get(kk)+1)%sp.ncol)}else F.delete(m);bad.push(m)}}
     const mark=(X,Y,c)=>bad.map(k=>{const[x,y]=k.split(',').map(Number);return `<rect class="cin" style="--d:1.6s" x="${X(x)+2}" y="${Y(y)+2}" width="${c-4}" height="${c-4}" fill="none" stroke="var(--bad)" stroke-width="3" rx="3"/>`}).join('');
-    return{kind:'choice',big:1,showOk:1,choices:YN,ans:yes?'1':'0',visual:symSVG(sp,F),text:plbl(E('Onko kuvio symmetrinen katkoviivan suhteen?','Is the shape symmetrical about the dashed line?'),''),answerText:'',
+    return{kind:'choice',big:1,okVis:foldSVG(sp,F,{bad:yes?[]:bad}),choices:YN,ans:yes?'1':'0',visual:symSVG(sp,F),text:plbl(E('Onko kuvio symmetrinen katkoviivan suhteen?','Is the shape symmetrical about the dashed line?'),''),answerText:'',
       hint:E('<p>Vertaa ruutuja viivan molemmin puolin: jokaisella ruudulla pitää olla pari yhtä kaukana viivasta toisella puolella, samanvärisenä.</p>','<p>Compare the squares on both sides of the line: each square needs a partner of the same colour, the same distance from the line on the other side.</p>'),
       explain:yes?`<p>${E('Kyllä. Puolikkaat ovat toistensa peilikuvia.','Yes. The two halves are mirror images.')}</p>${vis(symFlip(sp,B.given,B.full))}`
         :`<p>${E('Ei. Punaisella merkityt ruudut eivät vastaa toista puolta.','No. The squares marked in red do not match the other side.')}</p>${vis(symSVG(sp,F,{inner:mark}))}`}}
@@ -3098,6 +3110,8 @@ function check(){if(done)return;const r=evaluate(),pr=prog();
     else if(pr.streak>=3){pr.streak=0;const mk=cur().key;if(!S.medals[mk]){S.medals[mk]=1;msg+=E(' Sait mitalin tästä aiheesta!',' You got a medal for this topic!')}else msg+=E(' Olet ylimmällä tasolla. Upeaa!'," You're on the top level. Amazing!")}
     if(S.stars%10===0){msg+=E(` Jo ${S.stars} tähteä!`,` That's ${S.stars} stars!`);confetti()}
     if(P.showOk)$('#explain').hidden=false;
+    if(P.okFold||P.okVis){const t=P.okFold?$('#symg'):document.querySelector('#sheet > .visual svg');if(t)t.outerHTML=P.okFold?P.okFold():P.okVis}
+    if(P.okChoice){const cb=document.querySelector(`.choice[data-choice="${P.ans}"]`);if(cb)cb.innerHTML=P.okChoice}
     fb(msg,'good');const st=$('#playerBtn');st.classList.remove('pop');void st.offsetWidth;st.classList.add('pop');updHeader();finish()}
   else{tries++;
     if(tries===1){fb(P.kind==='multi'&&P.multiMsg?P.multiMsg:E('Ei vielä ihan. Tarkista vastaus tai katso vihje.','Not quite yet. Check your answer or look at the hint.'),'bad')}
