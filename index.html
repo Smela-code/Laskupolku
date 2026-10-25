@@ -235,6 +235,36 @@ table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;f
 .panel p:last-child{margin-bottom:0}
 .panel ol{margin:0 0 8px;padding-left:1.3em;display:flex;flex-direction:column;gap:4px}
 .panel .visual{margin:8px 0}
+.pa{max-width:100%;height:auto;overflow:visible;background:var(--paper);border-radius:12px;box-shadow:0 0 0 1px var(--line)}
+.pa text{font:800 13px var(--body);fill:var(--ink);stroke:var(--paper);stroke-width:3px;paint-order:stroke;stroke-linejoin:round}
+.pa .gl{stroke:var(--line);stroke-width:1}
+.pa .num,.pa .cin{opacity:0;animation:paIn .3s ease-out forwards;animation-delay:var(--d,0s)}
+.pa .trace{stroke-dasharray:var(--L);stroke-dashoffset:var(--L);animation:paDraw var(--t,1s) linear forwards;animation-delay:var(--d,0s)}
+@keyframes paIn{to{opacity:1}}
+@keyframes paDraw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.pa .num,.pa .cin{animation:none;opacity:1}.pa .trace{animation:none;stroke-dashoffset:0}}
+.c3d{display:flex;flex-direction:column;align-items:center;gap:4px}
+.c3dv{touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.c3dv:active{cursor:grabbing}
+.c3dbar{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 10px;max-width:280px;font-size:.8rem;font-weight:700;color:var(--soft)}
+.c3db{width:36px;height:36px;border-radius:50%;border:2px solid var(--line);background:var(--paper);color:var(--ink);font-size:1.1rem;line-height:1;cursor:pointer}
+.c3s text{font-size:14px}
+.c3dbar span{order:9;width:100%;text-align:center}
+#symg .se{cursor:pointer}
+#symg .se.wr{stroke:var(--bad);stroke-width:3}
+#symg .se.ms{stroke:var(--good);stroke-width:3;stroke-dasharray:5 3}
+.symV,.symH{transform-box:view-box;animation:symV 1.3s ease-in-out both;animation-delay:var(--d,.4s)}
+.symH{animation-name:symH}
+@keyframes symV{from{transform:scaleX(1)}to{transform:scaleX(-1)}}
+@keyframes symH{from{transform:scaleY(1)}to{transform:scaleY(-1)}}
+@media (prefers-reduced-motion:reduce){.symV{animation:none;transform:scaleX(-1)}.symH{animation:none;transform:scaleY(-1)}}
+.sympal{display:flex;gap:12px;justify-content:center;margin:6px 0}
+.sympal button{width:44px;height:44px;border-radius:50%;border:3px solid var(--paper);box-shadow:0 0 0 2px var(--line);cursor:pointer}
+.sympal button[aria-pressed=true]{box-shadow:0 0 0 4px var(--ink)}
+.choices.symopts{display:grid;grid-template-columns:repeat(2,minmax(0,160px));gap:10px;justify-content:center}
+.choices.symopts .choice{padding:8px;display:grid;place-items:center}
+.choices.symopts svg{max-width:100%;height:auto}
+.pacap{margin:0;font-weight:800;color:var(--soft);width:100%;text-align:center}
 .panel.explain{border-color:var(--good)}
 .clock{width:150px;height:150px;display:block}
 .num.tb{width:3.4ch}
@@ -1115,6 +1145,372 @@ function pwGen(g){return L=>{const K=pick(KIDS),it=pick(PITEMS),[I,i]=EN?[it[2],
       hint:E(`<p>Laske ensin, paljonko hinta muuttui: ${up?`${np} − ${price}`:`${price} − ${np}`} = ${ch} €.</p><p>Montako prosenttia ${ch} on alkuperäisestä hinnasta ${price}?</p>`,`<p>First work out how much the price changed: ${up?`${np} − ${price}`:`${price} − ${np}`} = ${ch} €.</p><p>What percentage of the original price ${price} is ${ch}?</p>`),
       explain:`<p>${E('Muutos','Change')}: ${ch} €</p>${shareEx(ch,price)}`}}
   return pwGen(g)(1)}}
+const GS=34,NB4=[[1,0],[-1,0],[0,1],[0,-1]];
+function polyo(W,H,n){const k=(x,y)=>x+','+y;
+  for(let t=0;t<800;t++){const S=new Set([k(R(0,W-1),R(0,H-1))]);let q=0;
+    while(S.size<n&&q++<600){const[cx,cy]=pick([...S]).split(',').map(Number),[dx,dy]=pick(NB4),nx=cx+dx,ny=cy+dy;if(nx>=0&&ny>=0&&nx<W&&ny<H)S.add(k(nx,ny))}
+    if(S.size<n)continue;const has=(x,y)=>S.has(k(x,y));let bad=false;
+    for(let x=-1;x<W&&!bad;x++)for(let y=-1;y<H;y++){const a=has(x,y),b=has(x+1,y),c=has(x,y+1),d=has(x+1,y+1);if((a&&d&&!b&&!c)||(b&&c&&!a&&!d)){bad=true;break}}
+    if(bad)continue;const seen=new Set([k(-1,-1)]),st=[[-1,-1]];
+    while(st.length){const[x,y]=st.pop();for(const[dx,dy]of NB4){const nx=x+dx,ny=y+dy;if(nx<-1||ny<-1||nx>W||ny>H||has(nx,ny)||seen.has(k(nx,ny)))continue;seen.add(k(nx,ny));st.push([nx,ny])}}
+    if(seen.size+S.size!==(W+2)*(H+2))continue;
+    let c=[...S].map(s=>s.split(',').map(Number));const mx=Math.min(...c.map(p=>p[0])),my=Math.min(...c.map(p=>p[1]));c=c.map(([x,y])=>[x-mx+1,y-my+1]);
+    const S2=new Set(c.map(([x,y])=>k(x,y)));c.sort((a,b)=>a[1]-b[1]||a[0]-b[0]);
+    return{W:Math.max(...c.map(p=>p[0]))+2,H:Math.max(...c.map(p=>p[1]))+2,cells:c,has:(x,y)=>S2.has(k(x,y))}}
+  return polyo(W,H,Math.max(2,n-1))}
+function bloop(sh){const A=new Map(),ad=(p,q)=>{if(!A.has(p))A.set(p,[]);A.get(p).push(q)},e=(a,b)=>{ad(a,b);ad(b,a)};
+  for(const[x,y]of sh.cells){if(!sh.has(x,y-1))e(`${x},${y}`,`${x+1},${y}`);if(!sh.has(x,y+1))e(`${x},${y+1}`,`${x+1},${y+1}`);if(!sh.has(x-1,y))e(`${x},${y}`,`${x},${y+1}`);if(!sh.has(x+1,y))e(`${x+1},${y}`,`${x+1},${y+1}`)}
+  const s=[...A.keys()].sort((a,b)=>{const[ax,ay]=a.split(',').map(Number),[bx,by]=b.split(',').map(Number);return ay-by||ax-bx})[0];
+  const pts=[s];let prev=null,cu=s;for(let i=0;i<999;i++){const nx=A.get(cu).find(q=>q!==prev);if(nx===s)break;pts.push(nx);prev=cu;cu=nx}
+  return pts.map(p=>p.split(',').map(Number))}
+const sty=(o)=>Object.entries(o).map(([k,v])=>`--${k}:${v}`).join(';');
+function gridSVG(sh,mode,anim,halves=[]){const m=18,w=sh.W*GS,h=sh.H*GS,X=x=>m+x*GS,Y=y=>m+y*GS;let g='',f='',o='',a='';
+  for(let x=0;x<=sh.W;x++)g+=`<line class="gl" x1="${X(x)}" y1="${m}" x2="${X(x)}" y2="${m+h}"/>`;
+  for(let y=0;y<=sh.H;y++)g+=`<line class="gl" x1="${m}" y1="${Y(y)}" x2="${m+w}" y2="${Y(y)}"/>`;
+  const fill=mode==='per'?'var(--chip)':'var(--blk2)';
+  for(const[x,y]of sh.cells)f+=`<rect x="${X(x)}" y="${Y(y)}" width="${GS}" height="${GS}" fill="${fill}"${halves.length?' stroke="var(--blk)" stroke-width="1"':''}/>`;
+  for(const t of halves)f+=`<polygon points="${t.map(([x,y])=>X(x)+','+Y(y)).join(' ')}" fill="${fill}" stroke="var(--blk)" stroke-width="1"/>`;
+  if(mode==='per'||!halves.length){const L=bloop(sh);o=`<path d="M${L.map(([x,y])=>X(x)+' '+Y(y)).join('L')}Z" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>`;
+    if(anim&&mode==='per'){const P=L.length,st=Math.min(.4,7/P);
+      a+=`<path class="trace" style="${sty({L:P*GS,t:(P*st).toFixed(2)+'s'})}" d="M${L.map(([x,y])=>X(x)+' '+Y(y)).join('L')}Z" fill="none" stroke="var(--sun)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`;
+      const lp=L.map((p,i)=>{const q=L[(i+1)%P];let nx=0,ny=0;if(p[1]===q[1]){const x0=Math.min(p[0],q[0]);ny=sh.has(x0,p[1]-1)?1:-1}else{const y0=Math.min(p[1],q[1]);nx=sh.has(p[0]-1,y0)?1:-1}
+        return{x:X((p[0]+q[0])/2)+nx*11,y:Y((p[1]+q[1])/2)+ny*11+4,dx:q[0]-p[0],dy:q[1]-p[1]}});
+      for(let i=0;i<P;i++){const A=lp[i],B=lp[(i+1)%P];if(Math.hypot(A.x-B.x,A.y-B.y)<16){A.x-=A.dx*6;A.y-=A.dy*6;B.x+=B.dx*6;B.y+=B.dy*6}}
+      lp.forEach((t,i)=>{a+=`<text class="num" style="--d:${((i+1)*st).toFixed(2)}s" x="${t.x}" y="${t.y}" text-anchor="middle">${i+1}</text>`})}}
+  if(anim&&mode==='area'){const n=sh.cells.length,st=Math.min(.22,5/(n+halves.length));
+    sh.cells.forEach(([x,y],i)=>{a+=`<g class="cin" style="--d:${(i*st).toFixed(2)}s"><rect x="${X(x)+2}" y="${Y(y)+2}" width="${GS-4}" height="${GS-4}" rx="3" fill="var(--sun)"/><text x="${X(x)+GS/2}" y="${Y(y)+GS/2+4}" text-anchor="middle">${i+1}</text></g>`});
+    halves.forEach((t,i)=>{const cx=t.reduce((s,p)=>s+p[0],0)/3,cy=t.reduce((s,p)=>s+p[1],0)/3;a+=`<g class="cin" style="--d:${((n+i)*st+.3).toFixed(2)}s"><polygon points="${t.map(([x,y])=>X(x)+','+Y(y)).join(' ')}" fill="var(--cake)"/><text x="${X(cx)}" y="${Y(cy)+4}" text-anchor="middle" style="font-size:10px">½</text></g>`})}
+  return `<svg class="pa" viewBox="0 0 ${w+2*m} ${h+2*m}" width="${w+2*m}" height="${h+2*m}" role="img" aria-label="${E('Kuvio ruudukolla','Shape on a grid')}">${g}${f}${o}${a}</svg>`}
+function addHalves(sh,k){const out=[],used=new Set();
+  for(let t=0;t<200&&out.length<k;t++){const[x,y]=pick(sh.cells),[dx,dy]=pick(NB4),nx=x+dx,ny=y+dy,key=nx+','+ny;
+    if(nx<0||ny<0||nx>=sh.W||ny>=sh.H||sh.has(nx,ny)||used.has(key))continue;used.add(key);
+    const s=Math.random()<.5;let tri;
+    if(dx===1)tri=s?[[nx,ny],[nx,ny+1],[nx+1,ny+1]]:[[nx,ny],[nx,ny+1],[nx+1,ny]];
+    else if(dx===-1)tri=s?[[nx+1,ny],[nx+1,ny+1],[nx,ny+1]]:[[nx+1,ny],[nx+1,ny+1],[nx,ny]];
+    else if(dy===1)tri=s?[[nx,ny],[nx+1,ny],[nx,ny+1]]:[[nx,ny],[nx+1,ny],[nx+1,ny+1]];
+    else tri=s?[[nx,ny+1],[nx+1,ny+1],[nx,ny]]:[[nx,ny+1],[nx+1,ny+1],[nx+1,ny]];
+    out.push(tri)}return out}
+const nf=x=>Number.isInteger(x)?fmtInt(x):pcf(x);
+function polySVG(pts,labels,o={}){const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]),mnx=Math.min(...xs),mny=Math.min(...ys),W=Math.max(...xs)-mnx,H=Math.max(...ys)-mny;
+  const k=o.k||Math.min(240/W,190/H,o.kmax||40),kx=o.grid||o.k?k:Math.max(k,48/W),ky=o.grid||o.k?k:Math.max(k,48/H),m=40,X=x=>m+(x-mnx)*kx,Y=y=>m+(y-mny)*ky,n=pts.length;
+  const cx=pts.reduce((s,p)=>s+X(p[0]),0)/n,cy=pts.reduce((s,p)=>s+Y(p[1]),0)/n;
+  const inside=(px,py)=>{let c=false;for(let i=0,j=n-1;i<n;j=i++){const xi=X(pts[i][0]),yi=Y(pts[i][1]),xj=X(pts[j][0]),yj=Y(pts[j][1]);if(((yi>py)!==(yj>py))&&px<(xj-xi)*(py-yi)/(yj-yi)+xi)c=!c}return c};
+  let g='',l='',a='';
+  if(o.grid){for(let x=1;x<W;x++)g+=`<line class="gl" x1="${X(mnx+x)}" y1="${Y(mny)}" x2="${X(mnx+x)}" y2="${Y(mny+H)}"/>`;for(let y=1;y<H;y++)g+=`<line class="gl" x1="${X(mnx)}" y1="${Y(mny+y)}" x2="${X(mnx+W)}" y2="${Y(mny+y)}"/>`}
+  const d=`M${pts.map(p=>X(p[0])+' '+Y(p[1])).join('L')}Z`;const cid='pc'+Math.random().toString(36).slice(2,8);
+  const step=o.step||.7;
+  pts.forEach((p,i)=>{const q=pts[(i+1)%n],mx=(X(p[0])+X(q[0]))/2,my=(Y(p[1])+Y(q[1]))/2,dx=X(q[0])-X(p[0]),dy=Y(q[1])-Y(p[1]),len=Math.hypot(dx,dy);let nx=dy/len,ny=-dx/len;
+    if(inside(mx+nx*4,my+ny*4)){nx=-nx;ny=-ny}const lb=labels[i];if(lb==null||lb==='')return;
+    if(lb==='?')a+=`<line x1="${X(p[0])}" y1="${Y(p[1])}" x2="${X(q[0])}" y2="${Y(q[1])}" stroke="var(--bad)" stroke-width="5" stroke-linecap="round"/>`;
+    const off=lb.length>4?16:12,tx=mx+nx*(Math.abs(nx)>.7?off+lb.length*3:off),ty=my+ny*off+4;
+    const cls=o.anim==='per'?` class="num" style="--d:${(i*step+.2).toFixed(2)}s"`:'';
+    l+=`<text${cls} x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="middle"${lb==='?'?' fill="var(--bad)"':''}>${lb}</text>`;
+    if(o.anim==='per')a+=`<line class="trace" style="${sty({L:len.toFixed(1),t:(step*.9).toFixed(2)+'s',d:(i*step).toFixed(2)+'s'})}" x1="${X(p[0])}" y1="${Y(p[1])}" x2="${X(q[0])}" y2="${Y(q[1])}" stroke="var(--sun)" stroke-width="6" stroke-linecap="round"/>`});
+  if(o.extra)a+=o.extra(X,Y,k);
+  return `<svg class="pa" viewBox="0 0 ${W*kx+2*m} ${H*ky+2*m}" width="${(W*kx+2*m).toFixed(0)}" height="${(H*ky+2*m).toFixed(0)}" role="img" aria-label="${E('Kuvio','Shape')}">${o.under?o.under(X,Y,k):''}<path d="${d}" fill="${o.fill||'var(--chip)'}" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>${g?`<clipPath id="${cid}"><path d="${d}"/></clipPath><g clip-path="url(#${cid})">${g}</g>`:''}${a}${l}</svg>`}
+const rectPts=(a,b)=>[[0,0],[a,0],[a,b],[0,b]];
+function areaRows(a,b){return(X,Y)=>{if(!(Number.isInteger(a)&&Number.isInteger(b)&&a<=15&&b<=12))return'';let s='';const st=Math.min(.5,4/b);
+  for(let r=0;r<b;r++){s+=`<g class="cin" style="--d:${(r*st).toFixed(2)}s"><rect x="${X(0)}" y="${Y(r)}" width="${X(a)-X(0)}" height="${Y(r+1)-Y(r)}" fill="var(--sun)" opacity=".8" stroke="var(--paper)" stroke-width="1"/>`;
+    for(let c=1;c<a;c++)s+=`<line x1="${X(c)}" y1="${Y(r)}" x2="${X(c)}" y2="${Y(r+1)}" stroke="var(--paper)" stroke-width="1"/>`;
+    s+=`<text x="${X(0)-8}" y="${(Y(r)+Y(r+1))/2+4}" text-anchor="end" style="font-size:10px">${(r+1)*a}</text></g>`}return s}}
+const vis=s=>`<div class="visual">${s}</div>`;
+const AU=u=>u+'²';
+function lsh(W,H,w,h){const c=R(0,3),fx=c&1,fy=c>>1,T=([x,y])=>[fx?W-x:x,fy?H-y:y];
+  const pts=[[0,0],[W-w,0],[W-w,h],[W,h],[W,H],[0,H]].map(T);
+  const r1=[[0,0],[W-w,H]].map(T),r2=[[W-w,h],[W,H]].map(T);return{pts,r1,r2}}
+function lshLen(pts){return pts.map((p,i)=>{const q=pts[(i+1)%pts.length];return Math.abs(q[0]-p[0])+Math.abs(q[1]-p[1])})}
+function rectsAnim(r1,r2,u,a1,a2){return(X,Y)=>{const rr=(r,col,d,t)=>{const x0=Math.min(r[0][0],r[1][0]),x1=Math.max(r[0][0],r[1][0]),y0=Math.min(r[0][1],r[1][1]),y1=Math.max(r[0][1],r[1][1]);
+  return `<g class="cin" style="--d:${d}s"><rect x="${X(x0)}" y="${Y(y0)}" width="${X(x1)-X(x0)}" height="${Y(y1)-Y(y0)}" fill="${col}" opacity=".85"/><text x="${(X(x0)+X(x1))/2}" y="${(Y(y0)+Y(y1))/2+4}" text-anchor="middle">${t}</text></g>`};
+  return rr(r1,'var(--blk2)',.2,`${nf(a1)} ${AU(u)}`)+rr(r2,'var(--sun)',1.2,`${nf(a2)} ${AU(u)}`)}}
+const PU=E({cm:'cm',m:'m'},{cm:'cm',m:'m'});
+function perGen(g){return L=>{
+  const grid=(g===3&&L===1)||(g===4&&L===1);
+  if(grid){const n=g===3?R(4,9):R(6,13),sh=polyo(g===3?4:5,g===3?3:4,n),P=bloop(sh).length;
+    return{kind:'int',showOk:1,visual:vis(gridSVG(sh,'per')),text:plbl(E('Ruudun sivu on 1 cm. Laske kuvion piiri.','Each square has sides of 1 cm. Find the perimeter of the shape.'),`${E('Piiri','Perimeter')} = ${BOX} cm`),ans:P,answerText:P+' cm',
+      hint:E('<p>Piiri on kuvion reunan pituus. Kulje reunaa pitkin ja laske, montako ruudun sivua reunalla on.</p><p>Muista myös sisäänpäin menevät kulmat.</p>','<p>The perimeter is the length all the way round the edge. Go round the edge and count the square sides.</p><p>Remember the corners that go inwards too.</p>'),
+      explain:`<p>${E('Reunalla on','There are')} ${P} ${E('ruudun sivua.','square sides on the edge.')} <b>${E('Piiri','Perimeter')} = ${P} cm</b></p>`+vis(gridSVG(sh,'per',1))}}
+  const mode=g===3?['rect','poly'][L-2]:g===4?['rect','miss'][L-2]:['rect','lsh','miss'][L-1];
+  const u=pick(['cm','m']);
+  if(mode==='rect'){const sq=Math.random()<.3,dec=g===6&&Math.random()<.4;let a=R(2,g===3?9:g===4?20:40),b=sq?a:R(2,g===3?9:g===4?20:40);if(!sq&&a===b)b++;if(dec){a+=.5}
+    if(sq)b=a;const P=2*(a+b),s=[nf(a)+' '+u,nf(b)+' '+u,sq?'':nf(a)+' '+u,sq?'':nf(b)+' '+u];
+    const shown=sq?[s[0],'','','']:[s[0],s[1],'',''];
+    const sides=sq?`${nf(a)} + ${nf(a)} + ${nf(a)} + ${nf(a)}`:`${nf(a)} + ${nf(b)} + ${nf(a)} + ${nf(b)}`;
+    return{kind:Number.isInteger(P)?'int':'dec',showOk:1,visual:vis(polySVG(rectPts(a,b),shown.map((x,i)=>i===0?x:i===1?x:''),{fill:'var(--chip)'}))+(sq?`<p class="pacap">${E('Neliö','A square')}</p>`:''),
+      text:plbl(E(`Laske ${sq?'neliön':'suorakulmion'} piiri.`,`Find the perimeter of the ${sq?'square':'rectangle'}.`),`${E('Piiri','Perimeter')} = ${BOX} ${u}`),ans:P,answerText:nf(P)+' '+u,
+      hint:sq?E('<p>Neliön kaikki neljä sivua ovat yhtä pitkiä. Laske neljän sivun pituudet yhteen.</p>','<p>All four sides of a square are the same length. Add up the four sides.</p>')
+        :E('<p>Piiri on kaikkien sivujen pituus yhteensä. Suorakulmion vastakkaiset sivut ovat yhtä pitkiä, joten sivuja on kaksi kumpaakin.</p>','<p>The perimeter is all the sides added together. Opposite sides of a rectangle are the same length, so there are two of each.</p>'),
+      explain:vis(polySVG(rectPts(a,b),s.map(x=>x||nf(a)+' '+u),{anim:'per'}))+`<p><b>${sides} = ${nf(P)} ${u}</b></p>`}}
+  if(mode==='poly'){const n=pick([3,5,5,6]),r=70,ang=[...Array(n)].map((_,i)=>(-90+360*i/n+R(-14,14))*Math.PI/180),pts=ang.map(t=>[Math.cos(t)*r*(1+Math.random()*.25),Math.sin(t)*r]);
+    const len=pts.map(()=>R(2,12)),P=len.reduce((s,x)=>s+x,0),lab=len.map(x=>x+' cm');
+    return{kind:'int',showOk:1,visual:vis(polySVG(pts,lab,{k:1})),text:plbl(E('Laske kuvion piiri.','Find the perimeter of the shape.'),`${E('Piiri','Perimeter')} = ${BOX} cm`),ans:P,answerText:P+' cm',
+      hint:E(`<p>Piiri on kaikkien sivujen pituus yhteensä. Kuviossa on ${n} sivua. Laske niiden pituudet yhteen.</p>`,`<p>The perimeter is all the sides added together. The shape has ${n} sides. Add up their lengths.</p>`),
+      explain:vis(polySVG(pts,lab,{k:1,anim:'per'}))+`<p><b>${len.join(' + ')} = ${P} cm</b></p>`}}
+  if(mode==='lsh'){const W=R(7,16),H=R(6,12),w=R(Math.max(3,Math.ceil(W*.3)),W-2),h=R(Math.max(3,Math.ceil(H*.3)),H-2),S=lsh(W,H,w,h),len=lshLen(S.pts),P=len.reduce((s,x)=>s+x,0);
+    const full=len.map(x=>x+' '+u),hide=new Set([pick([0,2]),pick([1,3])]);
+    const lab=full.map((x,i)=>hide.has(i)?'?':x);
+    return{kind:'int',showOk:1,visual:vis(polySVG(S.pts,lab,{})),text:plbl(E('Laske kuvion piiri. Päättele ensin puuttuvat sivut.','Find the perimeter. First work out the missing sides.'),`${E('Piiri','Perimeter')} = ${BOX} ${u}`),ans:P,answerText:P+' '+u,
+      hint:E(`<p>Vertaa vastakkaisia sivuja: kuvion kaksi lyhyttä vaakasivua ovat yhteensä yhtä pitkät kuin pitkä vaakasivu (${W} ${u}). Samoin pystysivuille (${H} ${u}).</p>`,`<p>Compare opposite sides: the two short horizontal sides together are as long as the long horizontal side (${W} ${u}). The same goes for the vertical sides (${H} ${u}).</p>`),
+      explain:vis(polySVG(S.pts,full,{anim:'per',step:.6}))+`<p><b>${len.join(' + ')} = ${P} ${u}</b></p>`}}
+  {const sq=Math.random()<.35;
+    if(sq){const a=R(2,g===4?12:25),P=4*a;return{kind:'int',showOk:1,visual:vis(polySVG(rectPts(a,a),['?','','',''],{}))+`<p class="pacap">${E('Neliö','A square')}</p>`,
+      text:plbl(E(`Neliön piiri on ${P} ${u}. Kuinka pitkä on sen sivu?`,`The perimeter of a square is ${P} ${u}. How long is each side?`),`${BOX} ${u}`),ans:a,answerText:a+' '+u,
+      hint:E('<p>Neliöllä on neljä yhtä pitkää sivua. Jaa piiri neljällä.</p>','<p>A square has four sides of the same length. Divide the perimeter by 4.</p>'),explain:`<p><b>${P} : 4 = ${a} ${u}</b></p>`+vis(polySVG(rectPts(a,a),[a+' '+u,a+' '+u,a+' '+u,a+' '+u],{anim:'per'}))}}
+    let a=R(3,g===4?15:30),b=R(2,g===4?15:30);if(a===b)a++;const P=2*(a+b);
+    return{kind:'int',showOk:1,visual:vis(polySVG(rectPts(a,b),[a+' '+u,'?','',''],{})),text:plbl(E(`Suorakulmion piiri on ${P} ${u}. Kuinka pitkä on punaisella merkitty sivu?`,`The perimeter of the rectangle is ${P} ${u}. How long is the side marked in red?`),`${BOX} ${u}`),ans:b,answerText:b+' '+u,
+      hint:E(`<p>Suorakulmiossa on kaksi ${a} ${u}:n sivua, yhteensä ${2*a} ${u}. Vähennä ne piiristä. Loput jakautuvat tasan kahdelle muulle sivulle.</p>`,`<p>The rectangle has two sides of ${a} ${u}, which make ${2*a} ${u}. Subtract them from the perimeter. The rest is shared equally between the other two sides.</p>`),
+      explain:`<p>${P} − ${a} − ${a} = ${P-2*a} ${u}</p><p><b>${P-2*a} : 2 = ${b} ${u}</b></p>`+vis(polySVG(rectPts(a,b),[a+' '+u,b+' '+u,a+' '+u,b+' '+u],{anim:'per'}))}}}}
+function areaGen(g){return L=>{
+  const unitTxt=g===3?E('ruutua','squares'):'cm²';
+  if((g<=4&&L===1)||(g===3&&L===3)){const half=g===3&&L===3||(g===4&&Math.random()<.4);const sh=polyo(g===3?5:6,g===3?4:4,g===3?R(4,10):R(7,14));
+    const hv=half?addHalves(sh,2*R(1,g===3?2:3)):[];const A=sh.cells.length+hv.length/2;
+    return{kind:'int',showOk:1,visual:vis(gridSVG(sh,'area',0,hv)),text:plbl(g===3?E('Montako ruutua kuvion pinta-ala on?','How many squares is the area of the shape?'):E('Yksi ruutu on 1 cm². Laske kuvion pinta-ala.','One square is 1 cm². Find the area of the shape.'),`${E('Pinta-ala','Area')} = ${BOX} ${unitTxt}`),ans:A,answerText:A+' '+unitTxt,
+      hint:E('<p>Pinta-ala kertoo, kuinka paljon tilaa kuvio peittää. Laske, montako ruutua kuviossa on.</p>','<p>The area tells you how much space the shape covers. Count how many squares there are in the shape.</p>')+(hv.length?E('<p>Kaksi puolikasta ruutua on yhdessä yksi kokonainen ruutu.</p>','<p>Two half squares make one whole square.</p>'):''),
+      explain:`<p>${E('Kokonaisia ruutuja','Whole squares')}: ${sh.cells.length}${hv.length?`, ${E('puolikkaita','halves')}: ${hv.length} = ${hv.length/2} ${E('kokonaista','whole squares')}`:''}</p><p><b>${E('Pinta-ala','Area')} = ${A} ${unitTxt}</b></p>`+vis(gridSVG(sh,'area',1,hv))}}
+  const mode=g===3?'rgrid':g===4?['rect','lsh'][L-2]:['rect','lsh',g===5?'miss':'tri'][L-1];
+  const u=mode==='rgrid'?null:pick(['cm','m']);
+  if(mode==='rgrid'||mode==='rect'){const sq=mode==='rect'&&Math.random()<.3,big=g>=5,dec=g===6&&Math.random()<.35;let a=R(2,mode==='rgrid'?8:big?25:12),b=sq?a:R(2,mode==='rgrid'?6:big?20:10);if(dec)a+=.5;if(sq)b=a;
+    const A=a*b,uu=mode==='rgrid'?unitTxt:AU(u),lab=mode==='rgrid'?['','','','']:[nf(a)+' '+u,sq?'':nf(b)+' '+u,'',''];
+    return{kind:Number.isInteger(A)?'int':'dec',showOk:1,visual:vis(polySVG(rectPts(a,b),lab,{grid:mode==='rgrid',kmax:mode==='rgrid'?GS:40,fill:mode==='rgrid'?'var(--blk2)':'var(--chip)'}))+(sq?`<p class="pacap">${E('Neliö','A square')}</p>`:''),
+      text:plbl(mode==='rgrid'?E('Montako ruutua suorakulmiossa on? Laske kertolaskulla.','How many squares are in the rectangle? Use multiplication.'):E(`Laske ${sq?'neliön':'suorakulmion'} pinta-ala.`,`Find the area of the ${sq?'square':'rectangle'}.`),`${E('Pinta-ala','Area')} = ${BOX} ${uu}`),ans:A,answerText:nf(A)+' '+uu,
+      hint:mode==='rgrid'?E('<p>Laske, montako ruutua on yhdessä rivissä ja montako rivejä on. Kerro ne keskenään.</p>','<p>Count how many squares there are in one row and how many rows there are. Multiply them together.</p>')
+        :sq?E('<p>Neliön pinta-ala = sivu · sivu.</p>','<p>Area of a square = side · side.</p>'):E('<p>Suorakulmion pinta-ala = kanta · korkeus. Ajattele ruudukkoa: montako riviä ja montako ruutua rivissä?</p>','<p>Area of a rectangle = base · height. Think of a grid: how many rows, and how many squares in each row?</p>'),
+      explain:vis(polySVG(rectPts(a,b),mode==='rgrid'?['','','','']:[nf(a)+' '+u,nf(b)+' '+u,'',''],{grid:Number.isInteger(a)&&Number.isInteger(b)&&a<=15&&b<=12,kmax:mode==='rgrid'?GS:40,extra:areaRows(a,b)}))+`<p><b>${nf(a)} · ${nf(b)} = ${nf(A)} ${uu}</b></p>`}}
+  if(mode==='lsh'){const small=g===4,W=R(small?6:7,small?10:18),H=R(small?6:6,small?8:14),w=R(Math.max(3,Math.ceil(W*.3)),W-2),h=R(Math.max(3,Math.ceil(H*.3)),H-2),S=lsh(W,H,w,h),len=lshLen(S.pts),a1=(W-w)*H,a2=w*(H-h),A=a1+a2;
+    return{kind:'int',showOk:1,visual:vis(polySVG(S.pts,len.map(x=>x+' '+u),{grid:small&&W<=12})),text:plbl(E('Laske kuvion pinta-ala.','Find the area of the shape.'),`${E('Pinta-ala','Area')} = ${BOX} ${AU(u)}`),ans:A,answerText:A+' '+AU(u),
+      hint:E('<p>Jaa kuvio kahdeksi suorakulmioksi. Laske kummankin pinta-ala ja laske ne yhteen.</p>','<p>Split the shape into two rectangles. Find the area of each one and add them together.</p>'),
+      explain:vis(polySVG(S.pts,len.map(x=>x+' '+u),{extra:rectsAnim(S.r1,S.r2,u,a1,a2)}))+`<p>${W-w} · ${H} = ${a1} ${AU(u)}, ${w} · ${H-h} = ${a2} ${AU(u)}</p><p><b>${a1} + ${a2} = ${A} ${AU(u)}</b></p>`}}
+  if(mode==='miss'){const a=R(2,12),b=R(2,12),A=a*b;
+    return{kind:'int',showOk:1,visual:vis(polySVG(rectPts(a,b),[a+' '+u,'?','',''],{})),text:plbl(E(`Suorakulmion pinta-ala on ${A} ${AU(u)}. Kuinka pitkä on punaisella merkitty sivu?`,`The area of the rectangle is ${A} ${AU(u)}. How long is the side marked in red?`),`${BOX} ${u}`),ans:b,answerText:b+' '+u,
+      hint:E(`<p>Pinta-ala = kanta · korkeus. Mikä luku kerrottuna luvulla ${a} on ${A}?</p>`,`<p>Area = base · height. What number multiplied by ${a} makes ${A}?</p>`),
+      explain:`<p><b>${A} : ${a} = ${b} ${u}</b></p>`+vis(polySVG(rectPts(a,b),[a+' '+u,b+' '+u,'',''],{grid:true,extra:areaRows(a,b)}))}}
+  {const b=R(4,20),h=R(3,14),t=R(0,b),A=b*h/2,pts=[[0,h],[b,h],[t,0]];
+    const draw=(an)=>polySVG(pts,[b+' '+u,'',''],{fill:'var(--blk2)',under:an?(X,Y)=>`<g class="cin" style="--d:.2s"><rect x="${X(0)}" y="${Y(0)}" width="${X(b)-X(0)}" height="${Y(h)-Y(0)}" fill="var(--sun-bg)" stroke="var(--sun)" stroke-width="2" stroke-dasharray="6 4"/></g>`:null,
+      extra:(X,Y)=>`<line x1="${X(t)}" y1="${Y(0)}" x2="${X(t)}" y2="${Y(h)}" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="5 4"/><path d="M${X(t)} ${Y(h)-9}h${t<b/2?9:-9}v9" fill="none" stroke="var(--ink)" stroke-width="1.5"/><text x="${X(t)+(t<b/2?8:-8)}" y="${(Y(0)+Y(h))/2}" text-anchor="${t<b/2?'start':'end'}">${h} ${u}</text>`});
+    return{kind:Number.isInteger(A)?'int':'dec',showOk:1,visual:vis(draw(0)),text:plbl(E('Laske kolmion pinta-ala.','Find the area of the triangle.'),`${E('Pinta-ala','Area')} = ${BOX} ${AU(u)}`),ans:A,answerText:nf(A)+' '+AU(u),
+      hint:E('<p>Kolmion pinta-ala on puolet sellaisen suorakulmion pinta-alasta, jolla on sama kanta ja korkeus.</p><p>Pinta-ala = kanta · korkeus : 2</p>','<p>The area of a triangle is half the area of a rectangle with the same base and height.</p><p>Area = base · height : 2</p>'),
+      explain:vis(draw(1))+`<p>${E('Suorakulmio','Rectangle')}: ${b} · ${h} = ${b*h} ${AU(u)}. ${E('Kolmio on siitä puolet.','The triangle is half of it.')}</p><p><b>${b*h} : 2 = ${nf(A)} ${AU(u)}</b></p>`}}}}
+function ppWordGen(g){return L=>{const K=pick(KIDS);let kind=L===1?'per':L===2?'area':g<=4?pick(['per','area']):'price';
+  const sq=Math.random()<.25;
+  if(kind==='per'){const C=pick([{u:'m',t:(a,b)=>E(`${sq?'Neliön':'Suorakulmion'} muotoinen kasvimaa on ${sq?`${a} metriä joka sivulta`:`${a} metriä pitkä ja ${b} metriä leveä`}. Montako metriä aitaa tarvitaan kasvimaan ympärille?`,`A ${sq?'square':'rectangular'} vegetable patch is ${sq?`${a} metres on each side`:`${a} metres long and ${b} metres wide`}. How many metres of fence are needed to go all the way round it?`),i:'puu'},
+      {u:'cm',t:(a,b)=>E(`${K.n} liimaa nauhan ${sq?'neliön':'suorakulmion'} muotoisen piirustuksen reunoille. Piirustus on ${sq?`${a} cm joka sivulta`:`${a} cm leveä ja ${b} cm korkea`}. Montako senttimetriä nauhaa tarvitaan?`,`${K.n} sticks ribbon round the edges of a ${sq?'square':'rectangular'} drawing. The drawing is ${sq?`${a} cm on each side`:`${a} cm wide and ${b} cm tall`}. How many centimetres of ribbon are needed?`),i:'naru'},
+      {u:'m',t:(a,b)=>E(`${K.n} juoksee ${sq?'neliön':'suorakulmion'} muotoisen pihan ympäri. Piha on ${sq?`${a} metriä joka sivulta`:`${a} metriä pitkä ja ${b} metriä leveä`}. Montako metriä on yksi kierros?`,`${K.n} runs round a ${sq?'square':'rectangular'} yard. The yard is ${sq?`${a} metres on each side`:`${a} metres long and ${b} metres wide`}. How many metres is one lap?`),i:'pokaali'}]);
+    let a=R(3,g===3?12:40),b=sq?a:R(2,g===3?10:30);if(!sq&&a===b)a++;const P=2*(a+b);
+    return{kind:'int',showOk:1,story:C.t(a,b),storyIcon:ICON[C.i],unit:C.u,ans:P,answerText:P+' '+C.u,visual:null,
+      hint:E('<p>Kun kuljetaan jonkin ympäri, lasketaan piiri: kaikkien sivujen pituudet yhteen.</p>','<p>Going all the way round something means finding the perimeter: add up the lengths of all the sides.</p>'),
+      explain:vis(polySVG(rectPts(a,b),[a+' '+C.u,b+' '+C.u,a+' '+C.u,b+' '+C.u],{anim:'per'}))+`<p><b>${a} + ${b} + ${a} + ${b} = ${P} ${C.u}</b></p>`}}
+  if(kind==='area'){if(g===3){const a=R(3,9),b=R(2,7),A=a*b;
+      return{kind:'int',showOk:1,story:E(`Kylpyhuoneen lattiaan laitetaan neliön muotoisia laattoja ${b} riviä. Jokaisessa rivissä on ${a} laattaa. Montako laattaa tarvitaan?`,`Square tiles are laid on a bathroom floor in ${b} rows. There are ${a} tiles in each row. How many tiles are needed?`),storyIcon:ICON.mitta,unit:'',ans:A,answerText:String(A),
+        hint:E('<p>Rivejä on yhtä monta ja jokaisessa yhtä monta laattaa. Käytä kertolaskua.</p>','<p>Every row has the same number of tiles. Use multiplication.</p>'),
+        explain:vis(polySVG(rectPts(a,b),['','','',''],{grid:true,kmax:GS,extra:areaRows(a,b)}))+`<p><b>${b} · ${a} = ${A}</b></p>`}}
+    const C=pick([{u:'m',t:(a,b)=>E(`Huoneen lattia on ${sq?`neliön muotoinen, ${a} metriä joka sivulta`:`${a} metriä pitkä ja ${b} metriä leveä`}. Montako neliömetriä mattoa tarvitaan peittämään koko lattia?`,`A room's floor is ${sq?`square, ${a} metres on each side`:`${a} metres long and ${b} metres wide`}. How many square metres of carpet are needed to cover the whole floor?`),i:'mitta'},
+      {u:'m',t:(a,b)=>E(`Nurmikko on ${sq?`neliön muotoinen, ${a} metriä joka sivulta`:`suorakulmion muotoinen, ${a} metriä pitkä ja ${b} metriä leveä`}. Mikä on nurmikon pinta-ala?`,`A lawn is ${sq?`square, ${a} metres on each side`:`a rectangle ${a} metres long and ${b} metres wide`}. What is the area of the lawn?`),i:'puu'},
+      {u:'cm',t:(a,b)=>E(`${K.n} piirtää ${sq?`neliön, jonka sivu on ${a} cm`:`suorakulmion, joka on ${a} cm leveä ja ${b} cm korkea`}. Mikä on sen pinta-ala?`,`${K.n} draws ${sq?`a square with sides of ${a} cm`:`a rectangle ${a} cm wide and ${b} cm tall`}. What is its area?`),i:'mitta'}]);
+    let a=R(2,g===4?12:25),b=sq?a:R(2,g===4?10:20);const A=a*b;
+    return{kind:'int',showOk:1,story:C.t(a,b),storyIcon:ICON[C.i],unit:AU(C.u),ans:A,answerText:A+' '+AU(C.u),
+      hint:E('<p>Kun jokin peitetään kokonaan, lasketaan pinta-ala: kanta · korkeus.</p>','<p>Covering something completely means finding the area: base · height.</p>'),
+      explain:vis(polySVG(rectPts(a,b),[a+' '+C.u,b+' '+C.u,'',''],{grid:a<=15&&b<=12,extra:areaRows(a,b)}))+`<p><b>${a} · ${b} = ${A} ${AU(C.u)}</b></p>`}}
+  const fence=Math.random()<.5,a=R(4,g===5?15:30),b=R(3,g===5?12:20),pr=fence?R(3,g===5?10:25):R(2,g===5?9:15),Q=fence?2*(a+b):a*b,T=Q*pr;
+  return{kind:'int',showOk:1,story:fence?E(`Suorakulmion muotoinen piha on ${a} metriä pitkä ja ${b} metriä leveä. Pihan ympärille rakennetaan aita, joka maksaa ${pr} € metriltä. Paljonko aita maksaa?`,`A rectangular yard is ${a} metres long and ${b} metres wide. A fence costing ${pr} € per metre is built all the way round it. How much does the fence cost?`)
+      :E(`Huoneen lattia on ${a} metriä pitkä ja ${b} metriä leveä. Lattiaan ostetaan parkettia, joka maksaa ${pr} € neliömetriltä. Paljonko parketti maksaa?`,`A room's floor is ${a} metres long and ${b} metres wide. Wooden flooring costing ${pr} € per square metre is bought for it. How much does the flooring cost?`),
+    storyIcon:ICON.kolikot,unit:'€',ans:T,answerText:fmtInt(T)+' €',
+    hint:fence?E('<p>Laske ensin aidan pituus eli pihan piiri. Kerro se metrihinnalla.</p>','<p>First find the length of the fence, which is the perimeter of the yard. Multiply it by the price per metre.</p>')
+      :E('<p>Laske ensin lattian pinta-ala. Kerro se neliömetrin hinnalla.</p>','<p>First find the area of the floor. Multiply it by the price per square metre.</p>'),
+    explain:vis(polySVG(rectPts(a,b),[a+' m',b+' m',fence?a+' m':'',fence?b+' m':''],fence?{anim:'per'}:{grid:a<=15&&b<=12,extra:areaRows(a,b)}))+`<p>${fence?`${E('Piiri','Perimeter')}: ${a} + ${b} + ${a} + ${b} = ${Q} m`:`${E('Pinta-ala','Area')}: ${a} · ${b} = ${Q} m²`}</p><p><b>${Q} · ${pr} € = ${fmtInt(T)} €</b></p>`}}}
+function c3dSVG(M,th,ph){const{W,D}=M,phi=ph??.62,cs=Math.cos(th),sn=Math.sin(th),cp=Math.cos(phi),sp=Math.sin(phi);
+  const h=M.h||[],gh=M.gh||null,Hm=M.solid?M.H:Math.max(1,...h.flat(),...(gh?gh.flat():[]));
+  const r=Math.hypot(W,D)/2+.15,LL=Math.hypot(Hm,2*r),s=Math.min(118/r,220/LL,54),pad=M.solid?44:12;
+  const P=(x,y,z)=>{x-=W/2;y-=D/2;const X=x*cs-y*sn,Y=x*sn+y*cs;return[X*s,(-z*cp-Y*sp)*s,Y*cp-z*sp]};
+  const w=2*r*s+2*pad,hh=LL*s+2*pad,ox=w/2,oy=pad+(LL*s-(Hm*cp+2*r*sp)*s)/2+(Hm*cp+r*sp)*s;
+  const pt=a=>a.map(([x,y,z])=>{const p=P(x,y,z);return(ox+p[0]).toFixed(1)+','+(oy+p[1]).toFixed(1)}).join(' ');
+  let o=`<polygon points="${pt([[-.15,-.15,0],[W+.15,-.15,0],[W+.15,D+.15,0],[-.15,D+.15,0]])}" fill="var(--plate)" stroke="var(--line)" stroke-width="1.5"/>`;
+  const occ=new Set(),cubes=[],k=(x,y,z)=>x+','+y+','+z;
+  const add=(x,y,z,t)=>{occ.add(k(x,y,z));cubes.push({x,y,z,t})};
+  if(M.solid)cubes.push({x:0,y:0,z:0,t:'s',sx:W,sy:D,sz:M.H});
+  else{for(let y=0;y<D;y++)for(let x=0;x<W;x++){const H0=(h[y]||[])[x]||0;for(let z=0;z<H0;z++)add(x,y,z,'c');if(gh){const G=gh[y][x];for(let z=H0;z<G;z++)add(x,y,z,'g')}}}
+  cubes.forEach(c=>{c.d=P(c.x+(c.sx||1)/2,c.y+(c.sy||1)/2,c.z+(c.sz||1)/2)[2]});cubes.sort((a,b)=>b.d-a.d);
+  const LH=[215,160,35,330,265,95,190];
+  for(const c of cubes){const{x,y,z}=c,X1=x+(c.sx||1),Y1=y+(c.sy||1),Z1=z+(c.sz||1);
+    const hue=c.t==='g'?42:M.layer?LH[z%LH.length]:(M.hue??215),sat=c.t==='g'?92:62;
+    const col=l=>`hsl(${hue},${sat}%,${l}%)`,stroke=c.t==='g'?'hsl(35,70%,32%)':`hsl(${hue},45%,22%)`;
+    const F=[];
+    if(c.t==='s'||!occ.has(k(x,y,z+1)))F.push([[[x,y,Z1],[X1,y,Z1],[X1,Y1,Z1],[x,Y1,Z1]],74]);
+    for(const[nx,ny]of[[1,0],[-1,0],[0,1],[0,-1]]){const nY=nx*sn+ny*cs;if(nY>=-1e-6)continue;if(c.t!=='s'&&occ.has(k(x+nx,y+ny,z)))continue;
+      const nX=nx*cs-ny*sn,l=Math.round(52-14*nX);
+      const q=nx===1?[[X1,y,z],[X1,Y1,z],[X1,Y1,Z1],[X1,y,Z1]]:nx===-1?[[x,y,z],[x,Y1,z],[x,Y1,Z1],[x,y,Z1]]:ny===1?[[x,Y1,z],[X1,Y1,z],[X1,Y1,Z1],[x,Y1,Z1]]:[[x,y,z],[X1,y,z],[X1,y,Z1],[x,y,Z1]];F.push([q,l])}
+    for(const[q,l]of F)o+=`<polygon points="${pt(q)}" fill="${col(l)}" stroke="${stroke}" stroke-width="${c.t==='s'?2:1.6}" stroke-linejoin="round"${c.t==='g'?' stroke-dasharray="4 3"':''}/>`;}
+  if(M.solid&&M.lab){const L=M.lab,B=P(W/2,D/2,0),lab=(p,t,anch='middle',dx=0,dy=0)=>{const[u,v]=P(...p);let vx=u-B[0],vy=v-B[1];const n=Math.hypot(vx,vy)||1;vx/=n;vy/=n;
+      return `<text x="${(ox+u+vx*26+dx).toFixed(1)}" y="${(oy+v+vy*24+dy+5).toFixed(1)}" text-anchor="${anch}"${t==='?'?' fill="var(--bad)"':''}>${t}</text>`};
+    const yF=(0*sn+(-1)*cs)<0?0:D,xF=(1*sn)<0?W:0;
+    const el=(p1,p2)=>{const A=P(...p1),B2=P(...p2);return Math.hypot(A[0]-B2[0],A[1]-B2[1])};if(el([0,yF,0],[W,yF,0])>24)o+=lab([W/2,yF,0],L[0]);if(el([xF,0,0],[xF,D,0])>24)o+=lab([xF,D/2,0],L[1]);
+    let best=null;for(const[cx,cy]of[[0,0],[W,0],[W,D],[0,D]]){const u=P(cx,cy,0)[0];if(!best||u>best[0])best=[u,cx,cy]}
+    const[u2,v2]=P(best[1],best[2],M.H/2);o+=`<text x="${(ox+u2+10).toFixed(1)}" y="${(oy+v2+5).toFixed(1)}" text-anchor="start"${L[2]==='?'?' fill="var(--bad)"':''}>${L[2]}</text>`}
+  return `<svg class="pa c3s" viewBox="${M.solid?-40:0} 0 ${w+(M.solid?80:0)} ${hh}" width="${(w+(M.solid?80:0)).toFixed(0)}" height="${hh.toFixed(0)}">${o}</svg>`}
+function c3dBox(M,lbl){const th=M.th??-.55,m=JSON.stringify(M).replace(/'/g,'&#39;');
+  return `<div class="c3d" role="group" aria-label="${lbl}" data-m='${m}' data-th="${th}" data-ph=".62"><div class="c3dv" role="img" aria-label="${lbl}">${c3dSVG(M,th,.62)}</div><div class="c3dbar"><button type="button" class="c3db" data-rot="-1" aria-label="${E('Käännä vasemmalle','Turn left')}">↺</button><button type="button" class="c3db" data-tilt="1" aria-label="${E('Katso ylempää','View from higher up')}">↑</button><span>${E('Pyöritä sormella','Drag to turn')}</span><button type="button" class="c3db" data-tilt="-1" aria-label="${E('Katso alempaa','View from lower down')}">↓</button><button type="button" class="c3db" data-rot="1" aria-label="${E('Käännä oikealle','Turn right')}">↻</button></div></div>`}
+const PHL=[.15,1.3],phC=v=>Math.max(PHL[0],Math.min(PHL[1],v));
+function c3dSet(el,th,ph){ph=phC(ph??+el.dataset.ph);el.dataset.th=th;el.dataset.ph=ph;if(!el._m)el._m=JSON.parse(el.dataset.m);el.querySelector('.c3dv').innerHTML=c3dSVG(el._m,th,ph)}
+function c3dTurn(el,dt,dp=0){if(!el)return;const a=+el.dataset.th,b=a+dt*Math.PI/4,pa=+el.dataset.ph,pb=phC(pa+dp*.35);if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){c3dSet(el,b,pb);return}
+  const t0=performance.now(),st=t=>{const q=Math.min(1,(t-t0)/380),e=q<.5?2*q*q:1-Math.pow(-2*q+2,2)/2;c3dSet(el,a+(b-a)*e,pa+(pb-pa)*e);if(q<1)requestAnimationFrame(st)};requestAnimationFrame(st)}
+let C3D=null;
+document.addEventListener('pointerdown',e=>{const v=e.target.closest&&e.target.closest('.c3dv');if(!v)return;const el=v.parentElement;C3D={el,x:e.clientX,y:e.clientY,th:+el.dataset.th,ph:+el.dataset.ph,id:e.pointerId};try{v.setPointerCapture(e.pointerId)}catch(_){}});
+document.addEventListener('pointermove',e=>{if(!C3D||e.pointerId!==C3D.id)return;c3dSet(C3D.el,C3D.th+(e.clientX-C3D.x)*.012,C3D.ph+(e.clientY-C3D.y)*.01)});
+['pointerup','pointercancel'].forEach(t=>document.addEventListener(t,e=>{if(C3D&&e.pointerId===C3D.id)C3D=null}));
+function wellOK(h){const D=h.length,W=h[0].length,g=(x,y)=>x<0||y<0||x>=W||y>=D?0:h[y][x];
+  for(let y=0;y<D;y++)for(let x=0;x<W;x++){const m=Math.min(g(x+1,y),g(x-1,y),g(x,y+1),g(x,y-1));if(m>=h[y][x]+2)return false}return true}
+function hmap(W,D,Hmax,lo,hi){for(let t=0;t<500;t++){const h=[...Array(D)].map(()=>Array(W).fill(0));const n=R(Math.min(W*D,Math.max(1,Math.ceil(lo/Hmax))),W*D);
+    let cells=[[R(0,W-1),R(0,D-1)]];const key=([x,y])=>x+','+y,S=new Set([key(cells[0])]);let g=0;
+    while(cells.length<n&&g++<300){const[x,y]=pick(cells),[dx,dy]=pick(NB4),nx=x+dx,ny=y+dy;if(nx<0||ny<0||nx>=W||ny>=D||S.has(nx+','+ny))continue;S.add(nx+','+ny);cells.push([nx,ny])}
+    for(const[x,y]of cells)h[y][x]=R(1,Hmax);const tot=h.flat().reduce((a,b)=>a+b,0);
+    if(tot>=lo&&tot<=hi&&(Hmax===1||h.flat().some(v=>v>1))&&wellOK(h))return h}return[[1,2],[1,0]]}
+function topView(h){const D=h.length,W=h[0].length,c=30,m=6;let s='',i=0;
+  for(let y=0;y<D;y++)for(let x=0;x<W;x++){const v=h[y][x];const yy=D-1-y;s+=`<rect x="${m+x*c}" y="${m+yy*c}" width="${c}" height="${c}" fill="${v?'var(--chip)':'none'}" stroke="var(--line)"/>`;
+    if(v)s+=`<text class="cin" style="--d:${(.3*i++).toFixed(1)}s" x="${m+x*c+c/2}" y="${m+yy*c+c/2+5}" text-anchor="middle">${v}</text>`}
+  return `<svg class="pa" viewBox="0 0 ${W*c+2*m} ${D*c+2*m}" width="${W*c+2*m}" height="${D*c+2*m}" role="img" aria-label="${E('Ylhäältä katsottuna','Seen from above')}">${s}</svg>`}
+const sumH=h=>h.flat().reduce((a,b)=>a+b,0);
+function layerTxt(h){const Hm=Math.max(...h.flat()),L=[];for(let z=1;z<=Hm;z++)L.push(h.flat().filter(v=>v>=z).length);return L}
+function towerGen(g){return L=>{
+  const cfg={1:[[3,2,1,3,6],[2,2,2,4,8],[3,2,3,6,12]],2:[[3,2,2,4,8],[3,2,3,6,12],[3,3,3,9,18]],3:[[3,2,3,5,12],[3,3,3,10,20],null],4:[[3,3,3,8,16],[4,3,3,12,24],null],5:[[3,3,4,10,20],[4,3,4,15,30],null],6:[[4,3,4,12,24],[4,4,4,18,36],null]}[g][L-1];
+  const BL=E('palikkaa','blocks');
+  if(cfg){const[W,D,Hm,lo,hi]=cfg,h=hmap(W,D,Hm,lo,hi),N=sumH(h),lay=layerTxt(h);
+    return{kind:'int',showOk:1,visual:vis(c3dBox({W,D,h},E('Palikkatorni','Block tower'))),text:plbl(E('Montako palikkaa tornissa on?','How many blocks are in the tower?'),`${BOX} ${BL}`),ans:N,answerText:`${N} ${BL}`,
+      hint:E('<p>Laske torni kerrallaan: montako palikkaa on kussakin pinossa? Muista myös palikat, jotka ovat toisten alla.</p><p>Voit pyörittää tornia ja katsoa sitä joka puolelta.</p>','<p>Count one stack at a time: how many blocks are in each stack? Remember the blocks hidden underneath the others too.</p><p>You can turn the tower and look at it from every side.</p>'),
+      explain:`<p>${E('Ylhäältä katsottuna jokaisessa ruudussa on pinon korkeus','Seen from above, each square shows how tall that stack is')}:</p>${vis(topView(h)+c3dBox({W,D,h,layer:1},E('Palikkatorni kerroksittain','Block tower in layers')))}<p>${E('Kerroksittain','Layer by layer')}: ${lay.join(' + ')} = ${N}</p><p><b>${N} ${BL}</b></p>`}}
+  const[a,b,c]=g<=4?[R(2,3),R(2,3),R(2,3)]:[R(3,4),R(2,4),R(2,4)];let h,gh=[...Array(b)].map(()=>Array(a).fill(c));
+  for(let t=0;t<200;t++){h=gh.map(r=>r.map(v=>Math.random()<.45?R(Math.random()<.2?0:1,v-1):v));const m=a*b*c-sumH(h);if(m>=2&&m<=(g<=4?8:14)&&sumH(h)>0&&wellOK(h))break}
+  const N=sumH(h),M=a*b*c-N,shape=a===b&&b===c?E('kuutio','cube'):E('suorakulmainen särmiö','cuboid');
+  return{kind:'int',showOk:1,visual:vis(c3dBox({W:a,D:b,h},E('Palikkatorni','Block tower'))),
+    text:plbl(E(`Montako palikkaa pitää lisätä, jotta tornista tulee täysi ${a} × ${b} × ${c} -${a===b&&b===c?'kuutio':'särmiö'}?`,`How many blocks must be added to make a full ${a} × ${b} × ${c} ${shape}?`),`${BOX} ${BL}`),ans:M,answerText:`${M} ${BL}`,
+    hint:E(`<p>Täydessä ${shape==='kuutio'?'kuutiossa':'särmiössä'} on ${a} · ${b} · ${c} palikkaa. Laske, montako palikkaa nyt on, ja vähennä.</p><p>Tai katso jokaista pinoa: montako palikkaa puuttuu, jotta pino olisi ${c} palikkaa korkea?</p>`,`<p>A full ${shape} has ${a} · ${b} · ${c} blocks. Count how many there are now, and subtract.</p><p>Or look at each stack: how many blocks are missing to make it ${c} blocks tall?</p>`),
+    explain:`<p>${E('Puuttuvat palikat on merkitty keltaisella.','The missing blocks are shown in yellow.')}</p>${vis(c3dBox({W:a,D:b,h,gh},E('Täydennetty torni','Completed tower')))}<p>${a} · ${b} · ${c} = ${a*b*c}, ${E('nyt','now')} ${N}</p><p><b>${a*b*c} − ${N} = ${M}</b></p>`}}}
+function boxGen(g){return L=>{const u=pick(['cm','m']),V3=x=>x+'³';
+  if(L===1){const a=R(2,5),b=R(2,4),c=R(2,4),V=a*b*c,h=[...Array(b)].map(()=>Array(a).fill(c));
+    return{kind:'int',showOk:1,visual:vis(c3dBox({W:a,D:b,h},E('Särmiö palikoista','Cuboid made of blocks'))),text:plbl(E('Yksi palikka on 1 cm³. Mikä on särmiön tilavuus?','Each block is 1 cm³. What is the volume of the cuboid?'),`${E('Tilavuus','Volume')} = ${BOX} cm³`),ans:V,answerText:V+' cm³',
+      hint:E('<p>Laske ensin, montako palikkaa on yhdessä kerroksessa (pohjassa). Kerro se kerrosten määrällä.</p>','<p>First count how many blocks there are in one layer (the bottom). Multiply by the number of layers.</p>'),
+      explain:vis(c3dBox({W:a,D:b,h,layer:1},E('Särmiö kerroksittain','Cuboid in layers')))+`<p>${E('Yhdessä kerroksessa','In one layer')}: ${a} · ${b} = ${a*b}. ${E('Kerroksia','Layers')}: ${c}.</p><p><b>${a*b} · ${c} = ${V} cm³</b></p>`}}
+  if(L===2){const a=R(2,g===5?10:15),b=R(2,g===5?8:12),c=R(2,g===5?8:12),V=a*b*c;
+    return{kind:'int',showOk:1,visual:vis(c3dBox({W:a,D:b,H:c,solid:1,lab:[a+' '+u,b+' '+u,c+' '+u]},E('Suorakulmainen särmiö','Cuboid'))),text:plbl(E('Laske särmiön tilavuus.','Find the volume of the cuboid.'),`${E('Tilavuus','Volume')} = ${BOX} ${V3(u)}`),ans:V,answerText:fmtInt(V)+' '+V3(u),
+      hint:E('<p>Särmiön tilavuus = pituus · leveys · korkeus.</p><p>Laske ensin pohjan pinta-ala ja kerro se korkeudella.</p>','<p>Volume of a cuboid = length · width · height.</p><p>First find the area of the base, then multiply it by the height.</p>'),
+      explain:`<p>${E('Pohjan pinta-ala','Area of the base')}: ${a} · ${b} = ${a*b} ${u}²</p><p><b>${a*b} · ${c} = ${fmtInt(V)} ${V3(u)}</b></p>`}}
+  if(g===5){const a=R(2,10),b=R(2,8),c=R(2,9),V=a*b*c;
+    return{kind:'int',showOk:1,visual:vis(c3dBox({W:a,D:b,H:c,solid:1,lab:[a+' '+u,b+' '+u,'?']},E('Suorakulmainen särmiö','Cuboid'))),
+      text:plbl(E(`Särmiön tilavuus on ${fmtInt(V)} ${V3(u)}. Kuinka korkea se on?`,`The volume of the cuboid is ${fmtInt(V)} ${V3(u)}. How tall is it?`),`${BOX} ${u}`),ans:c,answerText:c+' '+u,
+      hint:E(`<p>Laske ensin pohjan pinta-ala: ${a} · ${b}. Montako tällaista kerrosta tarvitaan, jotta tilavuus on ${fmtInt(V)}?</p>`,`<p>First find the area of the base: ${a} · ${b}. How many layers like that make a volume of ${fmtInt(V)}?</p>`),
+      explain:`<p>${E('Pohja','Base')}: ${a} · ${b} = ${a*b} ${u}²</p><p><b>${fmtInt(V)} : ${a*b} = ${c} ${u}</b></p>`}}
+  const a=R(2,8)*10,b=R(2,5)*10,c=R(2,6)*10,V=a*b*c/1000;
+  const it=pick([[E('Akvaario','An aquarium'),E('vettä','water'),E('siihen','in it')],[E('Laatikko','A box'),E('hiekkaa','sand'),E('siihen','in it')],[E('Kukkalaatikko','A planter'),E('multaa','soil'),E('siihen','in it')]]);
+  return{kind:'int',showOk:1,visual:vis(c3dBox({W:a/10,D:b/10,H:c/10,solid:1,lab:[a+' cm',b+' cm',c+' cm']},E('Suorakulmainen särmiö','Cuboid'))),
+    text:plbl(E(`${it[0]} on ${a} cm pitkä, ${b} cm leveä ja ${c} cm korkea. Montako litraa ${it[1]} ${it[2]} mahtuu?`,`${it[0]} is ${a} cm long, ${b} cm wide and ${c} cm tall. How many litres of ${it[1]} fit ${it[2]}?`),`${BOX} ${E('litraa','litres')}`),ans:V,answerText:V+' l',
+    hint:E('<p>1 litra = 1 dm³, ja 1 dm = 10 cm. Muuta mitat ensin desimetreiksi.</p>','<p>1 litre = 1 dm³, and 1 dm = 10 cm. First change the measurements into decimetres.</p>'),
+    explain:`<p>${a} cm = ${a/10} dm, ${b} cm = ${b/10} dm, ${c} cm = ${c/10} dm</p><p><b>${a/10} · ${b/10} · ${c/10} = ${V} dm³ = ${V} l</b></p>`}}}
+const SYC=['var(--blk)','var(--berry)','var(--leaf)','var(--sun)'],SYN=E(['sininen','punainen','vihreä','keltainen'],['blue','red','green','yellow']);
+const skey=(x,y)=>x+','+y;
+function symSpec(g,L,mode){let W,H,ax,ay,ncol=1,n;
+  const r=Math.random()<.5?'v':'h';
+  if(g<=2){const o=mode==='fill'||mode==='pick'?(L===1?'v':L===2?'h':r):r;W=6;H=5;n=L===3?R(5,8):R(3,6);if(mode==='pick'&&L===3)ncol=2;if(mode==='is'&&L===3){W=8;H=6;n=R(6,10);ncol=2}
+    if(o==='h'){W=5;H=6}return{W,H,ax:o==='v'?W/2:null,ay:o==='h'?H/2:null,ncol,n}}
+  if(g<=4||mode!=='fill'){W=8;H=6;n=R(6,10);ncol=mode==='fill'?L:mode==='pick'?(L===1?1:L===2?2:3):(L===1?1:2);if(r==='h'){W=6;H=8}
+    return{W,H,ax:r==='v'?W/2:null,ay:r==='h'?H/2:null,ncol,n}}
+  if(L===1){W=8;H=6;if(r==='h'){W=6;H=8}return{W,H,ax:r==='v'?4:null,ay:r==='h'?4:null,ncol:3,n:R(8,12)}}
+  if(L===2){const a=pick([3,6]);if(r==='v'){W=9;H=6;return{W,H,ax:a,ay:null,ncol:2,n:R(6,10),off:1}}W=6;H=9;return{W,H,ax:null,ay:a,ncol:2,n:R(6,10),off:1}}
+  return{W:8,H:8,ax:4,ay:4,ncol:2,n:R(5,8)}}
+function mirV(sp,x){return 2*sp.ax-1-x}function mirH(sp,y){return 2*sp.ay-1-y}
+function inGiven(sp,x,y){const gv=sp.gx??0,gh=sp.gy??0;
+  if(sp.ax!=null){if(gv===0?x>=sp.ax:x<sp.ax)return false}
+  if(sp.ay!=null){if(gh===0?y>=sp.ay:y<sp.ay)return false}return true}
+function symBuild(sp){sp.gx=0;sp.gy=0;
+  if(sp.off){if(sp.ax!=null)sp.gx=sp.ax<sp.W/2?0:1;if(sp.ay!=null)sp.gy=sp.ay<sp.H/2?0:1}
+  const ok=(x,y)=>{if(x<0||y<0||x>=sp.W||y>=sp.H||!inGiven(sp,x,y))return false;if(sp.ax!=null){const m=mirV(sp,x);if(m<0||m>=sp.W)return false}if(sp.ay!=null){const m=mirH(sp,y);if(m<0||m>=sp.H)return false}return true};
+  for(let t=0;t<300;t++){const sx=sp.ax!=null?(sp.gx===0?sp.ax-1:sp.ax):R(0,sp.W-1),sy=sp.ay!=null?(sp.gy===0?sp.ay-1:sp.ay):R(0,sp.H-1);if(!ok(sx,sy))continue;
+    const S=new Map([[skey(sx,sy),0]]),cells=[[sx,sy]];let q=0;
+    while(cells.length<sp.n&&q++<400){const[x,y]=pick(cells),[dx,dy]=pick(NB4);if(!ok(x+dx,y+dy)||S.has(skey(x+dx,y+dy)))continue;S.set(skey(x+dx,y+dy),0);cells.push([x+dx,y+dy])}
+    if(cells.length<Math.min(sp.n,3))continue;
+    const ks=shuffle([...S.keys()]);ks.forEach((k,i)=>S.set(k,i<sp.ncol?i:R(0,sp.ncol-1)));
+    const full=new Map(S);for(const[k,c]of S){const[x,y]=k.split(',').map(Number);const xs=sp.ax!=null?[x,mirV(sp,x)]:[x],ys=sp.ay!=null?[y,mirH(sp,y)]:[y];for(const a of xs)for(const b of ys)full.set(skey(a,b),c)}
+    if(sp.ax!=null&&sp.ay==null){let same=true;for(const[k,c]of S){const[x,y]=k.split(',').map(Number);if(S.get(skey(x,sp.H-1-y))!==c){same=false;break}}if(same&&S.size>1)continue}
+    return{given:S,full}}
+  return null}
+function symSVG(sp,cells,o={}){const c=o.c||30,m=14,X=x=>m+x*c,Y=y=>m+y*c,w=sp.W*c+2*m,h=sp.H*c+2*m;let s='';
+  for(let y=0;y<sp.H;y++)for(let x=0;x<sp.W;x++){const k=skey(x,y),v=cells.get(k),ed=o.edit&&!inGiven(sp,x,y);
+    s+=`<rect${ed?` class="se" data-k="${k}"`:''} x="${X(x)}" y="${Y(y)}" width="${c}" height="${c}" fill="${v!=null?SYC[v]:o.shade&&!inGiven(sp,x,y)?'var(--bg)':'var(--paper)'}" stroke="var(--line)" stroke-width="1"/>`}
+  if(o.inner)s+=o.inner(X,Y,c);
+  if(sp.ax!=null&&!o.noAxis)s+=`<line x1="${X(sp.ax)}" y1="${m-8}" x2="${X(sp.ax)}" y2="${h-m+8}" stroke="var(--bad)" stroke-width="3" stroke-dasharray="7 5"/>`;
+  if(sp.ay!=null&&!o.noAxis)s+=`<line x1="${m-8}" y1="${Y(sp.ay)}" x2="${w-m+8}" y2="${Y(sp.ay)}" stroke="var(--bad)" stroke-width="3" stroke-dasharray="7 5"/>`;
+  if(o.lines)s+=o.lines(X,Y);
+  if(o.q){const qx=sp.ax!=null?(sp.gx===0?(X(sp.ax)+X(sp.W))/2:(X(0)+X(sp.ax))/2):w/2,qy=sp.ay!=null?(sp.gy===0?(Y(sp.ay)+Y(sp.H))/2:(Y(0)+Y(sp.ay))/2):h/2;s+=`<text x="${qx}" y="${qy+14}" text-anchor="middle" style="font-size:40px;fill:var(--soft)">?</text>`}
+  return `<svg${o.id?` id="${o.id}"`:''} class="pa sym" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="${E('Ruudukko ja symmetria-akseli','Grid with a line of symmetry')}">${s}</svg>`}
+function symFlip(sp,given,full){const c=30,m=14,X=x=>m+x*c,Y=y=>m+y*c;const cellR=(M)=>[...M].map(([k,v])=>{const[x,y]=k.split(',').map(Number);return `<rect x="${X(x)}" y="${Y(y)}" width="${c}" height="${c}" fill="${SYC[v]}" stroke="var(--paper)" stroke-width="1.5"/>`}).join('');
+  const g=cellR(given);let inner;
+  if(sp.ax!=null&&sp.ay!=null)inner=()=>`${g}<g class="symH" style="transform-origin:0 ${Y(sp.ay)}px;--d:1.8s">${g}<g class="symV" style="transform-origin:${X(sp.ax)}px 0">${g}</g></g><g class="symV" style="transform-origin:${X(sp.ax)}px 0">${g}</g>`;
+  else if(sp.ax!=null)inner=()=>`${g}<g class="symV" style="transform-origin:${X(sp.ax)}px 0">${g}</g>`;
+  else inner=()=>`${g}<g class="symH" style="transform-origin:0 ${Y(sp.ay)}px">${g}</g>`;
+  return symSVG(sp,new Map(),{inner})}
+function symState(){if(!P.st)P.st=new Map();return P.st}
+function symTap(r){if(done)return;const k=r.dataset.k,st=symState(),cv=P.cur||0;if(st.get(k)===cv)st.delete(k);else st.set(k,cv);r.setAttribute('fill',st.has(k)?SYC[st.get(k)]:'var(--bg)');r.classList.remove('wr','ms')}
+function symEval(){const st=symState();if(!st.size)return{bad:E('Väritä ruudut napauttamalla niitä.','Tap the squares to colour them.')};let ok=true;
+  document.querySelectorAll('#symg .se').forEach(r=>{const k=r.dataset.k,t=P.full.get(k),v=st.get(k);const wrong=v!=null&&v!==t;r.classList.toggle('wr',wrong);if(wrong||(t!=null&&v!==t))ok=false});return{ok}}
+function symReveal(){document.querySelectorAll('#symg .se').forEach(r=>{const k=r.dataset.k,t=P.full.get(k),v=symState().get(k);if(t!=null&&v!==t){r.classList.add('ms');r.setAttribute('fill',SYC[t])}})}
+function symAxisTxt(sp){return sp.ax!=null&&sp.ay!=null?E('kahden akselin','two lines'):sp.ax!=null?E('pystysuoran akselin','a vertical line'):E('vaakasuoran akselin','a horizontal line')}
+const plbl0=t=>`<span class="bg" style="display:block;font-size:.55em;margin-bottom:.3em">${t}</span>`;
+function symFillGen(g){return L=>{let sp,B;for(let t=0;t<20&&!B;t++){sp=symSpec(g,L,'fill');B=symBuild(sp)}
+  const exp=new Map([...B.full].filter(([k])=>{const[x,y]=k.split(',').map(Number);return!inGiven(sp,x,y)}));
+  return{kind:'sym',showOk:1,failMsg:E('Puuttuvat ruudut näkyvät nyt vihreällä reunuksella.','The missing squares are now shown with a green border.'),sp,full:exp,ncol:sp.ncol,cur:0,st:new Map(),visual:symSVG(sp,B.given,{edit:1,id:'symg',shade:1}),
+    text:plbl0(sp.ax!=null&&sp.ay!=null?E('Täydennä kuvio symmetriseksi molempien katkoviivojen suhteen.','Complete the shape so that it is symmetrical about both dashed lines.'):E('Täydennä kuvio symmetriseksi. Katkoviiva on symmetria-akseli.','Complete the shape so that it is symmetrical. The dashed line is the line of symmetry.'))+`<span class="bg" style="display:block;font-size:.5em;color:var(--soft)">${E('Napauta ruutuja värittääksesi ne.','Tap the squares to colour them.')}</span>`,
+    answerText:'',hint:E(`<p>Kuvittele, että taitat paperin katkoviivaa pitkin. Jokainen väritetty ruutu osuu toiselle puolelle yhtä kauas viivasta.</p><p>Aloita viivan vierestä ja etene ruutu kerrallaan poispäin.${sp.ncol>1?' Muista myös värit.':''}</p>`,`<p>Imagine folding the paper along the dashed line. Each coloured square lands the same distance from the line on the other side.</p><p>Start next to the line and work outwards one square at a time.${sp.ncol>1?' Remember the colours too.':''}</p>`),
+    explain:`<p>${E('Kuvio taittuu akselin yli kuin paperi.','The shape folds over the line like paper.')}</p>${vis(symFlip(sp,B.given,B.full))}`}}}
+function symVariants(sp,given){const ox=sp.ax!=null?(sp.gx===0?sp.ax:0):0,oy=sp.ay!=null?(sp.gy===0?sp.ay:0):0;
+  const rw=sp.ax!=null?(sp.gx===0?sp.W-sp.ax:sp.ax):sp.W,rh=sp.ay!=null?(sp.gy===0?sp.H-sp.ay:sp.ay):sp.H,rs={W:rw,H:rh};
+  const T=(f)=>{const M=new Map();for(const[k,v]of given){const[x,y]=k.split(',').map(Number);const[a,b]=f(x,y);if(a<0||b<0||a>=rw||b>=rh)return null;M.set(skey(a,b),v)}return M};
+  const mx=x=>sp.ax!=null?mirV(sp,x)-ox:x,my=y=>sp.ay!=null?mirH(sp,y)-oy:y;
+  const good=T((x,y)=>[mx(x),my(y)]);
+  const trans=T((x,y)=>sp.ax!=null?[x-(sp.gx===0?0:sp.ax),y]:[x,y-(sp.gy===0?0:sp.ay)]);
+  const wrong=T((x,y)=>sp.ax!=null?[mx(x),rh-1-y]:[rw-1-x,my(y)]);
+  const odd=()=>{const M=new Map(good);const ks=[...M.keys()];const k=pick(ks);if(sp.ncol>1&&Math.random()<.5){M.set(k,(M.get(k)+1)%sp.ncol)}else{M.delete(k);for(let t=0;t<40;t++){const[x,y]=pick(ks).split(',').map(Number),[dx,dy]=pick(NB4),nk=skey(x+dx,y+dy);if(x+dx>=0&&y+dy>=0&&x+dx<rw&&y+dy<rh&&!M.has(nk)&&nk!==k){M.set(nk,M.get(pick([...M.keys()]))??0);break}}}return M};
+  return{rs,good,trans,wrong,odd}}
+const ser=M=>M?[...M].map(([k,v])=>k+':'+v).sort().join('|'):'';
+function symPickGen(g){return L=>{for(let t=0;t<60;t++){const sp=symSpec(g,L,'pick'),B=symBuild(sp);if(!B)continue;const V=symVariants(sp,B.given);if(!V.good)continue;
+    const opts=[V.good];const add=M=>{if(M&&M.size&&!opts.some(o=>ser(o)===ser(M)))opts.push(M)};
+    if(L===3&&g>=3){for(let i=0;i<10&&opts.length<4;i++)add(V.odd())}else{add(V.trans);add(V.wrong);for(let i=0;i<10&&opts.length<4;i++)add(V.odd())}
+    if(opts.length<4)continue;const ord=shuffle([0,1,2,3]),sm={W:V.rs.W,H:V.rs.H,ax:null,ay:null};
+    return{kind:'choice',symopts:1,showOk:1,choices:ord.map(i=>[String(i),symSVG(sm,opts[i],{c:22})]),ans:'0',
+      visual:symSVG(sp,B.given,{q:1}),text:plbl(E('Mikä kuva on oikea toinen puoli? Katkoviiva on symmetria-akseli.','Which picture is the correct other half? The dashed line is the line of symmetry.'),''),answerText:'',
+      hint:E('<p>Peilikuvassa ruudut, jotka ovat lähellä viivaa, pysyvät lähellä viivaa myös toisella puolella. Kuva kääntyy, se ei vain siirry.</p>','<p>In a mirror image, squares close to the line stay close to the line on the other side too. The picture flips over; it does not just slide across.</p>'),
+      explain:`<p>${E('Kuvio taittuu akselin yli kuin paperi.','The shape folds over the line like paper.')}</p>${vis(symFlip(sp,B.given,B.full))}`}}
+  return symFillGen(g)(1)}}
+const SHAPES=()=>{const reg=(n,r=1)=>[...Array(n)].map((_,i)=>{const a=(-90+360*i/n)*Math.PI/180;return[r*Math.cos(a),r*Math.sin(a)]}),rax=n=>[...Array(n)].map((_,i)=>-90+180*i/n);
+  const star=[...Array(10)].map((_,i)=>{const a=(-90+36*i)*Math.PI/180,r=i%2?.42:1;return[r*Math.cos(a),r*Math.sin(a)]});
+  return[{n:E('neliö','square'),p:[[-1,-1],[1,-1],[1,1],[-1,1]],ax:[0,45,90,135],g:3},{n:E('suorakulmio','rectangle'),p:[[-1.3,-.75],[1.3,-.75],[1.3,.75],[-1.3,.75]],ax:[0,90],g:3},
+    {n:E('tasasivuinen kolmio','equilateral triangle'),p:reg(3),ax:rax(3),g:3},{n:E('tasakylkinen kolmio','isosceles triangle'),p:[[0,-1.2],[.7,1],[-.7,1]],ax:[90],g:3},{n:E('epäsäännöllinen kolmio','scalene triangle'),p:[[-.9,-1],[1.2,.9],[-1.1,.8]],ax:[],g:3},
+    {n:E('vinoneliö','rhombus'),p:[[0,-1.2],[.75,0],[0,1.2],[-.75,0]],ax:[0,90],g:3},{n:E('suunnikas','parallelogram'),p:[[-1.2,.7],[.5,.7],[1.2,-.7],[-.5,-.7]],ax:[],g:3},{n:E('leija','kite'),p:[[0,-1.1],[.7,-.3],[0,1.2],[-.7,-.3]],ax:[90],g:3},
+    {n:E('tasakylkinen puolisuunnikas','isosceles trapezium'),p:[[-.6,-.7],[.6,-.7],[1.2,.7],[-1.2,.7]],ax:[90],g:3},{n:E('risti','cross'),p:[[-.35,-1],[.35,-1],[.35,-.35],[1,-.35],[1,.35],[.35,.35],[.35,1],[-.35,1],[-.35,.35],[-1,.35],[-1,-.35],[-.35,-.35]],ax:[0,45,90,135],g:3},
+    {n:E('nuoli','arrow'),p:[[-1.2,-.35],[.2,-.35],[.2,-.9],[1.2,0],[.2,.9],[.2,.35],[-1.2,.35]],ax:[0],g:3},
+    {n:E('säännöllinen viisikulmio','regular pentagon'),p:reg(5),ax:rax(5),g:5},{n:E('säännöllinen kuusikulmio','regular hexagon'),p:reg(6),ax:rax(6),g:5},{n:E('säännöllinen kahdeksankulmio','regular octagon'),p:reg(8),ax:rax(8).map(a=>a+22.5),g:5},{n:E('tähti','star'),p:star,ax:rax(5),g:5}]};
+function shapeSVG(S,anim){const k=70,m=24,cx=m+1.3*k,cy=m+1.25*k,w=2*cx,h=2*cy;let a='';
+  S.ax.forEach((d,i)=>{const t=d*Math.PI/180,L=1.55*k;a+=`<line class="${anim?'cin':''}" style="--d:${(.4+.7*i).toFixed(1)}s" x1="${(cx-L*Math.cos(t)).toFixed(1)}" y1="${(cy-L*Math.sin(t)).toFixed(1)}" x2="${(cx+L*Math.cos(t)).toFixed(1)}" y2="${(cy+L*Math.sin(t)).toFixed(1)}" stroke="var(--bad)" stroke-width="3" stroke-dasharray="7 5"/>`});
+  return `<svg class="pa" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="${S.n}"><polygon points="${S.p.map(([x,y])=>(cx+x*k).toFixed(1)+','+(cy+y*k).toFixed(1)).join(' ')}" fill="var(--blk2)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>${anim?a:''}</svg>`}
+function symIsGen(g){return L=>{const YN=[['1',E('Kyllä','Yes')],['0',E('Ei','No')]];
+  if(L===3&&g>=3){const S=pick(SHAPES().filter(s=>s.g<=g)),n=S.ax.length;
+    return{kind:'int',showOk:1,visual:vis(shapeSVG(S,0)),text:plbl(E('Montako symmetria-akselia kuviolla on?','How many lines of symmetry does the shape have?'),`${BOX} ${E('kpl','')}`.trim()),ans:n,answerText:String(n),
+      hint:E('<p>Symmetria-akseli jakaa kuvion kahteen puolikkaaseen, jotka ovat toistensa peilikuvia. Kokeile mielessäsi taittaa kuvio eri suunnista: osuvatko puolikkaat täsmälleen päällekkäin?</p><p>Muista myös vinot akselit.</p>','<p>A line of symmetry splits the shape into two halves that are mirror images. Imagine folding the shape in different directions: do the halves match exactly?</p><p>Remember the diagonal lines too.</p>'),
+      explain:`<p>${E('Kuvio on','The shape is a')} ${S.n}.</p>`+vis(shapeSVG(S,1))+`<p><b>${n===0?E('Kuviolla ei ole yhtään symmetria-akselia.','The shape has no lines of symmetry.'):E(`Akseleita on ${n}.`,`There ${n===1?'is 1 line':'are '+n+' lines'} of symmetry.`)}</b></p>`}}
+  for(let t=0;t<60;t++){const sp=symSpec(g,L,'is'),B=symBuild(sp);if(!B)continue;
+    if(L===2){const alt=[];const sp2=Object.assign({},sp);const wrongs=[];
+      if(sp.ax!=null){wrongs.push({ax:sp.ax-1,ay:null},{ax:sp.ax+1,ay:null},{ax:null,ay:sp.H/2})}else{wrongs.push({ax:null,ay:sp.ay-1},{ax:null,ay:sp.ay+1},{ax:sp.W/2,ay:null})}
+      const symAbout=(a)=>{for(const[k,v]of B.full){const[x,y]=k.split(',').map(Number);const m=a.ax!=null?skey(2*a.ax-1-x,y):skey(x,2*a.ay-1-y);if(B.full.get(m)!==v)return false}return true};
+      const ws=shuffle(wrongs).filter(a=>!symAbout(a)).slice(0,2);if(ws.length<2)continue;
+      const opts=[{ax:sp.ax,ay:sp.ay},...ws],ord=shuffle([0,1,2]);
+      return{kind:'choice',symopts:1,showOk:1,choices:ord.map(i=>[String(i),symSVG(Object.assign({},sp,opts[i]),B.full,{c:18})]),ans:'0',visual:null,
+        text:plbl(E('Missä kuvassa katkoviiva on symmetria-akseli?','In which picture is the dashed line a line of symmetry?'),''),answerText:'',
+        hint:E('<p>Kuvittele taittavasi kuvan katkoviivaa pitkin. Osuvatko kaikki väritetyt ruudut toistensa päälle?</p>','<p>Imagine folding the picture along the dashed line. Do all the coloured squares land on top of each other?</p>'),
+        explain:`<p>${E('Tässä kuvassa puolikkaat ovat toistensa peilikuvia:','In this picture the two halves are mirror images:')}</p>${vis(symFlip(sp,B.given,B.full))}`}}
+    const yes=Math.random()<.5;let F=new Map(B.full),bad=[];
+    if(!yes){const k=[...B.given.keys()];for(let i=0;i<R(1,2);i++){const kk=pick(k);const[x,y]=kk.split(',').map(Number);const m=sp.ax!=null?skey(mirV(sp,x),y):skey(x,mirH(sp,y));
+        if(sp.ncol>1&&Math.random()<.5){F.set(m,(F.get(kk)+1)%sp.ncol)}else F.delete(m);bad.push(m)}}
+    const mark=(X,Y,c)=>bad.map(k=>{const[x,y]=k.split(',').map(Number);return `<rect class="cin" style="--d:1.6s" x="${X(x)+2}" y="${Y(y)+2}" width="${c-4}" height="${c-4}" fill="none" stroke="var(--bad)" stroke-width="3" rx="3"/>`}).join('');
+    return{kind:'choice',big:1,showOk:1,choices:YN,ans:yes?'1':'0',visual:symSVG(sp,F),text:plbl(E('Onko kuvio symmetrinen katkoviivan suhteen?','Is the shape symmetrical about the dashed line?'),''),answerText:'',
+      hint:E('<p>Vertaa ruutuja viivan molemmin puolin: jokaisella ruudulla pitää olla pari yhtä kaukana viivasta toisella puolella, samanvärisenä.</p>','<p>Compare the squares on both sides of the line: each square needs a partner of the same colour, the same distance from the line on the other side.</p>'),
+      explain:yes?`<p>${E('Kyllä. Puolikkaat ovat toistensa peilikuvia.','Yes. The two halves are mirror images.')}</p>${vis(symFlip(sp,B.given,B.full))}`
+        :`<p>${E('Ei. Punaisella merkityt ruudut eivät vastaa toista puolta.','No. The squares marked in red do not match the other side.')}</p>${vis(symSVG(sp,F,{inner:mark}))}`}}
+  return symFillGen(g)(1)}}
 function mixGen(g){return L=>{const[dMax,wMax]={4:[6,2],5:[10,4],6:[12,5]}[g];
   for(let t=0;t<100;t++){const d=R(2,dMax),w=R(1,wMax),r=R(1,d-1);if(gcd(r,d)!==1)continue;const N=w*d+r;
     const toMixed=L===1?true:L===2?false:Math.random()<.5,pic=L<3&&w<=3;
@@ -2491,6 +2887,17 @@ const NAV=[
       {id:'san',n:'Sanalliset',f:allG(src('yksikot','mit',1),2)}]}]},
   {id:'geom',n:'Geometria',subs:[
     {id:'muo',n:'Muodot',types:[{id:'muo',n:'Tunnista muodot',f:allG(src('muodot','mit'))}]},
+    {id:'pp',n:'Piiri ja pinta-ala',types:[
+      {id:'piiri',n:'Piiri',f:g=>g>=3?{oid:'piiri',levels:{3:[['Ruudukko'],['Suorakulmio ja neliö'],['Monikulmio']],4:[['Ruudukko'],['Suorakulmio ja neliö'],['Puuttuva sivu']],5:[['Suorakulmio ja neliö'],['Yhdistetyt kuviot'],['Puuttuva sivu']],6:[['Suorakulmio ja neliö'],['Yhdistetyt kuviot'],['Puuttuva sivu']]}[g],gen:L=>perGen(g)(L)}:null},
+      {id:'ala',n:'Pinta-ala',f:g=>g>=3?{oid:'pintaala',levels:{3:[['Ruutujen laskeminen'],['Suorakulmio ruudukolla'],['Puolikkaat ruudut']],4:[['Ruutujen laskeminen'],['Suorakulmio ja neliö'],['Yhdistetyt kuviot']],5:[['Suorakulmio ja neliö'],['Yhdistetyt kuviot'],['Puuttuva sivu']],6:[['Suorakulmio ja neliö'],['Yhdistetyt kuviot'],['Kolmio']]}[g],gen:L=>areaGen(g)(L)}:null},
+      {id:'san',n:'Sanalliset',f:g=>g>=3?{oid:'ppsan',levels:[['Piiri'],['Pinta-ala'],[g<=4?'Sekaisin':'Hinnat']],gen:L=>ppWordGen(g)(L)}:null}]},
+    {id:'til',n:'Tilavuus',types:[
+      {id:'tor',n:'Palikkatornit',f:g=>({oid:'palikat',levels:g<=2?[['Pienet tornit'],['Isommat tornit'],['Korkeat tornit']]:[['Pienet tornit'],['Isommat tornit'],['Montako puuttuu?']],gen:L=>towerGen(g)(L)})},
+      {id:'sar',n:'Suorakulmainen särmiö',f:g=>g>=5?{oid:'sarmio',levels:[['Kuutioista'],['Mitoista'],[g===5?'Puuttuva mitta':'Litroina']],gen:L=>boxGen(g)(L)}:null}]},
+    {id:'sym',n:'Symmetria',types:[
+      {id:'tay',n:'Täydennä kuvio',f:g=>({oid:'symtay',levels:g<=2?[['Pystysuora akseli'],['Vaakasuora akseli'],['Isompi kuvio']]:g<=4?[['Yksi väri'],['Kaksi väriä'],['Kolme väriä']]:[['Monta väriä'],['Akseli sivussa'],['Kaksi akselia']],gen:L=>symFillGen(g)(L)})},
+      {id:'val',n:'Valitse toinen puoli',f:g=>({oid:'symval',levels:g<=2?[['Pystysuora akseli'],['Vaakasuora akseli'],['Kaksi väriä']]:[['Yksi väri'],['Kaksi väriä'],['Pienet erot']],gen:L=>symPickGen(g)(L)})},
+      {id:'onko',n:'Onko symmetrinen?',f:g=>({oid:'symonko',levels:g<=2?[['Kyllä vai ei?'],['Mikä viiva on akseli?'],['Isompi kuvio']]:[['Kyllä vai ei?'],['Mikä viiva on akseli?'],['Montako akselia?']],gen:L=>symIsGen(g)(L)})}]},
     {id:'koo',n:'Koordinaatisto',types:[{id:'koo',n:'Koordinaatit',f:allG(src('koord','mit'),3)}]}]},
   {id:'tilastot',n:'Tilastot ja todennäköisyys',subs:[
     {id:'dia',n:'Diagrammit',types:[{id:'dia',n:'Lue diagrammia',f:allG(src('diagrammit','stat'))}]},
@@ -2518,7 +2925,7 @@ Object.assign(TR,{'Mitat ja yksiköt':'Measures and units','Laskut':'Calculation
   'Kuvilla':'With pictures','Sanalliset':'Word problems','Jakaminen tasan':'Sharing equally','Jakokulma':'Long division','Yhteen- ja vähennyslasku':'Addition and subtraction','Kerto- ja jakolasku':'Multiplication and division',
   'Vertaile lukuja':'Compare numbers','Mikä luku puuttuu?':'Which number is missing?','Kellonajat':'Telling the time','Kolikot ja setelit':'Coins and notes','Muunnokset':'Conversions','Tunnista muodot':'Recognise shapes','Koordinaatit':'Coordinates',
   'Lue diagrammia':'Read the chart','Laske keskiarvo':'Work out the average','Pallot, pussit ja noppa':'Balls, bags and dice','Kokeile nopilla':'Experiment with dice',
-  'Plus- ja miinuspulmat':'Plus and minus puzzles','Kertopulmat':'Times puzzles','Sekaluvut':'Mixed numbers','Murtoluku ja desimaaliluku':'Fractions and decimals','Prosentit':'Percentages','Murtoluku ja prosentti':'Fractions and percentages','Desimaaliluku ja murtoluku':'Decimals and fractions','Desimaaliluku ja prosentti':'Decimals and percentages','Prosentti ja desimaaliluku':'Percentages and decimals','Prosentti ja murtoluku':'Percentages and fractions','Kaikki sekaisin':'All mixed','Montako prosenttia?':'What percentage?','Prosentti luvusta':'Percentage of a number','Ruudukko':'Grid','Luvut':'Numbers','Puolet, neljäsosat ja kymmenesosat':'Halves, quarters and tenths','Muut prosentit':'Other percentages','Osa määrästä':'Part of an amount','Alennukset ja korotukset':'Discounts and price rises','Kymmenesosat ja sadasosat':'Tenths and hundredths','Tutut murtoluvut':'Familiar fractions','Haastavammat':'Harder ones','Murtoluvusta sekaluvuksi':'Fraction to mixed number','Sekaluvusta murtoluvuksi':'Mixed number to fraction','Molemmat suunnat':'Both ways','Kaikki laskut':'All operations','Enemmän ja vähemmän':'More and fewer','Kertaa ja osuudet':'Times and fractions','Mikä kuva tulee seuraavaksi?':'Which picture comes next?','Kaupan kassa':'Change at the till'});
+  'Plus- ja miinuspulmat':'Plus and minus puzzles','Kertopulmat':'Times puzzles','Sekaluvut':'Mixed numbers','Murtoluku ja desimaaliluku':'Fractions and decimals','Prosentit':'Percentages','Symmetria':'Symmetry','Täydennä kuvio':'Complete the shape','Valitse toinen puoli':'Choose the other half','Onko symmetrinen?':'Is it symmetrical?','Pystysuora akseli':'Vertical line','Vaakasuora akseli':'Horizontal line','Isompi kuvio':'Bigger shape','Yksi väri':'One colour','Kaksi väriä':'Two colours','Kolme väriä':'Three colours','Monta väriä':'Several colours','Akseli sivussa':'Line off-centre','Kaksi akselia':'Two lines','Pienet erot':'Small differences','Kyllä vai ei?':'Yes or no?','Mikä viiva on akseli?':'Which line is the line of symmetry?','Montako akselia?':'How many lines?','Tilavuus':'Volume','Palikkatornit':'Block towers','Suorakulmainen särmiö':'Cuboids','Pienet tornit':'Small towers','Isommat tornit':'Bigger towers','Korkeat tornit':'Tall towers','Montako puuttuu?':'How many are missing?','Kuutioista':'Made of cubes','Mitoista':'From measurements','Puuttuva mitta':'Missing measurement','Litroina':'In litres','Piiri ja pinta-ala':'Perimeter and area','Piiri':'Perimeter','Pinta-ala':'Area','Suorakulmio ja neliö':'Rectangles and squares','Monikulmio':'Polygons','Puuttuva sivu':'Missing side','Yhdistetyt kuviot':'Composite shapes','Ruutujen laskeminen':'Counting squares','Suorakulmio ruudukolla':'Rectangles on a grid','Puolikkaat ruudut':'Half squares','Kolmio':'Triangles','Sekaisin':'Mixed','Hinnat':'Prices','Murtoluku ja prosentti':'Fractions and percentages','Desimaaliluku ja murtoluku':'Decimals and fractions','Desimaaliluku ja prosentti':'Decimals and percentages','Prosentti ja desimaaliluku':'Percentages and decimals','Prosentti ja murtoluku':'Percentages and fractions','Kaikki sekaisin':'All mixed','Montako prosenttia?':'What percentage?','Prosentti luvusta':'Percentage of a number','Ruudukko':'Grid','Luvut':'Numbers','Puolet, neljäsosat ja kymmenesosat':'Halves, quarters and tenths','Muut prosentit':'Other percentages','Osa määrästä':'Part of an amount','Alennukset ja korotukset':'Discounts and price rises','Kymmenesosat ja sadasosat':'Tenths and hundredths','Tutut murtoluvut':'Familiar fractions','Haastavammat':'Harder ones','Murtoluvusta sekaluvuksi':'Fraction to mixed number','Sekaluvusta murtoluvuksi':'Mixed number to fraction','Molemmat suunnat':'Both ways','Kaikki laskut':'All operations','Enemmän ja vähemmän':'More and fewer','Kertaa ja osuudet':'Times and fractions','Mikä kuva tulee seuraavaksi?':'Which picture comes next?','Kaupan kassa':'Change at the till'});
 const andJoin=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+E(' ja ',' and ')+a[a.length-1];
 
 let RND=null;
@@ -2576,7 +2983,8 @@ function answerHTML(){
       <tr class="res"><td class="sg">${P.partials?'+':''}</td>${rng.map(i=>isC(i)?'<td class="cm">,</td>':`<td><input class="ri" id="r${i}" data-i="${i}" inputmode="none" maxlength="1" autocomplete="off" aria-label="${E('Vastauksen numero','Answer digit')}"></td>`).join('')}</tr>
     </tbody></table></div>`}
   if(P.steps||P.inline||P.kind==='multi')return '';
-  if(P.kind==='choice')return `<div class="choices${P.big?' big':''}${P.pics?' pics':''}${P.chartopts?' charts':''}" role="group" aria-label="${E('Vastausvaihtoehdot','Answer options')}">${P.choices.map(([v,l])=>`<button type="button" class="choice" data-choice="${v}">${l}</button>`).join('')}</div>`;
+  if(P.kind==='sym')return P.ncol>1?`<div class="sympal" role="group" aria-label="${E('Väri','Colour')}">${[...Array(P.ncol).keys()].map(i=>`<button type="button" data-symcol="${i}" aria-pressed="${i===P.cur}" aria-label="${SYN[i]}" style="background:${SYC[i]}"></button>`).join('')}</div>`:'';
+  if(P.kind==='choice')return `<div class="choices${P.big?' big':''}${P.symopts?' symopts':''}${P.pics?' pics':''}${P.chartopts?' charts':''}" role="group" aria-label="${E('Vastausvaihtoehdot','Answer options')}">${P.choices.map(([v,l])=>`<button type="button" class="choice" data-choice="${v}">${l}</button>`).join('')}</div>`;
   if(P.kind==='coord')return `<div class="answer coordans"><span class="unit">(</span><input class="num tb" id="cx" inputmode="none" autocomplete="off" aria-label="${E('x-koordinaatti','x-coordinate')}"><span class="unit">,</span><input class="num tb" id="cy" inputmode="none" autocomplete="off" aria-label="${E('y-koordinaatti','y-coordinate')}"><span class="unit">)</span></div>`;
   if(P.ldiv){const st=ldivSteps(P.dvd,P.dvs),n=String(P.dvd).length;
     return `<div class="calc-wrap"><table class="ldv" aria-label="${E('Jakolasku allekkain','Division in columns')}"><tbody><tr><td class="sg"></td>${String(P.dvd).split('').map(d=>`<td>${d}</td>`).join('')}<td class="ex">: ${P.dvs} = <span class="answer ldans"><input class="num" id="ans" inputmode="none" autocomplete="off" aria-label="${E('Osamäärä','Quotient')}"></span></td></tr>
@@ -2630,6 +3038,7 @@ function draw(){const t=cur(),pr=prog();const IA=inlineAns();
   activeEl=first;if(first)first.focus({preventScroll:true})}
 function fb(msg,cls){const e=$('#fb');e.hidden=false;e.className='fb '+cls;e.innerHTML=msg}
 function evaluate(){
+  if(P.kind==='sym')return symEval();
   if(P.kind==='coord'){const xs=$('#cx').value.trim().replace('−','-'),ys=$('#cy').value.trim().replace('−','-');if(!xs&&!ys)return{empty:true};if(!/^-?\d+$/.test(xs)||!/^-?\d+$/.test(ys))return{bad:E('Kirjoita molemmat koordinaatit: ensin x, sitten y.','Write both coordinates: x first, then y.')};
     const okx=+xs===P.ax,oky=+ys===P.ay,ok=okx&&oky;$('#cx').classList.toggle('ok',okx);$('#cx').classList.toggle('no',!okx);$('#cy').classList.toggle('ok',oky);$('#cy').classList.toggle('no',!oky);return{ok}}
   if(false){const ins=[...document.querySelectorAll('.qi')],v=ins.map(x=>x.value.trim());if(v.every(x=>!x))return{empty:true};
@@ -2688,10 +3097,11 @@ function check(){if(done)return;const r=evaluate(),pr=prog();
     if(pr.streak>=3&&pr.level<3){pr.level++;pr.streak=0;msg+=E(` Siirryt tasolle ${pr.level}.`,` You move up to level ${pr.level}.`)}
     else if(pr.streak>=3){pr.streak=0;const mk=cur().key;if(!S.medals[mk]){S.medals[mk]=1;msg+=E(' Sait mitalin tästä aiheesta!',' You got a medal for this topic!')}else msg+=E(' Olet ylimmällä tasolla. Upeaa!'," You're on the top level. Amazing!")}
     if(S.stars%10===0){msg+=E(` Jo ${S.stars} tähteä!`,` That's ${S.stars} stars!`);confetti()}
+    if(P.showOk)$('#explain').hidden=false;
     fb(msg,'good');const st=$('#playerBtn');st.classList.remove('pop');void st.offsetWidth;st.classList.add('pop');updHeader();finish()}
   else{tries++;
     if(tries===1){fb(P.kind==='multi'&&P.multiMsg?P.multiMsg:E('Ei vielä ihan. Tarkista vastaus tai katso vihje.','Not quite yet. Check your answer or look at the hint.'),'bad')}
-    else{done=true;pr.streak=0;pr.fails++;let msg=P.answerText?E(`Oikea vastaus on ${P.answerText}.`,`The correct answer is ${P.answerText}.`):E('Oikea vaihtoehto on merkitty vihreällä.','The correct option is marked in green.');if(P.kind==='choice'){const cb=document.querySelector(`.choice[data-choice="${P.ans}"]`);if(cb)cb.classList.add('ok')}if(P.kind==='multi')P.ans.forEach(i=>{const t=document.querySelector(`.gtile[data-pick="${i}"]`);if(t&&!t.classList.contains('ok'))t.classList.add('miss')});
+    else{done=true;pr.streak=0;pr.fails++;if(P.kind==='sym')symReveal();let msg=P.failMsg||(P.answerText?E(`Oikea vastaus on ${P.answerText}.`,`The correct answer is ${P.answerText}.`):E('Oikea vaihtoehto on merkitty vihreällä.','The correct option is marked in green.'));if(P.kind==='choice'){const cb=document.querySelector(`.choice[data-choice="${P.ans}"]`);if(cb)cb.classList.add('ok')}if(P.kind==='multi')P.ans.forEach(i=>{const t=document.querySelector(`.gtile[data-pick="${i}"]`);if(t&&!t.classList.contains('ok'))t.classList.add('miss')});
       if(pr.fails>=2&&pr.level>1){pr.level--;pr.fails=0;msg+=E(' Harjoitellaan välillä vähän helpompia.'," Let's practise some easier ones for a while.")}
       fb(msg,'bad');$('#explain').hidden=false;$('#hint').hidden=true;
       if(P.kind==='col'&&(P.op==='+'||P.op==='*'))P.carries.forEach(x=>{const i=typeof x==='object'?x.i:x,v=typeof x==='object'?x.v:1;const c=document.getElementById('c'+i);if(c&&!c.value){c.value=String(v);c.classList.add('hinted')}});
@@ -2708,7 +3118,7 @@ let activeEl=null;
 const BACK='<svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M9 5h11v14H9l-6-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 9l5 6M17 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
 function keypad(){const KP=E('Numeronäppäimistö','Number keypad'),MS=E('Miinusmerkki','Minus sign'),PY=E('Pyyhi','Delete');
   if(P.kind==='coord'){const ks=[1,2,3,4,5,6,7,8,9].map(n=>`<button type="button" class="key" data-key="${n}">${n}</button>`).join('');return `<div class="keypad" role="group" aria-label="${KP}">${ks}${P.neg?`<button type="button" class="key alt" data-key="neg" aria-label="${MS}">−</button>`:'<span></span>'}<button type="button" class="key" data-key="0">0</button><button type="button" class="key alt" data-key="back" aria-label="${PY}">${BACK}</button><button type="button" class="key alt wide" data-key="swap" aria-label="${E('Vaihda x ja y','Switch between x and y')}">x ↔ y</button></div>`}
-  if(P.kind==='choice'||P.kind==='multi')return '';
+  if(P.kind==='choice'||P.kind==='multi'||P.kind==='sym')return '';
   if(P.neg&&P.kind==='dec')return `<div class="keypad" role="group" aria-label="${KP}">${[1,2,3,4,5,6,7,8,9].map(n=>`<button type="button" class="key" data-key="${n}">${n}</button>`).join('')}<button type="button" class="key alt" data-key="neg" aria-label="${MS}">−</button><button type="button" class="key" data-key="0">0</button><button type="button" class="key" data-key="," aria-label="${E('Pilkku','Comma')}">,</button><button type="button" class="key alt wide" data-key="back" aria-label="${PY}">${BACK}</button></div>`;
   const last=P.neg?`<button type="button" class="key alt" data-key="neg" aria-label="${MS}">−</button>`:P.kind==='dec'?`<button type="button" class="key" data-key="," aria-label="${E('Pilkku','Comma')}">,</button>`
     :P.kind==='frac'?`<button type="button" class="key alt" data-key="swap" aria-label="${E('Vaihda osoittajan ja nimittäjän välillä','Switch between numerator and denominator')}">↕</button>`
@@ -2740,7 +3150,10 @@ document.addEventListener('pointerdown',e=>{if(e.target.closest('.key'))e.preven
 document.addEventListener('mousedown',e=>{if(e.target.closest('.key'))e.preventDefault()});
 
 /* ---------- tapahtumat ---------- */
-document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#cgrid')){ctap(e);return}const b=e.target.closest('button');if(!b)return;
+document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#cgrid')){ctap(e);return}{const sg=e.target.closest&&e.target.closest('#symg .se');if(sg){symTap(sg);return}}const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.symcol!=null){P.cur=+b.dataset.symcol;document.querySelectorAll('.sympal button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));return}
+  if(b.dataset.rot){c3dTurn(b.closest('.c3d'),+b.dataset.rot);return}
+  if(b.dataset.tilt){c3dTurn(b.closest('.c3d'),0,+b.dataset.tilt);return}
   if(b.dataset.help){const h=$('#pzh');h.hidden=!h.hidden;b.setAttribute('aria-expanded',String(!h.hidden));b.setAttribute('aria-label',h.hidden?E('Näytä ohje','Show help'):E('Piilota ohje','Hide help'));return}
   if(b.dataset.turn){const f=$('#sheet .visual .arr'),ex=$('#sheet .ex');if(!f||!ex)return;const t=f.classList.toggle('tr'),A=+f.dataset.a,B=+f.dataset.b;ex.textContent=t?`${B} · ${A}`:`${A} · ${B}`;return}
   if(b.id==='mixBtn'){S.mix=!S.mix;RND=null;renderControls();newProblem();save();return}
