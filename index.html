@@ -2023,7 +2023,7 @@ function polycube(n,flat){for(let t=0;t<200;t++){const S=new Set(['1,1,1']),cl=[
     const c=pcNorm(cl);if(!flat){const ext=[0,1,2].map(i=>Math.max(...c.map(p=>p[i])));if(ext.filter(e=>e>0).length<3)continue}return c}return pcNorm([[0,0,0],[0,1,0],[0,1,1],[0,2,1]])}
 function holeFit(sil,hole){const hk=new Set(hole.map(p=>p.join(',')));const HW=Math.max(...hole.map(p=>p[0]));let best=null;
   for(let dy=-3;dy<=HW;dy++){const sh=sil.map(([y,z])=>[y+dy,z]),inn=sh.filter(p=>hk.has(p.join(','))).length;if(!best||inn>best.inn||(inn===best.inn&&Math.abs(dy)<Math.abs(best.dy)))best={inn,sh,dy}}return{ok:best.inn===sil.length,sh:best.sh,dy:best.dy}}
-const HTH=-.62,HPH=.52,HWX=4;
+const HTH=.62,HPH=.52,HWX=4;
 function holeCubesSVG(cubes,box,o={}){const cs=Math.cos(HTH),sn=Math.sin(HTH),cp=Math.cos(HPH),sp=Math.sin(HPH);
   const P3=(x,y,z)=>{const X=x*cs-y*sn,Y=x*sn+y*cs;return[X,-z*cp-Y*sp,Y*cp-z*sp]};
   const corners=[];for(const x of[box[0],box[1]])for(const y of[box[2],box[3]])for(const z of[0,box[4]])corners.push(P3(x,y,z));
@@ -2031,6 +2031,7 @@ function holeCubesSVG(cubes,box,o={}){const cs=Math.cos(HTH),sn=Math.sin(HTH),cp
   const W=330,s=Math.min((W-20)/(maxU-minU),230/(maxV-minV)),H=(maxV-minV)*s+20,ox=10-minU*s+((W-20)-(maxU-minU)*s)/2,oy=10-minV*s;
   const pt=a=>a.map(([x,y,z])=>{const p=P3(x,y,z);return(ox+p[0]*s).toFixed(1)+','+(oy+p[1]*s).toFixed(1)}).join(' ');
   let out=`<polygon points="${pt([[box[0],box[2],0],[box[1],box[2],0],[box[1],box[3],0],[box[0],box[3],0]])}" fill="var(--plate)" stroke="var(--line)" stroke-width="1.5"/>`;
+  if(o.arrow){const[a0,a1,ay]=o.arrow;out+=`<polygon points="${pt([[a0,ay-.18,0],[a1-.55,ay-.18,0],[a1-.55,ay-.42,0],[a1,ay,0],[a1-.55,ay+.42,0],[a1-.55,ay+.18,0],[a0,ay+.18,0]])}" fill="var(--sun)" stroke="var(--ink)" stroke-width="1.2" stroke-linejoin="round"/>`}
   const WS=new Set(cubes.filter(c=>c.wall).map(c=>c.x+','+c.y+','+c.z));const L=cubes.map(c=>({...c,d:P3(c.x+.5,c.y+.5,c.z+.5)[2]})).sort((a,b)=>b.d-a.d);
   for(const c of L){const{x,y,z}=c,X1=x+1,Y1=y+1,Z1=z+1,hue=c.hue??205,sat=c.sat??62,op=c.op??1;
     const fill=(l,fr)=>c.red?`hsl(0,75%,${l}%)`:fr?`hsl(28,90%,${l+6}%)`:`hsl(${hue},${sat}%,${l}%)`,st=c.red?'hsl(0,60%,25%)':`hsl(${hue},40%,22%)`;
@@ -2041,10 +2042,11 @@ function holeCubesSVG(cubes,box,o={}){const cs=Math.cos(HTH),sn=Math.sin(HTH),cp
   if(o.badge)out+=`<g><circle cx="${W-24}" cy="22" r="15" fill="var(--good)" stroke="#fff" stroke-width="2"/><path d="M${W-31} 22l5 5 9-9" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></g>`;
   return `<svg class="pa hscene" viewBox="0 0 ${W} ${H.toFixed(0)}" width="${W}" height="${H.toFixed(0)}" role="img" aria-label="${E('Torni ja seinä, jossa on aukko','Tower and a wall with a hole')}">${out}</svg>`}
 function holeWall(hole){const hk=new Set(hole.map(p=>p.join(',')));const HY=Math.max(...hole.map(p=>p[0])),HZ=Math.max(...hole.map(p=>p[1]));const w=[];
-  for(let y=-1;y<=HY+1;y++)for(let z=0;z<=HZ+1;z++)if(!hk.has(y+','+z))w.push({x:HWX,y,z,hue:22,sat:45,wall:1,op:.6});return w}
+  for(let y=-1;y<=HY+1;y++)for(let z=0;z<=HZ+1;z++)if(!hk.has(y+','+z))w.push({x:HWX,y,z,hue:22,sat:45,wall:1});return w}
 function holeScene(pc,dx,o={}){const f=holeFit(pcProj(pc),P.hole),my=Math.min(...pc.map(p=>p[1]));const hy=f.dy-my;const tw=pc.map(([x,y,z])=>({x:x+dx,y:y+hy,z,front:1}));
   const HY=Math.max(...P.hole.map(p=>p[0])),HZ=Math.max(...P.hole.map(p=>p[1]));const ys=[-1,HY+2,...tw.map(c=>c.y),...tw.map(c=>c.y+1)];
   const box=[-.5,HWX+5,Math.min(...ys)-.3,Math.max(...ys)+.3,Math.max(HZ+2,...pc.map(p=>p[2]+1))];
+  const mx=Math.max(...tw.map(c=>c.x))+1;if(!o.cubes&&dx===0)o.arrow=[mx+.15,HWX-.15,(Math.min(...tw.map(c=>c.y))+Math.max(...tw.map(c=>c.y))+1)/2];
   return holeCubesSVG([...holeWall(P.hole),...(o.cubes||tw)],box,o)}
 function holeRender(){const b=$('#hbox');if(b)b.innerHTML=holeScene(P.pc,0)}
 function holeAnim(ok,cb){const pc=P.pc,maxX=Math.max(...pc.map(p=>p[0])),red=window.matchMedia('(prefers-reduced-motion: reduce)').matches;P.running=true;const b=$('#hbox');
@@ -2062,9 +2064,9 @@ function holeGen(g){return L=>{const moves=L===1?['roll']:L===2?['roll','yaw']:[
     let st=c;for(let i=0;i<R(1,3);i++)st=pcNorm(st.map(PCROT[pick(moves)]));if(holeFit(pcProj(st),hole).ok)continue;if(Math.max(...hole.map(p=>p[0]))>4)continue;
     const Q={hole};const prevP=P;P=Q;const vis=holeScene(st,0),ex=holeScene(tg,HWX+2,{badge:1});P=prevP;
     return{kind:'turn',pc:st,hole,moves,tg,answerText:'',visual:`<div id="hbox">${vis}</div>`,
-      text:plbl(E('Käännä torni niin, että se mahtuu seinän aukosta. Oranssi puoli menee aukkoon ensin.','Turn the tower so that it fits through the hole in the wall. The orange side goes into the hole first.'),''),
+      text:plbl(E('Käännä torni niin, että se mahtuu seinän aukosta, kun se liukuu nuolen suuntaan.','Turn the tower so that it fits through the hole in the wall when it slides in the direction of the arrow.'),''),
       failMsg:E('Oikea asento näkyy alla kohdassa Näin se lasketaan.','The right position is shown below.'),
-      hint:E('<p>Katso tornia oranssin puolen suunnasta, eli niin kuin seinä sen näkee. Miltä sen ääriviiva näyttää? Sen pitää mahtua aukon muotoon.</p><p>Kokeile napeilla: kierrä tornia tai käännä sitä.</p>','<p>Look at the tower from the orange side, the way the wall sees it. What does its outline look like? It must fit the shape of the hole.</p><p>Try the buttons: spin the tower or turn it.</p>'),
+      hint:E('<p>Kuvittele katsovasi tornia seinän aukon läpi, eli nuolen suunnasta vastaan. Miltä tornin ääriviiva näyttää sieltä katsottuna? Sen pitää mahtua aukon muotoon.</p><p>Kokeile napeilla: kierrä tornia tai käännä sitä.</p>','<p>Imagine looking at the tower through the hole in the wall, against the arrow. What does the tower’s outline look like from there? It must fit the shape of the hole.</p><p>Try the buttons: spin the tower or turn it.</p>'),
       explain:`<p>${E('Tässä asennossa torni mahtuu aukosta:','In this position the tower fits through the hole:')}</p>${ex}`}}
   return holeGen(g)(1)}}
 function holeUI(){const B=(m,ic,lab)=>`<button type="button" class="hbtn" data-hmove="${m}"><span>${ic}</span>${lab}</button>`;
