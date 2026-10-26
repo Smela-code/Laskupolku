@@ -3942,7 +3942,11 @@ document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#cg
   if(b.dataset.help){const h=$('#pzh');h.hidden=!h.hidden;b.setAttribute('aria-expanded',String(!h.hidden));b.setAttribute('aria-label',h.hidden?E('Näytä ohje','Show help'):E('Piilota ohje','Hide help'));return}
   if(b.dataset.turn){const f=$('#sheet .visual .arr'),ex=$('#sheet .ex');if(!f||!ex)return;const t=f.classList.toggle('tr'),A=+f.dataset.a,B=+f.dataset.b;ex.textContent=t?`${B} · ${A}`:`${A} · ${B}`;return}
   if(b.id==='mixBtn'){S.mix=!S.mix;RND=null;renderControls();newProblem();save();return}
-  if(b.dataset.grade){S.grade=+b.dataset.grade;RND=null;renderControls();newProblem();save()}
+  if(b.dataset.grade){const was=S.mix&&RND?null:cur(),g=+b.dataset.grade;S.grade=g;RND=null;
+    if(was){S.subs=S.subs||{};S.typs=S.typs||{};const tops=navTops(g),top=tops.find(t=>t.id===was.top.id);
+      if(top){S.top=top.id;const subs=navSubs(g,top),sub=subs.find(x=>x.id===was.sub.id)||subs[0];S.subs[g+'|'+top.id]=sub.id;
+        const types=navTypes(g,sub),ty=(sub.id===was.sub.id&&types.find(x=>x.id===was.type.id))||types[0];S.typs[g+'|'+top.id+'|'+sub.id]=ty.id}}
+    renderControls();newProblem();save()}
   else if(b.dataset.level){const pr=prog();pr.level=+b.dataset.level;pr.streak=0;pr.fails=0;newProblem(true);save()}
   else if(b.dataset.pick!=null){if(done)return;b.setAttribute('aria-pressed',String(b.getAttribute('aria-pressed')!=='true'));b.classList.remove('ok','no')}
   else if(b.dataset.sim){simRun(+b.dataset.sim);return}
