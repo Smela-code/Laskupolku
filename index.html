@@ -2694,8 +2694,8 @@ kilpikonna:()=>aP('M6 30 L2 32.5 L7 32Z','#9cc25a')+aE(12,34,3.2,4,'#9cc25a')+aE
 const VCN={mus:['musta','black'],valk:['valkoinen','white'],rus:['ruskea','brown']};
 const VAN=[['koira','dog','koira','mus rus valk','j4 ka',''],['kissa','cat','kissa','mus valk rus','j4 ka',''],['lammas','sheep','lammas','valk mus','j4 ka',''],['lehmä','cow','lehma','','j4 ka','mus valk'],
   ['hevonen','horse','hevonen','rus mus valk','j4 ka',''],['hiiri','mouse','hiiri','','j4 ka',''],['kani','rabbit','kani','valk rus','j4 ka',''],['karhu','brown bear','karhu','rus','j4 ka rus',''],['jääkarhu','polar bear','karhu','valk','j4 ka valk','ve'],
-  ['kettu','fox','kettu','','j4 ka','rus'],['possu','pig','possu','','j4','ka'],['kana','hen','kana','valk rus','j2 mu','le'],['varis','crow','varis','','j2 le mu mus',''],['pöllö','owl','pollo','','j2 le mu','rus'],
-  ['ankka','duck','ankka','','j2 le mu','ve'],['pingviini','penguin','pingviini','','j2 mu','ve mus valk'],['kala','fish','kala','','j0 ve mu',''],['valas','whale','valas','','j0 ve',''],
+  ['kettu','fox','kettu','','j4 ka','rus'],['possu','pig','possu','','j4','ka'],['kana','hen','kana','valk rus','j2 mu','le ka'],['varis','crow','varis','','j2 le mu mus','ka'],['pöllö','owl','pollo','','j2 le mu','rus ka'],
+  ['ankka','duck','ankka','','j2 le mu','ve ka'],['pingviini','penguin','pingviini','','j2 mu','ve mus valk ka'],['kala','fish','kala','','j0 ve mu',''],['valas','whale','valas','','j0 ve',''],
   ['perhonen','butterfly','perhonen','','j6 le mu','ka'],['leppäkerttu','ladybird','leppakerttu','','j6 le mu',''],['käärme','snake','kaarme','','j0','mu ve'],['sammakko','frog','sammakko','','j4 mu','ve'],['kilpikonna','turtle','kilpikonna','','j4 mu','ve']]
   .flatMap(([fi,en,dr,cols,y,m])=>{const Y=y.split(' '),M=m?m.split(' '):[];const one=(c,col)=>({fi:col?`${VCN[col][0]} ${fi}`:fi,en:col?`${VCN[col][1]} ${en}`:en,svg:ADR[dr](c),y:col?[...Y,col]:Y,m:M});
     return cols?(fi==='karhu'||fi==='jääkarhu'?[one(cols,null)]:cols.split(' ').map(c=>one(c,c))):[one('',null)]});
@@ -2706,10 +2706,11 @@ const vPar={k:'par',fi:'parillinen',en:'even',f:x=>x%2===0},vPari={k:'pari',fi:'
   vKt=d=>({k:'d'+d,fi:`${d}:n kertotaulussa`,en:`in the ${d} times table`,f:x=>x%d===0}),vDv=d=>({k:'d'+d,fi:`jaollinen ${d}:${VSUF[d]}`,en:`divisible by ${d}`,f:x=>x%d===0}),
   vDd={k:'dd',fi:'kaksinumeroinen',en:'two-digit',f:x=>x>=10&&x<=99};
 function vSample(pool,n){const RG=['A','B','AB','O'];let av=RG.filter(r=>pool.some(q=>q.rg===r));
-  if(av.length===4&&Math.random()<.3){const ex=pick(['A','B','AB','O']);pool=pool.filter(q=>q.rg!==ex);av=av.filter(r=>r!==ex)}
-  if(pool.length<n)return null;
-  for(let t=0;t<200;t++){const it=shuffle(pool).slice(0,n),cnt={A:0,B:0,AB:0,O:0};it.forEach(q=>cnt[q.rg]++);
-    if(RG.every(r=>cnt[r]<=VSLOT[r].length)&&RG.filter(r=>cnt[r]).length>=av.length)return it}
+  if(av.length===4&&Math.random()<.3){const ex=pick(['A','B','AB']);pool=pool.filter(q=>q.rg!==ex);av=av.filter(r=>r!==ex)}
+  const O=pool.filter(q=>q.rg==='O'),In=pool.filter(q=>q.rg!=='O'),avI=av.filter(r=>r!=='O'),cap=n>=8?2:1;
+  for(let t=0;t<200;t++){const k=O.length?pick(cap===2?[0,1,1,2]:[0,1,1]):0;if(In.length<n-k)continue;
+    const it=[...shuffle(In).slice(0,n-k),...shuffle(O).slice(0,k)],cnt={A:0,B:0,AB:0,O:0};it.forEach(q=>cnt[q.rg]++);
+    if(RG.every(r=>cnt[r]<=VSLOT[r].length)&&avI.every(r=>cnt[r]))return shuffle(it)}
   return null}
 function vennGen(g){return(L)=>{
   const band=g<=2?0:g<=4?1:2,N=[[6,6,8],[7,8,8],[8,8,9]][band][L-1];
@@ -2741,7 +2742,7 @@ function vennGen(g){return(L)=>{
   const hint=E(`<p>Kysy jokaisesta ${animals?'eläimestä':'luvusta'} kaksi kysymystä: Kuuluuko se siniseen ympyrään (${la})? Kuuluuko se oranssiin ympyrään (${lb})?</p><p>Jos molempiin, laita se keskelle, jossa ympyrät menevät päällekkäin. Jos ei kumpaankaan, laita se ympyröiden ulkopuolelle. Jokin alue voi myös jäädä tyhjäksi.</p>`,
     `<p>Ask two questions about each ${animals?'animal':'number'}: Does it belong in the blue circle (${la})? Does it belong in the orange circle (${lb})?</p><p>If both, put it in the middle where the circles overlap. If neither, put it outside the circles. An area can also stay empty.</p>`);
   return{kind:'venn',vwide:wide,vW,vH,vitems:items,vpos:tray.map(q=>({...q})),vsel:null,vnoun:noun,answerText:'',visual:board,
-    text:`<span class="bg" style="font-size:.7em">${animals?E('Raahaa jokainen eläin oikealle alueelle.','Drag each animal into the correct area.'):E('Raahaa jokainen luku oikealle alueelle.','Drag each number into the correct area.')}</span>`,hint,
+    text:`<span class="bg" style="font-size:.7em">${animals?E('Raahaa jokainen eläin oikealle alueelle.','Drag each animal into the correct area.'):E('Raahaa jokainen luku oikealle alueelle.','Drag each number into the correct area.')}</span><span class="bg" style="display:block;font-size:.5em;color:var(--soft);margin-top:.3em">${E('Jos se ei kuulu kumpaankaan ympyrään, laita se valkoiselle alueelle ympyröiden ulkopuolelle.','If it belongs in neither circle, put it in the white area outside the circles.')}</span>`,hint,
     failMsg:E('Oikeat paikat näkyvät nyt diagrammissa. Siirretyt on merkitty keltaisella.','The right places are now shown in the diagram. The ones that moved are marked in yellow.'),onFail:vennReveal,
     explain:['AB','A','B','O'].map(r=>`<p><b>${RN[r]}:</b></p>${lst(r)}`).join('')}}}
 let VD=null;
