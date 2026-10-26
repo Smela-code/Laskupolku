@@ -156,6 +156,7 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--sun);outline-of
 .streak i{width:12px;height:12px;border-radius:50%;border:2px solid var(--good);display:inline-block}
 .streak i.on{background:var(--good)}
 .visual{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px}
+.group.fix{grid-template-rows:repeat(2,30px);align-content:start}
 .group{display:grid;grid-template-columns:repeat(5,30px);gap:3px;padding:7px;background:var(--paper);border:2px dashed var(--line);border-radius:12px}
 .fr{width:30px;height:30px;display:block}
 .fr.x{opacity:.5}
@@ -511,7 +512,7 @@ table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;f
 footer{color:var(--soft);font-size:.88rem;max-width:65ch}
 footer p{margin:0 0 6px}
 @media (prefers-reduced-motion:reduce){.stars.pop{animation:none}}
-@media (max-width:420px){.grade b{font-size:1.45rem}.group{grid-template-columns:repeat(5,26px)}.fr{width:26px;height:26px}.cake{width:64px;height:64px}}
+@media (max-width:420px){.grade b{font-size:1.45rem}.group{grid-template-columns:repeat(5,26px)}.group.fix{grid-template-rows:repeat(2,26px)}.fr{width:26px;height:26px}.cake{width:64px;height:64px}}
 /* pylväsdiagrammi y-akselilla */
 .simbars{display:flex;align-items:stretch;gap:4px;height:auto;padding-top:18px}
 .sb{height:auto;justify-content:flex-start;gap:3px}
@@ -2413,7 +2414,7 @@ const FDEC=[[1,2,5,1],[1,4,25,2],[3,4,75,2],[1,5,2,1],[2,5,4,1],[3,5,6,1],[4,5,8
 function cmpPair(g,L){const eq=Math.random()<.18;let A,B,vis=null;
   const ints=(lo,hi)=>{if(eq){const a=R(lo,hi);return[iI(a),iI(a)]}const[a,b]=nearInt(lo,hi);return[iI(a),iI(b)]};
   if(g===1){if(L===1){const a=R(1,10),b=eq?a:R(1,10);A=iI(a);B=iI(b);const f1=pick(FK),f2=f1;
-      vis=`${opnd(group(many(f1,a),a+' '+(EN?FRUITS[f1].en[1]:FRUITS[f1].part)),'',a)}${opnd(group(many(f2,b),b+' '+(EN?FRUITS[f2].en[1]:FRUITS[f2].part)),'',b)}`}
+      vis=`${opnd(group(many(f1,a),a+' '+(EN?FRUITS[f1].en[1]:FRUITS[f1].part)).replace('class="group"','class="group fix"'),'',a)}${opnd(group(many(f2,b),b+' '+(EN?FRUITS[f2].en[1]:FRUITS[f2].part)).replace('class="group"','class="group fix"'),'',b)}`}
     else if(L===2)[A,B]=ints(0,20);
     else{const t=R(3,20);A=iE(1,t);B=iI(eq?t:Math.max(0,t+pick([-2,-1,1,2])))}}
   else if(g===2){if(L===1){[A,B]=ints(10,99);vis=`${opnd(pv(A.v),'',A.v+E(' omenaa',' apples'))}${opnd(pv(B.v),'',B.v+E(' omenaa',' apples'))}`}
