@@ -627,7 +627,7 @@ function pv(n){const h=Math.floor(n/100),t=Math.floor(n%100/10),o=n%10;let s='<d
   if(t)s+=`<div class="pvt">${'<span class="rod"></span>'.repeat(t)}</div>`;
   if(o)s+=`<div class="pvo">${'<span class="dot"></span>'.repeat(o)}</div>`;
   return s+'</div>'}
-const opnd=(inner,cap,label)=>`<figure class="opnd" role="img" aria-label="${label}">${inner}<figcaption>${cap}</figcaption></figure>`;
+const opnd=(inner,cap,label)=>`<figure class="opnd" role="img" aria-label="${label}">${inner}${cap!==''?`<figcaption>${cap}</figcaption>`:''}</figure>`;
 const legend=h=>`<p class="legend"><span><i class="dot"></i> ${E('1 omena','1 apple')}</span><span><i class="rod"></i> ${E('laatikko','box')} = 10</span>${h?`<span><i class="pal"></i> ${E('lava','pallet')} = 100</span>`:''}</p>`;
 
 /* ---------- laskettavat esineet (2. luokan sanalliset) ---------- */
@@ -2412,11 +2412,11 @@ function nearInt(lo,hi){const a=R(lo,hi),s=String(a);const opts=[];
 const FDEC=[[1,2,5,1],[1,4,25,2],[3,4,75,2],[1,5,2,1],[2,5,4,1],[3,5,6,1],[4,5,8,1],[1,10,1,1],[3,10,3,1],[7,10,7,1]];
 function cmpPair(g,L){const eq=Math.random()<.18;let A,B,vis=null;
   const ints=(lo,hi)=>{if(eq){const a=R(lo,hi);return[iI(a),iI(a)]}const[a,b]=nearInt(lo,hi);return[iI(a),iI(b)]};
-  if(g===1){if(L===1){const a=R(1,10),b=eq?a:R(1,10);A=iI(a);B=iI(b);const[f1,f2]=shuffle(FK);
-      vis=`${opnd(group(many(f1,a),a+' '+(EN?FRUITS[f1].en[1]:FRUITS[f1].part)),a,a)}${opnd(group(many(f2,b),b+' '+(EN?FRUITS[f2].en[1]:FRUITS[f2].part)),b,b)}`}
+  if(g===1){if(L===1){const a=R(1,10),b=eq?a:R(1,10);A=iI(a);B=iI(b);const f1=pick(FK),f2=f1;
+      vis=`${opnd(group(many(f1,a),a+' '+(EN?FRUITS[f1].en[1]:FRUITS[f1].part)),'',a)}${opnd(group(many(f2,b),b+' '+(EN?FRUITS[f2].en[1]:FRUITS[f2].part)),'',b)}`}
     else if(L===2)[A,B]=ints(0,20);
     else{const t=R(3,20);A=iE(1,t);B=iI(eq?t:Math.max(0,t+pick([-2,-1,1,2])))}}
-  else if(g===2){if(L===1){[A,B]=ints(10,99);vis=`${opnd(pv(A.v),A.v,A.v+E(' omenaa',' apples'))}${opnd(pv(B.v),B.v,B.v+E(' omenaa',' apples'))}${legend(false)}`}
+  else if(g===2){if(L===1){[A,B]=ints(10,99);vis=`${opnd(pv(A.v),'',A.v+E(' omenaa',' apples'))}${opnd(pv(B.v),'',B.v+E(' omenaa',' apples'))}`}
     else if(L===2){const a=R(12,98),t=String(a);let b=eq?a:(t[0]!==t[1]&&t[1]!=='0'&&Math.random()<.6?+(t[1]+t[0]):Math.floor(a/10)*10+R(0,9));if(b===a&&!eq)b=a+1;A=iI(a);B=iI(b)}
     else{const t=R(12,60);A=iE(2,t);B=Math.random()<.5?iI(eq?t:t+pick([-3,-1,1,2])):iE(2,eq?t:t+pick([-2,1,3]))}}
   else if(g===3){if(L===1)[A,B]=ints(100,999);else if(L===2){[A,B]=ints(100,999);if(!eq){const a=R(100,999),h=Math.floor(a/100)*100;A=iI(a);let b=h+R(0,99);if(b===a)b=h+(a%100+7)%100;B=iI(b)}}
