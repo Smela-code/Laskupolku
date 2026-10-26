@@ -301,12 +301,12 @@ table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;f
 .plc{display:inline-flex;align-items:center;gap:8px;font-size:1.05rem;white-space:nowrap}
 .nl text{font:800 14px var(--display);fill:var(--ink)}
 #nlg{touch-action:none;cursor:pointer;user-select:none;-webkit-user-select:none}
-.vlegend{display:flex;justify-content:space-between;gap:8px;max-width:480px;margin:0 auto 6px}
+.vwrap{margin:0 auto;width:100%}.vlegend{display:flex;justify-content:space-between;gap:8px;margin:0 0 6px}
 .vlegend span{display:inline-flex;align-items:center;gap:6px;border:2.5px solid;border-radius:999px;padding:3px 12px;font-weight:800;font-size:.9rem;background:var(--paper);color:var(--ink)}
 .vlegend span i{width:12px;height:12px;border-radius:50%;flex:none}
-.venn{position:relative;width:100%;max-width:480px;margin:0 auto;aspect-ratio:360/414;container-type:inline-size;touch-action:none;user-select:none;-webkit-user-select:none}
+.venn{position:relative;width:100%;container-type:inline-size;touch-action:none;user-select:none;-webkit-user-select:none}
 .venn>svg{position:absolute;inset:0;width:100%;height:100%}
-.vchip{position:absolute;width:11.11%;height:9.66%;border-radius:24%;border:2.5px solid var(--line);background:var(--paper);color:var(--ink);display:grid;place-items:center;padding:0;font-family:var(--display);font-weight:800;font-size:5.8cqw;line-height:1;touch-action:none;cursor:grab;box-shadow:0 1px 4px rgba(0,0,0,.18);transition:left .55s ease,top .55s ease,transform .15s}
+.vchip{position:absolute;width:var(--cw);height:var(--ch);border-radius:24%;border:2.5px solid var(--line);background:var(--paper);color:var(--ink);display:grid;place-items:center;padding:0;font-family:var(--display);font-weight:800;font-size:var(--fs);line-height:1;touch-action:none;cursor:grab;box-shadow:0 1px 4px rgba(0,0,0,.18);transition:left .55s ease,top .55s ease,transform .15s}
 .vchip.emo{background:#F4F7FB;padding:1px}.vchip.emo svg{width:100%;height:100%;display:block}
 .vchip.drag{transition:none;z-index:5;cursor:grabbing;transform:scale(1.15)}
 .vchip.sel{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue);z-index:4}
@@ -2652,7 +2652,7 @@ for(const g of [1,2,3,4,5,6])GR[g].topics.push({id:'c-kuviot',fam:'cmp',name:'Ku
 
 /* joukot: Venn-diagrammi */
 const VNW=360,VHT=414,VCA={x:134,y:156,r:98},VCB={x:226,y:156,r:98},VRC={x:4,y:4,w:352,h:304},VCH=20;
-function vReg(x,y){if(y>VRC.y+VRC.h+4)return 'T';const a=Math.hypot(x-VCA.x,y-VCA.y)<=VCA.r,b=Math.hypot(x-VCB.x,y-VCB.y)<=VCB.r;return a&&b?'AB':a?'A':b?'B':'O'}
+function vReg(x,y,w){if(w?x>VRC.x+VRC.w+4:y>VRC.y+VRC.h+4)return 'T';const a=Math.hypot(x-VCA.x,y-VCA.y)<=VCA.r,b=Math.hypot(x-VCB.x,y-VCB.y)<=VCB.r;return a&&b?'AB':a?'A':b?'B':'O'}
 const VSLOT=(()=>{const out={A:[],B:[],AB:[],O:[]},cs=[];
   for(let x=VRC.x+22;x<=VRC.x+VRC.w-22;x+=3)for(let y=VRC.y+22;y<=VRC.y+VRC.h-22;y+=3){const dA=Math.hypot(x-VCA.x,y-VCA.y),dB=Math.hypot(x-VCB.x,y-VCB.y),m=Math.min(Math.abs(dA-VCA.r),Math.abs(dB-VCB.r));if(m>=23)cs.push({x,y,rg:vReg(x,y),m})}
   for(const rg in out){const c=cs.filter(q=>q.rg===rg).sort((p,q)=>q.m-p.m);for(const q of c)if(out[rg].every(o=>Math.hypot(o.x-q.x,o.y-q.y)>=44))out[rg].push({x:q.x,y:q.y})}
@@ -2728,24 +2728,25 @@ function vennGen(g){return(L)=>{
       const pool=[];for(let x=1;x<=hi;x++)pool.push({lab:String(x),name:String(x),rg:(a.f(x)?'A':'')+(b.f(x)?'B':'')||'O',v:x});
       if(!spc&&['A','B','AB','O'].some(r=>!pool.some(q=>q.rg===r))&&Math.random()<.8)continue;
       la=E(a.fi,a.en);lb=E(b.fi,b.en);items=vSample(pool,N);if(items)items.sort((p,q)=>p.v-q.v)}}
-  const n=items.length,rows=n>8?2:1,per=Math.ceil(n/rows),tray=items.map((_,i)=>{const r=Math.floor(i/per),c=i%per,k=Math.min(per,n-r*per);return{x:180+(c-(k-1)/2)*44,y:rows===1?364:341+r*46}});
+  const n=items.length,wide=typeof window!=='undefined'&&window.matchMedia&&window.matchMedia('(min-width:700px)').matches,vW=wide?468:VNW,vH=wide?312:VHT;
+  const tray=wide?items.map((_,i)=>{const R2=Math.ceil(n/2),r=i%R2,c=Math.floor(i/R2);return{x:c?437:391,y:156+(r-(R2-1)/2)*50}}):(()=>{const rows=n>8?2:1,per=Math.ceil(n/rows);return items.map((_,i)=>{const r=Math.floor(i/per),c=i%per,k=Math.min(per,n-r*per);return{x:180+(c-(k-1)/2)*44,y:rows===1?364:341+r*46}})})();
   const noun=animals?E('eläin','animal'):E('luku','number');
-  const board=`<div class="vlegend"><span style="border-color:var(--blue)"><i style="background:var(--blue)"></i>${la}</span><span style="border-color:var(--orange)"><i style="background:var(--orange)"></i>${lb}</span></div>
-    <div class="venn" id="vnb"><svg viewBox="0 0 ${VNW} ${VHT}" aria-hidden="true"><rect x="${VRC.x}" y="${VRC.y}" width="${VRC.w}" height="${VRC.h}" rx="12" fill="var(--paper)" stroke="var(--line)" stroke-width="2"/>
+  const board=`<div class="vwrap" style="max-width:${Math.round(vW*4/3)}px"><div class="vlegend" style="width:${(360/vW*100).toFixed(2)}%"><span style="border-color:var(--blue)"><i style="background:var(--blue)"></i>${la}</span><span style="border-color:var(--orange)"><i style="background:var(--orange)"></i>${lb}</span></div>
+    <div class="venn" id="vnb" style="aspect-ratio:${vW}/${vH};--cw:${(40/vW*100).toFixed(2)}%;--ch:${(40/vH*100).toFixed(2)}%;--fs:${(5.8*360/vW).toFixed(2)}cqw"><svg viewBox="0 0 ${vW} ${vH}" aria-hidden="true"><rect x="${VRC.x}" y="${VRC.y}" width="${VRC.w}" height="${VRC.h}" rx="12" fill="var(--paper)" stroke="var(--line)" stroke-width="2"/>
     <circle cx="${VCA.x}" cy="${VCA.y}" r="${VCA.r}" fill="var(--blue)" fill-opacity=".13" stroke="var(--blue)" stroke-width="3"/><circle cx="${VCB.x}" cy="${VCB.y}" r="${VCB.r}" fill="var(--orange)" fill-opacity=".15" stroke="var(--orange)" stroke-width="3"/>
-    <rect x="${VRC.x}" y="318" width="${VRC.w}" height="92" rx="12" fill="none" stroke="var(--line)" stroke-width="2" stroke-dasharray="6 5"/></svg>
-    ${items.map((it,i)=>`<button type="button" class="vchip${it.emo?' emo':''}" data-vi="${i}" aria-label="${it.name}" title="${it.name}" style="left:${((tray[i].x-VCH)/VNW*100).toFixed(2)}%;top:${((tray[i].y-VCH)/VHT*100).toFixed(2)}%">${it.lab}</button>`).join('')}</div>`;
+ ${wide?`<rect x="364" y="4" width="100" height="304" rx="12" fill="none" `:`<rect x="${VRC.x}" y="318" width="${VRC.w}" height="92" rx="12" fill="none" `}stroke="var(--line)" stroke-width="2" stroke-dasharray="6 5"/></svg>
+    ${items.map((it,i)=>`<button type="button" class="vchip${it.emo?' emo':''}" data-vi="${i}" aria-label="${it.name}" title="${it.name}" style="left:${((tray[i].x-VCH)/vW*100).toFixed(2)}%;top:${((tray[i].y-VCH)/vH*100).toFixed(2)}%">${it.lab}</button>`).join('')}</div></div>`;
   const RN={AB:E(`Kumpaankin joukkoon (${la} ja ${lb})`,`In both sets (${la} and ${lb})`),A:E(`Vain sininen: ${la}`,`Only blue: ${la}`),B:E(`Vain oranssi: ${lb}`,`Only orange: ${lb}`),O:E('Ei kumpaankaan, eli ympyröiden ulkopuolelle','In neither set, so outside the circles')};
   const lst=r=>{const m=items.filter(it=>it.rg===r);return m.length?`<div class="vex">${m.map(it=>`<span${it.emo?' class="vexa"':''}>${it.emo?it.lab+' '+it.name:it.lab}</span>`).join('')}</div>`:`<p class="vex"><i>${E('ei yhtään, joten tämä alue jää tyhjäksi','none, so this area stays empty')}</i></p>`};
   const hint=E(`<p>Kysy jokaisesta ${animals?'eläimestä':'luvusta'} kaksi kysymystä: Kuuluuko se siniseen ympyrään (${la})? Kuuluuko se oranssiin ympyrään (${lb})?</p><p>Jos molempiin, laita se keskelle, jossa ympyrät menevät päällekkäin. Jos ei kumpaankaan, laita se ympyröiden ulkopuolelle. Jokin alue voi myös jäädä tyhjäksi.</p>`,
     `<p>Ask two questions about each ${animals?'animal':'number'}: Does it belong in the blue circle (${la})? Does it belong in the orange circle (${lb})?</p><p>If both, put it in the middle where the circles overlap. If neither, put it outside the circles. An area can also stay empty.</p>`);
-  return{kind:'venn',vitems:items,vpos:tray.map(q=>({...q})),vsel:null,vnoun:noun,answerText:'',visual:board,
-    text:`<span class="bg" style="font-size:.7em">${animals?E('Raahaa jokainen eläin oikeaan kohtaan.','Drag each animal to the right place.'):E('Raahaa jokainen luku oikeaan kohtaan.','Drag each number to the right place.')}</span>`,hint,
+  return{kind:'venn',vwide:wide,vW,vH,vitems:items,vpos:tray.map(q=>({...q})),vsel:null,vnoun:noun,answerText:'',visual:board,
+    text:`<span class="bg" style="font-size:.7em">${animals?E('Raahaa jokainen eläin oikealle alueelle.','Drag each animal into the correct area.'):E('Raahaa jokainen luku oikealle alueelle.','Drag each number into the correct area.')}</span>`,hint,
     failMsg:E('Oikeat paikat näkyvät nyt diagrammissa. Siirretyt on merkitty keltaisella.','The right places are now shown in the diagram. The ones that moved are marked in yellow.'),onFail:vennReveal,
     explain:['AB','A','B','O'].map(r=>`<p><b>${RN[r]}:</b></p>${lst(r)}`).join('')}}}
 let VD=null;
-function vPt(e){const b=document.getElementById('vnb').getBoundingClientRect();return{x:(e.clientX-b.left)*VNW/b.width,y:(e.clientY-b.top)*VHT/b.height}}
-function vSet(i,x,y){x=Math.max(VCH,Math.min(VNW-VCH,x));y=Math.max(VCH,Math.min(VHT-VCH,y));P.vpos[i]={x,y};const c=document.querySelector(`.vchip[data-vi="${i}"]`);if(c){c.style.left=((x-VCH)/VNW*100).toFixed(2)+'%';c.style.top=((y-VCH)/VHT*100).toFixed(2)+'%'}}
+function vPt(e){const b=document.getElementById('vnb').getBoundingClientRect();return{x:(e.clientX-b.left)*P.vW/b.width,y:(e.clientY-b.top)*P.vH/b.height}}
+function vSet(i,x,y){x=Math.max(VCH,Math.min(P.vW-VCH,x));y=Math.max(VCH,Math.min(P.vH-VCH,y));P.vpos[i]={x,y};const c=document.querySelector(`.vchip[data-vi="${i}"]`);if(c){c.style.left=((x-VCH)/P.vW*100).toFixed(2)+'%';c.style.top=((y-VCH)/P.vH*100).toFixed(2)+'%'}}
 function vSelect(i){P.vsel=i;document.querySelectorAll('.vchip').forEach(c=>c.classList.toggle('sel',+c.dataset.vi===i))}
 document.addEventListener('pointerdown',e=>{if(!P||P.kind!=='venn'||done||!e.target.closest)return;const bd=e.target.closest('#vnb');if(!bd)return;e.preventDefault();const ch=e.target.closest('.vchip');
   if(ch){const i=+ch.dataset.vi,p=vPt(e);VD={i,dx:p.x-P.vpos[i].x,dy:p.y-P.vpos[i].y,sx:e.clientX,sy:e.clientY,moved:false,el:ch};try{ch.setPointerCapture(e.pointerId)}catch(_){}ch.classList.add('drag');ch.classList.remove('ok','no','fix')}
@@ -2753,12 +2754,12 @@ document.addEventListener('pointerdown',e=>{if(!P||P.kind!=='venn'||done||!e.tar
 document.addEventListener('pointermove',e=>{if(!VD)return;if(Math.hypot(e.clientX-VD.sx,e.clientY-VD.sy)>6)VD.moved=true;if(!VD.moved)return;const p=vPt(e);vSet(VD.i,p.x-VD.dx,p.y-VD.dy)});
 const vUp=()=>{if(!VD)return;VD.el.classList.remove('drag');if(!VD.moved)vSelect(P.vsel===VD.i?null:VD.i);else vSelect(null);VD=null};
 document.addEventListener('pointerup',vUp);document.addEventListener('pointercancel',vUp);
-function vennEval(){const rs=P.vpos.map(q=>vReg(q.x,q.y));
+function vennEval(){const rs=P.vpos.map(q=>vReg(q.x,q.y,P.vwide));
   if(rs.some(r=>r==='T'))return{bad:E(`Raahaa ensin kaikki diagrammiin. Myös ympyröiden ulkopuolelle voi laittaa.`,'First drag them all into the diagram. You can also put them outside the circles.')};
   let w=0;P.vitems.forEach((it,i)=>{const ok=rs[i]===it.rg;if(!ok)w++;const c=document.querySelector(`.vchip[data-vi="${i}"]`);if(c){c.classList.toggle('ok',ok);c.classList.toggle('no',!ok)}});vSelect(null);
   const an=P.vnoun===E('eläin','animal');P.vennMsg=w?E(`${w===1?(an?'Yksi eläin on':'Yksi luku on'):w+(an?' eläintä on':' lukua on')} väärässä kohdassa. ${w===1?'Se on':'Ne on'} merkitty punaisella. Siirrä ja tarkista uudelleen.`,`${w===1?'One '+(an?'animal is':'number is'):w+(an?' animals are':' numbers are')} in the wrong place. ${w===1?'It is':'They are'} marked in red. Move ${w===1?'it':'them'} and check again.`):'';
   return{ok:!w}}
-function vennReveal(){const used={A:0,B:0,AB:0,O:0};P.vitems.forEach((it,i)=>{const was=vReg(P.vpos[i].x,P.vpos[i].y)===it.rg,sl=VSLOT[it.rg][used[it.rg]++];vSet(i,sl.x,sl.y);const c=document.querySelector(`.vchip[data-vi="${i}"]`);if(c){c.classList.remove('no','sel');c.classList.add(was?'ok':'fix')}})}
+function vennReveal(){const used={A:0,B:0,AB:0,O:0};P.vitems.forEach((it,i)=>{const was=vReg(P.vpos[i].x,P.vpos[i].y,P.vwide)===it.rg,sl=VSLOT[it.rg][used[it.rg]++];vSet(i,sl.x,sl.y);const c=document.querySelector(`.vchip[data-vi="${i}"]`);if(c){c.classList.remove('no','sel');c.classList.add(was?'ok':'fix')}})}
 
 /* murtolukujen vertailu 5.–6. luokka */
 function fracBetween(g){const DS=g===5?[2,3,4,5,6,8,10]:[2,3,4,5,6,8,10,12];
