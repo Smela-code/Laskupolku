@@ -2549,7 +2549,7 @@ function kShape(t,col){const c=`var(${KCOL[col][0]})`;switch(t){
   case 'rectw':return `<rect x="-10" y="-6" width="20" height="12" rx="1.5" fill="${c}"/>`;
   case 'diam':return `<path d="M0 -10L7 0 0 10-7 0Z" fill="${c}"/>`}}
 const KLAY={1:[[30,30]],2:[[18,30],[42,30]],3:[[30,16],[17,42],[43,42]],4:[[18,18],[42,18],[18,42],[42,42]],5:[[16,16],[44,16],[30,30],[16,44],[44,44]],6:[[16,14],[44,14],[16,30],[44,30],[16,46],[44,46]],7:[[14,14],[30,14],[46,14],[30,30],[14,46],[30,46],[46,46]],8:[[14,14],[30,14],[46,14],[14,30],[46,30],[14,46],[30,46],[46,46]],9:[[14,14],[30,14],[46,14],[14,30],[30,30],[46,30],[14,46],[30,46],[46,46]]};
-const RING=[0,1,2,5,8,7,6,3],KSZ=[.5,.75,1,1.25,1.5,1.75];
+const RING=[0,1,2,5,8,7,6,3],KSZ=[.55,1.05,1.65];
 const KROTN=EN?{arrow:'arrow',halfsq:'half-coloured square',flag:'flag',pac:'open-mouth circle'}:{arrow:'nuoli',halfsq:'puoliksi väritetty neliö',flag:'lippu',pac:'suullinen ympyrä'};
 function kCell(st){let s='<svg viewBox="0 0 60 60" aria-hidden="true">';
   if(st.items){s+='<path d="M20 2V58M40 2V58M2 20H58M2 40H58" stroke="var(--line)" stroke-width="1.5"/>';st.items.forEach(it=>{const x=10+20*(it.pos%3),y=10+20*Math.floor(it.pos/3);s+=`<g transform="translate(${x} ${y}) rotate(${it.rot}) scale(.88)">${kShape(it.shape,it.color)}</g>`})}
@@ -2603,7 +2603,7 @@ function kuvioGen(g){return(L)=>{
     props.forEach(p=>{if(p==='acol'||p==='acol3')x.color=cols[i%(p==='acol3'?3:per)];
       if(p==='ashape')x.shape=shapes[i%sper];
       if(p==='rot90')x.rot=base.rot+dir*90*i;if(p==='rot45')x.rot=base.rot+dir*45*i;
-      if(p==='count')x.count=c0+cs*i;if(p==='size')x.size=z0+grow*i;if(p==='move')x.pos=RING[((p0+ms*i)%8+8)%8]});
+      if(p==='count')x.count=c0+cs*i;if(p==='size')x.size=grow>0?i%3:2-i%3;if(p==='move')x.pos=RING[((p0+ms*i)%8+8)%8]});
     if(props.includes('move')&&x.pos==null)x.pos=RING[p0];
     st.push(x)}
   const C=st[N-1],ck=kKey(C),cand=[st[N-2]];
@@ -2625,7 +2625,7 @@ function kuvioGen(g){return(L)=>{
     if(p==='rot90')rule.push(E(`Kuvio kääntyy joka kerta neljänneskierroksen (90 astetta) ${cw(dir)}.`,`The shape turns a quarter turn (90 degrees) ${cw(dir)} each time.`));
     if(p==='rot45')rule.push(E(`Kuvio kääntyy joka kerta kahdeksasosakierroksen (45 astetta) ${cw(dir)}.`,`The shape turns an eighth of a turn (45 degrees) ${cw(dir)} each time.`));
     if(p==='count')rule.push(E('Kuvioita tulee joka kerta yksi lisää.','There is one more shape each time.'));
-    if(p==='size')rule.push(grow>0?E('Kuvio kasvaa joka kerta vähän isommaksi.','The shape gets a little bigger each time.'):E('Kuvio pienenee joka kerta vähän pienemmäksi.','The shape gets a little smaller each time.'));
+    if(p==='size')rule.push(grow>0?E('Koko toistuu järjestyksessä: pieni, keskikokoinen, iso, ja sitten alusta.','The size repeats in order: small, medium, big, and then starts again.'):E('Koko toistuu järjestyksessä: iso, keskikokoinen, pieni, ja sitten alusta.','The size repeats in order: big, medium, small, and then starts again.'));
     if(p==='move')rule.push(E(`Kuvio siirtyy reunaa pitkin joka kerta ${Math.abs(ms)===2?'kaksi ruutua':'yhden ruudun'} ${cw(ms)}.`,`The shape moves ${Math.abs(ms)===2?'two squares':'one square'} ${cw(ms)} around the edge each time.`))});
   const hint=E(`<p>Vertaa vierekkäisiä kuvia. Mikä muuttuu: väri, muoto, määrä, koko, asento vai paikka?</p>`,`<p>Compare the pictures side by side. What changes: the colour, the shape, the number, the size, the direction or the position?</p>`)+(props.length>1?E(`<p>Tässä jonossa muuttuu ${props.length===2?'kaksi':'kolme'} asiaa yhtä aikaa. Tarkista ne yksi kerrallaan.</p>`,`<p>In this sequence, ${props.length===2?'two':'three'} things change at the same time. Check them one at a time.</p>`):'');
   return{kind:'choice',pics:true,choices:opts.map((x,i)=>[ids[i],`<span class="kopt">${kCell(x)}</span>`]),ans,answerText:'',
