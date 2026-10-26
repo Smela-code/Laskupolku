@@ -2595,7 +2595,7 @@ function kuvioGen(g){return(L)=>{
   const rotating=props.some(p=>p.startsWith('rot'))||(props.includes('move')&&Math.random()<.4);
   const cols=shuffle(Object.keys(KCOL)),shapes=shuffle(KSYM);
   const per=props.includes('acol3')?3:pick([2,2,3]),sper=pick([2,3]);
-  const grow=pick([1,-1]),z0=grow>0?0:KSZ.length-1;
+  const grow=pick([1,-1]),zper=pick(band===0?[2,2,3]:[2,3]);
   const dir=pick([1,-1]),c0=props.includes('count')?R(1,band===2?2:3):1,cs=1,ms=pick(band===2?[1,2,-1]:[1,-1]),p0=R(0,7);
   const base={shape:rotating?pick(KROT):shapes[0],color:cols[0],rot:rotating?pick([0,90,180,270]):0,count:1,pos:null};
   const N=6;const st=[];
@@ -2603,7 +2603,7 @@ function kuvioGen(g){return(L)=>{
     props.forEach(p=>{if(p==='acol'||p==='acol3')x.color=cols[i%(p==='acol3'?3:per)];
       if(p==='ashape')x.shape=shapes[i%sper];
       if(p==='rot90')x.rot=base.rot+dir*90*i;if(p==='rot45')x.rot=base.rot+dir*45*i;
-      if(p==='count')x.count=c0+cs*i;if(p==='size')x.size=grow>0?i%3:2-i%3;if(p==='move')x.pos=RING[((p0+ms*i)%8+8)%8]});
+      if(p==='count')x.count=c0+cs*i;if(p==='size')x.size=zper===2?(grow>0?2*(i%2):2-2*(i%2)):grow>0?i%3:2-i%3;if(p==='move')x.pos=RING[((p0+ms*i)%8+8)%8]});
     if(props.includes('move')&&x.pos==null)x.pos=RING[p0];
     st.push(x)}
   const C=st[N-1],ck=kKey(C),cand=[st[N-2]];
@@ -2625,7 +2625,7 @@ function kuvioGen(g){return(L)=>{
     if(p==='rot90')rule.push(E(`Kuvio kääntyy joka kerta neljänneskierroksen (90 astetta) ${cw(dir)}.`,`The shape turns a quarter turn (90 degrees) ${cw(dir)} each time.`));
     if(p==='rot45')rule.push(E(`Kuvio kääntyy joka kerta kahdeksasosakierroksen (45 astetta) ${cw(dir)}.`,`The shape turns an eighth of a turn (45 degrees) ${cw(dir)} each time.`));
     if(p==='count')rule.push(E('Kuvioita tulee joka kerta yksi lisää.','There is one more shape each time.'));
-    if(p==='size')rule.push(grow>0?E('Koko toistuu järjestyksessä: pieni, keskikokoinen, iso, ja sitten alusta.','The size repeats in order: small, medium, big, and then starts again.'):E('Koko toistuu järjestyksessä: iso, keskikokoinen, pieni, ja sitten alusta.','The size repeats in order: big, medium, small, and then starts again.'));
+    if(p==='size')rule.push(zper===2?(grow>0?E('Koko vaihtelee: pieni, iso, pieni, iso…','The size alternates: small, big, small, big…'):E('Koko vaihtelee: iso, pieni, iso, pieni…','The size alternates: big, small, big, small…')):grow>0?E('Koko toistuu järjestyksessä: pieni, keskikokoinen, iso, ja sitten alusta.','The size repeats in order: small, medium, big, and then starts again.'):E('Koko toistuu järjestyksessä: iso, keskikokoinen, pieni, ja sitten alusta.','The size repeats in order: big, medium, small, and then starts again.'));
     if(p==='move')rule.push(E(`Kuvio siirtyy reunaa pitkin joka kerta ${Math.abs(ms)===2?'kaksi ruutua':'yhden ruudun'} ${cw(ms)}.`,`The shape moves ${Math.abs(ms)===2?'two squares':'one square'} ${cw(ms)} around the edge each time.`))});
   const hint=E(`<p>Vertaa vierekkäisiä kuvia. Mikä muuttuu: väri, muoto, määrä, koko, asento vai paikka?</p>`,`<p>Compare the pictures side by side. What changes: the colour, the shape, the number, the size, the direction or the position?</p>`)+(props.length>1?E(`<p>Tässä jonossa muuttuu ${props.length===2?'kaksi':'kolme'} asiaa yhtä aikaa. Tarkista ne yksi kerrallaan.</p>`,`<p>In this sequence, ${props.length===2?'two':'three'} things change at the same time. Check them one at a time.</p>`):'');
   return{kind:'choice',pics:true,choices:opts.map((x,i)=>[ids[i],`<span class="kopt">${kCell(x)}</span>`]),ans,answerText:'',
