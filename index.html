@@ -319,6 +319,13 @@ table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;f
 .tstage{position:relative;height:96px;margin:4px auto 8px;max-width:360px;border-radius:16px;background:linear-gradient(var(--sun-bg),var(--paper));border:2px solid var(--line);overflow:hidden;display:grid;place-items:center}
 .tstage .tcnt{position:absolute;z-index:2;right:10px;top:6px;background:var(--paper);padding:0 6px;border-radius:8px;font-weight:800;font-size:.85rem;color:var(--soft)}
 .tstage .tground{position:absolute;left:0;right:0;bottom:0;height:14px;background:var(--grid)}
+.tstage.grass .tground{height:18px;background:#8cc96b}.tstage.forest{background:linear-gradient(#e3f1dc,#f6fbf2)}.tstage.forest .tground{height:18px;background:#5c9a4a}
+.tstage.troad .tground{height:20px;background:repeating-linear-gradient(90deg,#fff 0 12px,transparent 12px 26px) center/100% 2px no-repeat,#5a5e66}
+.tstage.belt{background:linear-gradient(#f2f4f8,#e3e8f0)}
+.tstage.belt .tground{left:8px;right:8px;bottom:10px;height:22px;border-radius:11px;border:2px solid #23262d;background:repeating-linear-gradient(90deg,#3a3f4a 0 13px,#565c69 13px 16px);background-size:16px 100%;animation:tBelt .9s linear infinite}
+.tstage.belt::after{content:"";position:absolute;left:14px;right:14px;bottom:2px;height:6px;border-radius:3px;background:#9aa3b1}
+@keyframes tBelt{to{background-position:16px 0}}
+.tstage.belt .tcur{width:60px;height:60px;align-self:end;margin-bottom:24px}.tstage.belt.timed .tcur{top:12px;margin:0}
 .tcur{width:78px;height:78px;position:relative;z-index:1}.tcur svg{width:100%;height:100%;display:block}
 .tcur.in{animation:tIn .45s ease-out both}@keyframes tIn{from{transform:translateX(-190px)}}
 .tcur.out{animation:tOut .3s ease-in both}@keyframes tOut{to{transform:translateX(200px);opacity:.2}}
@@ -335,7 +342,7 @@ button.trow{cursor:pointer;touch-action:manipulation}button.trow:active{transfor
 .trow .tn{font-weight:800;font-size:.95rem;line-height:1.1}.trow .tm{display:block;height:26px;margin-top:2px}
 .trow .num{width:2.6em}
 .tally[data-ph="1"]~.kpwrap #check,.tally[data-ph="1"]~.kpwrap .keypad,.tally[data-ph="3"]~.kpwrap .keypad{display:none}
-@media (prefers-reduced-motion:reduce){.tcur.in,.tcur.out,.tcur.got,.trow.shake{animation:none}}
+@media (prefers-reduced-motion:reduce){.tcur.in,.tcur.out,.tcur.got,.trow.shake,.tstage.belt .tground{animation:none}}
 
 .fmach{display:grid;gap:8px;justify-content:center;margin:4px auto}
 .fmhead,.fmrow{display:grid;grid-template-columns:3.4em 1.8em 3.6em 1.8em 3.4em;align-items:center;gap:4px}
@@ -3018,13 +3025,13 @@ const tCar=(c,ty='s')=>T48(ty==='u'?`<path d="M3 31 L3 20 Q3 17 6 16.5 L11 10.5 
   :`<path d="M3 30 Q3 24.5 7 24 L13 23.5 L18 15.5 Q19 14 21.5 14 L29 14 Q31 14 32.5 15.5 L39 23 L43 23.6 Q46 24.3 46 28 L46 30.5 Q46 32.5 44 32.5 L5 32.5 Q3 32.5 3 30Z" fill="${c}" ${TSK}/><path d="M19.6 16.6 L29.2 16.6 L35.8 22.8 L15.7 22.8Z" fill="#cfe8f6" stroke="#33343a" stroke-width="1"/><path d="M26 16.6V22.8" stroke="#33343a" stroke-width="1.1"/><rect x="43.2" y="25.2" width="2.8" height="2.4" rx="1" fill="#ffe27a"/><rect x="3" y="25.5" width="1.8" height="2.6" fill="#d33"/>${tWh(12.5)}${tWh(36.5)}`);
 const tCarE=(fi,en,c)=>[E(fi,en),tCar(c),c,[tCar(c),tCar(c),tCar(c,'r'),tCar(c,'u')]];
 const TTH=()=>[
-  {s:E('Maatilan eläimet kulkevat yksi kerrallaan laitumelle. Pidä kirjaa: napauta jokaisen eläimen kohdalla oikeaa riviä.','The farm animals walk to the meadow one at a time. Keep a tally: tap the right row for each animal.'),q:E('eläintä','animals'),
+  {bg:'grass',s:E('Maatilan eläimet kulkevat yksi kerrallaan laitumelle. Pidä kirjaa: napauta jokaisen eläimen kohdalla oikeaa riviä.','The farm animals walk to the meadow one at a time. Keep a tally: tap the right row for each animal.'),q:E('eläintä','animals'),
    c:[[E('lehmä','cow'),T48(ADR.lehma(''))],[E('lammas','sheep'),T48(ADR.lammas('valk'))],[E('possu','pig'),T48(ADR.possu(''))],[E('kana','hen'),T48(ADR.kana('valk'))],[E('hevonen','horse'),T48(ADR.hevonen('rus'))]]},
-  {s:E('Koulun ohi ajaa autoja. Laske, montako kunkin väristä autoa ajaa ohi: napauta jokaisen auton kohdalla oikeaa riviä.','Cars drive past the school. Count how many cars of each colour go by: tap the right row for each car.'),q:E('autoa','cars'),
+  {bg:'troad',s:E('Koulun ohi ajaa autoja. Laske, montako kunkin väristä autoa ajaa ohi: napauta jokaisen auton kohdalla oikeaa riviä.','Cars drive past the school. Count how many cars of each colour go by: tap the right row for each car.'),q:E('autoa','cars'),
    c:[tCarE('punainen','red','#DE3E2D'),tCarE('sininen','blue','#2B5FDB'),tCarE('valkoinen','white','#ffffff'),tCarE('musta','black','#34343b'),tCarE('keltainen','yellow','#F2C12E'),tCarE('vihreä','green','#3B9637')]},
-  {s:E('Riistakamera kuvasi metsän eläimiä. Käy kuvat läpi ja napauta jokaisen eläimen kohdalla oikeaa riviä.','A wildlife camera took pictures of forest animals. Go through the pictures and tap the right row for each animal.'),q:E('eläintä','animals'),
+  {bg:'forest',s:E('Riistakamera kuvasi metsän eläimiä. Käy kuvat läpi ja napauta jokaisen eläimen kohdalla oikeaa riviä.','A wildlife camera took pictures of forest animals. Go through the pictures and tap the right row for each animal.'),q:E('eläintä','animals'),
    c:[[E('kettu','fox'),T48(ADR.kettu())],[E('karhu','bear'),T48(ADR.karhu('rus'))],[E('jänis','hare'),T48(ADR.kani('rus'))],[E('pöllö','owl'),T48(ADR.pollo())],[E('varis','crow'),T48(ADR.varis())]]},
-  {s:E('Hedelmät tulevat kaupan kassalle yksi kerrallaan. Pidä kirjaa: napauta jokaisen hedelmän kohdalla oikeaa riviä.','Fruit comes to the shop till one at a time. Keep a tally: tap the right row for each fruit.'),q:E('hedelmää','fruits'),
+  {bg:'belt',s:E('Hedelmät kulkevat kaupan kassahihnalla yksi kerrallaan. Pidä kirjaa: napauta jokaisen hedelmän kohdalla oikeaa riviä.','Fruit moves along the checkout belt one at a time. Keep a tally: tap the right row for each fruit.'),q:E('hedelmää','fruits'),
    c:FK.map(k=>[EN?FRUITS[k].en[0]:FRUITS[k].nom,fruitSVG(k,'n')])}];
 function tMarks(n){let s='',x=2;for(let g=0;g<Math.ceil(n/5);g++){const m=Math.min(5,n-g*5);for(let i=0;i<Math.min(m,4);i++)s+=`<path d="M${x+i*5} 3V23" stroke="var(--ink)" stroke-width="2.2" stroke-linecap="round"/>`;if(m===5)s+=`<path d="M${x-3} 20L${x+18} 6" stroke="var(--apple)" stroke-width="2.2" stroke-linecap="round"/>`;x+=28}
   return `<svg class="tm" viewBox="0 0 ${Math.max(30,x)} 26" width="${Math.max(30,x)}" height="26" aria-hidden="true">${s}</svg>`}
@@ -3059,7 +3066,7 @@ function tallyGen(g){return(L)=>{
   const Q0={dc:{mode:'bar',step,snap:1,max:Math.max(max,step*5),cats:tc.map(c=>({n:cap(c[0]),col:c[2]})),t:k,v:tc.map(()=>0),order:tc.map((_,i)=>i),sort:srt},dcBad:null,dcShow:false,dcDrag:null};
   const tdur=g<=2?(L===3?5:0):(L===1?0:L===2?4:3);
   const P0={kind:'tally',ph:1,ti:0,tbusy:false,tc,tseq:seq,tN:seq.length,tdur,tk:tc.map(()=>0),...Q0};
-  const after=`<div class="tally" id="tally" data-ph="1"><div class="tstage${tdur?' timed':''}" id="tstage" style="--dur:${tdur}s"><span class="tcnt" id="tcnt">1 / ${seq.length}</span><span class="tground"></span><span class="tcur ${tdur?'run':'in'}" id="tcur">${tc[seq[0]][3]?pick(tc[seq[0]][3]):tc[seq[0]][1]}</span></div><div class="ttab" id="ttab">${tRows(P0)}</div><p class="ladtxt" id="tinst" style="text-align:center">${tdur?E('Napauta oikeaa riviä ennen kuin se ehtii ohi!','Tap the right row before it gets past!'):E('Napauta oikeaa riviä.','Tap the right row.')}</p></div>`;
+  const after=`<div class="tally" id="tally" data-ph="1"><div class="tstage ${th.bg}${tdur?' timed':''}" id="tstage" style="--dur:${tdur}s"><span class="tcnt" id="tcnt">1 / ${seq.length}</span><span class="tground"></span><span class="tcur ${tdur?'run':'in'}" id="tcur">${tc[seq[0]][3]?pick(tc[seq[0]][3]):tc[seq[0]][1]}</span></div><div class="ttab" id="ttab">${tRows(P0)}</div><p class="ladtxt" id="tinst" style="text-align:center">${tdur?E('Napauta oikeaa riviä ennen kuin se ehtii ohi!','Tap the right row before it gets past!'):E('Napauta oikeaa riviä.','Tap the right row.')}</p></div>`;
   const sc=step>1?E(' Asteikon viivat ovat kahden välein, joten pariton luku on kahden viivan puolivälissä.',' The lines on the scale go up in twos, so an odd number is halfway between two lines.'):'';
   return{...P0,answerText:'',story:th.s,after,
     hint:E(`<p>Tukkimiehen kirjanpidossa jokaisesta tulee yksi viiva. Joka viides viiva vedetään vinottain neljän viivan yli, jolloin syntyy viitosnippu.</p><p>Laske ensin niput: 5, 10, 15… ja lisää sitten yksittäiset viivat.${sc}</p>`,`<p>In a tally, each one gets a mark. Every fifth mark goes across the other four, making a bundle of five.</p><p>Count the bundles first: 5, 10, 15… then add the single marks.${sc}</p>`),
