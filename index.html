@@ -322,7 +322,10 @@ table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;f
 .tstage.grass .tground{height:18px;background:#8cc96b}.tstage.forest{background:linear-gradient(#e3f1dc,#f6fbf2)}.tstage.forest .tground{height:18px;background:#5c9a4a}
 .tstage.troad .tground{height:20px;background:repeating-linear-gradient(90deg,#fff 0 12px,transparent 12px 26px) center/100% 2px no-repeat,#5a5e66}
 .tstage.belt{background:linear-gradient(#f2f4f8,#e3e8f0)}
-.tstage.belt .tground{left:8px;right:8px;bottom:10px;height:22px;border-radius:11px;border:2px solid #23262d;background:repeating-linear-gradient(90deg,#3a3f4a 0 13px,#565c69 13px 16px);background-size:16px 100%;animation:tBelt .9s linear infinite}
+.tstage.belt .tground{left:8px;right:8px;bottom:10px;height:22px;border-radius:11px;border:2px solid #23262d;background:repeating-linear-gradient(90deg,#3a3f4a 0 13px,#565c69 13px 16px);background-size:16px 100%;animation:tBelt var(--bper,.0925s) linear infinite;animation-play-state:paused}
+.tstage.belt.mv .tground{animation-play-state:running}
+.tstage.belt .tcur.in{animation:tInB 1.1s linear both}@keyframes tInB{from{transform:translateX(-190px)}}
+.tstage.belt .tcur.out{animation:tOutB .5s linear both}@keyframes tOutB{to{transform:translateX(86px);opacity:0}}
 .tstage.belt::after{content:"";position:absolute;left:14px;right:14px;bottom:2px;height:6px;border-radius:3px;background:#9aa3b1}
 @keyframes tBelt{to{background-position:16px 0}}
 .tstage.belt .tcur{width:60px;height:60px;align-self:end;margin-bottom:24px}.tstage.belt.timed .tcur{top:12px;margin:0}
@@ -3048,7 +3051,11 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
   if(i!==k){b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');return}
   P.tk[i]++;P.ti++;P.tbusy=true;const c=document.getElementById('tcur');
   if(c){if(P.tdur){const st=$('#tstage').getBoundingClientRect(),cr=c.getBoundingClientRect();c.style.left=(cr.left-st.left)+'px';c.className='tcur';void c.offsetWidth;c.classList.add('got')}else{c.className='tcur';void c.offsetWidth;c.classList.add('out')}}
-  $('#ttab').innerHTML=tRows();setTimeout(tNext,280)});
+  $('#ttab').innerHTML=tRows();setTimeout(tNext,!P.tdur&&document.querySelector('.tstage.belt')?500:280)});
+document.addEventListener('animationstart',e=>{if(e.target.id!=='tcur')return;const st=document.getElementById('tstage');if(!st||!st.classList.contains('belt'))return;
+  if(e.animationName==='tRun'){const v=(st.clientWidth+84)/(P.tdur||4);st.style.setProperty('--bper',(16/v).toFixed(3)+'s')}
+  if(['tRun','tInB','tOutB'].includes(e.animationName))st.classList.add('mv')});
+document.addEventListener('animationend',e=>{if(e.target.id==='tcur'&&['tInB','tOutB'].includes(e.animationName)){const st=document.getElementById('tstage');if(st&&!P.tdur)st.classList.remove('mv')}});
 document.addEventListener('animationend',e=>{if(e.target.id!=='tcur'||e.animationName!=='tRun'||!P||P.kind!=='tally'||P.ph!==1||done)return;
   P.tseq.push(P.tseq[P.ti]);P.ti++;P.tmiss=(P.tmiss||0)+1;const st=$('#tstage');if(st){const m=document.createElement('span');m.className='tmiss';m.textContent=E('Ohi meni! Se tulee myöhemmin uudelleen.','Missed! It will come again later.');st.appendChild(m);setTimeout(()=>m.remove(),1300)}
   tShow()});
