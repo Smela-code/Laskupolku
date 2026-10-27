@@ -2857,14 +2857,13 @@ function jKid(x,y){const sk=pick(JSK),hr=pick(JHR),sh=pick(JSH),girl=Math.random
   return `<g transform="translate(${x} ${y})"><rect x="5" y="26" width="3.2" height="8" rx="1.2" fill="#3a3f55"/><rect x="9.8" y="26" width="3.2" height="8" rx="1.2" fill="#3a3f55"/>`+
     `<path d="M3 27 Q3 14.5 9 14.5 Q15 14.5 15 27Z" fill="${sh}"/>`+(girl?`<circle cx="2.6" cy="8.5" r="2.6" fill="${hr}"/><circle cx="15.4" cy="8.5" r="2.6" fill="${hr}"/>`:'')+
     `<circle cx="9" cy="8" r="6" fill="${sk}"/><path d="M3 8 Q3 1.6 9 1.6 Q15 1.6 15 8 Q12 4.6 9 5.2 Q6 4.6 3 8Z" fill="${hr}"/><circle cx="7" cy="8.6" r=".85" fill="#222"/><circle cx="11" cy="8.6" r=".85" fill="#222"/><path d="M7.2 11 Q9 12.4 10.8 11" fill="none" stroke="#7a3a2a" stroke-width=".8" stroke-linecap="round"/></g>`}
-function jPairSVG(n){const P=Math.ceil(n/2),per=4,rows=Math.ceil(P/per),cw=48,W=8+Math.min(P,per)*cw,H=8+rows*46;let s='';
+function jPairSVG(n){const P=Math.ceil(n/2),per=4,rows=Math.ceil(P/per),cw=54,W=8+Math.min(P,per)*cw,H=8+rows*46;let s='';
   for(let i=0;i<P;i++){const r=Math.floor(i/per),c=i%per,x=8+c*cw,y=8+r*46,full=2*i+1<n;
-    if(full)s+=`<rect x="${x-3}" y="${y-4}" width="${cw-8}" height="44" rx="10" fill="none" stroke="var(--soft)" stroke-dasharray="3 3"/><path d="M${x+15} ${y+22} H${x+23}" stroke="#e0aa7c" stroke-width="2.4" stroke-linecap="round"/>`;
     s+=jKid(x,y);if(full)s+=jKid(x+20,y)}
   return `<svg class="jvis" viewBox="0 0 ${W} ${H}" width="${Math.min(340,W*1.75)}" role="img" aria-label="${n}">${s}</svg>`}
-function jGroupSVG(n,k){const gw=k*19+8,maxW=330,pos=[];let x=4,y=6;const G=Math.ceil(n/k);for(let g=0;g<G;g++){const m=Math.min(k,n-g*k),w=m*19+8;if(x+w>maxW){x=4;y+=48}pos.push({x,y,m});x+=w+8}
+function jGroupSVG(n,k){const gw=k*19+8,maxW=330,pos=[];let x=4,y=6;const G=Math.ceil(n/k);for(let g=0;g<G;g++){const m=Math.min(k,n-g*k),w=m*19+8;if(x+w>maxW){x=4;y+=48}pos.push({x,y,m});x+=w+14}
   const W=Math.max(...pos.map(p=>p.x+p.m*19+8))+4,H=pos[pos.length-1].y+46;let s='';
-  pos.forEach(p=>{if(p.m===k)s+=`<rect x="${p.x}" y="${p.y-3}" width="${k*19+6}" height="44" rx="10" fill="none" stroke="var(--soft)" stroke-dasharray="3 3"/>`;for(let i=0;i<p.m;i++)s+=jKid(p.x+4+i*19,p.y+2)});
+  pos.forEach(p=>{for(let i=0;i<p.m;i++)s+=jKid(p.x+4+i*19,p.y+2)});
   return `<svg class="jvis" viewBox="0 0 ${W} ${H}" width="${Math.min(340,W*1.4)}" role="img" aria-label="${n}">${s}</svg>`}
 const jBlk=(x,y,z=12)=>`<rect x="${x}" y="${y}" width="${z}" height="${z}" rx="2" fill="var(--sun)" stroke="var(--ink)" stroke-opacity=".35"/>`;
 function jRowSVG(n){const W=8+n*14;let s='';for(let i=0;i<n;i++)s+=jBlk(4+i*14,4);return `<svg class="jvis" viewBox="0 0 ${W} 20" width="${Math.min(340,W*2.2)}" role="img" aria-label="${n}">${s}</svg>`}
@@ -2879,9 +2878,9 @@ const jList=a=>a.join(', ');
 function pariGen(g){return(L)=>{
   const big=g>=3,ev=E('Parillinen luku jakautuu tasan kahteen yhtä suureen osaan. Sen viimeinen numero on 0, 2, 4, 6 tai 8.','An even number splits into two equal parts. Its last digit is 0, 2, 4, 6 or 8.');
   if(L===1&&!big){const n=R(2,g===1?12:20),even=n%2===0;
-    return{kind:'choice',confirm:1,choices:[['p',E('Parillinen','Even')],['t',E('Pariton','Odd')]],yn:1,ans:even?'p':'t',visual:jPairSVG(n),
-      text:plbl(E(`${n} lasta menee parijonoon. Saako jokainen parin? Onko ${n} parillinen vai pariton?`,`${n} children line up in pairs. Does everyone get a partner? Is ${n} even or odd?`),''),answerText:'',
-      hint:E('<p>Katso kuvaa. Saiko jokainen lapsi parin, vai jäikö yksi ilman paria?</p>','<p>Look at the picture. Did every child get a partner, or was one left without?</p>'),
+    return{kind:'choice',confirm:1,choices:jYN(),yn:1,ans:even?'1':'0',visual:jPairSVG(n),
+      text:plbl(E(`${n} lasta menee parijonoon. Saako jokainen parin?`,`${n} children line up in pairs. Does everyone get a partner?`),''),answerText:'',
+      hint:E(`<p>Katso kuvaa. Saiko jokainen lapsi parin, vai jäikö yksi ilman paria?</p><p>Jos jokainen saa parin, ${n} on parillinen luku. Jos yksi jää ilman paria, ${n} on pariton luku.</p>`,`<p>Look at the picture. Did every child get a partner, or was one left without?</p><p>If everyone gets a partner, ${n} is an even number. If one is left without, ${n} is an odd number.</p>`),
       explain:`<p><b>${even?E(`${n} on parillinen: jokainen lapsi sai parin.`,`${n} is even: every child got a partner.`):E(`${n} on pariton: yksi lapsi jää ilman paria.`,`${n} is odd: one child is left without a partner.`)}</b></p><p>${ev}</p>`}}
   const odd=L===3&&Math.random()<.5,[lo,hi]=!big?(L===2?[1,20]:[10,99]):(L===1?[10,99]:L===2?[100,999]:[1000,9999]);
   const nums=jPickNums(lo,hi,12,x=>odd?x%2===1:x%2===0,4,7);
@@ -2896,8 +2895,8 @@ function jakGen(g){return(L)=>{
   const hi5=g>=5;
   if(L===1){const k=hi5?pick([3,4,6]):pick([2,3,4,5]),yes=Math.random()<.5;let n;do{n=R(k+1,k*6)}while((n%k===0)!==yes);
     return{kind:'choice',confirm:1,yn:1,choices:jYN(),ans:yes?'1':'0',visual:jGroupSVG(n,k),
-      text:plbl(E(`${n} lasta tekee ryhmätyötä ${k} hengen ryhmissä. Meneekö jako tasan, eli onko ${n} jaollinen ${k}:${JSUF[k]}?`,`${n} children do group work in groups of ${k}. Do they split exactly, so is ${n} divisible by ${k}?`),''),answerText:'',
-      hint:E(`<p>Luku on jaollinen ${k}:${JSUF[k]}, jos sen voi jakaa tasan ${k} yhtä suureen ryhmään, eikä ketään jää yli. Ovatko kaikki ryhmät täysiä?</p>`,`<p>A number is divisible by ${k} if it splits exactly into groups of ${k} with nobody left over. Are all the groups full?</p>`),
+      text:plbl(E(`${n} lasta tekee ryhmätyötä ${k} hengen ryhmissä. Meneekö jako tasan?`,`${n} children do group work in groups of ${k}. Do they split exactly?`),''),answerText:'',
+      hint:E(`<p>Kysymys on sama kuin: onko ${n} jaollinen ${k}:${JSUF[k]}?</p><p>Luku on jaollinen ${k}:${JSUF[k]}, jos sen voi jakaa tasan ${k} hengen ryhmiin, eikä ketään jää yli. Ovatko kaikki ryhmät täysiä?</p>`,`<p>The question is the same as: is ${n} divisible by ${k}?</p><p>A number is divisible by ${k} if it splits exactly into groups of ${k} with nobody left over. Are all the groups full?</p>`),
       explain:`<p><b>${yes?E(`Kyllä: ${n} : ${k} = ${n/k}. Ryhmiä tulee ${n/k}, eikä ketään jää yli.`,`Yes: ${n} ÷ ${k} = ${n/k}. That makes ${n/k} groups with nobody left over.`):E(`Ei: ${n} : ${k} = ${Math.floor(n/k)}, ja yli jää ${n%k}. Täysiä ryhmiä tulee ${Math.floor(n/k)}, ja ${n%k===1?'yksi lapsi jää':n%k+' lasta jää'} ilman täyttä ryhmää.`,`No: ${n} ÷ ${k} = ${Math.floor(n/k)} with ${n%k} left over. There are ${Math.floor(n/k)} full groups and ${n%k} ${n%k===1?'child is':'children are'} left without a full group.`)}</b></p>`}}
   const k=!hi5?(L===2?pick([2,5,10]):pick([3,4])):(L===2?pick([3,9]):pick([4,6,9,3])),[lo,hi]=!hi5?(L===2?[10,99]:[1,g===3?40:60]):[100,999];
   const nums=jPickNums(lo,hi,12,x=>x%k===0,3,6),uses=[3,9,6].includes(k)&&hi5;
