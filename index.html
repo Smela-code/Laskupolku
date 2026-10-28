@@ -3059,12 +3059,13 @@ function tRender(){const t=document.getElementById('tally');if(!t)return;t.datas
   if(P.ph===2){const f=document.getElementById('tq0');if(f){activeEl=f;f.focus({preventScroll:true})}}
   if(P.ph===3&&!document.getElementById('dcg'))t.insertAdjacentHTML('beforeend',`<svg id="dcg" class="bchart" viewBox="0 0 ${DCW} ${DCH}" width="${DCW}" role="img" aria-label="${E('Piirrettävä diagrammi','Chart to draw')}">${dcInner()}</svg>`)}
 const tCnt=()=>{const c=document.getElementById('tcnt');if(c)c.textContent=`${Math.min(P.tN,P.tk.reduce((a,b)=>a+b,0)+1)} / ${P.tN}`};
-function tShow(){const c=document.getElementById('tcur');if(!c)return;const k=P.tseq[P.ti];c.style.left='';c.className='tcur';void c.offsetWidth;c.innerHTML=P.tc[k][3]?pick(P.tc[k][3]):P.tc[k][1];c.classList.add(P.tdur?'run':'in');tCnt()}
+function tShow(){const c=document.getElementById('tcur');if(!c)return;const k=P.tseq[P.ti];c.getAnimations().forEach(a=>a.cancel());c.style.transform='';c.style.left='';c.className='tcur';void c.offsetWidth;c.innerHTML=P.tc[k][3]?pick(P.tc[k][3]):P.tc[k][1];c.classList.add(P.tdur?'run':'in');tCnt()}
 function tNext(){P.tbusy=false;if(P.ti>=P.tseq.length){P.ph=2;tRender();fb(E('Kaikki on merkitty! Laske nyt viivat.','Everything is marked! Now count the marks.'),'info')}else tShow()}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-trow]');if(!b||done||!P||P.kind!=='tally'||P.ph!==1||P.tbusy)return;const i=+b.dataset.trow,k=P.tseq[P.ti];
   if(i!==k){b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');return}
   P.tk[i]++;P.ti++;P.tbusy=true;const c=document.getElementById('tcur');
-  if(c){if(P.tdur){const st=$('#tstage').getBoundingClientRect(),cr=c.getBoundingClientRect();c.style.left=(cr.left-st.left)+'px';c.className='tcur';void c.offsetWidth;c.classList.add('got')}else{c.className='tcur';void c.offsetWidth;c.classList.add('out')}}
+  if(c){if(P.tdur){const st=$('#tstage').getBoundingClientRect(),cr=c.getBoundingClientRect();c.style.left=(cr.left-st.left)+'px';c.className='tcur';void c.offsetWidth;c.classList.add('got')}else{const st=$('#tstage'),belt=st.classList.contains('belt'),m=new DOMMatrix(getComputedStyle(c).transform).m41;c.className='tcur';c.style.transform=`translateX(${m}px)`;if(belt)st.classList.add('mv');
+    c.animate([{transform:`translateX(${m}px)`,opacity:1},{transform:`translateX(${m+(belt?60:200)}px)`,opacity:belt?0:.2}],{duration:belt?500:300,easing:belt?'linear':'ease-in',fill:'forwards'}).onfinish=()=>{if(belt&&P.ph!==1)st.classList.remove('mv')}}}
   $('#ttab').innerHTML=tRows();setTimeout(tNext,!P.tdur&&document.querySelector('.tstage.belt')?500:280)});
 document.addEventListener('animationstart',e=>{if(e.target.id!=='tcur')return;const st=document.getElementById('tstage');if(!st||!st.classList.contains('belt'))return;
   if(e.animationName==='tRun'){const v=(st.clientWidth+84)/(P.tdur||4);st.style.setProperty('--bper',(24/v).toFixed(3)+'s')}
