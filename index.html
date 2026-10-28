@@ -3101,15 +3101,20 @@ function shOffer(t,N,step,b,lo,g){const nice=v=>g===4&&v>100?Math.max(50,50*Math
   if(t==='unit'){const u=rp(80,110);return{t,u,tot:N*u}}
   if(t==='pack'){const ss=(lo?[2,3,4,5,6,8,10].filter(x=>x<=N+3&&x>=2):[2,3,4,6].filter(x=>N%x===0&&x<N)),sz=pick(ss.length?ss:[N]),np=Math.ceil(N/sz);const p=nice(Math.max(step,step*Math.round(b*sz*R(lo&&N%sz?72:85,lo&&N%sz?95:110)/100/step)));return{t,sz,p,np,left:np*sz-N,tot:np*p}}
   if(t==='b2p1'){const u=rp(170,230),pay=Math.ceil(N/2);return{t,u,pay,tot:pay*u}}
+  if(t==='web'){const u=rp(60,85),raw=N*b*R(12,40)/100;let f=g===3?Math.max(100,100*Math.round(raw/100)):g===4?Math.max(100,50*Math.round(raw/50)):Math.max(190,100*Math.round(raw/100)-10);
+    const thr=g>=5&&Math.random()<.35?100*pick([10,15,20,25]):0,sub=N*u,fee=thr&&sub>=thr?0:f;return{t,u,f,thr,sub,fee,tot:sub+fee}}
   if(t==='b3p2'){const u=rp(130,170),pay=N-Math.floor(N/3);return{t,u,pay,tot:pay*u}}
   if(t==='pct'){const d=pick(g===4?[50]:[10,20,25,50]),u=rp(d===50?170:d===25?115:d===20?105:95,d===50?230:d===25?150:d===20?140:125);if((N*u*(100-d))%(g===4?1000:100))return null;return{t,u,d,tot:N*u*(100-d)/100}}}
-function shCard(o,i,k,ex){const[nm,col]=SHN()[i];let of='',bd='';
+const shNm=(o,i)=>o&&o.t==='web'?[E('Verkkokauppa','Online shop'),'--candy']:SHN()[i];
+function shCard(o,i,k,ex){const[nm,col]=shNm(o,i);let of='',bd='';
   if(o.t==='pack')of=E(`Pussi, jossa ${o.sz} kpl<br>${eurS(o.p)}`,`Bag of ${o.sz}<br>${eurS(o.p)}`);else of=`${eurS(o.u)} / ${E('kpl','each')}`;
   if(o.t==='b2p1')bd=E('Osta 2, maksa 1!','Buy 2, pay for 1!');if(o.t==='b3p2')bd=E('Osta 3, maksa 2!','Buy 3, pay for 2!');if(o.t==='pct')bd=E(`−${o.d} % kassalla`,`−${o.d} % at the till`);
+  if(o.t==='web'){bd='';of+=`<div class="ex" style="font-weight:800;color:var(--ink);font-size:.82rem">${E('Toimitus','Delivery')} +${eurS(o.f)}</div>${o.thr?`<div class="ex" style="font-weight:800;color:var(--good)">${E(`Ilmainen toimitus yli ${o.thr/100} €`,`Free delivery over ${o.thr/100} €`)}</div>`:''}`}
   return `<div class="shop"><h4 style="background:var(${col})">${nm}</h4>${fruitSVG(k,'n')}<div class="of">${of}</div>${bd?`<span class="bd">${bd}</span>`:''}<div class="ex">${ex}</div></div>`}
 function shCalc(o,N){
   if(o.t==='unit')return `${N} · ${eurS(o.u)} = ${eurS(o.tot)}`;
   if(o.t==='pack')return o.left?E(`${o.np===1?'ostat 1 pussin':'ostat '+o.np+' pussia'} (${o.np*o.sz} kpl, ${o.left} jää yli): ${o.np} · ${eurS(o.p)} = ${eurS(o.tot)}`,`you must buy ${o.np} ${o.np===1?'bag':'bags'} (${o.np*o.sz}, ${o.left} left over): ${o.np} · ${eurS(o.p)} = ${eurS(o.tot)}`):E(`${o.np} ${o.np===1?'pussi':'pussia'} · ${eurS(o.p)} = ${eurS(o.tot)}`,`${o.np} ${o.np===1?'bag':'bags'} · ${eurS(o.p)} = ${eurS(o.tot)}`);
+  if(o.t==='web')return o.fee?E(`${N} · ${eurS(o.u)} = ${eurS(o.sub)}, + toimitusmaksu ${eurS(o.fee)} = ${eurS(o.tot)}`,`${N} · ${eurS(o.u)} = ${eurS(o.sub)}, + delivery ${eurS(o.fee)} = ${eurS(o.tot)}`):E(`${N} · ${eurS(o.u)} = ${eurS(o.sub)}, ja koska tilaus on yli ${o.thr/100} €, toimitus on ilmainen`,`${N} · ${eurS(o.u)} = ${eurS(o.sub)}, and as the order is over ${o.thr/100} €, delivery is free`);
   if(o.t==='b2p1'||o.t==='b3p2')return E(`${N} kpl, joista maksat vain ${o.pay}: ${o.pay} · ${eurS(o.u)} = ${eurS(o.tot)}`,`${N} items, but you pay for only ${o.pay}: ${o.pay} · ${eurS(o.u)} = ${eurS(o.tot)}`);
   return E(`${N} · ${eurS(o.u)} = ${eurS(N*o.u)}, josta −${o.d} % → ${eurS(o.tot)}`,`${N} · ${eurS(o.u)} = ${eurS(N*o.u)}, minus ${o.d} % → ${eurS(o.tot)}`)}
 function shopGen(g){return L=>{
@@ -3136,12 +3141,12 @@ function shopGen(g){return L=>{
       hint:E('<p>Laske jokaisesta kaupasta, paljonko kilo maksaisi. Esimerkiksi 250 g on neljäsosa kilosta, joten kilo maksaa neljä kertaa niin paljon.</p><p>Isoin pussi ei aina ole edullisin!</p>','<p>Work out what one kilo would cost in each shop. For example, 250 g is a quarter of a kilo, so a kilo costs four times as much.</p><p>The biggest bag is not always the cheapest!</p>'),
       explain:W.map((w,i)=>`<p>${SHN()[i][0]}: ${gram(w)} = ${eurS(ps[i])} → ${eurS(kp[i])} / kg</p>`).join('')+`<p><b>${E('Edullisin kilohinta:','Lowest price per kilo:')} ${SHN()[best][0]} (${eurS(kp[best])} / kg)</b></p>`}}
   const n=g===3&&L===1?2:(g===3&&L===2)||(g===4&&L===1)?2:3;
-  const TY=g===3?(L===1?['unit','pack']:['unit','pack','b2p1','b3p2']):['unit','pack','b2p1','b3p2','pct'];
+  const TY=g===3?(L===1?['unit','pack']:L===2?['unit','pack','b2p1','b3p2']:['unit','pack','b2p1','b3p2','web']):['unit','pack','b2p1','b3p2','pct','web'];
   let N,offs;
   const lo=g>=4;
   for(let t=0;t<500;t++){N=g===3?pick([4,6]):pick([5,6,7,8,9,10,12]);const ts=shuffle(TY.filter(x=>lo||!(x==='b3p2'&&N%3)&&!(x==='b2p1'&&N%2))).slice(0,n);if(ts.length<n)continue;
     const bp=g===3?50*R(1,3):g===4?10*R(4,12):step*R(Math.ceil(50/step),Math.floor(220/step));offs=ts.map(x=>shOffer(x,N,step,bp,lo,g));if(offs.some(o=>!o))continue;const tt=offs.map(o=>o.tot),sr=[...tt].sort((a,b)=>a-b);if(sr[1]-sr[0]<20||new Set(tt).size<n)continue;if(offs.some(o=>o.tot>3000))continue;if(t<400&&offs[tt.indexOf(sr[0])].t!==ts[0])continue;break}
-  const tt=offs.map(o=>o.tot),best=tt.indexOf(Math.min(...tt)),worst=tt.indexOf(Math.max(...tt)),SN=SHN().slice(0,n);
+  const tt=offs.map(o=>o.tot),best=tt.indexOf(Math.min(...tt)),worst=tt.indexOf(Math.max(...tt)),SN=offs.map((o,i)=>shNm(o,i));
   const vis=`<div class="shops">${offs.map((o,i)=>shCard(o,i,k,ex[i])).join('')}</div>`;
   const calc=offs.map((o,i)=>`<p>${SN[i][0]}: ${shCalc(o,N)}</p>`).join('');
   const hint=E(`<p>Laske jokaisesta kaupasta, paljonko ${N} ${part} maksaa yhteensä. Lue tarjoukset tarkasti.</p>${lo?'<p>Pusseja pitää ostaa kokonaisia, joten joskus osa jää yli. Silloin pussi voi tulla kalliimmaksi, vaikka kappalehinta on pienempi.</p>':''}${offs.some(o=>o.t==='pct')?'<p>Alennus vähennetään hinnasta: 50 % alennus tarkoittaa, että maksat puolet. 25 % on neljäsosa, 20 % viidesosa ja 10 % kymmenesosa hinnasta.</p>':''}<p>Kaikki kortin tieto ei vaikuta hintaan – mieti, mikä on olennaista.</p>`,`${offs.some(o=>o.t==='pct')?'<p>The discount comes off the price: 50 % off means you pay half. 25 % is a quarter, 20 % a fifth and 10 % a tenth of the price.</p>':''}<p>Work out how much ${N} ${part} cost in total in each shop. Read the offers carefully.</p>${lo?'<p>You have to buy whole bags, so sometimes some are left over. Then a bag can cost more in total, even if each one is cheaper.</p>':''}<p>Not everything on the cards affects the price – think about what matters.</p>`);
