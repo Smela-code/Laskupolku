@@ -2856,7 +2856,7 @@ function fmGen(g){return(L)=>{
       if(k==='pm')return[pm(),R(1,big?15:9)]});
     const hi=g===1?(L===1?10:12):g===2?(L===2?40:20):g<=3?(L===1?40:10):12;
     const dom=[];for(let x=0;x<=hi;x++){let v=x,ok=true;for(const [o,a] of fs){v=FMG[o](v,a);if(v<0||!Number.isInteger(v))ok=false}if(ok&&v<=(g<=2?60:120))dom.push(x)}
-    if(dom.length<5)continue;let xs=shuffle(dom).slice(0,4);if(g<=3)xs.sort((p,q)=>p-q);
+    if(dom.length<5)continue;let xs=shuffle(dom).slice(0,fs.length>1?4:3);if(g<=3)xs.sort((p,q)=>p-q);
     X={fs,xs,ys:xs.map(x=>fmApply(fs,x))};break}
   const guided=(g===4&&L===2)||(g===5&&L===1)||(g===6&&L===1);
   const {fs,xs,ys}=X,ops=g===1||(g<=3&&L===1)||(g===2&&L===2)?['+','−']:(g===2||(g===3&&L===2))?['+','−','·']:['+','−','·',':'];
