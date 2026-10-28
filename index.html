@@ -553,9 +553,13 @@ button.trow{cursor:pointer;touch-action:manipulation}button.trow:active{transfor
 .pkey{margin:4px 0 0;font-size:.85rem;color:var(--soft);font-weight:700;display:flex;align-items:center;gap:4px}
 .pkey .fr{width:18px;height:18px}
 .dtab{border-collapse:collapse;margin:0 auto;background:var(--paper);font-weight:800}
-.shops{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:8px;max-width:440px;margin:0 auto}
+.shops{display:grid;grid-template-columns:repeat(auto-fit,minmax(94px,1fr));gap:8px;max-width:440px;margin:0 auto}
+.choices.shopopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(94px,1fr));gap:8px;max-width:440px;margin:0 auto;width:100%}
+.choices.shopopts .choice{padding:0;min-width:0;min-height:0;overflow:hidden;font:inherit;display:block}
+.choices.shopopts .choice .shop{border:0;border-radius:0;height:100%}
+.story.c{justify-content:center;text-align:center}
 .shop{border:2px solid var(--line);border-radius:14px;background:var(--paper);overflow:hidden;text-align:center;padding-bottom:6px;color:var(--ink)}
-.shop h4{margin:0 0 4px;padding:5px 4px;color:#fff;font-size:.92rem;font-weight:800}
+.shop h4{margin:0 0 4px;padding:5px 2px;color:#fff;font-size:.8rem;font-weight:800;white-space:nowrap}
 .shop .fr{width:46px;height:46px;display:block;margin:0 auto}
 .shop .of{font:800 1.05rem/1.25 var(--display);padding:0 4px}
 .shop .bd{display:inline-block;margin:3px 0;background:var(--apple);color:#fff;border-radius:8px;padding:2px 7px;font-weight:800;font-size:.82rem;transform:rotate(-3deg)}
@@ -3117,9 +3121,9 @@ function shopGen(g){return L=>{
       const kl=Math.round(base*R(100,115)/100/10)*10;offs.push({t:'loose',kp:kl,tot:kl*need/1000});offs=shuffle(offs);
       const tt=offs.map(o=>o.tot);if(!tt.every(Number.isInteger))continue;const sr=[...tt].sort((a,b)=>a-b);if(sr[1]-sr[0]<20)continue;if(t<400&&!offs.some(o=>o.t!=='loose'&&o.left))continue;break}
     const tt=offs.map(o=>o.tot),best=tt.indexOf(Math.min(...tt)),SN=SHN();
-    const cards=offs.map((o,i)=>`<div class="shop"><h4 style="background:var(${SN[i][1]})">${SN[i][0]}</h4>${fruitSVG(k,'n')}<div class="of">${o.t==='loose'?E('Irtomyynti','Loose')+`<br>${eurS(o.kp)} / kg`:`${E('Pussi','Bag')} ${gram(o.w)}<br>${eurS(o.p)}`}</div><div class="ex">${ex[i]}</div></div>`).join('');
+    const cards=offs.map((o,i)=>`<div class="shop"><h4 style="background:var(${SN[i][1]})">${SN[i][0]}</h4>${fruitSVG(k,'n')}<div class="of">${o.t==='loose'?E('Irtomyynti','Loose')+`<br>${eurS(o.kp)} / kg`:`${E('Pussi','Bag')} ${gram(o.w)}<br>${eurS(o.p)}`}</div><div class="ex">${ex[i]}</div></div>`);
     const calc=offs.map((o,i)=>`<p>${SN[i][0]}: ${o.t==='loose'?`${kgs(need)} kg · ${eurS(o.kp)} = ${eurS(o.tot)}`:o.left?E(`${o.np===1?'ostat 1 pussin':'ostat '+o.np+' pussia'} (${gram(o.np*o.w)}, ${o.left} g jää yli): ${o.np} · ${eurS(o.p)} = ${eurS(o.tot)}`,`you must buy ${o.np} ${o.np===1?'bag':'bags'} (${gram(o.np*o.w)}, ${o.left} g left over): ${o.np} · ${eurS(o.p)} = ${eurS(o.tot)}`):`${o.np} · ${eurS(o.p)} = ${eurS(o.tot)}`}</p>`).join('');
-    return{kind:'choice',choices:SN.map((x,i)=>[String(i),x[0]]),ans:String(best),answerText:SN[best][0],visual:`<div class="shops">${cards}</div>`,
+    return{kind:'choice',shopopts:1,storyC:1,choices:cards.map((c,i)=>[String(i),c]),ans:String(best),answerText:SN[best][0],
       story:E(`Tarvitset leipomiseen ${need} g ${({omena:'omenoita',paaryna:'päärynöitä',appelsiini:'appelsiineja',mansikka:'mansikoita'})[k]||F.part}. Mistä kaupasta saat ne halvimmalla?`,`You need ${need} g of ${F.en[1]} for baking. Which shop sells them cheapest?`),
       hint:E('<p>Pusseja pitää ostaa kokonaisia, joten joskus osa jää yli. Laske, montako pussia tarvitset ja paljonko ne maksavat yhteensä.</p><p>Irtomyynnistä saat juuri sen määrän kuin tarvitset: laske paino kiloina kertaa kilohinta.</p>','<p>You have to buy whole bags, so sometimes some is left over. Work out how many bags you need and what they cost in total.</p><p>Loose fruit is sold by weight, so you get exactly what you need: weight in kilos times the price per kilo.</p>'),
       explain:calc+`<p><b>${E('Halvimmalla:','Cheapest:')} ${SN[best][0]} (${eurS(tt[best])})</b></p>`}}
@@ -3127,7 +3131,7 @@ function shopGen(g){return L=>{
     for(let t=0;t<300;t++){kp=W.map(()=>10*R(30,90));ps=W.map((w,i)=>kp[i]*w/1000);if(ps.every(Number.isInteger)&&new Set(kp).size===3&&Math.max(...kp)-Math.min(...kp)>=30){const mn=Math.min(...kp),mx=Math.max(...kp);const sorted=[...kp].sort((a,b)=>a-b);if(sorted[1]-sorted[0]>=20)break}}
     const best=kp.indexOf(Math.min(...kp)),gram=w=>w>=1000?`${w/1000} kg`:`${w} g`;
     const cards=W.map((w,i)=>{const[nm,col]=SHN()[i];return `<div class="shop"><h4 style="background:var(${col})">${nm}</h4>${fruitSVG(k,'n')}<div class="of">${E('Pussi','Bag')} ${gram(w)}<br>${eurS(ps[i])}</div><div class="ex">${ex[i]}</div></div>`}).join('');
-    return{kind:'choice',choices:SHN().map((x,i)=>[String(i),x[0]]),ans:String(best),answerText:SHN()[best][0],visual:`<div class="shops">${cards}</div>`,
+    return{kind:'choice',shopopts:1,storyC:1,choices:W.map((w,i)=>{const[nm,col]=SHN()[i];return[String(i),`<div class="shop"><h4 style="background:var(${col})">${nm}</h4>${fruitSVG(k,'n')}<div class="of">${E('Pussi','Bag')} ${gram(w)}<br>${eurS(ps[i])}</div><div class="ex">${ex[i]}</div></div>`]}),ans:String(best),answerText:SHN()[best][0],
       story:E('Kolmessa kaupassa myydään eri kokoisia pusseja. Missä kaupassa kilohinta on edullisin?','Three shops sell bags of different sizes. Which shop has the lowest price per kilo?'),
       hint:E('<p>Laske jokaisesta kaupasta, paljonko kilo maksaisi. Esimerkiksi 250 g on neljäsosa kilosta, joten kilo maksaa neljä kertaa niin paljon.</p><p>Isoin pussi ei aina ole edullisin!</p>','<p>Work out what one kilo would cost in each shop. For example, 250 g is a quarter of a kilo, so a kilo costs four times as much.</p><p>The biggest bag is not always the cheapest!</p>'),
       explain:W.map((w,i)=>`<p>${SHN()[i][0]}: ${gram(w)} = ${eurS(ps[i])} → ${eurS(kp[i])} / kg</p>`).join('')+`<p><b>${E('Edullisin kilohinta:','Lowest price per kilo:')} ${SHN()[best][0]} (${eurS(kp[best])} / kg)</b></p>`}}
@@ -3141,10 +3145,10 @@ function shopGen(g){return L=>{
   const vis=`<div class="shops">${offs.map((o,i)=>shCard(o,i,k,ex[i])).join('')}</div>`;
   const calc=offs.map((o,i)=>`<p>${SN[i][0]}: ${shCalc(o,N)}</p>`).join('');
   const hint=E(`<p>Laske jokaisesta kaupasta, paljonko ${N} ${part} maksaa yhteensä. Lue tarjoukset tarkasti.</p>${lo?'<p>Pusseja pitää ostaa kokonaisia, joten joskus osa jää yli. Silloin pussi voi tulla kalliimmaksi, vaikka kappalehinta on pienempi.</p>':''}${offs.some(o=>o.t==='pct')?'<p>Alennus vähennetään hinnasta: 50 % alennus tarkoittaa, että maksat puolet. 25 % on neljäsosa, 20 % viidesosa ja 10 % kymmenesosa hinnasta.</p>':''}<p>Kaikki kortin tieto ei vaikuta hintaan – mieti, mikä on olennaista.</p>`,`${offs.some(o=>o.t==='pct')?'<p>The discount comes off the price: 50 % off means you pay half. 25 % is a quarter, 20 % a fifth and 10 % a tenth of the price.</p>':''}<p>Work out how much ${N} ${part} cost in total in each shop. Read the offers carefully.</p>${lo?'<p>You have to buy whole bags, so sometimes some are left over. Then a bag can cost more in total, even if each one is cheaper.</p>':''}<p>Not everything on the cards affects the price – think about what matters.</p>`);
-  if(save){const d=tt[worst]-tt[best];return{kind:Number.isInteger(d/100)?'int':'dec',ans:d/100,answerText:eurS(d),unit:'€',visual:vis,
+  if(save){const d=tt[worst]-tt[best];return{storyC:1,kind:Number.isInteger(d/100)?'int':'dec',ans:d/100,answerText:eurS(d),unit:'€',visual:vis,
       story:E(`Tarvitset ${N} ${part}. Kuinka monta euroa säästät, kun ostat ne halvimmasta kaupasta kalleimman sijaan?`,`You need ${N} ${part}. How many euros do you save by buying them in the cheapest shop instead of the most expensive one?`),
       hint,explain:calc+`<p><b>${eurS(tt[worst])} − ${eurS(tt[best])} = ${eurS(d)}</b></p>`}}
-  return{kind:'choice',choices:SN.map((x,i)=>[String(i),x[0]]),ans:String(best),answerText:SN[best][0],visual:vis,
+  return{kind:'choice',shopopts:1,storyC:1,choices:offs.map((o,i)=>[String(i),shCard(o,i,k,ex[i])]),ans:String(best),answerText:SN[best][0],
     story:E(`Tarvitset ${N} ${part}. Mistä kaupasta saat ne halvimmalla?`,`You need ${N} ${part}. Which shop sells them cheapest?`),hint,
     explain:calc+`<p><b>${E('Halvimmalla:','Cheapest:')} ${SN[best][0]} (${eurS(tt[best])})</b></p>`}}}
 
@@ -4151,7 +4155,7 @@ function answerHTML(){
   if(P.kind==='nline'||P.kind==='venn'||P.kind==='fmach'||P.kind==='drawchart'||P.kind==='tally')return '';
   if(P.kind==='turn')return holeUI();
   if(P.kind==='sym')return P.ncol>1?`<div class="sympal" role="group" aria-label="${E('Väri','Colour')}">${[...Array(P.ncol).keys()].map(i=>`<button type="button" data-symcol="${i}" aria-pressed="${i===P.cur}" aria-label="${SYN[i]}" style="background:${SYC[i]}"></button>`).join('')}</div>`:'';
-  if(P.kind==='choice')return `<div class="choices${P.plcopts?' plcopts':''}${P.ljopts?' ljopts':''}${P.big?' big':''}${P.yn?' yn':''}${P.symopts?' symopts':''}${P.drawopts?' drawopts':''}${P.pics?' pics':''}${P.chartopts?' charts':''}" role="group" aria-label="${E('Vastausvaihtoehdot','Answer options')}">${P.choices.map(([v,l])=>`<button type="button" class="choice" data-choice="${v}">${l}</button>`).join('')}</div>`;
+  if(P.kind==='choice')return `<div class="choices${P.plcopts?' plcopts':''}${P.ljopts?' ljopts':''}${P.big?' big':''}${P.yn?' yn':''}${P.symopts?' symopts':''}${P.drawopts?' drawopts':''}${P.pics?' pics':''}${P.chartopts?' charts':''}${P.shopopts?' shopopts':''}" role="group" aria-label="${E('Vastausvaihtoehdot','Answer options')}">${P.choices.map(([v,l])=>`<button type="button" class="choice" data-choice="${v}">${l}</button>`).join('')}</div>`;
   if(P.kind==='coord')return `<div class="answer coordans"><span class="unit">(</span><input class="num tb" id="cx" inputmode="none" autocomplete="off" aria-label="${E('x-koordinaatti','x-coordinate')}"><span class="unit">,</span><input class="num tb" id="cy" inputmode="none" autocomplete="off" aria-label="${E('y-koordinaatti','y-coordinate')}"><span class="unit">)</span></div>`;
   if(P.ldiv){const st=ldivSteps(P.dvd,P.dvs),n=String(P.dvd).length;
     return `<div class="calc-wrap"><table class="ldv" aria-label="${E('Jakolasku allekkain','Division in columns')}"><tbody><tr><td class="sg"></td>${String(P.dvd).split('').map(d=>`<td>${d}</td>`).join('')}<td class="ex">: ${P.dvs} = <span class="answer ldans"><input class="num" id="ans" inputmode="none" autocomplete="off" aria-label="${E('Osamäärä','Quotient')}"></span></td></tr>
@@ -4183,7 +4187,7 @@ function draw(){const t=cur(),pr=prog();const IA=inlineAns();
       <div class="streak" id="streak">${streakHTML()}</div>
     </div>
     ${P.visual?`<div class="visual">${P.visual}</div>`:''}
-    ${P.story?`<div class="story">${P.storyIcon?`<span class="sicon" aria-hidden="true">${P.storyIcon}</span>`:''}<p>${P.story}</p></div>`:''}
+    ${P.story?`<div class="story${P.storyC?' c':''}">${P.storyIcon?`<span class="sicon" aria-hidden="true">${P.storyIcon}</span>`:''}<p>${P.story}</p></div>`:''}
     ${P.text?`<div class="expr">${IA?P.text.replace(BOX,IA):P.text}</div>`:''}
     ${P.after||''}
     ${P.kind==='col'?`<p class="inst"><span>${E('Laske allekkain. Aloita oikealta.','Work it out in columns. Start from the right.')}</span></p>`:''}
