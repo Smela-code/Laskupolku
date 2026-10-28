@@ -3115,10 +3115,10 @@ function shopGen(g){return L=>{
   if(kilo){const W=shuffle([250,500,750,1000,200]).slice(0,3);let ps,kp;
     for(let t=0;t<300;t++){kp=W.map(()=>10*R(30,90));ps=W.map((w,i)=>kp[i]*w/1000);if(ps.every(Number.isInteger)&&new Set(kp).size===3&&Math.max(...kp)-Math.min(...kp)>=30){const mn=Math.min(...kp),mx=Math.max(...kp);const sorted=[...kp].sort((a,b)=>a-b);if(sorted[1]-sorted[0]>=20)break}}
     const best=kp.indexOf(Math.min(...kp)),gram=w=>w>=1000?`${w/1000} kg`:`${w} g`;
-    const cards=W.map((w,i)=>{const[nm,col]=SHN()[i];return `<div class="shop"><h4 style="background:var(${col})">${nm}</h4>${fruitSVG(k,'n')}<div class="of">${E('Rasia','Box')} ${gram(w)}<br>${eurS(ps[i])}</div><div class="ex">${ex[i]}</div></div>`}).join('');
+    const cards=W.map((w,i)=>{const[nm,col]=SHN()[i];return `<div class="shop"><h4 style="background:var(${col})">${nm}</h4>${fruitSVG(k,'n')}<div class="of">${E('Pussi','Bag')} ${gram(w)}<br>${eurS(ps[i])}</div><div class="ex">${ex[i]}</div></div>`}).join('');
     return{kind:'choice',choices:SHN().map((x,i)=>[String(i),x[0]]),ans:String(best),answerText:SHN()[best][0],visual:`<div class="shops">${cards}</div>`,
-      story:E('Kolmessa kaupassa myydään eri kokoisia rasioita. Missä kaupassa kilohinta on edullisin?','Three shops sell boxes of different sizes. Which shop has the lowest price per kilo?'),
-      hint:E('<p>Laske jokaisesta kaupasta, paljonko kilo maksaisi. Esimerkiksi 250 g on neljäsosa kilosta, joten kilo maksaa neljä kertaa niin paljon.</p><p>Isoin rasia ei aina ole edullisin!</p>','<p>Work out what one kilo would cost in each shop. For example, 250 g is a quarter of a kilo, so a kilo costs four times as much.</p><p>The biggest box is not always the cheapest!</p>'),
+      story:E('Kolmessa kaupassa myydään eri kokoisia pusseja. Missä kaupassa kilohinta on edullisin?','Three shops sell bags of different sizes. Which shop has the lowest price per kilo?'),
+      hint:E('<p>Laske jokaisesta kaupasta, paljonko kilo maksaisi. Esimerkiksi 250 g on neljäsosa kilosta, joten kilo maksaa neljä kertaa niin paljon.</p><p>Isoin pussi ei aina ole edullisin!</p>','<p>Work out what one kilo would cost in each shop. For example, 250 g is a quarter of a kilo, so a kilo costs four times as much.</p><p>The biggest bag is not always the cheapest!</p>'),
       explain:W.map((w,i)=>`<p>${SHN()[i][0]}: ${gram(w)} = ${eurS(ps[i])} → ${eurS(kp[i])} / kg</p>`).join('')+`<p><b>${E('Edullisin kilohinta:','Lowest price per kilo:')} ${SHN()[best][0]} (${eurS(kp[best])} / kg)</b></p>`}}
   const n=g===3&&L===1?2:(g===3&&L===2)||(g===4&&L===1)?2:3;
   const TY=g===3?(L===1?['unit','pack']:['unit','pack','b2p1']):g===4?['unit','pack','b2p1','b3p2']:['unit','pack','b2p1','b3p2','pct'];
