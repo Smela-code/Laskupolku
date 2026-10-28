@@ -4125,6 +4125,7 @@ function draw(){const t=cur(),pr=prog();const IA=inlineAns();
     <div class="actions">
       <button type="button" class="btn" id="check">${E('Tarkista','Check')}</button>
       <button type="button" class="btn ghost" id="hintBtn">${E('Vihje','Hint')}</button>
+      ${P.kind==='col'||P.ldiv?`<button type="button" class="btn ghost" id="clearBtn">${E('Tyhjennä','Clear')}</button>`:''}
       ${padOK()?`<button type="button" class="btn ghost" id="padBtn" aria-expanded="false">${E('Ruutupaperi','Squared paper')}</button>`:''}
       <button type="button" class="btn ghost" id="skip">${E('Seuraava','Next')}</button>
       <button type="button" class="btn next" id="next" hidden>${E('Seuraava tehtävä →','Next task →')}</button>
@@ -4217,7 +4218,7 @@ function check(){if(done)return;const r=evaluate(),pr=prog();if(r.wait)return;
       if(P.kind==='col'&&(P.op==='+'||P.op==='*'))P.carries.forEach(x=>{const i=typeof x==='object'?x.i:x,v=typeof x==='object'?x.v:1;const c=document.getElementById('c'+i);if(c&&!c.value){c.value=String(v);c.classList.add('hinted')}});
       finish()}}
   updateStreak();save()}
-function finish(){const kp=$('.keypad');if(kp)kp.hidden=true;$('#check').hidden=true;$('#skip').hidden=true;$('#hintBtn').hidden=$('#hint').hidden;const n=$('#next');n.hidden=false;n.focus({preventScroll:true})}
+function finish(){const kp=$('.keypad');if(kp)kp.hidden=true;const cb=$('#clearBtn');if(cb)cb.hidden=true;$('#check').hidden=true;$('#skip').hidden=true;$('#hintBtn').hidden=$('#hint').hidden;const n=$('#next');n.hidden=false;n.focus({preventScroll:true})}
 function streakHTML(){const pr=prog();
   if(pr.level>=3)return `<span>${E('Ylin taso','Top level')}</span>`;
   return `<span>${E('Seuraavalle tasolle:','Next level:')}</span>${[0,1,2].map(i=>`<i class="${i<pr.streak?'on':''}"></i>`).join('')}<span class="sr">${E(`${3-pr.streak} oikein peräkkäin puuttuu`,`${3-pr.streak} more correct in a row needed`)}</span>`}
@@ -4283,6 +4284,8 @@ document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#cg
   else if(b.dataset.choice!=null){if(done)return;P.sel=b.dataset.choice;document.querySelectorAll('.choice').forEach(x=>{x.setAttribute('aria-pressed',String(x===b));x.classList.remove('ok','no')});$('#fb').hidden=true}
   else if(b.dataset.key)pressKey(b.dataset.key);
   else if(b.id==='check')check();
+  else if(b.id==='clearBtn'){if(done)return;document.querySelectorAll('#sheet .calc-wrap input').forEach(x=>{x.value='';x.classList.remove('ok','no','hinted')});const fb0=$('#fb');if(fb0)fb0.hidden=true;
+    const f=P.kind==='col'?document.getElementById('r'+(P.L.N-1)):document.querySelector('#sheet .calc-wrap input');if(f){activeEl=f;f.focus({preventScroll:true})}}
   else if(b.id==='padBtn'){const pd=$('#pad');pd.hidden=!pd.hidden;b.setAttribute('aria-expanded',String(!pd.hidden));b.textContent=pd.hidden?E('Ruutupaperi','Squared paper'):E('Piilota ruudut','Hide squares');if(!pd.hidden){const f=pd.querySelector('tr:nth-child(2) .sq');if(f){activeEl=f;f.focus({preventScroll:true})}}return}
   else if(b.dataset.padop){const o=['+','−','·',':'],i=(+b.dataset.padop+1)%4;b.dataset.padop=i;b.textContent=o[i];return}
   else if(b.dataset.padclr){document.querySelectorAll('#pad .sq').forEach(x=>x.value='');return}
