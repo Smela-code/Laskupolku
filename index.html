@@ -3922,9 +3922,6 @@ const NAV=[
       {id:'las',n:'Laske',f:g=>g>=3?{oid:'ljlaske',levels:{3:[['Kertolasku ensin'],['Kerto- ja jakolasku ensin'],['Sulkeet']],4:[['Kerto- ja jakolasku ensin'],['Sulkeet'],['Kolme laskua']],5:[['Kolme laskua'],['Sulkeet ja neljä lukua'],['Isommat luvut']],6:[['Kolme laskua'],['Sulkeet ja neljä lukua'],['Isommat luvut']]}[g],gen:L=>ljGen(g)(L)}:null},
       {id:'sul',n:'Mihin sulkeet?',f:g=>g>=4?{oid:'ljsulkeet',levels:[['Plus ja kertaa'],['Kaikki laskut'],['Isommat luvut']],gen:L=>ljParGen(g)(L)}:null},
       {id:'san',n:'Sanalliset',f:g=>g>=3?{oid:'ljsan',levels:[['Kaksi laskua'],['Kolme laskua'],[g<=3?'Kolme laskua':'Sulkeet']],gen:L=>ljWordGen(g)(L)}:null}]},
-    {id:'yhtl',n:'Yhtälöt',types:[
-      {id:'vaaka',n:'Vaakayhtälöt',f:g=>({oid:'vaaka',levels:{1:[['Yksi laatikko'],['Monta punnusta'],['Kaksi laatikkoa']],2:[['Yksi laatikko'],['Monta laatikkoa'],['Laatikot ja punnus']],3:[['Yksi laatikko'],['Monta laatikkoa'],['Laatikot ja punnus']],4:[['Monta laatikkoa'],['Laatikot ja punnus'],['Laatikoita molemmilla puolilla']],5:[['Laatikot ja punnus'],['Laatikoita molemmilla puolilla'],['Isommat luvut']],6:[['Laatikot ja punnus'],['Laatikoita molemmilla puolilla'],['Isommat luvut']]}[g],gen:L=>vaakaGen(g)(L)})}]},
-    {id:'ml',n:'Musta laatikko',types:[{id:'fm',n:'Päättele sääntö',f:g=>({oid:'fmach',levels:{1:[['Plus'],['Miinus'],['Plus tai miinus']],2:[['Plus tai miinus'],['Isommat luvut'],['Plus-, miinus- tai kertolasku']],3:[['Plus tai miinus'],['Kertolasku'],['Kerto- tai jakolasku']],4:[['Kerto- tai jakolasku'],['Ensin kertolasku'],['Kaksi vaihetta']],5:[['Ensin kertolasku'],['Kaksi vaihetta'],['Jakolasku mukana']],6:[['Ensin kertolasku'],['Jakolasku mukana'],['Isommat luvut']]}[g],gen:L=>fmGen(g)(L)})}]},
     {id:'des',n:'Desimaaliluvut',types:[
       {id:'ys',n:'Yhteen- ja vähennyslasku',f:allG(src('desimaalit',['+','-']),4)},
       {id:'kj',n:'Kerto- ja jakolasku',f:allG(src('m-desimaalit',['*','/']),5)},
@@ -3941,7 +3938,10 @@ const NAV=[
       {id:'osuus',n:'Montako prosenttia?',f:g=>g>=5?{oid:'prososuus',levels:[['Ruudukko'],['Luvut'],['Haastavammat']],gen:L=>shareGen(g)(L)}:null},
       {id:'luvusta',n:'Prosentti luvusta',f:g=>g>=5?{oid:'prosluvusta',levels:[['Puolet, neljäsosat ja kymmenesosat'],['Muut prosentit'],['Haastavammat']],gen:L=>ofGen(g)(L)}:null},
       {id:'san',n:'Sanalliset',f:g=>g>=5?{oid:'prossan',levels:[['Osa määrästä'],['Alennukset ja korotukset'],['Montako prosenttia?']],gen:L=>pwGen(g)(L)}:null},
-      convT('pro')]}]},
+      convT('pro')]},
+    {id:'yhtl',n:'Yhtälöt',types:[
+      {id:'vaaka',n:'Vaakayhtälöt',f:g=>({oid:'vaaka',levels:{1:[['Yksi laatikko'],['Monta punnusta'],['Kaksi laatikkoa']],2:[['Yksi laatikko'],['Monta laatikkoa'],['Laatikot ja punnus']],3:[['Yksi laatikko'],['Monta laatikkoa'],['Laatikot ja punnus']],4:[['Monta laatikkoa'],['Laatikot ja punnus'],['Laatikoita molemmilla puolilla']],5:[['Laatikot ja punnus'],['Laatikoita molemmilla puolilla'],['Isommat luvut']],6:[['Laatikot ja punnus'],['Laatikoita molemmilla puolilla'],['Isommat luvut']]}[g],gen:L=>vaakaGen(g)(L)})}]},
+    {id:'ml',n:'Musta laatikko',types:[{id:'fm',n:'Päättele sääntö',f:g=>({oid:'fmach',levels:{1:[['Plus'],['Miinus'],['Plus tai miinus']],2:[['Plus tai miinus'],['Isommat luvut'],['Plus-, miinus- tai kertolasku']],3:[['Plus tai miinus'],['Kertolasku'],['Kerto- tai jakolasku']],4:[['Kerto- tai jakolasku'],['Ensin kertolasku'],['Kaksi vaihetta']],5:[['Ensin kertolasku'],['Kaksi vaihetta'],['Jakolasku mukana']],6:[['Ensin kertolasku'],['Jakolasku mukana'],['Isommat luvut']]}[g],gen:L=>fmGen(g)(L)})}]}]},
   {id:'luvut',n:'Luvut ja jonot',subs:[
     {id:'ver',n:'Vertailu',types:[
       {id:'ver',n:'Vertaile lukuja',f:allG(src('c-vertailu','mit'),1,3)},
