@@ -336,6 +336,7 @@ table.calc{border-collapse:collapse;background:var(--paper);border-radius:12px;f
 .tstage.timed{display:block}.tstage.timed .tcur{position:absolute;top:6px;left:-84px}
 .tcur.run{animation:tRun var(--dur,4s) linear .35s both}@keyframes tRun{from{left:-84px}to{left:100%}}
 .tcur.runp{animation:tRunP var(--dur,4s) linear .35s both}@keyframes tRunP{from{left:-160px}to{left:100%}}
+.tstart{position:absolute;left:50%;top:50%;transform:translate(-50%,-60%);z-index:3;font-size:1.15rem;padding:10px 26px}
 .tcur.pair{width:150px;display:flex;gap:4px}.tstage.belt .tcur.pair{width:124px}.tpi{flex:1;display:block;height:100%;transition:opacity .25s,transform .25s}.tpi.gone{opacity:0;transform:scale(1.3)}
 .tcur.got{animation:tGot .28s ease-out both}@keyframes tGot{to{transform:scale(1.25);opacity:0}}
 .tmiss{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;background:var(--bad);color:#fff;font-weight:800;padding:4px 12px;border-radius:999px;font-size:.9rem;animation:tMiss 1.3s ease both;pointer-events:none;white-space:nowrap}
@@ -3064,7 +3065,8 @@ const tCnt=()=>{const c=document.getElementById('tcnt');if(c)c.textContent=`${Ma
 const tIcon=(Q,k)=>Q.tc[k][3]?pick(Q.tc[k][3]):Q.tc[k][1],tGrp=(Q,G)=>G.n>1?Array.from({length:G.n},()=>`<span class="tpi">${tIcon(Q,G.k)}</span>`).join(''):tIcon(Q,G.k);
 function tShow(){const c=document.getElementById('tcur');if(!c)return;const G=P.tseq[P.ti];P.tleft=G.n;c.getAnimations().forEach(a=>a.cancel());c.style.transform='';c.style.left='';c.className='tcur'+(G.n>1?' pair':'');void c.offsetWidth;c.innerHTML=tGrp(P,G);c.classList.add(P.tdur?(G.n>1?'runp':'run'):'in');tCnt()}
 function tNext(){P.tbusy=false;if(P.ti>=P.tseq.length){P.ph=2;tRender();fb(E('Kaikki on merkitty! Laske nyt viivat.','Everything is marked! Now count the marks.'),'info')}else tShow()}
-document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-trow]');if(!b||done||!P||P.kind!=='tally'||P.ph!==1||P.tbusy)return;const i=+b.dataset.trow,k=P.tseq[P.ti].k;
+document.addEventListener('click',e=>{const sb=e.target.closest&&e.target.closest('#tstart');if(sb&&P&&P.kind==='tally'&&!done){sb.remove();P.tstarted=true;tShow();return}});
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-trow]');if(!b||done||!P||P.kind!=='tally'||P.ph!==1||P.tbusy||(P.tdur&&!P.tstarted))return;const i=+b.dataset.trow,k=P.tseq[P.ti].k;
   if(i!==k){b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');return}
   P.tk[i]++;P.tleft--;const c=document.getElementById('tcur');
   if(P.tleft>0){const g=c&&c.querySelector('.tpi:not(.gone)');if(g)g.classList.add('gone');$('#ttab').innerHTML=tRows();tCnt();return}
@@ -3094,7 +3096,7 @@ function tallyGen(g){return(L)=>{
   const Q0={dc:{mode:'bar',step,snap:1,max:Math.max(max,step*5),cats:tc.map(c=>({n:cap(c[0]),col:c[2]})),t:k,v:tc.map(()=>0),order:tc.map((_,i)=>i),sort:srt},dcBad:null,dcShow:false,dcDrag:null};
   const tdur=g<=2?(L===3?5:0):(L===1?0:L===2?4:3);
   const P0={kind:'tally',ph:1,ti:0,tleft:seq[0].n,tbusy:false,tc,tseq:seq,tN:NT,tdur,tk:tc.map(()=>0),...Q0};
-  const after=`<div class="tally" id="tally" data-ph="1"><div class="tstage ${th.bg}${tdur?' timed':''}" id="tstage" style="--dur:${tdur}s"><span class="tcnt" id="tcnt">1 / ${NT}</span><span class="tground">${th.bg==='belt'?'<span class="tbelt"></span>':''}</span><span class="tcur${seq[0].n>1?' pair':''} ${tdur?(seq[0].n>1?'runp':'run'):'in'}" id="tcur">${tGrp({tc},seq[0])}</span></div><div class="ttab" id="ttab">${tRows(P0)}</div><p class="ladtxt" id="tinst" style="text-align:center">${tdur?E('Napauta oikeaa riviä ennen kuin se ehtii ohi!','Tap the right row before it gets past!'):E('Napauta oikeaa riviä.','Tap the right row.')}</p></div>`;
+  const after=`<div class="tally" id="tally" data-ph="1"><div class="tstage ${th.bg}${tdur?' timed':''}" id="tstage" style="--dur:${tdur}s"><span class="tcnt" id="tcnt">1 / ${NT}</span><span class="tground">${th.bg==='belt'?'<span class="tbelt"></span>':''}</span>${tdur?`<span class="tcur" id="tcur"></span><button type="button" class="btn tstart" id="tstart">${E('Aloita','Start')} ▶</button>`:`<span class="tcur${seq[0].n>1?' pair':''} in" id="tcur">${tGrp({tc},seq[0])}</span>`}</div><div class="ttab" id="ttab">${tRows(P0)}</div><p class="ladtxt" id="tinst" style="text-align:center">${tdur?E('Napauta oikeaa riviä ennen kuin se ehtii ohi!','Tap the right row before it gets past!'):E('Napauta oikeaa riviä.','Tap the right row.')}</p></div>`;
   const sc=step>1?E(' Asteikon viivat ovat kahden välein, joten pariton luku on kahden viivan puolivälissä.',' The lines on the scale go up in twos, so an odd number is halfway between two lines.'):'';
   return{...P0,answerText:'',story:th.s,after,
     hint:E(`<p>Tukkimiehen kirjanpidossa jokaisesta tulee yksi viiva. Joka viides viiva vedetään vinottain neljän viivan yli, jolloin syntyy viitosnippu.</p><p>Laske ensin niput: 5, 10, 15… ja lisää sitten yksittäiset viivat.${sc}</p>`,`<p>In a tally, each one gets a mark. Every fifth mark goes across the other four, making a bundle of five.</p><p>Count the bundles first: 5, 10, 15… then add the single marks.${sc}</p>`),
