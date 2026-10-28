@@ -3106,6 +3106,7 @@ function tallyGen(g){return(L)=>{
 /* ostospäätökset */
 const SHN=()=>[[E('Lähikauppa','Corner shop'),'--blue'],[E('Supermarket','Supermarket'),'--good'],[E('Tori','Market'),'--orange']];
 const SHX=()=>[E('Avoinna klo 8–21','Open 8 am – 9 pm'),E('Ilmainen pysäköinti','Free parking'),E('Tarjous voimassa sunnuntaihin','Offer ends on Sunday'),E('Kauppaan on 2 km','The shop is 2 km away'),E('Kassajono on pitkä','The queue is long'),E('Kotimainen','Grown in Finland'),E('Myös lahjakortit käyvät','Gift cards accepted')];
+const SHXW=()=>[E('Nopea toimitus','Fast delivery'),E('Toimitus 1–2 arkipäivässä','Delivered in 1–2 working days'),E('Ilmainen palautus','Free returns'),E('Tilaa milloin vain','Order any time'),E('Asiakaspalvelu chatissa','Customer service chat'),E('Maksa kortilla tai laskulla','Pay by card or invoice')];
 const eurS=c=>`${fd({u:c,d:2})} €`;
 function shOffer(t,N,step,b,lo,g){const nice=v=>g===4&&v>100?Math.max(50,50*Math.round(v/50)):v,rp=(lo,hi)=>nice(Math.max(step,step*Math.round(b*R(lo,hi)/100/step)));
   if(t==='unit'){const u=rp(80,110);return{t,u,tot:N*u}}
@@ -3116,7 +3117,7 @@ function shOffer(t,N,step,b,lo,g){const nice=v=>g===4&&v>100?Math.max(50,50*Math
   if(t==='b3p2'){const u=rp(130,170),pay=N-Math.floor(N/3);return{t,u,pay,tot:pay*u}}
   if(t==='pct'){const d=pick(g===4?[50]:[10,20,25,50]),u=rp(d===50?170:d===25?115:d===20?105:95,d===50?230:d===25?150:d===20?140:125);if((N*u*(100-d))%(g===4?1000:100))return null;return{t,u,d,tot:N*u*(100-d)/100}}}
 const shNm=(o,i)=>o&&o.t==='web'?[E('Verkkokauppa','Online shop'),'--candy']:SHN()[i];
-function shCard(o,i,k,ex){const[nm,col]=shNm(o,i);let of='',bd='';
+function shCard(o,i,k,ex){const[nm,col]=shNm(o,i);let of='',bd='';if(o.t==='web')ex=pick(SHXW());
   if(o.t==='pack')of=E(`Pussi, jossa ${o.sz} kpl<br>${eurS(o.p)}`,`Bag of ${o.sz}<br>${eurS(o.p)}`);else of=`${eurS(o.u)} / ${E('kpl','each')}`;
   if(o.t==='b2p1')bd=E('Osta 2, maksa 1!','Buy 2, pay for 1!');if(o.t==='b3p2')bd=E('Osta 3, maksa 2!','Buy 3, pay for 2!');if(o.t==='pct')bd=E(`−${o.d} % kassalla`,`−${o.d} % at the till`);
   if(o.t==='web'){bd='';of+=`<div class="ex" style="font-weight:800;color:var(--ink);font-size:.82rem">${E('Toimitus','Delivery')} +${eurS(o.f)}</div>${o.thr?`<div class="ex" style="font-weight:800;color:var(--good)">${E(`Ilmainen toimitus yli ${o.thr/100} €`,`Free delivery over ${o.thr/100} €`)}</div>`:''}`}
