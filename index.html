@@ -3236,8 +3236,8 @@ function tosiGen(g){return L=>{const b=g<=2?1:g<=4?3:5,sz=g>=3,T=pick(LLV[b][L])
     else S=lStmt(T,items,sz);
     if(S&&S.t===want)break}
   const hl=()=>lHL(S.good,S.bad);
-  return{kind:'choice',yn:1,choices:[['1',E('Totta','True')],['0',E('Ei totta','Not true')]],ans:S.t?'1':'0',answerText:'',visual:`<div style="text-align:center"><span class="bg" style="display:inline-block;font:800 1.05rem var(--display);margin-bottom:6px">${E('Totta vai ei?','True or not?')}</span>${lTiles(items)}</div>`,
-    text:`<span class="bg" style="font-size:.62em">${E(S.fi,S.en)}</span>`,
+  return{kind:'choice',yn:1,choices:[['1',E('Totta','True')],['0',E('Ei totta','Not true')]],ans:S.t?'1':'0',answerText:'',visual:`<div style="text-align:center"><span class="bg" style="display:inline-block;font:800 1.2rem var(--display);margin-bottom:6px">${E('Totta vai ei?','True or not?')}</span>${lTiles(items)}</div>`,
+    text:`<span class="bg" style="font:800 1.2rem var(--display)">${E(S.fi,S.en)}</span>`,
     hint:E(LHINT[T]||'','')||'',onOk:hl,onFail:hl,explain:`<p><b>${S.why}</b></p>`}}}
 const LHINT=EN?{}:{EX:'<p>Etsi kuvasta juuri sellainen kuvio: oikea väri ja oikea muoto.</p>',NEX:'<p>Väite on totta, jos kuvassa ei ole yhtään sellaista kuviota.</p>',OR:'<p>"Tai"-väite on totta, jos ainakin toinen löytyy. Se on totta myös, jos molemmat löytyvät.</p>',AND:'<p>"Ja"-väite on totta vain, jos molemmat löytyvät.</p>',
   ALL:'<p>"Kaikki"-väite ei ole totta, jos löydät yhdenkin, joka ei sovi. Tarkista jokainen.</p>',SOME:'<p>"Ainakin yksi" -väite on totta, jos löydät yhdenkin sopivan.</p>',NONE:'<p>"Yksikään ei" ei ole totta, jos löydät yhdenkin, joka sopii.</p>',ALLOR:'<p>Jokaisen pitää olla jompaakumpaa – tai molempia.</p>',
