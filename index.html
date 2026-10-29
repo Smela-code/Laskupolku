@@ -3264,23 +3264,23 @@ const LEXI=()=>[[E('parillinen ja jaollinen 5:llä','even and divisible by 5'),a
 function vastaGen(g){return L=>{const hi=g>=5;
   if(L===1){let items,S;for(let t=0;t<3000;t++){items=lScene(9,true);S=lStmt(hi&&Math.random()<.5?'IF':'ALL',items,true);if(S&&!S.t&&S.bad.length<=2)break}
     return{kind:'choice',ansSet:S.bad.map(String),ans:String(S.bad[0]),answerText:'',choices:items.map((it,i)=>[String(i),lSvg(it)]),lopts:1,
-      text:`<span class="bg" style="font-size:.62em">${E(S.fi,S.en)}</span>`,chFoot:E('Napauta kuviota, joka kumoaa väitteen.','Tap the shape that proves the statement wrong.'),
+      text:`<span class="bg" style="font-size:.62em">”${E(S.fi,S.en)}”</span>`,chFoot:E('Napauta kuviota, joka kumoaa väitteen.','Tap the shape that proves the statement wrong.'),
       hint:E('<p>Etsi kuvio, josta väite ei pidä paikkaansa. Yksi tällainen vastaesimerkki riittää kumoamaan "kaikki"- tai "jos"-väitteen.</p>','<p>Find a shape the statement is wrong about. One such counterexample is enough to disprove an "all" or "if" statement.</p>'),
       onFail:()=>S.bad.forEach(i=>{const b=document.querySelector(`.choice[data-choice="${i}"]`);if(b)b.classList.add('ok')}),explain:`<p><b>${S.why}</b></p>`}}
   if(L===2&&!hi){let A,its,bad;for(let t=0;t<500;t++){A=pick(LAP());const ok=VAN.filter(x=>!x.m.includes(A[0])),y=ok.filter(x=>x.y.includes(A[0])),n=ok.filter(x=>!x.y.includes(A[0]));if(y.length<4||!n.length)continue;
       const nb=R(1,2);its=shuffle([...shuffle(y).slice(0,8-nb),...shuffle(n).slice(0,nb)]);bad=its.map((x,i)=>x.y.includes(A[0])?-1:i).filter(i=>i>=0);break}
     return{kind:'choice',ansSet:bad.map(String),ans:String(bad[0]),answerText:'',choices:its.map((x,i)=>[String(i),`<svg viewBox="0 0 48 48" aria-label="${E(x.fi,x.en)}">${x.svg}</svg>`]),lopts:1,
-      text:`<span class="bg" style="font-size:.62em">${A[1]}</span>`,chFoot:E('Napauta eläintä, joka kumoaa väitteen.','Tap the animal that proves the statement wrong.'),
+      text:`<span class="bg" style="font-size:.62em">”${A[1]}”</span>`,chFoot:E('Napauta eläintä, joka kumoaa väitteen.','Tap the animal that proves the statement wrong.'),
       hint:E('<p>Käy eläimet läpi yksi kerrallaan. Yksikin eläin, josta väite ei pidä, riittää kumoamaan sen.</p>','<p>Go through the animals one by one. Even one animal the statement is wrong about is enough.</p>'),
       onFail:()=>bad.forEach(i=>{const b=document.querySelector(`.choice[data-choice="${i}"]`);if(b)b.classList.add('ok')}),
       explain:`<p><b>${lCap(bad.map(i=>`${E(its[i].fi,its[i].en)} ${A[2]}`).join(E(', ja ',', and ')))}.</b></p><p>${E('Yksi vastaesimerkki riittää kumoamaan "kaikki"-väitteen.','One counterexample is enough to disprove an "all" statement.')}</p>`}}
   const NB=LNB();
   if((L===3&&!hi)||(L===2&&hi)){const B=pick(hi?NB:NB.filter(x=>x.e)),C=[['a',E('Aina','Always')],['j',E('Joskus','Sometimes')],['e',E('Ei koskaan','Never')]];
-    return{kind:'choice',choices:C,ans:B.c,answerText:C.find(x=>x[0]===B.c)[1],text:plbl(E('Pitääkö väite paikkansa aina, joskus vai ei koskaan?','Is the statement always, sometimes or never true?'),`<span style="font-size:.6em">${E(B.fi,B.en)}</span>`),
+    return{kind:'choice',choices:C,ans:B.c,answerText:C.find(x=>x[0]===B.c)[1],text:plbl(E('Pitääkö väite paikkansa aina, joskus vai ei koskaan?','Is the statement always, sometimes or never true?'),`<span style="font-size:.6em">”${E(B.fi,B.en)}”</span>`),
       hint:E('<p>Kokeile väitettä muutamalla luvulla. Jos löydät luvut, joilla väite pitää, ja luvut, joilla se ei pidä, vastaus on "joskus".</p>','<p>Try the statement with a few numbers. If it works for some and not for others, the answer is "sometimes".</p>'),
       explain:`<p><b>${C.find(x=>x[0]===B.c)[1]}.</b> ${B.w}</p>`}}
   if(Math.random()<.55){const B=pick(NB.filter(x=>x.c==='j'));
-    return{kind:'cexnum',cn:B.n,lb:B,answerText:'',text:plbl(E('Väite pitää joskus, mutta ei aina. Kirjoita luku tai luvut, joilla väite ei pidä paikkaansa.','The statement is sometimes true, but not always. Write a number or numbers for which it is false.'),`<span style="font-size:.6em">${E(B.fi,B.en)}</span>`),
+    return{kind:'cexnum',cn:B.n,lb:B,answerText:'',text:plbl(E('Väite pitää joskus, mutta ei aina. Kirjoita luku tai luvut, joilla väite ei pidä paikkaansa.','The statement is sometimes true, but not always. Write a number or numbers for which it is false.'),`<span style="font-size:.6em">”${E(B.fi,B.en)}”</span>`),
       after:`<div class="answer">${B.n===2?`<input class="num tb" id="ca" inputmode="none" autocomplete="off" aria-label="${E('Ensimmäinen luku','First number')}"><span class="unit">${E('ja','and')}</span><input class="num tb" id="cb" inputmode="none" autocomplete="off" aria-label="${E('Toinen luku','Second number')}">`:`<input class="num tb" id="ca" inputmode="none" autocomplete="off" aria-label="${E('Luku','Number')}">`}</div>`,
       hint:E(`<p>Kokeile eri lukuja ja tarkista, pitääkö väite. ${B.pm||''}</p>`,`<p>Try different numbers and check the statement. ${B.pm||''}</p>`),explain:`<p>${B.w}</p><p>${E('Yksi vastaesimerkki riittää näyttämään, ettei väite pidä aina.','One counterexample is enough to show the statement is not always true.')}</p>`}}
   const X=pick(LEXI());
