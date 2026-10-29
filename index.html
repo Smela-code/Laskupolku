@@ -3235,7 +3235,7 @@ function tosiGen(g){return L=>{const b=g<=2?1:g<=4?3:5,sz=g>=3,T=pick(LLV[b][L])
     else S=lStmt(T,items,sz);
     if(S&&S.t===want)break}
   const hl=()=>lHL(S.good,S.bad);
-  return{kind:'choice',yn:1,choices:[['1',E('Totta','True')],['0',E('Ei totta','Not true')]],ans:S.t?'1':'0',answerText:'',visual:lTiles(items),
+  return{kind:'choice',yn:1,choices:[['1',E('Totta','True')],['0',E('Ei totta','Not true')]],ans:S.t?'1':'0',answerText:'',after:`<div style="margin:4px 0 10px">${lTiles(items)}</div>`,
     text:plbl(E('Totta vai ei?','True or not?'),`<span style="font-size:.62em">${E(S.fi,S.en)}</span>`),
     hint:E(LHINT[T]||'','')||'',onOk:hl,onFail:hl,explain:`<p><b>${S.why}</b></p>`}}}
 const LHINT=EN?{}:{EX:'<p>Etsi kuvasta juuri sellainen kuvio: oikea väri ja oikea muoto.</p>',NEX:'<p>Väite on totta, jos kuvassa ei ole yhtään sellaista kuviota.</p>',OR:'<p>"Tai"-väite on totta, jos ainakin toinen löytyy. Se on totta myös, jos molemmat löytyvät.</p>',AND:'<p>"Ja"-väite on totta vain, jos molemmat löytyvät.</p>',
