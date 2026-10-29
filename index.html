@@ -3295,7 +3295,7 @@ function deduGen(g){return L=>{
     ['kissa','kissat','kissoja','cat'],['robotti','robotit','robotteja','robot'],['pingviini','pingviinit','pingviinejä','penguin'],['kummitus','kummitukset','kummituksia','ghost'],['merirosvo','merirosvot','merirosvoja','pirate'],
     ['dinosaurus','dinosaurukset','dinosauruksia','dinosaur'],['noita','noidat','noitia','witch'],['avaruusolio','avaruusoliot','avaruusolioita','alien'],['hirviö','hirviöt','hirviöitä','monster'],['siili','siilit','siilejä','hedgehog'],['kuningas','kuninkaat','kuninkaita','king']];
   const [A,B,C]=shuffle(W).slice(0,3).map(w=>({sg:w[0],pl:w[1],pr:w[2],en:w[3],ea:(/^[aeiou]/.test(w[3])?'an ':'a ')+w[3],ep:w[3]+'s'}));
-  const X=pick(['Pörri','Tuiske','Möhkö','Sulo','Nappi','Viuhka','Hilla','Ruttu']),cap=s=>s[0].toUpperCase()+s.slice(1);
+  const X=pick(['Pörri','Tuiske','Möhkö','Sulo','Nappi','Tuikku','Hilla','Ruttu']),cap=s=>s[0].toUpperCase()+s.slice(1);
   const all=(a,b)=>E(`Kaikki ${a.pl} ovat ${b.pr}.`,`All ${a.ep} are ${b.ep}.`),some=(a,b)=>E(`Jotkin ${a.pl} ovat ${b.pr}.`,`Some ${a.ep} are ${b.ep}.`),
     none=(a,b)=>E(`Yksikään ${a.sg} ei ole ${b.sg}.`,`No ${a.en} is ${b.ea}.`),is=(a)=>E(`${X} on ${a.sg}.`,`${X} is ${a.ea}.`),isnt=(a)=>E(`${X} ei ole ${a.sg}.`,`${X} is not ${a.ea}.`),
     NV=E('Tästä ei voi päätellä mitään varmaa.','Nothing certain can be concluded.');
