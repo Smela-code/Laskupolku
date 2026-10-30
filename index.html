@@ -3805,7 +3805,7 @@ const BCOL=['r','b','y','g'];
 const cname=c=>KCOL[c][1];
 const cpart={r:'punaista',b:'sinistä',y:'keltaista',g:'vihreää'},cgen={r:'punaisen',b:'sinisen',y:'keltaisen',g:'vihreän'},cnom={r:'punaiset',b:'siniset',y:'keltaiset',g:'vihreät'},cgpl={r:'punaisten',b:'sinisten',y:'keltaisten',g:'vihreiden'};
 const cap=x=>x[0].toUpperCase()+x.slice(1);
-const VMM={varma:'certain',mahdollinen:'possible',mahdoton:'impossible'},vmm=a=>EN?VMM[a]:a;
+const VMM={varma:'certainly',mahdollinen:'possibly',mahdoton:'never'},VMF={varma:'varmasti',mahdollinen:'mahdollisesti',mahdoton:'en ikinä'},vmm=a=>EN?VMM[a]:VMF[a],VMCH=()=>E([['varma','Varmasti'],['mahdollinen','Mahdollisesti'],['mahdoton','En ikinä']],[['varma','Certainly'],['mahdollinen','Possibly'],['mahdoton','Never']]);
 function bagSVG(cnt){const balls=[];Object.entries(cnt).forEach(([c,n])=>{for(let i=0;i<n;i++)balls.push(c)});const sh=shuffle(balls);
   let s=`<svg class="bag" viewBox="0 0 160 150" aria-hidden="true"><path d="M52 22C40 30 14 60 12 96c-2 32 22 48 68 48s70-16 68-48c-2-36-28-66-40-74z" fill="var(--sun-bg)" stroke="var(--stem)" stroke-width="3"/><path d="M50 22c10-8 50-8 60 0" fill="none" stroke="var(--stem)" stroke-width="5" stroke-linecap="round"/>`;
   const n=sh.length,r=n<=6?13:n<=10?12:n<=15?11:n<=20?10:8.6,placed=[];
@@ -3833,16 +3833,16 @@ function tnGen(g){return(L)=>{const band=g<=2?0:g<=4?1:2;
   if(band===0){
     if(L===1||(L===3&&Math.random()<.5)){const cs=shuffle(BCOL).slice(0,R(1,2)),cnt={};cs.forEach(c=>cnt[c]=R(2,6));const q=pick([...cs,pick(BCOL.filter(c=>!cs.includes(c)))]),n=cnt[q]||0,tot=Object.values(cnt).reduce((a,b)=>a+b,0);
       const ans=n===tot?'varma':n===0?'mahdoton':'mahdollinen';
-      if(EN)return{kind:'choice',choices:E([['varma','Varma'],['mahdollinen','Mahdollinen'],['mahdoton','Mahdoton']],[['varma','Certain'],['mahdollinen','Possible'],['mahdoton','Impossible']]),ans,answerText:vmm(ans),visual:bagSVG(cnt),
+      if(EN)return{kind:'choice',choices:VMCH(),ans,answerText:vmm(ans),visual:bagSVG(cnt),
         text:`<span class="bg" style="font-size:.7em">You take one ball from the bag without looking. Will you get a ${cname(q)} ball?</span>`,
-        hint:'<p><b>Certain</b>: it always happens. <b>Possible</b>: it can happen, but not always. <b>Impossible</b>: it can never happen.</p><p>Look at what kind of balls are in the bag.</p>',
+        hint:'<p><b>Certainly</b>: it always happens. <b>Possibly</b>: it can happen, but not always. <b>Never</b>: it can never happen.</p><p>Look at what kind of balls are in the bag.</p>',
         explain:`<p><b>${cap(vmm(ans))}.</b> ${n===0?`There are no ${cname(q)} balls in the bag.`:n===tot?'All the balls in the bag are this colour.':`There ${n===1?'is':'are'} ${n} ball${n===1?'':'s'} like this and ${tot-n} other ball${tot-n===1?'':'s'} in the bag.`}</p>`};
-      return{kind:'choice',choices:[['varma','Varma'],['mahdollinen','Mahdollinen'],['mahdoton','Mahdoton']],ans,answerText:ans,visual:bagSVG(cnt),
+      return{kind:'choice',choices:VMCH(),ans,answerText:cap(vmm(ans)),visual:bagSVG(cnt),
         text:`<span class="bg" style="font-size:.7em">Nostat pussista yhden pallon katsomatta. Saatko ${cgen[q]} pallon?</span>`,
-        hint:'<p><b>Varma</b>: tapahtuu aina. <b>Mahdollinen</b>: voi tapahtua, mutta ei aina. <b>Mahdoton</b>: ei voi tapahtua koskaan.</p><p>Katso, millaisia palloja pussissa on.</p>',
-        explain:`<p><b>${ans[0].toUpperCase()+ans.slice(1)}.</b> ${n===0?`Pussissa ei ole yhtään ${cgen[q].replace(/n$/,'stä')} palloa.`.replace('punaisestä','punaista').replace('sinisestä','sinistä').replace('keltaisestä','keltaista').replace('vihreästä','vihreää'):n===tot?'Kaikki pussin pallot ovat tämän värisiä.':`Pussissa on ${n} tällaista ja ${tot-n} muuta palloa.`}</p>`}}
+        hint:'<p><b>Varmasti</b>: tapahtuu aina. <b>Mahdollisesti</b>: voi tapahtua, mutta ei aina. <b>En ikinä</b>: ei voi tapahtua koskaan.</p><p>Katso, millaisia palloja pussissa on.</p>',
+        explain:`<p><b>${cap(vmm(ans))}.</b> ${n===0?`Pussissa ei ole yhtään ${cgen[q].replace(/n$/,'stä')} palloa.`.replace('punaisestä','punaista').replace('sinisestä','sinistä').replace('keltaisestä','keltaista').replace('vihreästä','vihreää'):n===tot?'Kaikki pussin pallot ovat tämän värisiä.':`Pussissa on ${n} tällaista ja ${tot-n} muuta palloa.`}</p>`}}
     if(L===3){const e=pick([{t:E('luvun 7','a 7'),a:'mahdoton'},{t:E('luvun, joka on pienempi kuin 7','a number smaller than 7'),a:'varma'},{t:E('kuutosen','a 6'),a:'mahdollinen'},{t:E('luvun 0','a 0'),a:'mahdoton'},{t:E('parillisen luvun','an even number'),a:'mahdollinen'},{t:E('luvun, joka on vähintään 1','a number that is at least 1'),a:'varma'}]);
-      return{kind:'choice',choices:E([['varma','Varma'],['mahdollinen','Mahdollinen'],['mahdoton','Mahdoton']],[['varma','Certain'],['mahdollinen','Possible'],['mahdoton','Impossible']]),ans:e.a,answerText:vmm(e.a),visual:`<div class="dice">${die3D()}</div>`,
+      return{kind:'choice',choices:VMCH(),ans:e.a,answerText:vmm(e.a),visual:`<div class="dice">${die3D()}</div>`,
         text:`<span class="bg" style="font-size:.7em">${E(`Heität noppaa kerran. Saatko ${e.t}?`,`You roll a dice once. Will you get ${e.t}?`)}</span>`,hint:E('<p>Nopassa ovat luvut 1, 2, 3, 4, 5 ja 6. Mieti, mitkä niistä sopivat.</p>','<p>A dice has the numbers 1, 2, 3, 4, 5 and 6. Think about which of them fit.</p>'),explain:`<p><b>${cap(vmm(e.a))}.</b> ${E('Nopan luvut ovat 1–6.','The numbers on a dice are 1–6.')}</p>`}}
     const cs=shuffle(BCOL).slice(0,2),a=R(1,7);let b=R(1,7);if(b===a)b=a+R(2,3);const cnt={[cs[0]]:a,[cs[1]]:b},ans=a>b?cs[0]:cs[1];
     return{kind:'choice',choices:cs.map(c=>[c,colChip(c)]),ans,answerText:cname(ans),visual:bagSVG(cnt),text:`<span class="bg" style="font-size:.7em">${E('Nostat pussista yhden pallon katsomatta. Kumman värisen pallon saat todennäköisemmin?','You take one ball from the bag without looking. Which colour are you more likely to get?')}</span>`,
