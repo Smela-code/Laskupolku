@@ -3337,6 +3337,8 @@ function lIntro(){const G=document.querySelector('.lcards');if(!G)return;const c
   const fin=()=>{G.classList.remove('intro');cs.forEach(b=>{b.style.transition='';b.style.transform='';b.style.zIndex='';b.classList.remove('flip')});D.hidden=true;T.hidden=false;bt.forEach(b=>b&&(b.disabled=false))};
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){fin();return}
   G.classList.add('intro');bt.forEach(b=>b&&(b.disabled=true));
+  const orig=cs.map(b=>[b.querySelector('.lf').innerHTML,b.querySelector('.lb').innerHTML]);if(P.lalt)cs.forEach((b,i)=>{b.querySelector('.lf').innerHTML=P.lalt[i][0];b.querySelector('.lb').innerHTML=P.lalt[i][1]});
+  const real=()=>cs.forEach((b,i)=>{b.querySelector('.lf').innerHTML=orig[i][0];b.querySelector('.lb').innerHTML=orig[i][1]});
   const r=cs.map(b=>b.getBoundingClientRect()),gr=G.getBoundingClientRect(),cx=gr.left+gr.width/2,cy=gr.top+gr.height/2,perm=shuffle([0,1,2,3]);
   const at=(ms,f)=>setTimeout(()=>{if(G.isConnected)f()},ms),pile=i=>[cx-r[i].left-r[i].width/2,cy-r[i].top-r[i].height/2];
   const tr=(b,x,y,rot,ms)=>{b.style.transition=`transform ${ms}ms ease-in-out`;b.style.transform=`translate(${x}px,${y}px) rotate(${rot}deg)`};
@@ -3346,6 +3348,7 @@ function lIntro(){const G=document.querySelector('.lcards');if(!G)return;const c
   let z=10;[0,2,1,3,0,2].forEach((j,n)=>{const b=cs[j],[x,y]=pile(j),side=n%2?1:-1;
     at(7300+n*480,()=>{tr(b,x+side*(r[j].width*.75),y-6,side*10,220)});at(7300+n*480+240,()=>{b.style.zIndex=String(++z);tr(b,x,y,(Math.random()-.5)*10,200)})});
   cs.forEach((b,i)=>at(10500+i*220,()=>tr(b,0,0,0,600)));
+  at(10300,real);
   at(11800,fin)}
 function korttiGen(g){return L=>{
   const X='<path d="M6 6 34 34" stroke="#DE3E2D" stroke-width="3.5" stroke-linecap="round"/>';
@@ -3400,6 +3403,7 @@ function korttiGen(g){return L=>{
       P:E(`Takana voi olla ${q('Q')} tai ${q('nQ')} – kumpikaan ei riko sääntöä.`,`The back can be ${q('Q')} or ${q('nQ')} – neither breaks the rule.`)+NN,
       nQ:E(`Sääntö ei kerro mitään siitä, mitä on, kun kortissa on ${q('nQ')}.`,`The rule says nothing about ${q('nQ')}.`)+NN}:{};
   return{kind:'multi',after:`<p class="ltxt" id="ldesc" style="margin:0 auto .7em">${c.d}</p><div class="ggrid g4 lcards" role="group" aria-label="${E('Kortit','Cards')}">${cards}</div><div id="ltask" hidden><p class="ltxt">”${c.r}”</p><p class="chfoot">${E('Mitkä kortit pitää kääntää, jotta näet, pitääkö sääntö? Valitse vain tarpeelliset.','Which cards must you turn over to check the rule? Choose only the ones you need.')}</p></div>`,ans:ks.map((k,i)=>need.includes(k)?i:-1).filter(i=>i>=0),answerText:'',
+    lalt:c.col?ks.map(k=>{const num=x=>x==='P'||x==='nP',fk=num(k)?pick(['P','nP']):pick(['Q','nQ']),bkk=num(fk)?pick(['Q','nQ']):pick(['P','nP']);let f=face(fk,1);for(let t=0;t<9&&num(fk)&&[c.P,c.nP].includes(f.replace(/<[^>]+>/g,''));t++)f=face(fk,1);return[f,face(bkk,1)]}):null,
     mount:()=>lIntro(),
     hint:E(mode==='neg'?`<p>Sääntö kieltää yhden yhdistelmän: ${nf} ja ${lab('Q')} samassa kortissa. Mitkä kortit voisivat olla juuri sellaisia?</p>`:'<p>Mieti jokaisen kortin kohdalla: voisiko sen toisella puolella olla jotain, mikä rikkoo säännön? Jos voisi, kortti pitää kääntää.</p>','<p>For each card, think: could the other side break the rule? If so, turn it.</p>'),
     onOk:()=>{const f=document.querySelector('#ltask .chfoot');if(f)f.textContent=E('Napauta korttia, niin näet sen toisen puolen.','Tap a card to see its other side.')},onFail:()=>{const f=document.querySelector('#ltask .chfoot');if(f)f.textContent=E('Napauta korttia, niin näet sen toisen puolen.','Tap a card to see its other side.')},
