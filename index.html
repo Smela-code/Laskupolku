@@ -2139,7 +2139,9 @@ const HTH=.55,HPH=.52,HWX=7;
 function holeCubesSVG(cubes,box,o={}){const th=(P&&P.hth!=null)?P.hth:HTH,ph=(P&&P.hph!=null)?P.hph:HPH,cs=Math.cos(th),sn=Math.sin(th),cp=Math.cos(ph),sp=Math.sin(ph);
   const P3=(x,y,z)=>{const X=x*cs-y*sn,Y=x*sn+y*cs;return[X,-z*cp-Y*sp,Y*cp-z*sp]};
   const RR=Math.hypot(box[1]-box[0],box[3]-box[2])/2,c0=P3((box[0]+box[1])/2,(box[2]+box[3])/2,box[4]/2);
-  const W=340,s=(W-16)/(2*RR),H=Math.round((2*RR*Math.sin(1.1)+box[4]*1.1)*s+16),ox=W/2-c0[0]*s,oy=H/2-c0[1]*s;
+  const cn=[];for(const x of[box[0],box[1]])for(const y of[box[2],box[3]])for(const z of[0,box[4]])cn.push([x,y,z]);let spX=0,spY=0;
+  for(const t of[-.35,0,.35,.7,1])for(const f of[.2,.5,.85]){const c=Math.cos(t),n=Math.sin(t),q=Math.cos(f),r=Math.sin(f),xs=[],ys=[];cn.forEach(([x,y,z])=>{xs.push(x*c-y*n);ys.push(-z*q-(x*n+y*c)*r)});spX=Math.max(spX,Math.max(...xs)-Math.min(...xs));spY=Math.max(spY,Math.max(...ys)-Math.min(...ys))}
+  const W=340,H=Math.round(W*.8),s=Math.min((W-20)/spX,(H-20)/spY),ox=W/2-c0[0]*s,oy=H/2-c0[1]*s;
   const pt=a=>a.map(([x,y,z])=>{const p=P3(x,y,z);return(ox+p[0]*s).toFixed(1)+','+(oy+p[1]*s).toFixed(1)}).join(' ');
   let out=`<polygon points="${pt([[box[0],box[2],0],[box[1],box[2],0],[box[1],box[3],0],[box[0],box[3],0]])}" fill="var(--plate)" stroke="var(--line)" stroke-width="1.5"/>`;
   if(o.arrow){const[a0,a1,ay]=o.arrow;out+=`<polygon points="${pt([[a0,ay-.18,0],[a1-.55,ay-.18,0],[a1-.55,ay-.42,0],[a1,ay,0],[a1-.55,ay+.42,0],[a1-.55,ay+.18,0],[a0,ay+.18,0]])}" fill="var(--sun)" stroke="var(--ink)" stroke-width="1.2" stroke-linejoin="round"/>`}
@@ -2161,7 +2163,7 @@ function holeScene(pc,dx,o={}){const f=holeFit(pcProj(pc),P.hole),my=Math.min(..
   return holeCubesSVG([...holeWall(P.hole),...(o.cubes||tw)],box,o)}
 let HDR=null;
 document.addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest('#hbox');if(!b||!P||P.kind!=='turn'||P.running)return;HDR={id:e.pointerId,x:e.clientX,y:e.clientY,th:P.hth??HTH,ph:P.hph??HPH};try{b.setPointerCapture(e.pointerId)}catch(_){}});
-document.addEventListener('pointermove',e=>{if(!HDR||e.pointerId!==HDR.id||!P||P.kind!=='turn')return;P.hth=Math.max(-.35,Math.min(1,HDR.th+(e.clientX-HDR.x)*.012));P.hph=Math.max(.2,Math.min(1.1,HDR.ph+(e.clientY-HDR.y)*.01));holeRender()});
+document.addEventListener('pointermove',e=>{if(!HDR||e.pointerId!==HDR.id||!P||P.kind!=='turn')return;P.hth=Math.max(-.35,Math.min(1,HDR.th+(e.clientX-HDR.x)*.012));P.hph=Math.max(.2,Math.min(.85,HDR.ph+(e.clientY-HDR.y)*.01));holeRender()});
 ['pointerup','pointercancel'].forEach(t=>document.addEventListener(t,e=>{if(HDR&&e.pointerId===HDR.id)HDR=null}));
 function holeRender(){const b=$('#hbox');if(b)b.innerHTML=holeScene(P.pc,0)}
 function holeAnim(ok,cb){const pc=P.pc,maxX=Math.max(...pc.map(p=>p[0])),red=window.matchMedia('(prefers-reduced-motion: reduce)').matches;P.running=true;const b=$('#hbox');
