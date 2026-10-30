@@ -3281,7 +3281,7 @@ function vastaGen(g){return L=>{const hi=g>=5;
       explain:`<p><b>${lCap(bad.map(i=>`${E(its[i].fi,its[i].en)} ${A[2]}`).join(E(', ja ',', and ')))}.</b></p><p>${E('Yksi vastaesimerkki riittää kumoamaan "kaikki"-väitteen.','One counterexample is enough to disprove an "all" statement.')}</p>`}}
   const NB=LNB();
   if((L===3&&!hi)||(L===2&&hi)){const B=pick(hi?NB:NB.filter(x=>x.e)),C=[['a',E('Aina','Always')],['j',E('Joskus','Sometimes')],['e',E('Ei koskaan','Never')]];
-    return{kind:'choice',choices:C,ans:B.c,answerText:C.find(x=>x[0]===B.c)[1],text:plbl(E('Pitääkö väite paikkansa aina, joskus vai ei koskaan?','Is the statement always, sometimes or never true?'),`<span style="font-size:.6em">”${E(B.fi,B.en)}”</span>`),
+    return{kind:'choice',choices:C,ans:B.c,answerText:C.find(x=>x[0]===B.c)[1],text:plbl(E('Pitääkö väite paikkansa aina, joskus vai ei koskaan?','Is the statement always, sometimes or never true?'),`<span style="font-size:.6em">”${E(B.fi,B.en)}”</span><span style="display:block;font:600 .95rem/1.3 var(--body);color:var(--soft);margin-top:.5em">${E('Luvut ovat kokonaislukuja nollasta ylöspäin: 0, 1, 2, 3, …','The numbers are whole numbers from zero upwards: 0, 1, 2, 3, …')}</span>`),
       hint:E('<p>Kokeile väitettä muutamalla luvulla. Jos löydät luvut, joilla väite pitää, ja luvut, joilla se ei pidä, vastaus on "joskus".</p>','<p>Try the statement with a few numbers. If it works for some and not for others, the answer is "sometimes".</p>'),
       explain:`<p><b>${C.find(x=>x[0]===B.c)[1]}.</b> ${B.w}</p>`}}
   return vastaGen(g)(1)}}
