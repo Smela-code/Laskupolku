@@ -474,9 +474,8 @@ button.trow{cursor:pointer;touch-action:manipulation}button.trow:active{transfor
 .lcard.ok .lf,.lcard.ok .lb{border-color:var(--good)}.lcard.no .lf,.lcard.no .lb{border-color:var(--bad)}.lcard.miss .lf{border-color:var(--good);border-style:dashed}
 .lface{font:800 .82rem/1.15 var(--display);color:var(--ink);padding:3px;text-align:center;hyphens:manual;overflow-wrap:anywhere}.lface.numf{font-size:2rem}.lface.lpic{display:grid;place-items:center;gap:0;padding:2px}.lface.lpic svg{width:62%;height:auto;display:block}.lface.lpic small{font-size:.66rem;line-height:1.05}
 .lface.col{position:absolute;inset:0;padding:0}
-.ldemo{display:flex;gap:10px;justify-content:center;margin-top:4px}.ldc{display:block;width:78px;height:78px;perspective:500px}.ldc .lci{animation:ldflip 3.6s ease-in-out var(--d) 3 both}
-@keyframes ldflip{0%,18%{transform:rotateY(0)}34%,66%{transform:rotateY(180deg)}82%,100%{transform:rotateY(0)}}
-@media (prefers-reduced-motion:reduce){.lci{transition:none}.ldc .lci{animation:none}}
+.lcards.intro{pointer-events:none}.lcards .lcard{position:relative}.ltxt{text-align:center;font:700 1.05rem/1.35 var(--display);margin:.7em auto 0;max-width:460px}#ltask:not([hidden]){animation:lfade .5s ease-out}@keyframes lfade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.lci{transition:none}}
 .mapw{max-width:400px;margin:0 auto}.map{display:block;width:100%;height:auto}
 .mleg{display:flex;flex-wrap:wrap;gap:4px 12px;justify-content:center;margin-top:6px;font-size:.85rem;font-weight:700;color:var(--ink)}.mleg span{display:inline-flex;align-items:center;gap:4px}.mleg i{display:inline-block;width:16px;height:12px;border-radius:3px}
 .mscale{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px;font-size:.85rem;font-weight:800;color:var(--ink)}
@@ -3334,6 +3333,20 @@ function deduGen(g){return L=>{
     hint:E('<p>Älä mieti, mikä on totta oikeassa maailmassa. Käytä vain annettuja lauseita. Kokeile piirtää joukot ympyröinä: mikä ympyrä on toisen sisällä?</p>','<p>Do not think about the real world. Use only the given sentences. Try drawing the groups as circles: which circle is inside another?</p>'),
     explain:`<p>${why}</p>`}
 }}
+function lIntro(){const G=document.querySelector('.lcards');if(!G)return;const cs=[...G.children],D=$('#ldesc'),T=$('#ltask'),bt=[$('#check'),$('#hintBtn')];
+  const fin=()=>{G.classList.remove('intro');cs.forEach(b=>{b.style.transition='';b.style.transform='';b.style.zIndex='';b.classList.remove('flip')});D.hidden=true;T.hidden=false;bt.forEach(b=>b&&(b.disabled=false))};
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){fin();return}
+  G.classList.add('intro');bt.forEach(b=>b&&(b.disabled=true));
+  const r=cs.map(b=>b.getBoundingClientRect()),gr=G.getBoundingClientRect(),cx=gr.left+gr.width/2,cy=gr.top+gr.height/2,perm=shuffle([0,1,2,3]);
+  const at=(ms,f)=>setTimeout(()=>{if(G.isConnected)f()},ms),pile=i=>[cx-r[i].left-r[i].width/2,cy-r[i].top-r[i].height/2];
+  const tr=(b,x,y,rot,ms)=>{b.style.transition=`transform ${ms}ms ease-in-out`;b.style.transform=`translate(${x}px,${y}px) rotate(${rot}deg)`};
+  cs.forEach((b,i)=>{b.style.transition='none';b.style.transform=`translate(${r[perm[i]].left-r[i].left}px,${r[perm[i]].top-r[i].top}px)`});
+  cs.forEach((b,i)=>{at(600+perm[i]*300,()=>b.classList.add('flip'));at(3000+perm[i]*300,()=>b.classList.remove('flip'))});
+  at(4700,()=>cs.forEach((b,i)=>{b.style.zIndex=String(i+1);const[x,y]=pile(i);tr(b,x,y,(i-1.5)*5,700)}));
+  let z=10;[0,2,1,3,0,2].forEach((j,n)=>{const b=cs[j],[x,y]=pile(j),side=n%2?1:-1;
+    at(5600+n*420,()=>{tr(b,x+side*(r[j].width*.75),y-6,side*10,200)});at(5600+n*420+210,()=>{b.style.zIndex=String(++z);tr(b,x,y,(Math.random()-.5)*10,200)})});
+  cs.forEach((b,i)=>at(8400+i*180,()=>tr(b,0,0,0,550)));
+  at(9400,fin)}
 function korttiGen(g){return L=>{
   const X='<path d="M6 6 34 34" stroke="#DE3E2D" stroke-width="3.5" stroke-linecap="round"/>';
   const IC={pyora:'<circle cx="10" cy="29" r="7" fill="none" stroke="#3a4a5c" stroke-width="2.4"/><circle cx="30" cy="29" r="7" fill="none" stroke="#3a4a5c" stroke-width="2.4"/><path d="M10 29 17 18H28L30 29M17 18 21 29H10M21 29 28 18M15 14h5M28 18 27 13h4" fill="none" stroke="#d6452f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',kav:'<circle cx="21" cy="7" r="4" fill="#f2c9a0" stroke="#8a5a3a" stroke-width="1.2"/><path d="M20 12 18 24M19 15 12 21M19 15 27 19M18 24 12 35M18 24 25 35" fill="none" stroke="#3a6fb5" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>',pizza:'<path d="M20 5 35 33Q20 39 5 33Z" fill="#f6c453" stroke="#b9772f" stroke-width="2" stroke-linejoin="round"/><path d="M5 33Q20 39 35 33" fill="none" stroke="#c98a3a" stroke-width="4" stroke-linecap="round"/><circle cx="20" cy="16" r="3" fill="#d6452f"/><circle cx="15" cy="25" r="3" fill="#d6452f"/><circle cx="25" cy="27" r="3" fill="#d6452f"/><circle cx="22" cy="21.5" r="1.2" fill="#3f8f3a"/>',
@@ -3366,7 +3379,6 @@ function korttiGen(g){return L=>{
   const need=mode==='neg'?['P','Q']:mode==='rev'?['Q','nP']:['P','nQ'];
   const back=k=>k==='P'||k==='nP'?pick(['Q','nQ']):pick(['P','nP']);
   const bk=ks.map(back),cards=ks.map((k,i)=>`<button type="button" class="gtile lcard" data-pick="${i}" aria-pressed="false"><span class="lci"><span class="lf">${face(k)}</span><span class="lb">${face(bk[i],1)}</span></span></button>`).join('');
-  const demo=shuffle([['P','Q'],['P','nQ'],['nP','Q'],['nP','nQ']]).slice(0,3).map((pq,i)=>{const[a,b]=Math.random()<.5?pq:[pq[1],pq[0]];return`<span class="ldc" style="--d:${(i*.6).toFixed(1)}s"><span class="lci"><span class="lf">${face(a,1)}</span><span class="lb">${face(b,1)}</span></span></span>`}).join('');
   const pairs=ks.map((k,i)=>[k,bk[i]]),has=(x,y)=>pairs.some(([a,b])=>(a===x&&b===y)||(a===y&&b===x)),broke=mode==='imp'?has('P','nQ'):mode==='rev'?has('Q','nP'):has('P','Q');
   const lab=k=>c.col&&(k==='Q'||k==='nQ')?E(...(k==='Q'?c.cq:c.cn).slice(0,2)):c[k].replace(/&shy;/g,'');
   const q=k=>`”${lab(k)}”`,TN=E(' – tämä pitää kääntää.',' – turn this one.'),NN=E(' Tätä ei tarvitse kääntää.',' No need to turn it.');
@@ -3387,11 +3399,10 @@ function korttiGen(g){return L=>{
       nP:E(`Jos kortin ${q('nP')} takana on ${q('Q')}, sääntö rikkoutuu`,`If the back of ${q('nP')} says ${q('Q')}, the rule is broken`)+TN,
       P:E(`Takana voi olla ${q('Q')} tai ${q('nQ')} – kumpikaan ei riko sääntöä.`,`The back can be ${q('Q')} or ${q('nQ')} – neither breaks the rule.`)+NN,
       nQ:E(`Sääntö ei kerro mitään siitä, mitä on, kun kortissa on ${q('nQ')}.`,`The rule says nothing about ${q('nQ')}.`)+NN}:{};
-  return{kind:'multi',after:`<div class="ggrid g4 lcards" role="group" aria-label="${E('Kortit','Cards')}">${cards}</div><p class="chfoot">${E('Mitkä kortit pitää kääntää, jotta näet, pitääkö sääntö? Valitse vain tarpeelliset.','Which cards must you turn over to check the rule? Choose only the ones you need.')}</p>`,ans:ks.map((k,i)=>need.includes(k)?i:-1).filter(i=>i>=0),answerText:'',
-    visual:`<div class="ldemo" aria-hidden="true">${demo}</div><p class="bg" style="display:block;text-align:center;font:700 1.05rem/1.35 var(--display);margin:.5em auto 0;max-width:460px">${c.d}</p>`,
-    text:`<span class="bg" style="display:block;font:700 1.05rem/1.35 var(--display)">${c.r}</span>`,
+  return{kind:'multi',after:`<div class="ggrid g4 lcards" role="group" aria-label="${E('Kortit','Cards')}">${cards}</div><p class="ltxt" id="ldesc">${c.d}</p><div id="ltask" hidden><p class="ltxt">${c.r}</p><p class="chfoot">${E('Mitkä kortit pitää kääntää, jotta näet, pitääkö sääntö? Valitse vain tarpeelliset.','Which cards must you turn over to check the rule? Choose only the ones you need.')}</p></div>`,ans:ks.map((k,i)=>need.includes(k)?i:-1).filter(i=>i>=0),answerText:'',
+    mount:()=>lIntro(),
     hint:E(mode==='neg'?`<p>Sääntö kieltää yhden yhdistelmän: ${nf} ja ${lab('Q')} samassa kortissa. Mitkä kortit voisivat olla juuri sellaisia?</p>`:'<p>Mieti jokaisen kortin kohdalla: voisiko sen toisella puolella olla jotain, mikä rikkoo säännön? Jos voisi, kortti pitää kääntää.</p>','<p>For each card, think: could the other side break the rule? If so, turn it.</p>'),
-    onOk:()=>{const f=document.querySelector('.lcards+.chfoot');if(f)f.textContent=E('Napauta korttia, niin näet sen toisen puolen.','Tap a card to see its other side.')},onFail:()=>{const f=document.querySelector('.lcards+.chfoot');if(f)f.textContent=E('Napauta korttia, niin näet sen toisen puolen.','Tap a card to see its other side.')},
+    onOk:()=>{const f=document.querySelector('#ltask .chfoot');if(f)f.textContent=E('Napauta korttia, niin näet sen toisen puolen.','Tap a card to see its other side.')},onFail:()=>{const f=document.querySelector('#ltask .chfoot');if(f)f.textContent=E('Napauta korttia, niin näet sen toisen puolen.','Tap a card to see its other side.')},
     explain:ks.map(k=>`<p><b>${lab(k)}:</b> ${why[k]}</p>`).join('')+''+`<p><b>${broke?E('Kun käännät kortit, näet, että tällä kertaa sääntö ei pitänyt.','If you turn the cards over, you will see that this time the rule was broken.'):E('Kun käännät kortit, näet, että tällä kertaa sääntö piti.','If you turn the cards over, you will see that this time the rule held.')}</b></p>`}}}
 
 /* kartta ja mittakaava */
@@ -4519,7 +4530,7 @@ function draw(){const t=cur(),pr=prog();const IA=inlineAns();
     <div class="panel" id="hint" hidden><h3>${E('Vihje','Hint')}</h3>${P.hint}</div>
     <div class="panel explain" id="explain" hidden><h3>${E('Näin se lasketaan','How to work it out')}</h3>${P.explain}</div>`;
   const first=P.kind==='coord'?$('#cx'):P.steps?$('#sc0'):P.kind==='col'?document.getElementById('r'+(P.L.N-1)):document.querySelector('#mw,#ans,#fn,#th,#me,#fq0,#tq0,#ca');
-  activeEl=first;if(first)first.focus({preventScroll:true})}
+  activeEl=first;if(first)first.focus({preventScroll:true});if(P.mount)P.mount()}
 function fb(msg,cls){const e=$('#fb');e.hidden=false;e.className='fb '+cls;e.innerHTML=msg}
 function evaluate(){
   if(P.kind==='turn')return holeEval();
