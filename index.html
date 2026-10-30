@@ -45,6 +45,7 @@ h1{display:flex;flex-wrap:wrap;align-items:center;gap:.25em .35em}
 .opsrow{display:inline-flex;gap:.12em}
 .opsrow span{display:inline-grid;place-items:center;width:.82em;height:.82em;border-radius:.2em;font-size:.82em;line-height:1;color:var(--paper);transform:rotate(-4deg)}
 .opsrow span:nth-child(even){transform:rotate(4deg)}
+.opsrow svg{width:72%;height:72%;display:block}
 .opsrow .o1{background:var(--blue)} .opsrow .o2{background:var(--sun)} .opsrow .o3{background:var(--good)} .opsrow .o4{background:var(--berry)}
 .sub{max-width:52ch}
 .sub{margin:6px 0 0;color:var(--soft);font-weight:600}
@@ -639,7 +640,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1">+</span><span class="o2">−</span><span class="o3">·</span><span class="o4">:</span></span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span></h1>
       <p class="sub">Monipuolista matematiikkaa kuvien avulla 1.–6. luokalle: laskuja, lukuja, mittaamista, geometriaa, tilastoja ja päättelyä.</p>
     </div>
     <div class="hright">
