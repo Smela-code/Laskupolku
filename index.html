@@ -3488,43 +3488,56 @@ const MLM=()=>[{k:'koti',n:E('koti','home'),el:E('kotoa','home'),il:E('kotiin','
   {k:'uimahalli',n:E('uimahalli','swimming pool'),el:E('uimahallista','the swimming pool'),il:E('uimahalliin','the swimming pool'),c:'#2FA3B5',ic:'<path d="M3 9q2.3-2 4.6 0t4.6 0 4.6 0M3 13.5q2.3-2 4.6 0t4.6 0 4.6 0" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>'},
   {k:'kirjasto',n:E('kirjasto','library'),el:E('kirjastosta','the library'),il:E('kirjastoon','the library'),c:'#9B55D0',ic:'<path d="M10 6c-2-1.5-4.5-1.8-6.5-1v11c2-.8 4.5-.5 6.5 1 2-1.5 4.5-1.8 6.5-1V5c-2-.8-4.5-.5-6.5 1z" fill="#fff"/><path d="M10 6v11" stroke="#9B55D0" stroke-width="1"/>'}];
 const mN=(i,j)=>[MOX+i*MCS+MCS/2,MOY+j*MCS+MCS/2];
-function mBlocked(M,a,b){return M.river!=null&&b[1]===M.river&&!M.bridges.includes(b[0])}
-function mPath(M,A,B){const key=p=>p[0]+','+p[1],prev={},q=[A],seen=new Set([key(A)]);
-  while(q.length){const c=q.shift();if(c[0]===B[0]&&c[1]===B[1])break;for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const n=[c[0]+dx,c[1]+dy];if(n[0]<0||n[1]<0||n[0]>=MW||n[1]>=MH||seen.has(key(n))||mBlocked(M,c,n))continue;seen.add(key(n));prev[key(n)]=c;q.push(n)}}
-  if(!seen.has(key(B)))return null;const p=[B];while(key(p[0])!==key(A))p.unshift(prev[key(p[0])]);return p}
-function mMap(river){const M={river:river?R(1,MH-2):null,bridges:[],park:[],lm:[]};if(river){const b=shuffle([...Array(MW).keys()].filter(i=>i>0&&i<MW-1));M.bridges=b.slice(0,R(1,2))}
-  for(let i=0;i<MW;i++)for(let j=0;j<MH;j++)if(j!==M.river&&Math.random()<.12)M.park.push(i+','+j);
-  const used=new Set(),L=shuffle(MLM());for(const l of L){for(let t=0;t<50;t++){const p=[R(0,MW-1),R(0,MH-1)];const k=p+'';if(p[1]===M.river||M.park.includes(k))continue;if([...used].some(u=>{const[a,b]=u.split(',').map(Number);return Math.abs(a-p[0])+Math.abs(b-p[1])<3}))continue;used.add(k);M.lm.push({...l,p});break}}
+const MDECO={talo:'<path d="M10 20 20 11 30 20V31H10Z" fill="#f6f2ea" stroke="#8a7f70" stroke-width="1.2"/><path d="M8 21 20 10 32 21" fill="none" stroke="#b5523b" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/><rect x="17.5" y="24" width="5" height="7" fill="#8a6a4a"/><rect x="12.5" y="22" width="3.5" height="3.5" fill="#8fb3d9"/>',
+  talo2:'<path d="M10 20 20 11 30 20V31H10Z" fill="#fff6d6" stroke="#8a7f70" stroke-width="1.2"/><path d="M8 21 20 10 32 21" fill="none" stroke="#5d6673" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/><rect x="17.5" y="24" width="5" height="7" fill="#6b5137"/><rect x="24" y="22" width="3.5" height="3.5" fill="#8fb3d9"/>',
+  kerros:'<rect x="11" y="6" width="18" height="28" fill="#cfd4dc" stroke="#7d8591" stroke-width="1.2"/>'+[9,15,21,27].map(y=>[14,21].map(x=>`<rect x="${x}" y="${y}" width="5" height="3.5" fill="#6f8fb5"/>`).join('')).join(''),
+  puu:'<rect x="18.5" y="23" width="3" height="9" fill="#8a6a4a"/><circle cx="20" cy="17" r="9" fill="#6fb35a"/><circle cx="17" cy="14" r="3" fill="#86c46f"/>',
+  puut:'<rect x="11.5" y="22" width="2.5" height="8" fill="#8a6a4a"/><circle cx="13" cy="17" r="6.5" fill="#6fb35a"/><rect x="26" y="25" width="2.5" height="7" fill="#8a6a4a"/><path d="M27 10 33 25H21Z" fill="#3f8f4a"/>'};
+function mPath(M,A,B,block){const key=p=>p[0]+','+p[1],prev={},q=[A],seen=new Set([key(A)]),kb=key(B);
+  while(q.length){const c=q.shift();if(key(c)===kb)break;for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const n=[c[0]+dx,c[1]+dy],k=key(n);if(n[0]<0||n[1]<0||n[0]>=MW||n[1]>=MH||seen.has(k)||(block&&block.has(k)))continue;if(k!==kb&&!M.road.has(k))continue;seen.add(k);prev[k]=c;q.push(n)}}
+  if(!seen.has(kb))return null;const p=[B];while(key(p[0])!==key(A))p.unshift(prev[key(p[0])]);return p}
+function mMap(river){const key=(i,j)=>i+','+j,M={river:river?pick([1,3,5]):null,bridges:[],road:new Set(),deco:{},lm:[]};
+  if(river)M.bridges=shuffle([2,4,6]).slice(0,R(1,2));
+  const NX=[0,2,4,6,8],NY=[0,2,4,6],E2=[];NX.forEach(x=>NY.forEach(y=>{if(x<8)E2.push({a:key(x,y),b:key(x+2,y),c:key(x+1,y)});if(y<6)E2.push({a:key(x,y),b:key(x,y+2),c:key(x,y+1),x})}));
+  const okE=e=>M.river==null||e.c.split(',')[1]!=M.river||M.bridges.includes(e.x),par={},fd=k=>par[k]&&par[k]!==k?(par[k]=fd(par[k])):k;
+  const ed=shuffle(E2.filter(okE)).sort((a,b)=>(M.bridges.includes(b.x)&&b.c.split(',')[1]==M.river)-(M.bridges.includes(a.x)&&a.c.split(',')[1]==M.river)),rest=[];
+  ed.forEach(e=>{const ra=fd(e.a),rb=fd(e.b);if(ra!==rb||(M.river!=null&&M.bridges.includes(e.x)&&e.c.split(',')[1]==M.river)){par[ra]=rb;M.road.add(e.c)}else rest.push(e)});
+  shuffle(rest).slice(0,R(3,5)).forEach(e=>M.road.add(e.c));
+  NX.forEach(x=>NY.forEach(y=>M.road.add(key(x,y))));
+  const free=[];for(let i=0;i<MW;i++)for(let j=0;j<MH;j++){const k=key(i,j);if(M.road.has(k)||j===M.river)continue;if([[1,0],[-1,0],[0,1],[0,-1]].some(([a,b])=>M.road.has(key(i+a,j+b))))free.push([i,j])}
+  const L=shuffle(MLM());for(const l of L){const c=shuffle(free).find(p=>!M.lm.some(m=>Math.abs(m.p[0]-p[0])+Math.abs(m.p[1]-p[1])<3));if(c)M.lm.push({...l,p:c})}
+  const dk=Object.keys(MDECO);for(let i=0;i<MW;i++)for(let j=0;j<MH;j++){const k=key(i,j);if(M.road.has(k)||j===M.river||M.lm.some(m=>m.p[0]===i&&m.p[1]===j))continue;M.deco[k]=pick(dk)}
   return M}
-function mSVG(M,route,opt={}){const W=MOX*2+MW*MCS,H=MOY*2+MH*MCS;let s=`<svg class="map" viewBox="0 0 ${W} ${H}" role="img" aria-label="${E('Kartta','Map')}"><rect width="${W}" height="${H}" rx="10" fill="#efe7d4"/>`;
-  for(let i=0;i<MW;i++)for(let j=0;j<MH;j++){const x=MOX+i*MCS,y=MOY+j*MCS;
-    if(j===M.river){s+=`<rect x="${x}" y="${y}" width="${MCS}" height="${MCS}" fill="#8cc8ec"/><path d="M${x} ${y+15}q5-3 10 0t10 0 10 0 10 0M${x} ${y+27}q5-3 10 0t10 0 10 0 10 0" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="1.5"/>`;
-      if(M.bridges.includes(i))s+=`<rect x="${x+6}" y="${y}" width="${MCS-12}" height="${MCS}" fill="#c9a36b"/><path d="M${x+6} ${y}v${MCS}M${x+MCS-6} ${y}v${MCS}" stroke="#8a6a3c" stroke-width="2.5"/><path d="M${x+6} ${y+10}h${MCS-12}M${x+6} ${y+20}h${MCS-12}M${x+6} ${y+30}h${MCS-12}" stroke="#a9834d" stroke-width="1"/>`;continue}
-    if(M.park.includes(i+','+j))s+=`<rect x="${x}" y="${y}" width="${MCS}" height="${MCS}" fill="#bfe3a8"/><circle cx="${x+13}" cy="${y+15}" r="5" fill="#7cbf5c"/><circle cx="${x+26}" cy="${y+25}" r="5.5" fill="#7cbf5c"/>`}
-  for(let i=0;i<=MW;i++)s+=`<path d="M${MOX+i*MCS} ${MOY}v${MH*MCS}" stroke="#b5bfcc" stroke-width="1"/>`;
-  for(let j=0;j<=MH;j++)s+=`<path d="M${MOX} ${MOY+j*MCS}h${MW*MCS}" stroke="#b5bfcc" stroke-width="1"/>`;
+function mSVG(M,route,opt={}){const W=MOX*2+MW*MCS,H=MOY*2+MH*MCS,key=(i,j)=>i+','+j;let s=`<svg class="map" viewBox="0 0 ${W} ${H}" role="img" aria-label="${E('Kartta','Map')}"><rect width="${W}" height="${H}" rx="10" fill="#dfe8cf"/>`;
+  if(M.river!=null){const y=MOY+M.river*MCS;s+=`<rect x="${MOX}" y="${y}" width="${MW*MCS}" height="${MCS}" fill="#8cc8ec"/><path d="M${MOX} ${y+14}${'q5-3 10 0t10 0'.repeat(MW*2)}M${MOX} ${y+27}${'q5-3 10 0t10 0'.repeat(MW*2)}" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="1.5"/>`}
+  let rd='';for(let i=0;i<MW;i++)for(let j=0;j<MH;j++){if(!M.road.has(key(i,j)))continue;const[x,y]=mN(i,j);rd+=`M${x} ${y}h0`;if(M.road.has(key(i+1,j)))rd+=`M${x} ${y}h${MCS}`;if(M.road.has(key(i,j+1)))rd+=`M${x} ${y}v${MCS}`}
+  if(M.river!=null)M.bridges.forEach(i=>{const[x,y]=mN(i,M.river);s+=`<rect x="${x-17}" y="${y-20}" width="34" height="40" fill="#c9a36b"/><path d="M${x-17} ${y-20}v40M${x+17} ${y-20}v40" stroke="#8a6a3c" stroke-width="3"/>`});
+  s+=`<path d="${rd}" stroke="#a5adb8" stroke-width="26" stroke-linecap="square" fill="none"/><path d="${rd}" stroke="#fff" stroke-opacity=".7" stroke-width="1.6" stroke-dasharray="5 5" fill="none"/>`;
+  for(const k in M.deco){const[i,j]=k.split(',').map(Number);s+=`<g transform="translate(${MOX+i*MCS} ${MOY+j*MCS})">${MDECO[M.deco[k]]}</g>`}
+  for(let i=0;i<=MW;i++)s+=`<path d="M${MOX+i*MCS} ${MOY}v${MH*MCS}" stroke="#55606e" stroke-opacity=".22" stroke-width="1"/>`;
+  for(let j=0;j<=MH;j++)s+=`<path d="M${MOX} ${MOY+j*MCS}h${MW*MCS}" stroke="#55606e" stroke-opacity=".22" stroke-width="1"/>`;
   if(opt.rt2)s+=`<polyline points="${opt.rt2.map(p=>mN(...p).join(',')).join(' ')}" fill="none" stroke="var(--good)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 8" opacity=".9"/>`;
   if(route)s+=`<polyline points="${route.map(p=>mN(...p).join(',')).join(' ')}" fill="none" stroke="var(--orange)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity=".88"/>`;
   M.lm.forEach(l=>{const[x,y]=mN(...l.p);s+=`<g transform="translate(${x-13} ${y-13}) scale(1.0833)"><circle cx="12" cy="12" r="12" fill="${l.c}" stroke="#fff" stroke-width="2"/><g transform="translate(2 2)">${l.ic}</g></g>`});
   return s+'</svg>'}
-function mLegend(M,sc){return `<div class="mleg">${M.lm.map(l=>`<span><svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="12" fill="${l.c}"/><g transform="translate(2 2)">${l.ic}</g></svg>${l.n}</span>`).join('')}${M.river!=null?`<span><i style="background:#8cc8ec"></i>${E('joki','river')}</span>`:''}</div><div class="mscale"><svg viewBox="0 0 22 22" width="22" height="22"><rect x="1" y="1" width="20" height="20" fill="#efe7d4" stroke="#8a95a5" stroke-width="2"/></svg>${sc}</div><p class="mnote">${E('Kuljetaan ruudusta viereiseen ruutuun – ei vinottain.','Move from a square to the next square – not diagonally.')}</p>`}
+function mLegend(M,sc){return `<div class="mleg">${M.lm.map(l=>`<span><svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="12" fill="${l.c}"/><g transform="translate(2 2)">${l.ic}</g></svg>${l.n}</span>`).join('')}${M.river!=null?`<span><i style="background:#8cc8ec"></i>${E('joki','river')}</span>`:''}</div><div class="mscale"><svg viewBox="0 0 22 22" width="22" height="22"><rect x="1" y="1" width="20" height="20" fill="#efe7d4" stroke="#8a95a5" stroke-width="2"/></svg>${sc}</div><p class="mnote">${E('Kuljetaan vain teitä pitkin ruudusta viereiseen ruutuun.','Move only along the roads, from square to square.')}</p>`}
 const mFm=m=>m>=1000&&m%100===0?`${fmtInt(m)} m (${String(m/1000).replace('.',',')} km)`:`${fmtInt(m)} m`;
 function mapGen(g){return L=>{
   const cfg={3:[['drawn',100],['short',100],['cmp',100]],4:[['drawn',100],['short',100],['shortR',200]],5:[['shortR',250],['time',100],['ratio',10000]],6:[['ratio',20000],['ttime',250],['rev',20000]]}[g][L-1];
   const [ty,sc]=cfg,river=ty==='shortR'||ty==='time'||ty==='ttime'||(ty==='ratio'&&Math.random()<.5)||(ty==='cmp'&&Math.random()<.4);
   let M,A,B,P,rt,C;
   for(let t=0;t<300;t++){M=mMap(river);if(M.lm.length<4)continue;[A,B,C]=shuffle(M.lm);if(ty==='drawn'||ty==='short'||ty==='cmp')A=M.lm.find(l=>l.k==='koti')||A;if(A===B)continue;
-    P=mPath(M,A.p,B.p);if(!P)continue;const d=P.length-1;if(d<4||d>12)continue;
+    P=mPath(M,A.p,B.p);if(!P)continue;const d=P.length-1;if(d<5||d>14)continue;
     if(river&&!P.some(p=>p[1]===M.river))continue;
     if(ty==='cmp'){if(B===C||C.k==='koti')continue;const P2=mPath(M,A.p,C.p);if(!P2||Math.abs(P2.length-P.length)<2)continue;M.P2=P2}
-    if(ty==='drawn'){rt=[...P];const ex=R(0,1);if(ex){/* lisää mutka */const k=R(1,rt.length-2),[x,y]=rt[k];const alt=[[x,y-1],[x,y+1],[x-1,y],[x+1,y]].find(q=>q[0]>=0&&q[1]>=0&&q[0]<MW&&q[1]<MH&&!rt.some(r=>r[0]===q[0]&&r[1]===q[1])&&!mBlocked(M,[x,y],q));if(alt){rt.splice(k+1,0,alt,[x,y])}}}
+    if(ty==='drawn'){rt=[...P];if(Math.random()<.6){for(let u=0;u<10;u++){const c=P[R(2,P.length-3)],alt=mPath(M,A.p,B.p,new Set([c[0]+','+c[1]]));if(alt&&alt.length<=P.length+6&&alt.length-1<=16){rt=alt;break}}}}
     break}
   const d=(rt||P).length-1,dist=d*(ty==='ratio'||ty==='rev'?sc/100:sc);
   const scTxt=ty==='ratio'||ty==='rev'?E(`1 ruutu = 1 cm kartalla. Mittakaava 1 : ${fmtInt(sc)}`,`1 square = 1 cm on the map. Scale 1 : ${fmtInt(sc)}`):E(`1 ruutu = ${fmtInt(sc)} m`,`1 square = ${fmtInt(sc)} m`);
   const vis=`<div class="mapw">${mSVG(M,ty==='drawn'?rt:null)}${mLegend(M,scTxt)}</div>`;
   const solved=`<div class="mapw">${mSVG(M,rt||P,{rt2:ty==='cmp'?M.P2:null})}</div>`;
   const cnt=E(`Reitillä on ${d} askelta ruudusta toiseen.`,`The route has ${d} steps from square to square.`);
-  const hintS=E('<p>Kulje ruudusta viereiseen ruutuun (ei vinottain) ja laske, montako askelta matkalla on. Lähtöruutua ei lasketa. Kerro sitten askelten määrä mittakaavalla.</p>','<p>Move from square to neighbouring square (not diagonally) and count the steps. Do not count the starting square. Then multiply the steps by the scale.</p>')+(river?E('<p>Jokea ei voi ylittää muualta kuin siltaa pitkin!</p>','<p>You can only cross the river on a bridge!</p>'):'');
+  const hintS=E('<p>Etsi ensin lyhin reitti teitä pitkin – kokeile eri vaihtoehtoja. Laske sitten, montako askelta ruudusta toiseen reitillä on. Lähtöruutua ei lasketa. Kerro lopuksi askelten määrä mittakaavalla.</p>','<p>First find the shortest route along the roads – try different ways. Then count the steps from square to square. Do not count the starting square. Finally multiply the steps by the scale.</p>')+(river?E('<p>Jokea ei voi ylittää muualta kuin siltaa pitkin!</p>','<p>You can only cross the river on a bridge!</p>'):'');
   if(ty==='drawn')return{kind:'int',ans:dist,answerText:`${fmtInt(dist)} m`,unit:'m',visual:vis,storyC:1,story:E(`Kartalla on merkitty oranssilla reitti ${A.el} ${B.il}. Kuinka pitkä reitti on?`,`The orange line on the map is a route from ${A.el} to ${B.il}. How long is the route?`),
     hint:E(`<p>Laske, montako askelta ruudusta toiseen oranssi viiva kulkee. Lähtöruutua ei lasketa. Jokainen askel on ${sc} m.</p>`,`<p>Count how many steps from square to square the orange line takes. Do not count the starting square. Each step is ${sc} m.</p>`),explain:`<p>${cnt}</p><p><b>${d} · ${sc} m = ${mFm(dist)}</b></p>`};
   if(ty==='cmp'){const d2=M.P2.length-1,near=d<d2?B:C;return{kind:'choice',choices:[[B.k,lCap(B.n)],[C.k,lCap(C.n)]],ans:near.k,answerText:lCap(near.n),visual:vis,storyC:1,
