@@ -3341,12 +3341,12 @@ function lIntro(){const G=document.querySelector('.lcards');if(!G)return;const c
   const at=(ms,f)=>setTimeout(()=>{if(G.isConnected)f()},ms),pile=i=>[cx-r[i].left-r[i].width/2,cy-r[i].top-r[i].height/2];
   const tr=(b,x,y,rot,ms)=>{b.style.transition=`transform ${ms}ms ease-in-out`;b.style.transform=`translate(${x}px,${y}px) rotate(${rot}deg)`};
   cs.forEach((b,i)=>{b.style.transition='none';b.style.transform=`translate(${r[perm[i]].left-r[i].left}px,${r[perm[i]].top-r[i].top}px)`});
-  cs.forEach((b,i)=>{at(600+perm[i]*300,()=>b.classList.add('flip'));at(3000+perm[i]*300,()=>b.classList.remove('flip'))});
-  at(4700,()=>cs.forEach((b,i)=>{b.style.zIndex=String(i+1);const[x,y]=pile(i);tr(b,x,y,(i-1.5)*5,700)}));
+  cs.forEach((b,i)=>{at(800+perm[i]*400,()=>b.classList.add('flip'));at(4200+perm[i]*400,()=>b.classList.remove('flip'))});
+  at(6300,()=>cs.forEach((b,i)=>{b.style.zIndex=String(i+1);const[x,y]=pile(i);tr(b,x,y,(i-1.5)*5,700)}));
   let z=10;[0,2,1,3,0,2].forEach((j,n)=>{const b=cs[j],[x,y]=pile(j),side=n%2?1:-1;
-    at(5600+n*420,()=>{tr(b,x+side*(r[j].width*.75),y-6,side*10,200)});at(5600+n*420+210,()=>{b.style.zIndex=String(++z);tr(b,x,y,(Math.random()-.5)*10,200)})});
-  cs.forEach((b,i)=>at(8400+i*180,()=>tr(b,0,0,0,550)));
-  at(9400,fin)}
+    at(7300+n*480,()=>{tr(b,x+side*(r[j].width*.75),y-6,side*10,220)});at(7300+n*480+240,()=>{b.style.zIndex=String(++z);tr(b,x,y,(Math.random()-.5)*10,200)})});
+  cs.forEach((b,i)=>at(10500+i*220,()=>tr(b,0,0,0,600)));
+  at(11800,fin)}
 function korttiGen(g){return L=>{
   const X='<path d="M6 6 34 34" stroke="#DE3E2D" stroke-width="3.5" stroke-linecap="round"/>';
   const IC={pyora:'<circle cx="10" cy="29" r="7" fill="none" stroke="#3a4a5c" stroke-width="2.4"/><circle cx="30" cy="29" r="7" fill="none" stroke="#3a4a5c" stroke-width="2.4"/><path d="M10 29 17 18H28L30 29M17 18 21 29H10M21 29 28 18M15 14h5M28 18 27 13h4" fill="none" stroke="#d6452f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',kav:'<circle cx="21" cy="7" r="4" fill="#f2c9a0" stroke="#8a5a3a" stroke-width="1.2"/><path d="M20 12 18 24M19 15 12 21M19 15 27 19M18 24 12 35M18 24 25 35" fill="none" stroke="#3a6fb5" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>',pizza:'<path d="M20 5 35 33Q20 39 5 33Z" fill="#f6c453" stroke="#b9772f" stroke-width="2" stroke-linejoin="round"/><path d="M5 33Q20 39 35 33" fill="none" stroke="#c98a3a" stroke-width="4" stroke-linecap="round"/><circle cx="20" cy="16" r="3" fill="#d6452f"/><circle cx="15" cy="25" r="3" fill="#d6452f"/><circle cx="25" cy="27" r="3" fill="#d6452f"/><circle cx="22" cy="21.5" r="1.2" fill="#3f8f3a"/>',
