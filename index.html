@@ -3487,17 +3487,17 @@ function korttiGen(g){return L=>{
     explain:ks.map(k=>`<p><b>${lab(k)}:</b> ${why[k]}</p>`).join('')+''+`<p><b>${broke?E('Kun käännät kortit, näet, että tällä kertaa sääntö ei pitänyt.','If you turn the cards over, you will see that this time the rule was broken.'):E('Kun käännät kortit, näet, että tällä kertaa sääntö piti.','If you turn the cards over, you will see that this time the rule held.')}</b></p>`}}}
 
 /* tekijäpyramidi */
-const FTP=[[160,26],[78,100],[242,100],[36,174],[118,174],[202,174],[284,174]],FTR=[[0,1,2],[1,3,4],[2,5,6]];
+const FTP=[[160,26],[95,100],[225,100],[40,174],[160,174],[280,174]],FTR=[[0,1,2],[1,3,4],[2,4,5]];
 function ftreeGen(g){return L=>{
-  const hi=L===1?5:9,lo=L===3?3:2,need=L===1?2:3;
-  for(let t=0;t<500;t++){const b=[R(lo,hi),R(lo,hi),R(lo,hi),R(lo,hi)],m1=b[0]*b[1],m2=b[2]*b[3],v=[m1*m2,m1,m2,...b];
-    if(L===1&&v[0]>200)continue;if(v[0]>3000)continue;
-    const hid=shuffle([0,1,2,3,4,5,6].filter(i=>i>0)).slice(0,need);
-    const kn=new Set([0,1,2,3,4,5,6].filter(i=>!hid.includes(i))),steps=[];let ch=true,div=0;
+  const hi=L===1?5:L===2?6:9,lo=2,cap=L===1?100:L===2?200:400,need=L===1?2:3;
+  for(let t=0;t<800;t++){const b=[R(lo,hi),R(lo,hi),R(lo,hi)],m1=b[0]*b[1],m2=b[1]*b[2],v=[m1*m2,m1,m2,...b];
+    if(v[0]>cap||(L===3&&v[0]<120))continue;
+    const hid=shuffle([1,2,3,4,5]).slice(0,need);
+    const kn=new Set([0,1,2,3,4,5].filter(i=>!hid.includes(i))),steps=[];let ch=true,div=0;
     while(ch){ch=false;for(const[p,a,c]of FTR){if(!kn.has(p)&&kn.has(a)&&kn.has(c)){kn.add(p);steps.push([p,`${v[a]} · ${v[c]} = ${v[p]}`]);ch=true}
       else if(kn.has(p)&&kn.has(a)&&!kn.has(c)){kn.add(c);steps.push([c,`${v[p]} : ${v[a]} = ${v[c]}`]);div++;ch=true}
       else if(kn.has(p)&&kn.has(c)&&!kn.has(a)){kn.add(a);steps.push([a,`${v[p]} : ${v[c]} = ${v[a]}`]);div++;ch=true}}}
-    if(kn.size<7||(L===2&&!div)||(L===3&&div<2))continue;
+    if(kn.size<6||(L===2&&!div)||(L===3&&div<2))continue;
     const lines=FTR.map(([p,a,c])=>[a,c].map(k=>`<path d="M${FTP[p][0]} ${FTP[p][1]+20}L${FTP[k][0]} ${FTP[k][1]-20}" stroke="var(--line)" stroke-width="3" stroke-linecap="round"/>`).join('')).join('');
     let n=0;const cells=v.map((x,i)=>{const[cx,cy]=FTP[i],st=`left:${(cx/3.2).toFixed(2)}%;top:${cy}px`;return hid.includes(i)?`<input class="num ftc" id="ft${n++}" data-i="${i}" inputmode="none" autocomplete="off" style="${st}" aria-label="${E('Puuttuva luku','Missing number')}">`:`<span class="ftc given" style="${st}">${x}</span>`}).join('');
     const tree=vals=>`<div class="ftree sm"><svg viewBox="0 0 320 200" preserveAspectRatio="none" aria-hidden="true">${lines}</svg>${vals.map((x,i)=>`<span class="ftc given${hid.includes(i)?' new':''}" style="left:${(FTP[i][0]/3.2).toFixed(2)}%;top:${FTP[i][1]}px">${x}</span>`).join('')}</div>`;
@@ -3506,7 +3506,7 @@ function ftreeGen(g){return L=>{
       after:`<div class="answer ftree" role="group" aria-label="${E('Tekijäpyramidi','Factor pyramid')}"><svg viewBox="0 0 320 200" preserveAspectRatio="none" aria-hidden="true">${lines}</svg>${cells}</div>`,
       hint:E('<p>Ylempi luku saadaan kertomalla kaksi sen alla olevaa lukua.</p><p>Jos tiedät ylemmän luvun ja toisen alemmista, saat puuttuvan luvun jakolaskulla: esimerkiksi jos 24 = 4 · ?, niin ? = 24 : 4 = 6.</p>','<p>The upper number is the two numbers below it multiplied together.</p><p>If you know the upper number and one of the lower ones, divide to find the missing one: for example if 24 = 4 · ?, then ? = 24 : 4 = 6.</p>'),
       failMsg:E('Oikeat luvut näkyvät alla.','The correct numbers are shown below.'),
-      explain:steps.map(([i,s])=>`<p>${s}</p>`).join('')+tree(v)+`<p><b>${v[0]} = ${v[3]} · ${v[4]} · ${v[5]} · ${v[6]}</b></p>`}}
+      explain:steps.map(([i,s])=>`<p>${s}</p>`).join('')+tree(v)+`<p>${E(`Keskimmäinen alaluku ${v[4]} on yhteinen tekijä: ${v[1]} = ${v[3]} · ${v[4]} ja ${v[2]} = ${v[4]} · ${v[5]}.`,`The middle number ${v[4]} is a shared factor: ${v[1]} = ${v[3]} · ${v[4]} and ${v[2]} = ${v[4]} · ${v[5]}.`)}</p><p><b>${v[0]} = ${v[1]} · ${v[2]}</b></p>`}}
   return ftreeGen(g)(1)}}
 function ftEval(){const ins=[...document.querySelectorAll('.ftree input.ftc')];if(ins.some(x=>!x.value.trim()))return{empty:1};let ok=true;
   ins.forEach(x=>{const good=+x.value===P.fv[+x.dataset.i];x.classList.toggle('ok',good);x.classList.toggle('no',!good);if(!good)ok=false});
@@ -4466,7 +4466,7 @@ const NAV=[
       {id:'pari',n:'Parilliset ja parittomat',f:g=>g<=4?{oid:'pari',levels:g<=2?[['Parijono'],['Valitse luvut'],['Isommat luvut']]:[['Kaksinumeroiset'],['Kolminumeroiset'],['Nelinumeroiset']],gen:L=>pariGen(g)(L)}:null},
       {id:'jak',n:'Jaollisuus',f:g=>g>=3?{oid:'jaollisuus',levels:g<=4?[['Ryhmätyö'],['Jaollisuus 2:lla, 5:llä ja 10:llä'],['Jaollisuus 3:lla ja 4:llä']]:[['Ryhmätyö'],['Jaollisuus 3:lla ja 9:llä'],['Monta jakajaa']],gen:L=>jakGen(g)(L)}:null},
       {id:'alku',n:'Alkuluvut',f:g=>g>=5?{oid:'alkuluvut',levels:[['Palikat suorakulmioksi'],['Luvut 2–50'],['Luvut 2–100']],gen:L=>alkuGen(g)(L)}:null},
-      {id:'tekij',n:'Tekijäpyramidi',f:g=>g>=4?{oid:'tekij',levels:[['Pienet tekijät'],['Isommat tekijät'],['Vähemmän vihjeitä']],gen:L=>ftreeGen(g)(L)}:null}]},
+      {id:'tekij',n:'Tekijäpyramidi',f:g=>g>=3?{oid:'tekij',levels:[['Pienet tekijät'],['Isommat tekijät'],['Vähemmän vihjeitä']],gen:L=>ftreeGen(g)(L)}:null}]},
     {id:'jon',n:'Lukujonot',types:[
       {id:'jon',n:'Mikä luku puuttuu?',f:allG(src('c-jonot','cmp'))},
       {id:'san',n:'Sanalliset',f:allG(src('c-jonot','cmp',1))}]}]},
