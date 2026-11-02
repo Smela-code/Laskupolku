@@ -3491,10 +3491,10 @@ const FTL={3:{P:[[160,26],[95,100],[225,100],[40,174],[160,174],[280,174]],R:[[0
   4:{P:[[160,26],[120,96],[200,96],[80,166],[160,166],[240,166],[40,236],[120,236],[200,236],[280,236]],R:[[0,1,2],[1,3,4],[2,4,5],[3,6,7],[4,7,8],[5,8,9]],H:262}};
 function ftreeGen(g){return L=>{
   const four=L===3&&Math.random()<.6,T=FTL[four?4:3],FTP=T.P,FTR=T.R,NC=FTP.length;
-  const hi=four?3:L===1?5:L===2?6:9,lo=four?1:2,cap=four?(g<=4?300:1000):L===1?100:L===2?200:400,need=four?4:L===1?2:3;
+  const hi=four?3:L===1?4:L===2?5:7,lo=four?1:2,cap=four?(g<=4?150:400):L===1?60:L===2?120:200,need=four?4:L===1?2:3;
   for(let t=0;t<2000;t++){const nb=four?4:3,b=Array.from({length:nb},()=>R(lo,hi));if(b.filter(x=>x===1).length>1)continue;
     let rows=[b];while(rows[0].length>1){const r=rows[0];rows.unshift(r.slice(1).map((x,k)=>r[k]*x))}const v=rows.flat();
-    if(v[0]>cap||(L===3&&v[0]<(four?40:120)))continue;
+    if(v[0]>cap||(L===3&&v[0]<(four?24:60)))continue;
     const hid=shuffle([...Array(NC).keys()].slice(1)).slice(0,need);
     const kn=new Set([...Array(NC).keys()].filter(i=>!hid.includes(i))),steps=[];let ch=true,div=0;
     while(ch){ch=false;for(const[p,a,c]of FTR){if(!kn.has(p)&&kn.has(a)&&kn.has(c)){kn.add(p);steps.push([p,`${v[a]} · ${v[c]} = ${v[p]}`]);ch=true}
