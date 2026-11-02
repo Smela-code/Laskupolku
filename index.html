@@ -3487,26 +3487,31 @@ function korttiGen(g){return L=>{
     explain:ks.map(k=>`<p><b>${lab(k)}:</b> ${why[k]}</p>`).join('')+''+`<p><b>${broke?E('Kun käännät kortit, näet, että tällä kertaa sääntö ei pitänyt.','If you turn the cards over, you will see that this time the rule was broken.'):E('Kun käännät kortit, näet, että tällä kertaa sääntö piti.','If you turn the cards over, you will see that this time the rule held.')}</b></p>`}}}
 
 /* tekijäpyramidi */
-const FTP=[[160,26],[95,100],[225,100],[40,174],[160,174],[280,174]],FTR=[[0,1,2],[1,3,4],[2,4,5]];
+const FTL={3:{P:[[160,26],[95,100],[225,100],[40,174],[160,174],[280,174]],R:[[0,1,2],[1,3,4],[2,4,5]],H:200},
+  4:{P:[[160,26],[120,96],[200,96],[80,166],[160,166],[240,166],[40,236],[120,236],[200,236],[280,236]],R:[[0,1,2],[1,3,4],[2,4,5],[3,6,7],[4,7,8],[5,8,9]],H:262}};
 function ftreeGen(g){return L=>{
-  const hi=L===1?5:L===2?6:9,lo=2,cap=L===1?100:L===2?200:400,need=L===1?2:3;
-  for(let t=0;t<800;t++){const b=[R(lo,hi),R(lo,hi),R(lo,hi)],m1=b[0]*b[1],m2=b[1]*b[2],v=[m1*m2,m1,m2,...b];
-    if(v[0]>cap||(L===3&&v[0]<120))continue;
-    const hid=shuffle([1,2,3,4,5]).slice(0,need);
-    const kn=new Set([0,1,2,3,4,5].filter(i=>!hid.includes(i))),steps=[];let ch=true,div=0;
+  const four=L===3&&Math.random()<.6,T=FTL[four?4:3],FTP=T.P,FTR=T.R,NC=FTP.length;
+  const hi=four?3:L===1?5:L===2?6:9,lo=four?1:2,cap=four?(g<=4?300:1000):L===1?100:L===2?200:400,need=four?4:L===1?2:3;
+  for(let t=0;t<2000;t++){const nb=four?4:3,b=Array.from({length:nb},()=>R(lo,hi));if(b.filter(x=>x===1).length>1)continue;
+    let rows=[b];while(rows[0].length>1){const r=rows[0];rows.unshift(r.slice(1).map((x,k)=>r[k]*x))}const v=rows.flat();
+    if(v[0]>cap||(L===3&&v[0]<(four?40:120)))continue;
+    const hid=shuffle([...Array(NC).keys()].slice(1)).slice(0,need);
+    const kn=new Set([...Array(NC).keys()].filter(i=>!hid.includes(i))),steps=[];let ch=true,div=0;
     while(ch){ch=false;for(const[p,a,c]of FTR){if(!kn.has(p)&&kn.has(a)&&kn.has(c)){kn.add(p);steps.push([p,`${v[a]} · ${v[c]} = ${v[p]}`]);ch=true}
       else if(kn.has(p)&&kn.has(a)&&!kn.has(c)){kn.add(c);steps.push([c,`${v[p]} : ${v[a]} = ${v[c]}`]);div++;ch=true}
       else if(kn.has(p)&&kn.has(c)&&!kn.has(a)){kn.add(a);steps.push([a,`${v[p]} : ${v[c]} = ${v[a]}`]);div++;ch=true}}}
-    if(kn.size<6||(L===2&&!div)||(L===3&&div<2))continue;
+    if(kn.size<NC||(L===2&&!div)||(L===3&&div<2))continue;
+    const vb=`viewBox="0 0 320 ${T.H}" preserveAspectRatio="none" aria-hidden="true"`,hs=`style="height:${T.H}px"`;
     const lines=FTR.map(([p,a,c])=>[a,c].map(k=>`<path d="M${FTP[p][0]} ${FTP[p][1]+20}L${FTP[k][0]} ${FTP[k][1]-20}" stroke="var(--line)" stroke-width="3" stroke-linecap="round"/>`).join('')).join('');
     let n=0;const cells=v.map((x,i)=>{const[cx,cy]=FTP[i],st=`left:${(cx/3.2).toFixed(2)}%;top:${cy}px`;return hid.includes(i)?`<input class="num ftc" id="ft${n++}" data-i="${i}" inputmode="none" autocomplete="off" style="${st}" aria-label="${E('Puuttuva luku','Missing number')}">`:`<span class="ftc given" style="${st}">${x}</span>`}).join('');
-    const tree=vals=>`<div class="ftree sm"><svg viewBox="0 0 320 200" preserveAspectRatio="none" aria-hidden="true">${lines}</svg>${vals.map((x,i)=>`<span class="ftc given${hid.includes(i)?' new':''}" style="left:${(FTP[i][0]/3.2).toFixed(2)}%;top:${FTP[i][1]}px">${x}</span>`).join('')}</div>`;
+    const tree=vals=>`<div class="ftree sm" ${hs}><svg ${vb}>${lines}</svg>${vals.map((x,i)=>`<span class="ftc given${hid.includes(i)?' new':''}" style="left:${(FTP[i][0]/3.2).toFixed(2)}%;top:${FTP[i][1]}px">${x}</span>`).join('')}</div>`;
+    const note=four?E('Jokainen sisempi luku kuuluu kahdelle ylemmälle luvulle, joten se on molempien yhteinen tekijä.','Each inner number belongs to two upper numbers, so it is a factor of both.'):E(`Keskimmäinen alaluku ${v[4]} on yhteinen tekijä: ${v[1]} = ${v[3]} · ${v[4]} ja ${v[2]} = ${v[4]} · ${v[5]}.`,`The middle number ${v[4]} is a shared factor: ${v[1]} = ${v[3]} · ${v[4]} and ${v[2]} = ${v[4]} · ${v[5]}.`);
     return{kind:'ftree',fv:v,answerText:'',visual:null,
       text:plbl(E('Täydennä pyramidi. Jokainen luku on kahden alla olevan luvun tulo.','Complete the pyramid. Each number is the product of the two numbers below it.'),''),
-      after:`<div class="answer ftree" role="group" aria-label="${E('Tekijäpyramidi','Factor pyramid')}"><svg viewBox="0 0 320 200" preserveAspectRatio="none" aria-hidden="true">${lines}</svg>${cells}</div>`,
+      after:`<div class="answer ftree" ${hs} role="group" aria-label="${E('Tekijäpyramidi','Factor pyramid')}"><svg ${vb}>${lines}</svg>${cells}</div>`,
       hint:E('<p>Ylempi luku saadaan kertomalla kaksi sen alla olevaa lukua.</p><p>Jos tiedät ylemmän luvun ja toisen alemmista, saat puuttuvan luvun jakolaskulla: esimerkiksi jos 24 = 4 · ?, niin ? = 24 : 4 = 6.</p>','<p>The upper number is the two numbers below it multiplied together.</p><p>If you know the upper number and one of the lower ones, divide to find the missing one: for example if 24 = 4 · ?, then ? = 24 : 4 = 6.</p>'),
       failMsg:E('Oikeat luvut näkyvät alla.','The correct numbers are shown below.'),
-      explain:steps.map(([i,s])=>`<p>${s}</p>`).join('')+tree(v)+`<p>${E(`Keskimmäinen alaluku ${v[4]} on yhteinen tekijä: ${v[1]} = ${v[3]} · ${v[4]} ja ${v[2]} = ${v[4]} · ${v[5]}.`,`The middle number ${v[4]} is a shared factor: ${v[1]} = ${v[3]} · ${v[4]} and ${v[2]} = ${v[4]} · ${v[5]}.`)}</p><p><b>${v[0]} = ${v[1]} · ${v[2]}</b></p>`}}
+      explain:steps.map(([i,s])=>`<p>${s}</p>`).join('')+tree(v)+`<p>${note}</p><p><b>${v[0]} = ${v[1]} · ${v[2]}</b></p>`}}
   return ftreeGen(g)(1)}}
 function ftEval(){const ins=[...document.querySelectorAll('.ftree input.ftc')];if(ins.some(x=>!x.value.trim()))return{empty:1};let ok=true;
   ins.forEach(x=>{const good=+x.value===P.fv[+x.dataset.i];x.classList.toggle('ok',good);x.classList.toggle('no',!good);if(!good)ok=false});
