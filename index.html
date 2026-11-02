@@ -1837,15 +1837,15 @@ function ljSteps(sol){const why=s=>s.T.length===3?E('Viimeinen lasku','Last step
 const LJRULE=E('<ol><li>Laske ensin sulkeissa olevat laskut.</li><li>Sitten kerto- ja jakolaskut vasemmalta oikealle.</li><li>Lopuksi yhteen- ja vähennyslaskut vasemmalta oikealle.</li></ol>','<ol><li>First work out anything in brackets.</li><li>Then multiplication and division, from left to right.</li><li>Last, addition and subtraction, from left to right.</li></ol>');
 const LJT={0:['a - ( b + c )','a - ( b - c )','a + ( b - c )','( a - b ) + c'],5:['( a + b ) * c','a * ( b + c )'],1:['a + b * c','a * b + c','a - b * c','a * b - c'],2:['a + b / c','a / b + c','a * b + c * d','a - b / c','a * b - c * d','a + b * c - d'],
   3:['( a + b ) * c','a * ( b + c )','( a - b ) * c','a * ( b - c )','( a + b ) / c','a - ( b + c )'],4:['( a + b ) * ( c - d )','a * b - ( c + d )','( a + b ) * c - d','a + b * ( c - d )','a * ( b + c ) / d','( a - b ) / c + d','a / ( b + c ) + d']};
-function ljMake(pool,rng,maxV){for(let t=0;t<800;t++){const tpl=pick(pool);const tk=tpl.split(' ');const s=tk.map((v,i)=>{if(!/^[abcd]$/.test(v))return v;const adj=['*','/'].includes(tk[i-1])||['*','/'].includes(tk[i+1]);const[lo,hi]=rng[adj?1:0];return String(R(lo,hi))}).join(' ');
-    const sol=ljSolve(s);if(!sol||sol.v>maxV)continue;
+function ljMake(pool,rng,maxV,okf){for(let t=0;t<800;t++){const tpl=pick(pool);const tk=tpl.split(' ');const s=tk.map((v,i)=>{if(!/^[abcd]$/.test(v))return v;const adj=['*','/'].includes(tk[i-1])||['*','/'].includes(tk[i+1]);const[lo,hi]=rng[adj?1:0];return String(R(lo,hi))}).join(' ');
+    const sol=ljSolve(s);if(!sol||sol.v>maxV||(okf&&!okf(sol)))continue;
     if((/[+\-]/.test(tpl)&&/[*\/]/.test(tpl))||tpl.includes('(')){const naive=ljLeft(s);if(naive===sol.v)continue}
     return{s,sol}}return{s:'2 + 3 * 4',sol:ljSolve('2 + 3 * 4')}}
 function ljLeft(s){const T=ljTok(s).filter(t=>t!=='('&&t!==')');let v=T[0];for(let i=1;i<T.length;i+=2){const o=T[i],b=T[i+1];v=o==='+'?v+b:o==='-'?v-b:o==='*'?v*b:v/b}return v}
 function ljCfg(g,L){const sm=[[2,20],[2,9]],md=[[2,50],[2,10]],bg=[[5,100],[2,12]];
   return{2:[[LJT[0].slice(0,2),[[1,20],[2,5]],30],[LJT[1],[[1,20],[2,5]],50],[LJT[5],[[1,9],[2,5]],60]],3:[[LJT[1],sm,100],[[...LJT[1],...LJT[2].slice(0,2)],sm,100],[LJT[3],sm,100]],4:[[[...LJT[1],...LJT[2]],md,200],[LJT[3],md,200],[[...LJT[2],...LJT[3]],md,300]],
     5:[[[...LJT[2],...LJT[3]],md,300],[LJT[4],md,500],[[...LJT[3],...LJT[4]],bg,1000]],6:[[[...LJT[2],...LJT[3]],bg,500],[LJT[4],bg,1000],[LJT[4],bg,2000]]}[g][L-1]}
-function ljGen(g){return L=>{const[pool,rng,mx]=ljCfg(g,L),{s,sol}=ljMake(pool,rng,mx);
+function ljGen(g){return L=>{const[pool,rng,mx]=ljCfg(g,L),{s,sol}=ljMake(pool,rng,mx,g===2?so=>so.st.every(x=>x.v!==0&&(x.op!=='*'||(x.T[x.hl[0]]<=10&&x.T[x.hl[1]]<=10))):null);
   return{kind:'int',text:`<span class="bg">${ljFmt(ljTok(s))} = ${BOX}</span>`,ans:sol.v,answerText:fmtInt(sol.v),hint:`<p>${E('Laskujärjestys:','Order of operations:')}</p>${LJRULE}<p>${E('Mikä tässä lasketaan ensin?','What do you work out first here?')}</p>`,
     explain:ljSteps(sol),showOk:1}}}
 function ljParens(nums,ops){const n=nums.length,S=[];const mk=(i,j)=>{const t=[];for(let k=0;k<n;k++){if(k===i)t.push('(');t.push(nums[k]);if(k===j)t.push(')');if(k<n-1)t.push(ops[k])}return t.join(' ')};
