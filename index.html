@@ -349,7 +349,7 @@ button.trow{cursor:pointer;touch-action:manipulation}button.trow:active{transfor
 .rccar b{position:absolute;left:50%;top:56%;transform:translate(-50%,-50%);color:#fff;font:800 clamp(1rem,4.6vw,1.45rem)/1 var(--display);white-space:nowrap;text-shadow:0 0 3px #10204a,0 1px 2px #10204a;letter-spacing:.01em}.rccar b.bad{color:#FFD6D1}
 .rccar.crash{animation:rcshake .5s}@keyframes rcshake{20%,60%{transform:translateY(-50%) rotate(-8deg)}40%,80%{transform:translateY(-50%) rotate(8deg)}}
 .rcp{position:absolute;width:74px;transform:translate(-50%,-50%);z-index:1}.rcp svg{width:100%;display:block}.rcp b{position:absolute;inset:0;display:grid;place-items:center;font:800 1.05rem var(--display);color:#163B10;padding:12px 6px 0 0;white-space:nowrap}
-.rcp.got{opacity:0;transform:translate(-50%,-50%) scale(1.5);transition:all .35s}.rcp.gone{opacity:.25}
+.rcp.got{opacity:0;transform:translate(-50%,-50%) scale(1.5);transition:all .35s}.rcp.gone{opacity:.55}
 .rcflag{position:absolute;left:108%;top:0;bottom:0;width:30px;transform:translateX(-50%);background:repeating-conic-gradient(#1d1d1d 0 25%,#fff 0 50%) 0 0/15px 15px;z-index:3;box-shadow:0 0 0 3px #1d1d1d;opacity:.92}
 .rcgo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;font-size:1.15rem;padding:10px 26px}
 .rcctl{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:8px}.rcbtn{font-size:1.3rem;min-width:64px}#rcprog{font:800 1.1rem var(--display)}
@@ -3620,20 +3620,22 @@ function raceWaveMake(R0){const x=R0.v,n=R0.lanes,w={L1:[.6,.25],L2:[.4,.3],L3:[
   if(!items.length&&O.good)items=[O.good];const lanes=shuffle([...Array(n).keys()]);return items.map((o,i)=>({...o,lane:lanes[i]}))}
 function raceFail(R0,msg){R0.state='crash';P.raceMsg=msg;setTimeout(()=>{check();if(!done){R0.state='ready';const go=$('#rcgo');if(go){go.textContent=E('Aja uudelleen','Drive again');go.hidden=false}}},700)}
 function raceWave(){const R0=P.rc,box=$('#rcpk');if(!box||R0.state!=='run')return;const W=raceWaveMake(R0);R0.cur=W;const x0=R0.v,T=R0.T*(1-R0.w/R0.N*.15);
-  box.innerHTML=W.map((o,j)=>`<div class="rcp" style="top:${(o.lane+.5)/R0.lanes*100}%;left:108%"><svg viewBox="0 0 64 56" aria-hidden="true"><rect x="3" y="12" width="52" height="38" rx="7" fill="#7FD36A" stroke="#2F6B22" stroke-width="2.5"/><rect x="55" y="23" width="6" height="16" rx="2" fill="#2F6B22"/><path d="M14 4l-6 10h5l-3 8 8-11h-5l3-7z" fill="#FFD43B" stroke="#7A5A00" stroke-width="1.3" stroke-linejoin="round"/></svg><b>${LOPS[o.o]} ${fmtInt(o.n)}</b></div>`).join('');
-  const t0=performance.now(),els=[...box.children],rd=$('#rcroad').getBoundingClientRect(),cr=$('#rccar').getBoundingClientRect(),CX=rd.width?((cr.left+cr.width*165/172)-rd.left)/rd.width*100:20;
+  box.insertAdjacentHTML('beforeend',W.map((o,j)=>`<div class="rcp" style="top:${(o.lane+.5)/R0.lanes*100}%;left:108%"><svg viewBox="0 0 64 56" aria-hidden="true"><rect x="3" y="12" width="52" height="38" rx="7" fill="#7FD36A" stroke="#2F6B22" stroke-width="2.5"/><rect x="55" y="23" width="6" height="16" rx="2" fill="#2F6B22"/><path d="M14 4l-6 10h5l-3 8 8-11h-5l3-7z" fill="#FFD43B" stroke="#7A5A00" stroke-width="1.3" stroke-linejoin="round"/></svg><b>${LOPS[o.o]} ${fmtInt(o.n)}</b></div>`).join(''));
+  const t0=performance.now(),els=[...box.children].slice(-W.length),rd=$('#rcroad').getBoundingClientRect(),cr=$('#rccar').getBoundingClientRect(),CX=rd.width?((cr.left+cr.width*165/172)-rd.left)/rd.width*100:20,vP=(108-CX)/(T*1000);
+  R0.vP=vP;if(rd.width){const px=vP*rd.width/100*1000;document.querySelectorAll('#rcroad>i').forEach(i=>i.style.animationDuration=(44/px).toFixed(2)+'s')}
   const step=t=>{if(!box.isConnected||R0.state!=='run'||P.rc!==R0)return;const p=Math.min(1,(t-t0)/(T*1000)),x=108-(108-CX)*p;els.forEach(e=>e.style.left=x+'%');const bar=$('#rcbar');if(bar)bar.style.width=`${(R0.w+p)/R0.N*100}%`;
     if(p<1){requestAnimationFrame(step);return}
-    const hit=W.findIndex(o=>o.lane===R0.lane),gd=W.find(o=>o.ok);els.forEach((e,j)=>e.classList.add(j===hit?'got':'gone'));R0.w++;
+    const hit=W.findIndex(o=>o.lane===R0.lane),gd=W.find(o=>o.ok);els.forEach((e,j)=>{if(j===hit){e.classList.add('got');setTimeout(()=>e.remove(),400)}else raceDrift(e,CX,vP)});R0.w++;
     if(hit>=0){const o=W[hit];R0.v=o.r;if(!o.ok){raceDraw();$('#rccar').classList.add('crash');$('#rcval').classList.add('bad');
         raceFail(R0,E(`${fmtInt(x0)} ${LOPS[o.o]} ${fmtInt(o.n)} = ${fmtInt(o.r)} – luku meni ${o.r>R0.hi?'ylärajan yli':'alarajan alle'}, ja auto ajoi ulos tieltä!`,`${fmtInt(x0)} ${LOPS[o.o]} ${fmtInt(o.n)} = ${fmtInt(o.r)} – the number went ${o.r>R0.hi?'over the upper':'under the lower'} limit and the car left the road!`));return}
       R0.e=Math.min(5,R0.e+1);R0.log.push(`${fmtInt(x0)} ${LOPS[o.o]} ${fmtInt(o.n)} = ${fmtInt(o.r)}`)}
     else if(gd){R0.e--;const c=$('#rcen');if(c){c.classList.remove('drop');void c.offsetWidth;c.classList.add('drop')}}
     raceDraw();
     if(R0.e<=0){raceFail(R0,E('Akku loppui, ja auto pysähtyi! Ohitit liian monta hyvää pakettia. Kerää paketit, jotka pitävät luvun tien sisällä.','The battery ran out and the car stopped! You missed too many good parcels. Collect the parcels that keep the number on the road.'));return}
-    if(R0.w>=R0.N){R0.state='done';const f=$('#rcflag');if(f){f.hidden=false;const t1=performance.now(),D=2200;const mv=t=>{if(!f.isConnected)return;const q=Math.min(1,(t-t1)/D);f.style.left=(108-130*q)+'%';if(q<1)requestAnimationFrame(mv);else check()};requestAnimationFrame(mv)}else check();return}
+    if(R0.w>=R0.N){R0.state='done';const f=$('#rcflag');if(f){f.hidden=false;let x=108,tp=performance.now();const mv=t=>{if(!f.isConnected)return;x-=vP*(t-tp);tp=t;f.style.left=x+'%';if(x>-8)requestAnimationFrame(mv);else check()};requestAnimationFrame(mv)}else check();return}
     setTimeout(raceWave,450)};
   requestAnimationFrame(step)}
+function raceDrift(e,x,vP){let tp=performance.now();e.classList.add('gone');const mv=t=>{if(!e.isConnected)return;x-=vP*(t-tp);tp=t;e.style.left=x+'%';if(x>-15)requestAnimationFrame(mv);else e.remove()};requestAnimationFrame(mv)}
 function raceStart(){const R0=P.rc;R0.v=R0.start;R0.w=0;R0.e=3;R0.log=[];R0.state='run';$('#rccar').classList.remove('crash');$('#rcval').classList.remove('bad');$('#rcpk').innerHTML='';$('#fb').hidden=true;raceDraw();const rc=$('#rc');if(rc)rc.focus({preventScroll:true});setTimeout(raceWave,400)}
 function raceEval(){const R0=P.rc;if(R0.state==='done')return{ok:true};if(R0.state==='crash')return{ok:false};return{wait:1}}
 document.addEventListener('click',e=>{if(!P||P.kind!=='race'||done)return;const t=e.target;if(t.closest&&t.closest('#rcgo')){raceStart();return}
