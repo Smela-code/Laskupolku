@@ -30,7 +30,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16p
 .wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
 header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
 h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,7vw,2.7rem);line-height:1;margin:0;letter-spacing:-.01em}
-h1{display:flex;flex-wrap:wrap;align-items:center;gap:.25em .35em}
+h1{display:flex;flex-wrap:wrap;align-items:center;gap:.25em .35em}.ver{font:700 .8rem/1 var(--body);color:var(--soft);letter-spacing:.02em;align-self:flex-end;margin-bottom:.35em}
 .opsrow{display:inline-flex;gap:.12em}
 .opsrow span{display:inline-grid;place-items:center;width:.82em;height:.82em;border-radius:.2em;font-size:.82em;line-height:1;color:var(--paper);transform:rotate(-4deg)}
 .opsrow span:nth-child(even){transform:rotate(4deg)}
@@ -672,7 +672,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.00</span></h1>
       <p class="sub">Monipuolista matematiikkaa kuvien avulla 1.–6. luokalle: laskuja, lukuja, mittaamista, geometriaa, tilastoja ja päättelyä.</p>
     </div>
     <div class="hright">
