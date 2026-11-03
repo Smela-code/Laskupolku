@@ -349,7 +349,7 @@ button.trow{cursor:pointer;touch-action:manipulation}button.trow:active{transfor
 .rccar b{position:absolute;left:50%;top:56%;transform:translate(-50%,-50%);color:#fff;font:800 clamp(1rem,4.6vw,1.45rem)/1 var(--display);white-space:nowrap;text-shadow:0 0 3px #10204a,0 1px 2px #10204a;letter-spacing:.01em}.rccar b.bad{color:#FFD6D1}
 .rccar.crash{animation:rcshake .5s}@keyframes rcshake{20%,60%{transform:translateY(-50%) rotate(-8deg)}40%,80%{transform:translateY(-50%) rotate(8deg)}}
 .rcp{position:absolute;width:74px;transform:translate(-50%,-50%);z-index:1}.rcp svg{width:100%;display:block}.rcp b{position:absolute;inset:0;display:grid;place-items:center;font:800 1.05rem var(--display);color:#163B10;padding:12px 6px 0 0;white-space:nowrap}
-.rcp.got{opacity:0;transform:translate(-50%,-50%) scale(1.5);transition:all .35s}.rcp.gone{opacity:.55}
+.rcp.got{opacity:0;transform:translate(-50%,-50%) scale(1.5);transition:all .35s}.rcp.gone{opacity:1}
 .rcflag{position:absolute;left:108%;top:0;bottom:0;width:30px;transform:translateX(-50%);background:repeating-conic-gradient(#1d1d1d 0 25%,#fff 0 50%) 0 0/15px 15px;z-index:3;box-shadow:0 0 0 3px #1d1d1d;opacity:.92}
 .rcgo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;font-size:1.15rem;padding:10px 26px}
 .rcctl{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:8px}.rcbtn{font-size:1.3rem;min-width:64px}#rcprog{font:800 1.1rem var(--display)}
@@ -3596,7 +3596,7 @@ function raceOpts(C,x,nBad){const ok=v=>C.lo<=v&&v<=C.hi,lo=C.lo,hi=C.hi,span=hi
     if(o==='*')for(let k=a;k<=Math.max(b,3);k++)cand.push({o,n:k});if(o==='/')for(let k=a;k<=Math.max(b,5);k++)cand.push({o,n:k})}
   for(const c of shuffle(cand)){if(bad.length>=nBad)break;const r=labApply(x,c.o,c.n);if(!Number.isInteger(r)||(!C.neg&&r<0)||ok(r)||Math.abs(r<lo?lo-r:r-hi)>span)continue;if(bad.some(b=>b.o===c.o&&b.n===c.n)||(good&&good.o===c.o&&good.n===c.n))continue;bad.push({...c,r})}
   return{good,bad}}
-function raceGen(g){return L=>{const C=LABC[g][L-1],lanes=L===1?(g<=2?2:3):L===2?3:(g<=2?3:4),N=L===1?10:L===2?12:14,T=(L===1?9:L===2?7.5:6.5)*(g<=2?1.15:1);
+function raceGen(g){return L=>{const C=LABC[g][L-1],lanes=L===1?(g<=2?2:3):L===2?3:(g<=2?3:4),N=L===1?10:L===2?12:14,T=(L===1?7.5:L===2?6.2:5.4)*(g<=2?1.15:1);
   const span=C.hi-C.lo;let start=0;for(let t=0;t<50;t++){start=R(C.lo+Math.ceil(span*.25),C.hi-Math.ceil(span*.25));if(Math.abs(start)>=100)start=Math.round(start/10)*10;if(raceOpts(C,start,1).good)break}
   const car=`<svg viewBox="0 0 172 78" aria-hidden="true"><path d="M6 60V40q0-7 7-8l22-4 16-15q5-4 11-4h44q7 0 12 5l15 14 18 3q8 1 8 9v20z" fill="var(--blue)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/><path d="M57 28l12-13h21v13zM96 15h16q4 0 7 3l10 10H96z" fill="#cfe6ff" stroke="var(--ink)" stroke-width="2"/><circle cx="38" cy="62" r="12" fill="#333" stroke="var(--ink)" stroke-width="2"/><circle cx="38" cy="62" r="4.5" fill="#bbb"/><circle cx="134" cy="62" r="12" fill="#333" stroke="var(--ink)" stroke-width="2"/><circle cx="134" cy="62" r="4.5" fill="#bbb"/><path d="M165 37a7 7 0 0 1 0 14z" fill="#FFE07A" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/></svg>`;
   return{kind:'race',rc:{C,lo:C.lo,hi:C.hi,start,v:start,w:0,N,lanes,lane:Math.floor((lanes-1)/2),T,L,e:3,state:'ready',log:[]},answerText:'',visual:null,storyC:1,
