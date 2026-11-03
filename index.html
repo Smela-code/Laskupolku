@@ -629,10 +629,10 @@ button.trow{cursor:pointer;touch-action:manipulation}button.trow:active{transfor
 .road{width:100%;max-width:360px;height:auto;display:block;background:var(--paper);border:1px solid var(--line);border-radius:12px}
 .kseq{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 .kseq{flex-wrap:nowrap}
-.ktile{flex:1 1 0;min-width:0;max-width:66px;aspect-ratio:1;display:grid;place-items:center;background:var(--paper);border:2px solid var(--line);border-radius:12px}
-.ktile svg{width:85%;height:auto;display:block}
+.ktile{flex:1 1 0;min-width:0;max-width:100px;aspect-ratio:1;display:grid;place-items:center;background:var(--paper);border:2px solid var(--line);border-radius:12px}
+.ktile svg{width:94%;height:auto;display:block}
 .kopt svg{width:100%;height:auto;display:block}
-.choices.pics{display:grid;grid-template-columns:repeat(4,minmax(0,84px));gap:8px}
+.choices.pics{display:grid;grid-template-columns:repeat(4,minmax(0,100px));gap:8px}@media (max-width:560px){.kseq{flex-wrap:wrap;gap:8px;max-width:330px;margin-inline:auto}.kseq .ktile{flex:0 0 calc((100% - 16px)/3);max-width:none}}
 .choices.pics .choice{min-width:0;padding:6px;aspect-ratio:1}
 .ktile.q2{border:3px dashed var(--blue);color:var(--blue);font:800 1.8rem var(--display)}
 .ktile.ans{border:3px solid var(--good)}
@@ -672,7 +672,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.03</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.04</span></h1>
       <p class="sub">Monipuolista matematiikkaa kuvien avulla 1.–6. luokalle: laskuja, lukuja, mittaamista, geometriaa, tilastoja ja päättelyä.</p>
     </div>
     <div class="hright">
@@ -4816,7 +4816,7 @@ const NICO={laskut:'<path d="M8 13h8M12 9v8M24 13h8M8 28h8M24 26l8 4M24 30l8-4" 
   koo:'<path d="M8 34V6M6 32h28" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="24" cy="14" r="3.5" fill="currentColor"/>',dia:'<path d="M8 33V22M16 33V12M24 33V18M32 33V8" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
   ka:NTX('x̄',32),tn:'<rect x="7" y="7" width="26" height="26" rx="5" fill="none" stroke="currentColor" stroke-width="2.6"/><circle cx="14" cy="14" r="2.6" fill="currentColor"/><circle cx="20" cy="20" r="2.6" fill="currentColor"/><circle cx="26" cy="26" r="2.6" fill="currentColor"/>',
   yhd:'<path d="M13 7l-7 5 3 5 4-2v18h14V15l4 2 3-5-7-5c-1 3-3 4-7 4s-6-1-7-4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>',
-  kuv:'<rect x="5" y="9" width="30" height="22" rx="3" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M8 28l9-9 6 6 4-4 6 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>',
+  kuv:'<g transform="translate(20 20) scale(1.55) translate(-12 -12)"><path d="M2 7l6 3.5v3L2 17zM22 7l-6 3.5v3l6 3.5z" fill="currentColor" opacity=".6"/><circle cx="12" cy="12" r="5.5" fill="currentColor"/><path d="M9.3 10.3c1.6-1.6 3.8-1.6 5.4 0" stroke="var(--paper)" stroke-width="1.3" fill="none" opacity=".8"/></g>',
   'pää':NTX('?',35),kj:'<circle cx="9" cy="20" r="4" fill="currentColor"/><rect x="16" y="16" width="8" height="8" fill="currentColor"/><circle cx="31" cy="20" r="4" fill="currentColor"/>',logi:NTX('!?',29),
   jou:'<circle cx="15" cy="20" r="9" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="25" cy="20" r="9" fill="none" stroke="currentColor" stroke-width="2.4"/>',
   ohj:'<rect x="10" y="12" width="20" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="16" cy="20" r="2.3" fill="currentColor"/><circle cx="24" cy="20" r="2.3" fill="currentColor"/><path d="M20 12V7M14 32h12" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>'};
