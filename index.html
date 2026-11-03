@@ -3687,12 +3687,20 @@ function bnLoop(ts){const B=P&&P.bn;if(!B||P.kind!=='bounce'||B.state!=='run'||!
     if(!b.up&&b.vy<0&&b.y<b.r){b.y=b.r;b.vy=Math.abs(b.vy)}
     if(b.vy>0&&!b.up&&b.y+b.r>=B.py&&b.y+b.r<=B.py+B.ph+b.vy*dt+2&&Math.abs(b.x-B.px)<=B.pw/2+b.r*.6){
       if(b.hit){const off=Math.max(-1,Math.min(1,(b.x-B.px)/(B.pw/2))),s=Math.hypot(b.vx,b.vy),ang=off*1.05;b.vx=Math.sin(ang)*s;b.vy=-Math.abs(Math.cos(ang)*s);b.up=1;b.y=B.py-b.r;B.score++;
-        if(B.score>=B.goal){B.state='done';bnDraw();setTimeout(()=>check(),500);return}}
+        if(B.score>=B.goal){bnWin(B);return}}
       else{b.bad=1;b.pop=.001;B.hearts--;if(B.hearts<=0){bnEnd(B,E(`Sydämet loppuivat! Viimeksi torjuit pallon ${b.v||''}, jota ei olisi pitänyt torjua.`.replace('pallon , ','pallon, '),`Out of hearts! You last blocked a ball you should have let through.`));return}}}
     if(b.up&&b.y<-b.r)b.out=1;
     if(b.y-b.r>B.H){b.out=1;if(b.hit&&!b.up){B.hearts--;if(B.hearts<=0){bnDraw();bnEnd(B,b.s?E('Sydämet loppuivat! Viimeinen torjuttava pallo pääsi läpi.','Out of hearts! The last ball you should have blocked got through.'):E(`Sydämet loppuivat! Pallo ${b.v} pääsi läpi, vaikka se olisi pitänyt torjua.`,`Out of hearts! Ball ${b.v} got through although you should have blocked it.`));return}}}}
   const live=B.balls.filter(b=>!b.pop&&!b.out&&!b.up);for(let i=0;i<live.length;i++)for(let j=i+1;j<live.length;j++){const a=live[i],c=live[j],dx=c.x-a.x,dy=c.y-a.y,d=Math.hypot(dx,dy),m=a.r+c.r;if(d>0&&d<m){const nx=dx/d,ny=dy/d,ov=(m-d)/2;a.x-=nx*ov;a.y-=ny*ov;c.x+=nx*ov;c.y+=ny*ov;const rel=(a.vx-c.vx)*nx+(a.vy-c.vy)*ny;if(rel>0){a.vx-=rel*nx;a.vy-=rel*ny;c.vx+=rel*nx;c.vy+=rel*ny}}}
   B.balls=B.balls.filter(b=>!b.out&&!(b.pop&&b.pop>.35));bnDraw();requestAnimationFrame(bnLoop)}
+function bnWin(B){B.state='win';const cols=['--apple','--good','--candy','--orange','--blk','--sun'].map(bnCol),ps=[];for(let i=0;i<90;i++){const a=-Math.PI/2+(Math.random()-.5)*2.2,v=200+Math.random()*320;ps.push({x:B.px+(Math.random()-.5)*B.pw,y:B.py,vx:Math.cos(a)*v,vy:Math.sin(a)*v,c:pick(cols),s:4+Math.random()*5,r:Math.random()*6})}
+  const t0=performance.now(),c=B.ctx,ff=getComputedStyle(document.body).fontFamily;let lt=t0;
+  const fr=t=>{if(!c.canvas.isConnected)return;const dt=Math.min(.05,(t-lt)/1000),q=(t-t0)/1000;lt=t;B.balls.forEach(b=>{b.pop=b.pop||.001;b.pop+=dt});B.balls=B.balls.filter(b=>b.pop<.35);bnDraw();
+    for(const p of ps){p.vy+=520*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.r+=dt*8;c.save();c.translate(p.x,p.y);c.rotate(p.r);c.fillStyle=p.c;c.fillRect(-p.s/2,-p.s/3,p.s,p.s*.66);c.restore()}
+    const k=Math.min(1,q/.45),sc=.4+.6*(1-Math.pow(1-k,3))+(k>=1?Math.sin(q*5)*.03:0);c.save();c.translate(B.W/2,B.H*.4);c.scale(sc,sc);c.textAlign='center';c.textBaseline='middle';
+    c.font=`800 ${Math.round(B.W*.16)}px ${ff}`;c.lineWidth=8;c.strokeStyle=bnCol('--paper');c.strokeText(E('Voitit!','You won!'),0,0);c.fillStyle=bnCol('--good');c.fillText(E('Voitit!','You won!'),0,0);
+    c.font=`800 ${Math.round(B.W*.06)}px ${ff}`;c.fillStyle=bnCol('--ink');c.fillText(E(`${B.goal} torjuntaa`,`${B.goal} blocks`),0,B.W*.13);c.restore();
+    if(q<2.4)requestAnimationFrame(fr);else{B.state='done';check()}};requestAnimationFrame(fr)}
 function bnEnd(B,msg){B.state='crash';P.bnMsg=msg;setTimeout(()=>{check();if(!done){B.state='ready';const go=$('#bngo');if(go){go.textContent=E('Pelaa uudelleen','Play again');go.hidden=false}}},400)}
 function bnStart(){const B=P.bn;bnInit();B.state='run';B.lt=null;$('#bngo').hidden=true;$('#fb').hidden=true;requestAnimationFrame(bnLoop)}
 function bnEval(){const B=P.bn;if(B.state==='done')return{ok:true};if(B.state==='crash')return{ok:false};return{wait:1}}
