@@ -672,7 +672,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.00</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.01</span></h1>
       <p class="sub">Monipuolista matematiikkaa kuvien avulla 1.–6. luokalle: laskuja, lukuja, mittaamista, geometriaa, tilastoja ja päättelyä.</p>
     </div>
     <div class="hright">
@@ -4788,7 +4788,7 @@ document.addEventListener('change',e=>{const t=e.target;if(!t.dataset||!t.datase
   if(t.dataset.sel==='top')S.top=v;
   else if(t.dataset.sel==='sub')S.subs[g+'|'+c.top.id]=v;
   else S.typs[g+'|'+c.top.id+'|'+c.sub.id]=v;
-  renderControls();newProblem();save()});
+  holdFocus=1;renderControls();newProblem();holdFocus=0;save()});
 function navGoal(c){const g=S.grade;
   if(c.top.id==='laskut')return c.sub.id==='ker'||c.sub.id==='jak'?GOALM[g]:EN?GOALG[g]:GR[g].goal;
   if(c.top.id==='tilastot')return GOALS[g];
@@ -4823,7 +4823,7 @@ const NICO={laskut:'<path d="M8 13h8M12 9v8M24 13h8M8 28h8M24 26l8 4M24 30l8-4" 
 const NSHY=['odennä|köisyys','ksikkö|muunnokset','äättely|tehtävät','ähennys|lasku','askujär|jestys','esimaali|luvut','uku|pyramidit','uku|jonot','uviojonot','hteen|lasku','uva|pulmat','hjelmoin|ti','istelmät','ultipli|cation','ercent|ages'];
 function navShy(t){NSHY.forEach(w=>{if(w.includes('|'))t=t.split(w.replace('|','')).join(w.replace('|','\u00AD'))});return t}
 function navTile(kind,id,lbl,on,col,dis){return `<button type="button" class="tile" data-nt="${kind}" data-v="${id}" aria-pressed="${on}" style="--c:var(${col})"${dis?' disabled':''}><span class="ti"><svg viewBox="0 0 40 40" aria-hidden="true">${NICO[id]||NTX(lbl.slice(0,2),15)}</svg></span><span class="tl${Math.max(...lbl.split(/\s+/).map(w=>w.length))>11?' lw':''}">${navShy(lbl)}</span></button>`}
-let navUp=false;
+let navUp=false,holdFocus=0;
 function navTiles(c){const g=S.grade,tT=$('#topTiles'),sT=$('#subTiles'),h=$('#navHead'),lbl=`<p class="lbl" id="navLbl">${E('Alue','Area')}</p>`;
   if(!c){h.innerHTML=lbl;tT.hidden=false;sT.hidden=true;sT.innerHTML='';tT.innerHTML=navTops(g).map(t=>navTile('top',t.id,tr(t.n),false,NCOL[t.id]||'--blue',1)).join('');return}
   const col=NCOL[c.top.id]||'--blue';
@@ -4833,7 +4833,7 @@ function navTiles(c){const g=S.grade,tT=$('#topTiles'),sT=$('#subTiles'),h=$('#n
 document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#navBack')){navUp=true;renderControls();const f=$('#topTiles .tile[aria-pressed="true"]');if(f)f.focus();return}
   const b=e.target.closest&&e.target.closest('.tile[data-nt]');if(!b||b.disabled)return;const c=cur(),g=S.grade;S.subs=S.subs||{};
   if(b.dataset.nt==='top'){navUp=false;if(S.top===b.dataset.v){renderControls();const f=$('#subTiles .tile[aria-pressed="true"]');if(f)f.focus();return}S.top=b.dataset.v}else{if(c.sub.id===b.dataset.v)return;S.subs[g+'|'+c.top.id]=b.dataset.v}
-  renderControls();newProblem();save()});
+  holdFocus=1;renderControls();newProblem();holdFocus=0;save();const nf=$(`#subTiles .tile[aria-pressed="true"]`);if(nf)nf.focus({preventScroll:true})});
 function renderControls(){
   $('#grades').innerHTML=[1,2,3,4,5,6].map(g=>`<button type="button" class="grade" data-grade="${g}" aria-pressed="${g===S.grade}" aria-label="${E(g+'. luokka',g+(['st','nd','rd'][g-1]||'th')+' grade')}">${EN?`<b>${g}<span class="ord">${['st','nd','rd'][g-1]||'th'}</span></b><small>grade</small>`:`<b>${g}.</b><small>luokka</small>`}</button>`).join('');
   const mb=$('#mixBtn');mb.setAttribute('aria-pressed',String(!!S.mix));
@@ -4925,7 +4925,7 @@ function draw(){const t=cur(),pr=prog();const IA=inlineAns();
     <div class="panel" id="hint" hidden><h3>${E('Vihje','Hint')}</h3>${P.hint}</div>
     <div class="panel explain" id="explain" hidden><h3>${E('Näin se lasketaan','How to work it out')}</h3>${P.explain}</div>`;
   const first=P.kind==='coord'?$('#cx'):P.steps?$('#sc0'):P.kind==='col'?document.getElementById('r'+(P.L.N-1)):document.querySelector('#mw,#ans,#fn,#th,#me,#fq0,#tq0,#ca');
-  activeEl=first;if(first)first.focus({preventScroll:true});if(P.mount)P.mount()}
+  activeEl=first;if(first&&!holdFocus)first.focus({preventScroll:true});holdFocus=0;if(P.mount)P.mount()}
 function fb(msg,cls){const e=$('#fb');e.hidden=false;e.className='fb '+cls;e.innerHTML=msg}
 function evaluate(){
   if(P.kind==='turn')return holeEval();
@@ -5065,12 +5065,12 @@ document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#cg
   if(b.dataset.tilt){c3dTurn(b.closest('.c3d'),0,+b.dataset.tilt);return}
   if(b.dataset.help){const h=$('#pzh');h.hidden=!h.hidden;b.setAttribute('aria-expanded',String(!h.hidden));b.setAttribute('aria-label',h.hidden?E('Näytä ohje','Show help'):E('Piilota ohje','Hide help'));return}
   if(b.dataset.turn){const f=$('#sheet .visual .arr'),ex=$('#sheet .ex');if(!f||!ex)return;const t=f.classList.toggle('tr'),A=+f.dataset.a,B=+f.dataset.b;ex.textContent=t?`${B} · ${A}`:`${A} · ${B}`;return}
-  if(b.id==='mixBtn'){S.mix=!S.mix;RND=null;renderControls();newProblem();save();return}
+  if(b.id==='mixBtn'){S.mix=!S.mix;RND=null;holdFocus=1;renderControls();newProblem();holdFocus=0;save();return}
   if(b.dataset.grade){const was=S.mix&&RND?null:cur(),g=+b.dataset.grade;S.grade=g;RND=null;
     if(was){S.subs=S.subs||{};S.typs=S.typs||{};const tops=navTops(g),top=tops.find(t=>t.id===was.top.id);
       if(top){S.top=top.id;const subs=navSubs(g,top),sub=subs.find(x=>x.id===was.sub.id)||subs[0];S.subs[g+'|'+top.id]=sub.id;
         const types=navTypes(g,sub),ty=(sub.id===was.sub.id&&types.find(x=>x.id===was.type.id))||types[0];S.typs[g+'|'+top.id+'|'+sub.id]=ty.id}}
-    renderControls();newProblem();save()}
+    holdFocus=1;renderControls();newProblem();holdFocus=0;save()}
   else if(b.dataset.level){const pr=prog();pr.level=+b.dataset.level;pr.streak=0;pr.fails=0;newProblem(true);save()}
   else if(b.dataset.pick!=null){if(done){if(b.classList.contains('lcard'))b.classList.toggle('flip');return}b.setAttribute('aria-pressed',String(b.getAttribute('aria-pressed')!=='true'));b.classList.remove('ok','no')}
   else if(b.dataset.sim){simRun(+b.dataset.sim);return}
