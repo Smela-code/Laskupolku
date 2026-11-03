@@ -343,16 +343,18 @@ button.trow{cursor:pointer;touch-action:manipulation}button.trow:active{transfor
 
 .rc{position:relative;max-width:560px;width:100%;margin:6px auto 0;border-radius:16px;overflow:hidden;background:#7FB35A;outline:none}.rc:focus-visible{box-shadow:0 0 0 3px var(--blue)}
 .rccurb{height:26px;display:flex;align-items:center;justify-content:center;font:800 .82rem var(--body);color:#fff;background:repeating-linear-gradient(90deg,#C8433A 0 22px,#F4F1EA 22px 44px);text-shadow:0 1px 2px rgba(0,0,0,.6)}.rccurb span{background:rgba(0,0,0,.45);border-radius:6px;padding:1px 8px}
-.rcroad{position:relative;height:calc(var(--lanes)*62px);background:#5E6570;overflow:hidden;cursor:pointer}.rcroad>i{position:absolute;left:0;right:0;height:3px;margin-top:-1.5px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.65) 0 22px,transparent 22px 44px);animation:rcdash .8s linear infinite}
+.rcroad{position:relative;height:calc(var(--lanes)*70px);background:#5E6570;overflow:hidden;cursor:pointer}.rcroad>i{position:absolute;left:0;right:0;height:3px;margin-top:-1.5px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.65) 0 22px,transparent 22px 44px);animation:rcdash .8s linear infinite}
 @keyframes rcdash{from{background-position:0 0}to{background-position:-44px 0}}
-.rccar{position:absolute;left:2%;width:27%;max-width:140px;transform:translateY(-50%);transition:top .18s ease-out;z-index:2}.rccar svg{width:100%;display:block}
-.rccar b{position:absolute;left:52%;top:48%;transform:translate(-50%,-50%);background:var(--paper);color:var(--ink);border:2.5px solid var(--ink);border-radius:9px;padding:0 6px;font:800 1.1rem/1.25 var(--display);white-space:nowrap}.rccar b.bad{background:var(--bad);color:#fff}
+.rccar{position:absolute;left:1%;width:36%;max-width:190px;transform:translateY(-50%);transition:top .18s ease-out;z-index:2}.rccar svg{width:100%;display:block}
+.rccar b{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);color:#fff;font:800 clamp(1rem,4.6vw,1.45rem)/1 var(--display);white-space:nowrap;text-shadow:0 0 3px #10204a,0 1px 2px #10204a;letter-spacing:.01em}.rccar b.bad{color:#FFD6D1}
 .rccar.crash{animation:rcshake .5s}@keyframes rcshake{20%,60%{transform:translateY(-50%) rotate(-8deg)}40%,80%{transform:translateY(-50%) rotate(8deg)}}
-.rcp{position:absolute;width:76px;transform:translate(-50%,-50%);z-index:1}.rcp svg{width:100%;display:block}.rcp b{position:absolute;inset:0;display:grid;place-items:center;font:800 1.1rem var(--display);color:#3B2610;padding-top:8px;white-space:nowrap}
+.rcp{position:absolute;width:74px;transform:translate(-50%,-50%);z-index:1}.rcp svg{width:100%;display:block}.rcp b{position:absolute;inset:0;display:grid;place-items:center;font:800 1.05rem var(--display);color:#3B2610;padding-top:14px;white-space:nowrap}
 .rcp.got{opacity:0;transform:translate(-50%,-50%) scale(1.5);transition:all .35s}.rcp.gone{opacity:.25}
 .rcflag{position:absolute;right:4%;top:0;bottom:0;width:18px;background:repeating-conic-gradient(#222 0 25%,#fff 0 50%) 0 0/12px 12px;z-index:0}
 .rcgo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;font-size:1.15rem;padding:10px 26px}
 .rcctl{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:8px}.rcbtn{font-size:1.3rem;min-width:64px}#rcprog{font:800 1.1rem var(--display)}
+.rcstat{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:8px;flex-wrap:wrap}.rcen{display:inline-flex;align-items:center;gap:6px;color:var(--ink)}.rcen svg{width:22px;height:22px}#rcen{display:inline-flex;gap:3px}#rcen i{width:14px;height:20px;border-radius:3px;background:var(--line)}#rcen i.on{background:var(--good)}#rcen.drop{animation:rcpulse .4s}@keyframes rcpulse{50%{transform:scale(1.25)}}
+.rcdist{display:inline-flex;align-items:center;gap:8px;font:700 .85rem var(--body);color:var(--soft)}.rcbar{width:110px;height:10px;border-radius:6px;background:var(--line);overflow:hidden}.rcbar i{display:block;height:100%;background:var(--blue);transition:width .3s}
 .rctip{text-align:center;font-size:.85rem;color:var(--soft);margin:2px 0 0}
 .mzrule{display:flex;flex-direction:column;align-items:center;gap:2px;margin:4px auto}.mzrule span{font:700 .72rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}.mzrule b{font:800 1.35rem var(--display);background:var(--sun-bg);border:2px solid var(--sun);border-radius:12px;padding:2px 14px}
 .mzmap{position:relative;width:320px;max-width:100%;margin:28px auto 6px}.mzmap>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
@@ -3586,34 +3588,53 @@ function labEval(){const M=P.mz;if(M.stage==='choose')return{bad:E('Valitse ensi
   M.i++;if(M.i>=M.st.length){M.stage='done';labRender();return{ok:true}}
   M.stage='choose';labRender();fb(E('Oikein! Jatka matkaa.','Correct! Keep going.'),'good');return{wait:1}}
 /* laskuralli */
-function raceGen(g){return L=>{const Q=labGen(g)(L),M=Q.mz,n=M.st[0].opts.length,start=M.st[0].x;
-  const T=(L===1?9:L===2?8:7)*(g<=2?1.15:1);
-  const route=M.st.map(s=>{const c=s.opts.find(o=>o.ok);return `${fmtInt(s.x)} ${LOPS[c.o]} ${fmtInt(c.n)} = ${fmtInt(c.r)}`});
-  const car=`<svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 40V30q0-6 6-7l14-3 14-11q4-3 9-3h28q6 0 10 4l12 11 9 2q6 1 6 7v10z" fill="var(--blue)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/><path d="M46 19l9-8h12v8zM72 11h10q3 0 5 2l7 6H72z" fill="#cfe6ff" stroke="var(--ink)" stroke-width="2"/><circle cx="30" cy="42" r="9" fill="#333" stroke="var(--ink)" stroke-width="2"/><circle cx="30" cy="42" r="3.5" fill="#bbb"/><circle cx="92" cy="42" r="9" fill="#333" stroke="var(--ink)" stroke-width="2"/><circle cx="92" cy="42" r="3.5" fill="#bbb"/><path d="M110 30h5" stroke="var(--sun)" stroke-width="4" stroke-linecap="round"/></svg>`;
-  return{kind:'race',rc:{st:M.st,lo:M.lo,hi:M.hi,start,v:start,w:0,lane:Math.floor(n/2),lanes:n,T,state:'ready'},answerText:'',visual:null,storyC:1,
-    story:E(`Auto lähtee luvusta ${fmtInt(start)}. Kerää paketteja, jotka pitävät luvun tien reunojen välissä, ja väistä paketit, jotka veisivät luvun tieltä ulos. Maali tulee ${M.st.length} paketin jälkeen.`,`The car starts from ${fmtInt(start)}. Collect parcels that keep the number between the edges of the road, and dodge parcels that would take it off the road. The finish comes after ${M.st.length} parcels.`),
-    after:`<div class="rc" id="rc" style="--lanes:${n}" aria-label="${E('Tie','Road')}"><div class="rccurb top"><span>${E('Yläraja','Upper limit')}: ${E('alle','below')} ${fmtInt(M.hi)}</span></div><div class="rcroad" id="rcroad">${Array.from({length:n-1},(_,i)=>`<i style="top:${(i+1)/n*100}%"></i>`).join('')}<div class="rcpk" id="rcpk"></div><div class="rccar" id="rccar">${car}<b id="rcval">${fmtInt(start)}</b></div><div class="rcflag" id="rcflag" hidden></div></div><div class="rccurb bot"><span>${E('Alaraja','Lower limit')}: ${E('yli','above')} ${fmtInt(M.lo)}</span></div><button type="button" class="btn rcgo" id="rcgo">${E('Aloita','Start')}</button></div>
-      <div class="rcctl"><button type="button" class="btn ghost rcbtn" data-rcm="-1" aria-label="${E('Ylös','Up')}">▲</button><span id="rcprog">0 / ${M.st.length}</span><button type="button" class="btn ghost rcbtn" data-rcm="1" aria-label="${E('Alas','Down')}">▼</button></div>
+function raceOpts(C,x,nBad){const ok=v=>C.lo<v&&v<C.hi,lo=C.lo,hi=C.hi,span=hi-lo,rnd=a=>Math.abs(a)>=100?Math.round(a/(Math.abs(a)>=1000?50:5))*(Math.abs(a)>=1000?50:5):a;
+  let good=null;for(let u=0;u<120&&!good;u++){const[o,a,b]=pick(C.ops);let n=rnd(R(a,b));if(n===0)n=a;const r=labApply(x,o,n);if(Number.isInteger(r)&&(C.neg||r>=0)&&ok(r)&&r!==x)good={o,n,r,ok:1}}
+  const bad=[],dl=Math.max(1,Math.round(span*.15)),cand=[];
+  for(const[o,a,b]of C.ops){if(o==='+')for(let u=0;u<4;u++){const n=rnd(hi-x+R(0,dl));if(n>0)cand.push({o,n})}
+    if(o==='-')for(let u=0;u<4;u++){const n=rnd(x-lo+R(0,dl));if(n>0)cand.push({o,n})}
+    if(o==='*')for(let k=a;k<=Math.max(b,3);k++)cand.push({o,n:k});if(o==='/')for(let k=a;k<=Math.max(b,5);k++)cand.push({o,n:k})}
+  for(const c of shuffle(cand)){if(bad.length>=nBad)break;const r=labApply(x,c.o,c.n);if(!Number.isInteger(r)||(!C.neg&&r<0)||ok(r)||Math.abs(r<lo?lo-r:r-hi)>span)continue;if(bad.some(b=>b.o===c.o&&b.n===c.n)||(good&&good.o===c.o&&good.n===c.n))continue;bad.push({...c,r})}
+  return{good,bad}}
+function raceGen(g){return L=>{const C=LABC[g][L-1],lanes=L===1?(g<=2?2:3):L===2?3:(g<=2?3:4),N=L===1?10:L===2?12:14,T=(L===1?9:L===2?7.5:6.5)*(g<=2?1.15:1);
+  const span=C.hi-C.lo;let start=0;for(let t=0;t<50;t++){start=R(C.lo+Math.ceil(span*.25),C.hi-Math.ceil(span*.25));if(Math.abs(start)>=100)start=Math.round(start/10)*10;if(raceOpts(C,start,1).good)break}
+  const car=`<svg viewBox="0 0 170 64" aria-hidden="true"><path d="M6 46V32q0-7 7-8l22-4 18-13q5-3 11-3h42q7 0 12 4l16 13 18 3q8 1 8 9v13z" fill="var(--blue)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/><path d="M58 20l10-9h20v9zM96 11h14q4 0 7 2l9 7H96z" fill="#cfe6ff" stroke="var(--ink)" stroke-width="2"/><circle cx="38" cy="48" r="11" fill="#333" stroke="var(--ink)" stroke-width="2"/><circle cx="38" cy="48" r="4" fill="#bbb"/><circle cx="134" cy="48" r="11" fill="#333" stroke="var(--ink)" stroke-width="2"/><circle cx="134" cy="48" r="4" fill="#bbb"/><path d="M160 32h6" stroke="var(--sun)" stroke-width="4" stroke-linecap="round"/></svg>`;
+  return{kind:'race',rc:{C,lo:C.lo,hi:C.hi,start,v:start,w:0,N,lanes,lane:Math.floor((lanes-1)/2),T,L,e:3,state:'ready',log:[]},answerText:'',visual:null,storyC:1,
+    story:E(`Auto lähtee luvusta ${fmtInt(start)}. Tieltä tulee energiapaketteja, joissa on laskuja. Kerää paketit, jotka pitävät luvun tien reunojen välissä – ne antavat energiaa. Väistä paketit, jotka veisivät luvun tieltä ulos. Jos ohitat liian monta hyvää pakettia, energia loppuu.`,`The car starts from ${fmtInt(start)}. Energy parcels with calculations come down the road. Collect the ones that keep the number between the edges of the road – they give energy. Dodge the ones that would take the number off the road. If you miss too many good parcels, the energy runs out.`),
+    after:`<div class="rc" id="rc" style="--lanes:${lanes}" tabindex="-1" aria-label="${E('Tie','Road')}"><div class="rccurb top"><span>${E('Yläraja','Upper limit')}: ${E('alle','below')} ${fmtInt(C.hi)}</span></div><div class="rcroad" id="rcroad">${Array.from({length:lanes-1},(_,i)=>`<i style="top:${(i+1)/lanes*100}%"></i>`).join('')}<div class="rcpk" id="rcpk"></div><div class="rccar" id="rccar">${car}<b id="rcval">${fmtInt(start)}</b></div><div class="rcflag" id="rcflag" hidden></div></div><div class="rccurb bot"><span>${E('Alaraja','Lower limit')}: ${E('yli','above')} ${fmtInt(C.lo)}</span></div><button type="button" class="btn rcgo" id="rcgo">${E('Aloita','Start')}</button></div>
+      <div class="rcstat"><span class="rcen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V5q0-2 2-2h7q2 0 2 2v16zM7 6h7v5H7zM16 9l3 2v7q0 1.5 1.5 1.5T22 18V8l-3-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span id="rcen"></span></span><span class="rcdist"><span>${E('Matka','Distance')}</span><span class="rcbar"><i id="rcbar"></i></span></span></div>
+      <div class="rcctl"><button type="button" class="btn ghost rcbtn" data-rcm="-1" aria-label="${E('Ylös','Up')}">▲</button><button type="button" class="btn ghost rcbtn" data-rcm="1" aria-label="${E('Alas','Down')}">▼</button></div>
       <p class="rctip">${E('Ohjaa autoa nuolinäppäimillä, napeilla tai napauttamalla kaistaa.','Steer with the arrow keys, the buttons or by tapping a lane.')}</p>`,
     mount:()=>{const c=$('#check');if(c)c.hidden=true;raceDraw()},
-    hint:E(`<p>Laske jokaisen paketin lasku päässäsi ennen kuin paketti ehtii autolle. Pysyykö luku suurempana kuin ${fmtInt(M.lo)} ja pienempänä kuin ${fmtInt(M.hi)}? Aja sen paketin kaistalle.</p>`,`<p>Work out each parcel's calculation before it reaches the car. Does the number stay greater than ${fmtInt(M.lo)} and less than ${fmtInt(M.hi)}? Drive into that parcel's lane.</p>`),
-    failMsg:E('Oikea reitti näkyy alla.','The right route is shown below.'),
-    explain:`<p>${E('Oikeat paketit:','The right parcels:')}</p><ol class="mzroute">${route.map(r=>`<li>${r}</li>`).join('')}</ol>`}}}
-function raceDraw(){const R0=P.rc,car=$('#rccar');if(!car)return;car.style.top=`${(R0.lane+.5)/R0.lanes*100}%`;$('#rcval').textContent=fmtInt(R0.v);$('#rcprog').textContent=`${R0.w} / ${R0.st.length}`;const go=$('#rcgo');if(go)go.hidden=R0.state==='run'||R0.state==='done'}
+    hint:E(`<p>Laske paketin lasku päässäsi ennen kuin se ehtii autolle. Pysyykö luku suurempana kuin ${fmtInt(C.lo)} ja pienempänä kuin ${fmtInt(C.hi)}? Jos pysyy, aja paketin kaistalle. Jos ei, väistä.</p>`,`<p>Work out the parcel's calculation before it reaches the car. Does the number stay greater than ${fmtInt(C.lo)} and less than ${fmtInt(C.hi)}? If it does, drive into its lane. If not, dodge it.</p>`),
+    failMsg:E('Kerätyt paketit näkyvät alla.','The parcels you collected are shown below.'),
+    explain:''}}}
+function raceDraw(){const R0=P.rc,car=$('#rccar');if(!car)return;car.style.top=`${(R0.lane+.5)/R0.lanes*100}%`;$('#rcval').textContent=fmtInt(R0.v);
+  $('#rcen').innerHTML=[0,1,2,3,4].map(i=>`<i class="${i<R0.e?'on':''}"></i>`).join('');$('#rcbar').style.width=`${R0.w/R0.N*100}%`;
+  const go=$('#rcgo');if(go)go.hidden=R0.state==='run'||R0.state==='done';
+  P.explain=R0.log.length?`<p>${E('Keräämäsi paketit:','The parcels you collected:')}</p><ol class="mzroute">${R0.log.map(r=>`<li>${r}</li>`).join('')}</ol>`:'';const ex=$('#explain');if(ex)ex.innerHTML=`<h3>${E('Näin se lasketaan','How to work it out')}</h3>${P.explain}`}
 function raceMove(d){const R0=P&&P.rc;if(!R0||P.kind!=='race'||done)return;R0.lane=Math.max(0,Math.min(R0.lanes-1,R0.lane+d));raceDraw()}
-function raceWave(){const R0=P.rc,box=$('#rcpk');if(!box||R0.state!=='run')return;const S=R0.st[R0.w];
-  box.innerHTML=S.opts.map((o,j)=>`<div class="rcp" data-j="${j}" style="top:${(j+.5)/R0.lanes*100}%;left:105%"><svg viewBox="0 0 60 50" aria-hidden="true"><rect x="3" y="6" width="54" height="40" rx="4" fill="#D9A866" stroke="#8A5F2A" stroke-width="2.5"/><path d="M30 6v40M3 18h54" stroke="#B88545" stroke-width="3"/></svg><b>${LOPS[o.o]} ${fmtInt(o.n)}</b></div>`).join('');
-  const t0=performance.now(),els=[...box.children],CX=14;
-  const step=t=>{if(!box.isConnected||R0.state!=='run'||P.rc!==R0)return;const p=Math.min(1,(t-t0)/(R0.T*1000)),x=105-(105-CX)*p;els.forEach(e=>e.style.left=x+'%');
+function raceWaveMake(R0){const x=R0.v,n=R0.lanes,w={L1:[.6,.25],L2:[.4,.3],L3:[.3,.3]}['L'+R0.L],u=Math.random();let type=u<w[0]?'full':u<w[0]+w[1]?'pair':'single';
+  const nBad=type==='full'?n-1:type==='pair'?1:(Math.random()<.5?1:0),O=raceOpts(R0.C,x,nBad);let items=[];
+  if(type==='single'){items=nBad?(O.bad.length?[O.bad[0]]:[]):(O.good?[O.good]:[])}else{if(O.good)items.push(O.good);items.push(...O.bad.slice(0,nBad))}
+  if(!items.length&&O.good)items=[O.good];const lanes=shuffle([...Array(n).keys()]);return items.map((o,i)=>({...o,lane:lanes[i]}))}
+function raceFail(R0,msg){R0.state='crash';P.raceMsg=msg;setTimeout(()=>{check();if(!done){R0.state='ready';const go=$('#rcgo');if(go){go.textContent=E('Aja uudelleen','Drive again');go.hidden=false}}},700)}
+function raceWave(){const R0=P.rc,box=$('#rcpk');if(!box||R0.state!=='run')return;const W=raceWaveMake(R0);R0.cur=W;const x0=R0.v,T=R0.T*(1-R0.w/R0.N*.15);
+  box.innerHTML=W.map((o,j)=>`<div class="rcp" style="top:${(o.lane+.5)/R0.lanes*100}%;left:108%"><svg viewBox="0 0 64 56" aria-hidden="true"><path d="M8 14h40l8 8v28q0 3-3 3H11q-3 0-3-3z" fill="#F2B23A" stroke="#8A5A10" stroke-width="2.5" stroke-linejoin="round"/><path d="M14 4h16v10H14z" fill="#E09A1E" stroke="#8A5A10" stroke-width="2.5"/><path d="M38 6l8 8" stroke="#8A5A10" stroke-width="3" stroke-linecap="round"/></svg><b>${LOPS[o.o]} ${fmtInt(o.n)}</b></div>`).join('');
+  const t0=performance.now(),els=[...box.children],CX=20;
+  const step=t=>{if(!box.isConnected||R0.state!=='run'||P.rc!==R0)return;const p=Math.min(1,(t-t0)/(T*1000)),x=108-(108-CX)*p;els.forEach(e=>e.style.left=x+'%');
     if(p<1){requestAnimationFrame(step);return}
-    const o=S.opts[R0.lane];els.forEach((e,j)=>e.classList.add(j===R0.lane?'got':'gone'));const ok=o.ok,r=o.r;R0.v=r;R0.w++;raceDraw();
-    if(!ok){R0.state='crash';$('#rccar').classList.add('crash');$('#rcval').classList.add('bad');
-      P.raceMsg=E(`${fmtInt(S.x)} ${LOPS[o.o]} ${fmtInt(o.n)} = ${fmtInt(r)} – luku meni ${r>=R0.hi?'ylärajan yli':'alarajan alle'}, ja auto ajoi ulos tieltä!`,`${fmtInt(S.x)} ${LOPS[o.o]} ${fmtInt(o.n)} = ${fmtInt(r)} – the number went ${r>=R0.hi?'over the upper':'under the lower'} limit and the car left the road!`);
-      setTimeout(()=>{check();if(!done){R0.state='ready';const go=$('#rcgo');if(go){go.textContent=E('Aja uudelleen','Drive again');go.hidden=false}}},700);return}
-    if(R0.w>=R0.st.length){R0.state='done';const f=$('#rcflag');if(f)f.hidden=false;setTimeout(()=>check(),900);return}
-    setTimeout(raceWave,650)};
+    const hit=W.findIndex(o=>o.lane===R0.lane),gd=W.find(o=>o.ok);els.forEach((e,j)=>e.classList.add(j===hit?'got':'gone'));R0.w++;
+    if(hit>=0){const o=W[hit];R0.v=o.r;if(!o.ok){raceDraw();$('#rccar').classList.add('crash');$('#rcval').classList.add('bad');
+        raceFail(R0,E(`${fmtInt(x0)} ${LOPS[o.o]} ${fmtInt(o.n)} = ${fmtInt(o.r)} – luku meni ${o.r>=R0.hi?'ylärajan yli':'alarajan alle'}, ja auto ajoi ulos tieltä!`,`${fmtInt(x0)} ${LOPS[o.o]} ${fmtInt(o.n)} = ${fmtInt(o.r)} – the number went ${o.r>=R0.hi?'over the upper':'under the lower'} limit and the car left the road!`));return}
+      R0.e=Math.min(5,R0.e+1);R0.log.push(`${fmtInt(x0)} ${LOPS[o.o]} ${fmtInt(o.n)} = ${fmtInt(o.r)}`)}
+    else if(gd){R0.e--;const c=$('#rcen');if(c){c.classList.remove('drop');void c.offsetWidth;c.classList.add('drop')}}
+    raceDraw();
+    if(R0.e<=0){raceFail(R0,E('Energia loppui, ja auto pysähtyi! Ohitit liian monta hyvää pakettia. Kerää paketit, jotka pitävät luvun tien sisällä.','The energy ran out and the car stopped! You missed too many good parcels. Collect the parcels that keep the number on the road.'));return}
+    if(R0.w>=R0.N){R0.state='done';const f=$('#rcflag');if(f)f.hidden=false;setTimeout(()=>check(),900);return}
+    setTimeout(raceWave,450)};
   requestAnimationFrame(step)}
-function raceStart(){const R0=P.rc;R0.v=R0.start;R0.w=0;R0.st.forEach(s=>s.opts.forEach(o=>delete o.tried));R0.state='run';$('#rccar').classList.remove('crash');$('#rcval').classList.remove('bad');$('#rcpk').innerHTML='';$('#fb').hidden=true;raceDraw();const rc=$('#rc');if(rc)rc.focus({preventScroll:true});setTimeout(raceWave,400)}
+function raceStart(){const R0=P.rc;R0.v=R0.start;R0.w=0;R0.e=3;R0.log=[];R0.state='run';$('#rccar').classList.remove('crash');$('#rcval').classList.remove('bad');$('#rcpk').innerHTML='';$('#fb').hidden=true;raceDraw();const rc=$('#rc');if(rc)rc.focus({preventScroll:true});setTimeout(raceWave,400)}
 function raceEval(){const R0=P.rc;if(R0.state==='done')return{ok:true};if(R0.state==='crash')return{ok:false};return{wait:1}}
 document.addEventListener('click',e=>{if(!P||P.kind!=='race'||done)return;const t=e.target;if(t.closest&&t.closest('#rcgo')){raceStart();return}
   const m=t.closest&&t.closest('[data-rcm]');if(m){raceMove(+m.dataset.rcm);return}
