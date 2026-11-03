@@ -3512,18 +3512,18 @@ function korttiGen(g){return L=>{
 const FTL={3:{P:[[160,26],[95,100],[225,100],[40,174],[160,174],[280,174]],R:[[0,1,2],[1,3,4],[2,4,5]],H:200},
   4:{P:[[160,26],[120,96],[200,96],[80,166],[160,166],[240,166],[40,236],[120,236],[200,236],[280,236]],R:[[0,1,2],[1,3,4],[2,4,5],[3,6,7],[4,7,8],[5,8,9]],H:262}};
 const FTPL={1:[[1,5,20],[1,8,20],[1,3,20]],2:[[1,10,40],[2,15,60],[1,6,50]],3:[[5,25,100],[10,40,150],[2,12,100]],4:[[10,50,200],[10,80,300],[5,25,200]],5:[[20,100,400],[25,150,600],[10,50,400]],6:[[50,200,800],[50,250,1000],[20,80,600]]},FTXC={3:[40,80,120],4:[60,100,150],5:[60,120,200],6:[80,150,250]};
-function ftreeGen(g,op='*'){return L=>{const plus=op==='+',OP=plus?'+':'·',IOP=plus?'−':':';
-  const four=plus?L===3:L===3&&Math.random()<.6,T=FTL[four?4:3],FTP=T.P,FTR=T.R,NC=FTP.length,PL=FTPL[g][L-1];
-  const hi=plus?PL[1]:four?3:L===1?4:L===2?5:7,lo=plus?PL[0]:four?1:2,cap=plus?PL[2]:four?(g<=4?100:200):(FTXC[g]||FTXC[3])[L-1],need=four?4:L===1?2:3;
+function ftreeGen(g,op='*'){return L=>{const plus=op==='+',OP=plus?'+':'·',IOP=plus?'−':':',Li=L===2?3:L===3?2:1;
+  const four=Li===3,T=FTL[four?4:3],FTP=T.P,FTR=T.R,NC=FTP.length,PL=FTPL[g][Li-1];
+  const hi=plus?PL[1]:four?3:Li===1?4:7,lo=plus?PL[0]:four?1:2,cap=plus?PL[2]:four?(g<=4?100:200):(FTXC[g]||FTXC[3])[Li===2?2:0],need=four?4:L===1?2:3;
   for(let t=0;t<2000;t++){const nb=four?4:3,b=Array.from({length:nb},()=>R(lo,hi));if(!plus&&b.filter(x=>x===1).length>1)continue;
     let rows=[b];while(rows[0].length>1){const r=rows[0];rows.unshift(r.slice(1).map((x,k)=>plus?r[k]+x:r[k]*x))}const v=rows.flat();
-    if(v[0]>cap||(!plus&&L===3&&v[0]<(four?24:40)))continue;
+    if(v[0]>cap||(!plus&&L>=2&&v[0]<(four?24:50)))continue;
     const hid=shuffle([...Array(NC).keys()].slice(1)).slice(0,need);
     const kn=new Set([...Array(NC).keys()].filter(i=>!hid.includes(i))),steps=[];let ch=true,div=0;
     while(ch){ch=false;for(const[p,a,c]of FTR){if(!kn.has(p)&&kn.has(a)&&kn.has(c)){kn.add(p);steps.push([p,`${fmtInt(v[a])} ${OP} ${fmtInt(v[c])} = ${fmtInt(v[p])}`]);ch=true}
       else if(kn.has(p)&&kn.has(a)&&!kn.has(c)){kn.add(c);steps.push([c,`${fmtInt(v[p])} ${IOP} ${fmtInt(v[a])} = ${fmtInt(v[c])}`]);div++;ch=true}
       else if(kn.has(p)&&kn.has(c)&&!kn.has(a)){kn.add(a);steps.push([a,`${fmtInt(v[p])} ${IOP} ${fmtInt(v[c])} = ${fmtInt(v[a])}`]);div++;ch=true}}}
-    if(kn.size<NC||(L===2&&!div)||(L===3&&div<2))continue;
+    if(kn.size<NC||(L>=2&&div<2))continue;
     const vb=`viewBox="0 0 320 ${T.H}" preserveAspectRatio="none" aria-hidden="true"`,hs=`style="height:${T.H}px"`;
     const lines=FTR.map(([p,a,c])=>[a,c].map(k=>`<path d="M${FTP[p][0]} ${FTP[p][1]+20}L${FTP[k][0]} ${FTP[k][1]-20}" stroke="var(--line)" stroke-width="3" stroke-linecap="round"/>`).join('')).join('');
     let n=0;const cells=v.map((x,i)=>{const[cx,cy]=FTP[i],st=`left:${(cx/3.2).toFixed(2)}%;top:${cy}px`;return hid.includes(i)?`<input class="num ftc" id="ft${n++}" data-i="${i}" inputmode="none" autocomplete="off" style="${st}" aria-label="${E('Puuttuva luku','Missing number')}">`:`<span class="ftc given" style="${st}">${fmtInt(x)}</span>`}).join('');
@@ -4668,7 +4668,7 @@ const NAV=[
       {id:'luvusta',n:'Prosentti luvusta',f:g=>g>=5?{oid:'prosluvusta',levels:[['Puolet, neljäsosat ja kymmenesosat'],['Muut prosentit'],['Haastavammat']],gen:L=>ofGen(g)(L)}:null},
       {id:'san',n:'Sanalliset',f:g=>g>=5?{oid:'prossan',levels:[['Osa määrästä'],['Alennukset ja korotukset'],['Montako prosenttia?']],gen:L=>pwGen(g)(L)}:null},
       convT('pro')]},
-    {id:'pyr',n:'Lukupyramidit',types:[{id:'plus',n:'Pluspyramidi',f:g=>({oid:'pluspyr',levels:[['Pienet luvut'],['Isommat luvut'],['Neljä kerrosta']],gen:L=>ftreeGen(g,'+')(L)})},{id:'tekij',n:'Tekijäpyramidi',f:g=>g>=3?{oid:'tekij',levels:[['Pienet tekijät'],['Isommat tekijät'],['Vähemmän vihjeitä']],gen:L=>ftreeGen(g)(L)}:null}]},
+    {id:'pyr',n:'Lukupyramidit',types:[{id:'plus',n:'Pluspyramidi',f:g=>({oid:'pluspyr',levels:[['Pienet luvut'],['Neljä kerrosta'],['Isommat luvut']],gen:L=>ftreeGen(g,'+')(L)})},{id:'tekij',n:'Tekijäpyramidi',f:g=>g>=3?{oid:'tekij',levels:[['Pienet tekijät'],['Neljä kerrosta'],['Isommat tekijät']],gen:L=>ftreeGen(g)(L)}:null}]},
     {id:'lab',n:'Laskuralli',types:[{id:'lab',n:'Aja ja laske',f:g=>({oid:'labyr',levels:[[E('Kaksi kaistaa','Two lanes')],[E('Kolme kaistaa','Three lanes')],[g===6?E('Neljä kaistaa, negatiiviset','Four lanes, negatives'):g<=2?E('Pitkä matka','Long drive'):E('Neljä kaistaa','Four lanes')]],gen:L=>raceGen(g)(L)})}]},
     {id:'yhtl',n:'Yhtälöt',types:[
       {id:'vaaka',n:'Vaakayhtälöt',f:g=>({oid:'vaaka',levels:{1:[['Yksi laatikko'],['Monta punnusta'],['Kaksi laatikkoa']],2:[['Yksi laatikko'],['Monta laatikkoa'],['Laatikot ja punnus']],3:[['Yksi laatikko'],['Monta laatikkoa'],['Laatikot ja punnus']],4:[['Monta laatikkoa'],['Laatikot ja punnus'],['Laatikoita molemmilla puolilla']],5:[['Laatikot ja punnus'],['Laatikoita molemmilla puolilla'],['Isommat luvut']],6:[['Laatikot ja punnus'],['Laatikoita molemmilla puolilla'],['Isommat luvut']]}[g],gen:L=>vaakaGen(g)(L)})}]},
