@@ -3629,7 +3629,7 @@ function raceWave(){const R0=P.rc,box=$('#rcpk');if(!box||R0.state!=='run')retur
     if(hit>=0){const o=W[hit];R0.v=o.r;if(!o.ok){raceDraw();$('#rccar').classList.add('crash');$('#rcval').classList.add('bad');
         raceFail(R0,E(`${fmtInt(x0)} ${LOPS[o.o]} ${fmtInt(o.n)} = ${fmtInt(o.r)} – luku meni ${o.r>R0.hi?'ylärajan yli':'alarajan alle'}, ja auto ajoi ulos tieltä!`,`${fmtInt(x0)} ${LOPS[o.o]} ${fmtInt(o.n)} = ${fmtInt(o.r)} – the number went ${o.r>R0.hi?'over the upper':'under the lower'} limit and the car left the road!`));return}
       R0.e=Math.min(5,R0.e+1);R0.log.push(`${fmtInt(x0)} ${LOPS[o.o]} ${fmtInt(o.n)} = ${fmtInt(o.r)}`)}
-    else if(gd){R0.e--;const c=$('#rcen');if(c){c.classList.remove('drop');void c.offsetWidth;c.classList.add('drop')}}
+    else if(gd){R0.e=Math.max(0,R0.e-2);const c=$('#rcen');if(c){c.classList.remove('drop');void c.offsetWidth;c.classList.add('drop')}}
     raceDraw();
     if(R0.e<=0){raceFail(R0,E('Akku loppui, ja auto pysähtyi! Ohitit liian monta hyvää pakettia. Kerää paketit, jotka pitävät luvun tien sisällä.','The battery ran out and the car stopped! You missed too many good parcels. Collect the parcels that keep the number on the road.'));return}
     if(R0.w>=R0.N){R0.state='done';const f=$('#rcflag');if(f){f.hidden=false;let x=108,tp=performance.now();const mv=t=>{if(!f.isConnected)return;x-=vP*(t-tp);tp=t;f.style.left=x+'%';if(x>-8)requestAnimationFrame(mv);else check()};requestAnimationFrame(mv)}else check();return}
