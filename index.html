@@ -3511,13 +3511,13 @@ function korttiGen(g){return L=>{
 /* tekijäpyramidi */
 const FTL={3:{P:[[160,26],[95,100],[225,100],[40,174],[160,174],[280,174]],R:[[0,1,2],[1,3,4],[2,4,5]],H:200},
   4:{P:[[160,26],[120,96],[200,96],[80,166],[160,166],[240,166],[40,236],[120,236],[200,236],[280,236]],R:[[0,1,2],[1,3,4],[2,4,5],[3,6,7],[4,7,8],[5,8,9]],H:262}};
-const FTPL={1:[[1,5,20],[1,8,20],[1,3,20]],2:[[2,20,80],[5,30,100],[2,12,100]],3:[[10,150,600],[20,250,1000],[10,120,1000]],4:[[100,1500,6000],[200,2500,10000],[100,1200,10000]],5:[[500,5000,20000],[1000,9000,30000],[500,4000,30000]],6:[[1000,9000,30000],[2000,15000,60000],[1000,8000,60000]]};
+const FTPL={1:[[1,5,20],[1,8,20],[1,3,20]],2:[[1,10,40],[2,15,60],[1,6,50]],3:[[5,25,100],[10,40,150],[2,12,100]],4:[[10,50,200],[10,80,300],[5,25,200]],5:[[20,100,400],[25,150,600],[10,50,400]],6:[[50,200,800],[50,250,1000],[20,80,600]]},FTXC={3:[40,80,120],4:[60,100,150],5:[60,120,200],6:[80,150,250]};
 function ftreeGen(g,op='*'){return L=>{const plus=op==='+',OP=plus?'+':'·',IOP=plus?'−':':';
   const four=plus?L===3:L===3&&Math.random()<.6,T=FTL[four?4:3],FTP=T.P,FTR=T.R,NC=FTP.length,PL=FTPL[g][L-1];
-  const hi=plus?PL[1]:four?3:L===1?4:L===2?5:7,lo=plus?PL[0]:four?1:2,cap=plus?PL[2]:four?(g<=4?150:400):L===1?60:L===2?120:200,need=four?4:L===1?2:3;
+  const hi=plus?PL[1]:four?3:L===1?4:L===2?5:7,lo=plus?PL[0]:four?1:2,cap=plus?PL[2]:four?(g<=4?100:200):(FTXC[g]||FTXC[3])[L-1],need=four?4:L===1?2:3;
   for(let t=0;t<2000;t++){const nb=four?4:3,b=Array.from({length:nb},()=>R(lo,hi));if(!plus&&b.filter(x=>x===1).length>1)continue;
     let rows=[b];while(rows[0].length>1){const r=rows[0];rows.unshift(r.slice(1).map((x,k)=>plus?r[k]+x:r[k]*x))}const v=rows.flat();
-    if(v[0]>cap||(!plus&&L===3&&v[0]<(four?24:60)))continue;
+    if(v[0]>cap||(!plus&&L===3&&v[0]<(four?24:40)))continue;
     const hid=shuffle([...Array(NC).keys()].slice(1)).slice(0,need);
     const kn=new Set([...Array(NC).keys()].filter(i=>!hid.includes(i))),steps=[];let ch=true,div=0;
     while(ch){ch=false;for(const[p,a,c]of FTR){if(!kn.has(p)&&kn.has(a)&&kn.has(c)){kn.add(p);steps.push([p,`${fmtInt(v[a])} ${OP} ${fmtInt(v[c])} = ${fmtInt(v[p])}`]);ch=true}
