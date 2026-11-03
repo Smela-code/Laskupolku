@@ -3647,11 +3647,11 @@ document.addEventListener('click',e=>{if(!P||P.kind!=='race'||done)return;const 
 document.addEventListener('keydown',e=>{if(!P||P.kind!=='race'||done)return;if(e.key==='ArrowUp'||e.key==='w'){raceMove(-1);e.preventDefault()}else if(e.key==='ArrowDown'||e.key==='s'){raceMove(1);e.preventDefault()}});
 /* torjuntapeli */
 const isPrime=n=>{if(n<2)return false;for(let d=2;d*d<=n;d++)if(n%d===0)return false;return true};
-const BSH={tri:E('kolmiot','triangles'),sq:E('neliöt','squares'),circ:E('ympyrät','circles'),rect:E('suorakulmiot','rectangles')};
+const BSH={tri:E('kolmiot','triangles'),sq:E('neliöt','squares'),hex:E('kuusikulmiot','hexagons'),rect:E('suorakulmiot','rectangles')};
 function bnRules(g,L){const num=(t,lo,hi,f)=>({t,mk:()=>{const want=Math.random()<.45;for(let k=0;k<200;k++){const v=R(lo,hi);if(!!f(v)===want)return{v:fmtInt(v),hit:want}}const v=R(lo,hi);return{v:fmtInt(v),hit:!!f(v)}}});
   const shp=k=>({t:E(`Torju ${BSH[k]}`,`Block the ${BSH[k]}`),mk:()=>{const want=Math.random()<.45,ks=Object.keys(BSH);const s=want?k:pick(ks.filter(x=>x!==k));return{s,hit:s===k}}});
   const odd=(lo,hi)=>num(E('Torju parittomat luvut','Block the odd numbers'),lo,hi,v=>v%2),even=(lo,hi)=>num(E('Torju parilliset luvut','Block the even numbers'),lo,hi,v=>v%2===0);
-  const T={1:[[shp(pick(['tri','sq','circ','rect'])),odd(1,10),even(1,10),odd(1,10),even(1,10)],[odd(1,20),even(1,20),odd(1,20),even(1,20),shp(pick(['tri','sq','circ','rect']))],[odd(1,20),even(1,20)]],
+  const T={1:[[shp(pick(['tri','sq','hex','rect'])),odd(1,10),even(1,10),odd(1,10),even(1,10)],[odd(1,20),even(1,20),odd(1,20),even(1,20),shp(pick(['tri','sq','hex','rect']))],[odd(1,20),even(1,20)]],
     2:[[odd(1,50),even(1,50)],[odd(1,100),even(1,100),num(E('Torju luvut, jotka ovat suurempia kuin 50','Block the numbers greater than 50'),20,80,v=>v>50)],[num(E('Torju viidellä jaolliset luvut','Block the numbers divisible by 5'),1,60,v=>v%5===0),num(E('Torju kakkosen kertotaulun luvut','Block the numbers in the 2 times table'),1,30,v=>v%2===0&&v<=20)]],
     3:[[odd(10,199),even(10,199)],[num(E('Torju viidellä jaolliset luvut','Block the numbers divisible by 5'),1,100,v=>v%5===0),num(E('Torju kolmosen kertotaulun luvut','Block the numbers in the 3 times table'),1,30,v=>v%3===0)],[num(E('Torju neljän kertotaulun luvut','Block the numbers in the 4 times table'),1,40,v=>v%4===0),num(E('Torju luvut, jotka ovat suurempia kuin 500','Block the numbers greater than 500'),200,800,v=>v>500)]],
     4:[[num(E('Torju kolmella jaolliset luvut','Block the numbers divisible by 3'),1,60,v=>v%3===0),odd(100,999)],[num(E('Torju neljällä jaolliset luvut','Block the numbers divisible by 4'),1,80,v=>v%4===0),num(E('Torju kuudella jaolliset luvut','Block the numbers divisible by 6'),1,72,v=>v%6===0)],[num(E('Torju yhdeksällä jaolliset luvut','Block the numbers divisible by 9'),1,108,v=>v%9===0),num(E('Torju seitsemällä jaolliset luvut','Block the numbers divisible by 7'),1,84,v=>v%7===0)]],
@@ -3668,7 +3668,7 @@ function bnInit(){const B=P.bn,cv=$('#bncv'),wrap=$('#bnwrap');if(!cv)return;con
   cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';const ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
   Object.assign(B,{W,H,ctx,px:W/2,pw:Math.max(80,W*.24),ph:14,py:H-30,balls:[],score:0,hearts:3,keys:{},t:0,next:0});bnDraw()}
 function bnCol(n){const cs=getComputedStyle(document.documentElement);return cs.getPropertyValue(n).trim()||'#888'}
-function bnShape(ctx,s,x,y,r){ctx.beginPath();if(s==='tri'){ctx.moveTo(x,y-r);ctx.lineTo(x+r*.95,y+r*.7);ctx.lineTo(x-r*.95,y+r*.7);ctx.closePath()}else if(s==='sq'){ctx.rect(x-r*.75,y-r*.75,r*1.5,r*1.5)}else if(s==='circ'){ctx.arc(x,y,r*.8,0,7)}else{ctx.rect(x-r*1.05,y-r*.55,r*2.1,r*1.1)}ctx.fill()}
+function bnShape(ctx,s,x,y,r){ctx.beginPath();if(s==='tri'){ctx.moveTo(x,y-r);ctx.lineTo(x+r*.95,y+r*.7);ctx.lineTo(x-r*.95,y+r*.7);ctx.closePath()}else if(s==='sq'){ctx.rect(x-r*.75,y-r*.75,r*1.5,r*1.5)}else if(s==='hex'){for(let i=0;i<6;i++){const a=i*Math.PI/3;ctx.lineTo(x+r*.95*Math.cos(a),y+r*.95*Math.sin(a))}ctx.closePath()}else{ctx.rect(x-r*1.05,y-r*.55,r*2.1,r*1.1)}ctx.fill()}
 function bnDraw(){const B=P.bn,c=B.ctx;if(!c)return;const{W,H}=B;c.clearRect(0,0,W,H);c.fillStyle=bnCol('--paper');c.fillRect(0,0,W,H);
   c.strokeStyle=bnCol('--line');c.lineWidth=4;c.strokeRect(2,2,W-4,H+10);
   for(const b of B.balls){c.globalAlpha=b.pop?Math.max(0,1-b.pop/0.35):b.up?.3:1;c.fillStyle=b.bad?bnCol('--bad'):b.col;c.beginPath();c.arc(b.x,b.y,b.r,0,7);c.fill();c.fillStyle='#fff';
