@@ -673,7 +673,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.10</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.11</span></h1>
       <p class="sub">Monipuolista matematiikkaa kuvien avulla 1.–6. luokalle: laskuja, lukuja, mittaamista, geometriaa, tilastoja ja päättelyä.</p>
     </div>
     <div class="hright">
@@ -736,6 +736,7 @@ const gcd=(a,b)=>b?gcd(b,a%b):Math.abs(a);
 const lcm=(a,b)=>a/gcd(a,b)*b;
 const OPS={'+':'+','-':'−'};
 const fmtInt=n=>{const s=String(n);return n>=10000?s.replace(/\B(?=(\d{3})+(?!\d))/g,' '):s};
+const fdt=x=>{const t=fd(x);return t.includes(',')?t.replace(/0+$/,'').replace(/,$/,''):t};
 const fd=x=>{if(!x.d)return fmtInt(x.u);const s=String(x.u).padStart(x.d+1,'0');return fmtInt(+s.slice(0,-x.d))+','+s.slice(-x.d)};
 const val=x=>x.u/10**x.d;
 const frac=(n,d)=>`<span class="q"><span>${n}</span><span>${d}</span></span>`;
@@ -896,12 +897,12 @@ function wordInt(a,b,op){const[K,M]=two();const mx=Math.max(a,b);
   return{text:w.t(fmtInt(a),fmtInt(b),K,M),unit:w.unit||'',icon:ICON[w.icon]}}
 const W_DA=[
   {ok:(A,B)=>A.d===2&&B.d===2&&val(A)<50&&val(B)<50,unit:'€',icon:'kolikot',t:(A,B,K)=>{const[i1,i2]=shuffle(ITEMS);return E(`${K.n} ostaa ${i1} hintaan ${fd(A)} € ja ${i2} hintaan ${fd(B)} €. Paljonko hän maksaa yhteensä?`,`${K.n} buys ${i1} for ${fd(A)} € and ${i2} for ${fd(B)} €. How much does ${K.n} pay in total?`)}},
-  {ok:()=>true,unit:'km',icon:'pyora',t:(A,B)=>E(`Pyöräretken ensimmäinen osuus oli ${fd(A)} km ja toinen osuus ${fd(B)} km. Kuinka pitkä retki oli yhteensä?`,`The first part of a bike ride was ${fd(A)} km and the second part ${fd(B)} km. How long was the ride in total?`)},
-  {ok:(A,B)=>val(A)<20&&val(B)<20,unit:'kg',icon:'sakki',t:(A,B)=>E(`Leipomoon tuodaan ${fd(A)} kg jauhoja ja ${fd(B)} kg sokeria. Montako kiloa niitä on yhteensä?`,`A bakery gets ${fd(A)} kg of flour and ${fd(B)} kg of sugar. How many kilograms is that in total?`)}];
+  {ok:()=>true,unit:'km',icon:'pyora',t:(A,B)=>E(`Pyöräretken ensimmäinen osuus oli ${fdt(A)} km ja toinen osuus ${fdt(B)} km. Kuinka pitkä retki oli yhteensä?`,`The first part of a bike ride was ${fdt(A)} km and the second part ${fdt(B)} km. How long was the ride in total?`)},
+  {ok:(A,B)=>val(A)<20&&val(B)<20,unit:'kg',icon:'sakki',t:(A,B)=>E(`Leipomoon tuodaan ${fdt(A)} kg jauhoja ja ${fdt(B)} kg sokeria. Montako kiloa niitä on yhteensä?`,`A bakery gets ${fdt(A)} kg of flour and ${fdt(B)} kg of sugar. How many kilograms is that in total?`)}];
 const W_DS=[
   {ok:(A,B)=>(A.d===2||A.d===0)&&B.d===2&&val(A)<=100,unit:'€',icon:'kolikot',t:(A,B,K)=>{const it=pick(ITEMS);return E(`${K.ll} on ${fd(A)} €. Hän ostaa ${it} hintaan ${fd(B)} €. Paljonko rahaa jää?`,`${K.n} has ${fd(A)} €. ${K.n} buys ${it} for ${fd(B)} €. How much money is left?`)}},
-  {ok:()=>true,unit:'m',icon:'naru',t:(A,B)=>E(`Narua on ${fd(A)} m. Siitä leikataan pala, jonka pituus on ${fd(B)} m. Paljonko narua jää?`,`There is ${fd(A)} m of string. A piece ${fd(B)} m long is cut off. How much string is left?`)},
-  {ok:(A,B)=>val(A)<7,unit:'m',icon:'mitta',t:(A,B,K,M)=>E(`${K.n} hyppäsi pituutta ${fd(A)} m ja ${M.n} ${fd(B)} m. Kuinka monta metriä pidemmälle ${K.n} hyppäsi?`,`In the long jump, ${K.n} jumped ${fd(A)} m and ${M.n} jumped ${fd(B)} m. How many metres further did ${K.n} jump?`)}];
+  {ok:()=>true,unit:'m',icon:'naru',t:(A,B)=>E(`Narua on ${fdt(A)} m. Siitä leikataan pala, jonka pituus on ${fdt(B)} m. Paljonko narua jää?`,`There is ${fdt(A)} m of string. A piece ${fdt(B)} m long is cut off. How much string is left?`)},
+  {ok:(A,B)=>val(A)<7,unit:'m',icon:'mitta',t:(A,B,K,M)=>E(`${K.n} hyppäsi pituutta ${fdt(A)} m ja ${M.n} ${fdt(B)} m. Montako metriä pidemmälle ${K.n} hyppäsi?`,`In the long jump, ${K.n} jumped ${fdt(A)} m and ${M.n} jumped ${fdt(B)} m. How many metres further did ${K.n} jump?`)}];
 function wordDec(A,B,op){const[K,M]=two();const w=pick((op==='+'?W_DA:W_DS).filter(w=>w.ok(A,B)));return{text:w.t(A,B,K,M),unit:w.unit,icon:ICON[w.icon]}}
 
 /* ---------- tehtävien rakentajat ---------- */
@@ -934,6 +935,7 @@ function fracProblem(n1,d1,n2,d2,op,word,kind){
   const explain=`<p><b>${frac(n1,d1)} ${OPS[op]} ${frac(n2,d2)}${mid} = ${res}</b></p><div class="visual">${cakes(N,D)}</div><p>${E('Myös supistettu tai laventamaton muoto hyväksytään.','A simplified answer is accepted too.')}</p>`;
   const P={kind:'frac',visual,ans:{n:N,d:D},answerText:frac(N,D)+(g>1?` = ${frac(N/g,D/g)}`:''),hint,explain};
   if(word){const[K,M]=two();const over=op==='+'?N>D:n1>d1;const f1=frac(n1,d1),f2=frac(n2,d2);
+    if(op==='-'&&n1===d1){P.story=E(`Kakku oli kokonainen. ${K.n} söi siitä ${f2}. Kuinka suuri osa kakusta jäi?`,`There was a whole cake. ${K.n} ate ${f2} of it. What fraction of the cake was left?`);return P}
     P.story=EN?(op==='+'?(over?`On Friday, ${f1} of a blueberry pie was eaten, and on Saturday ${f2} of a pie. How much pie was eaten in total?`:`${K.n} ate ${f1} of a cake and ${M.n} ate ${f2}. What fraction of the cake did they eat in total?`)
       :(over?`There were ${f1} blueberry pies left. The guests ate ${f2} of a pie. How much pie was left?`:`There was ${f1} of a cake left. ${K.n} ate ${f2} of the cake. What fraction of the cake was left?`))
       :op==='+'?(over?`Mustikkapiirakkaa syötiin perjantaina ${f1} piirakkaa ja lauantaina ${f2} piirakkaa. Kuinka paljon piirakkaa syötiin yhteensä?`:`${K.n} söi kakusta ${f1} ja ${M.n} ${f2}. Kuinka suuren osan kakusta he söivät yhteensä?`)
@@ -975,7 +977,7 @@ function g1Missing(L,op,word){
   else{if(L===1){a=R(4,10);c=R(1,a-1)}else if(L===2){a=R(12,19);c=R(10,a-1)}else{a=R(11,18);c=R(Math.max(1,a-9),9)}
     ans=a-c;visual=`${group(many(tk,a),a+' '+pf(a,t))}<span class="note">${E(`Jäljelle jää ${c}`,`${c} left`)}</span>`;
     text=`${a} − ${BOX} = ${c}`;
-    hint=E(`<p>Kuinka monta pitää ottaa pois, jotta jää ${c}? Laske luvusta ${c} lukuun ${a} asti.</p>`,`<p>How many must you take away to leave ${c}? Count on from ${c} to ${a}.</p>`);
+    hint=E(`<p>Montako pitää ottaa pois, jotta jää ${c}? Laske luvusta ${c} lukuun ${a} asti.</p>`,`<p>How many must you take away to leave ${c}? Count on from ${c} to ${a}.</p>`);
     if(word)story=E(`Kulhossa oli ${a} ${pf(a,t)}. Kun lapset olivat syöneet, kulhoon jäi ${c}. Montako ${t.part} lapset söivät?`,`There were ${a} ${pf(a,t)} in a bowl. After the children had eaten some, ${c} ${c===1?'was':'were'} left. How many ${t.en[1]} did the children eat?`)}
   return{kind:'int',visual,text:story?null:`<span class="bg">${text}</span>`,story,ans,answerText:String(ans),hint,
     explain:`<p><b>${op==='+'?`${a} + ${ans} = ${c}`:`${a} − ${ans} = ${c}`}</b></p>`}}
@@ -1195,7 +1197,7 @@ function divProblem(a,b,rem,word,showPv){
   const q=Math.floor(a/b),r=a%b,st=divSteps(a,b);
   const JJ=E('jakojäännös','remainder'),osaan=E(b+' osaan','into '+b+' parts');
   const P={kind:rem?'divr':'int',ans:q,rem:r,answerText:rem?`${fmtInt(q)}, ${JJ} ${r}`:fmtInt(q),
-    ldiv:!word,dvd:a,dvs:b,text:word?null:`<span class="bg" style="font-size:.7em">${E('Laske allekkain','Work it out in columns')}</span>`,
+    ldiv:!word,dvd:a,dvs:b,text:null,
     visual:showPv&&!word?`${opnd(pv(a),a,a+E(' omenaa',' apples'))}${sign('/')}${opnd(plates(b),osaan,osaan)}${legend(false)}`:null,
     hint:E(`<p>Jaa luku osissa suurimmasta paikasta alkaen.</p><ol>${st[0]}</ol><p>Jatka samalla tavalla.</p>`,`<p>Divide the number in parts, starting from the biggest place value.</p><ol>${st[0]}</ol><p>Carry on the same way.</p>`),
     explain:`<p><b>${fmtInt(a)} : ${b} = ${fmtInt(q)}${r?`, ${JJ} ${r}`:''}</b></p>${word?'':ldivWorked(a,b)}<ol>${st.join('')}</ol>${r?`<p>${E('Tarkistus','Check')}: ${fmtInt(q)} · ${b} + ${r} = ${fmtInt(a)}.</p>`:''}`};
@@ -2121,7 +2123,7 @@ const SOLL1=['kuutio','pallo','lierio','kartio','sarmio'],SOLL2=['kuutio','pallo
 function solidGen(g){return L=>{
   if(L===3&&g>=3){const pool=g>=5?['kuutio','sarmio','pyramidi','kolmisarmio','kuusisarmio','tetra']:['kuutio','sarmio','pyramidi','kolmisarmio'];const k=solPick(pool),[f,e,v]=SOLC[k];
     const ask=pick(g>=5?['f','e','v']:['f','v']),ans={f,e,v}[ask],wN=E({f:'tahkoa',e:'särmää',v:'kärkeä'},{f:'faces',e:'edges',v:'vertices'})[ask];
-    return{kind:'int',showOk:1,visual:c3dBox({shape:k,th:-.5,hue:R(0,360)},SOLN[k]),text:plbl(E(`Montako ${wN} kappaleella (${SOLN[k]}) on?`,`How many ${wN} does the ${SOLN[k]} have?`),`${BOX} ${wN}`),ans,answerText:`${ans} ${wN}`,
+    return{kind:'int',showOk:1,visual:c3dBox({shape:k,th:-.5,hue:R(0,360)},SOLN[k]),text:plbl(E(`Kappale on ${SOLN[k]}. Montako ${wN} sillä on?`,`How many ${wN} does the ${SOLN[k]} have?`),`${BOX} ${wN}`),ans,answerText:`${ans} ${wN}`,
       hint:E('<p>Tahko on kappaleen tasainen pinta, särmä on kahden tahkon välinen reuna ja kärki on kohta, jossa särmät kohtaavat.</p><p>Pyöritä kappaletta ja laske järjestelmällisesti: ensin ylhäältä, sitten keskeltä ja lopuksi alhaalta.</p>','<p>A face is a flat surface of the solid, an edge is where two faces meet, and a vertex is a corner where edges meet.</p><p>Turn the solid and count systematically: first the top, then the middle, then the bottom.</p>'),
       explain:`<p>${SOLN[k]}: ${f} ${E('tahkoa','faces')}, ${e} ${E('särmää','edges')}, ${v} ${E('kärkeä','vertices')}.</p>${g>=6?`<p>${E('Tarkistus','Check')}: ${f} + ${v} − ${e} = 2</p>`:''}`}}
   const pool=L===1?SOLL1:SOLL2.concat(g>=5&&L===3?['kuusisarmio','tetra']:[]);const k=solPick(pool);const others=shuffle(pool.filter(x=>x!==k)).slice(0,3);const opts=shuffle([k,...others]);
@@ -2215,7 +2217,7 @@ function holeGen(g){return L=>{const moves=L===1?['roll']:L===2?['roll','yaw']:[
     if(hole.length===c.length&&L>1&&Math.random()<.6)continue;
     let st=c;for(let i=0;i<R(1,3);i++)st=pcNorm(st.map(PCROT[pick(moves)]));if(holeFit(pcProj(st),hole).ok)continue;if(Math.max(...hole.map(p=>p[0]))>4||Math.max(...st.map(p=>p[0]))>4)continue;
     const Q={hole};const prevP=P;P=Q;const vis=holeScene(st,0),ex=holeScene(tg,HWX+2,{badge:1});P=prevP;
-    return{kind:'turn',pc:st,hole,moves,tg,answerText:'',visual:`<div class="hwrap"><div id="hbox">${vis}</div><span class="hcap">${E('Pyöritä näkymää sormella','Drag to turn the view')}</span></div>`,
+    return{kind:'turn',pc:st,hole,moves,tg,answerText:'',visual:`<div class="hwrap"><div id="hbox">${vis}</div><span class="hcap">${E('Pyöritä sormella','Drag to turn')}</span></div>`,
       text:plbl(E('Käännä torni niin, että se mahtuu seinän aukosta, kun se liukuu nuolen suuntaan.','Turn the tower so that it fits through the hole in the wall when it slides in the direction of the arrow.'),''),
       failMsg:E('Oikea asento näkyy alla kohdassa Näin se lasketaan.','The right position is shown below.'),
       hint:E('<p>Kuvittele katsovasi tornia seinän aukon läpi, eli nuolen suunnasta vastaan. Miltä tornin ääriviiva näyttää sieltä katsottuna? Sen pitää mahtua aukon muotoon.</p><p>Kokeile napeilla: kierrä, pyöritä tai kallista tornia.</p>','<p>Imagine looking at the tower through the hole in the wall, against the arrow. What does the tower’s outline look like from there? It must fit the shape of the hole.</p><p>Try the buttons: spin the tower or turn it.</p>'),
@@ -2462,9 +2464,9 @@ function thermoBase(g){return(L,op,word)=>{
     if(Math.random()<.5)[a,b]=[b,a];
     const d=Math.abs(a-b),[lo,hi]=thermoScale([a,b]),cold=Math.min(a,b),warm=Math.max(a,b);
     let story=null,caps=E(['Aamulla','Iltapäivällä'],['Morning','Afternoon']);
-    if(word){if(Math.random()<.5)story=E(`Aamulla lämpötila oli ${degF(a)}. Iltapäivällä mittari näytti ${degF(b)}. Kuinka monta astetta lämpötila ${b>a?'nousi':'laski'}?`,`In the morning the temperature was ${degF(a)}. In the afternoon the thermometer showed ${degF(b)}. How many degrees did the temperature ${b>a?'rise':'fall'}?`);
+    if(word){if(Math.random()<.5)story=E(`Aamulla lämpötila oli ${degF(a)}. Iltapäivällä mittari näytti ${degF(b)}. Montako astetta lämpötila ${b>a?'nousi':'laski'}?`,`In the morning the temperature was ${degF(a)}. In the afternoon the thermometer showed ${degF(b)}. How many degrees did the temperature ${b>a?'rise':'fall'}?`);
       else{const[c1,c2]=shuffle(CITIES),cn=c=>EN&&c[1]==='Maarianhamina'?'Mariehamn':c[1];caps=[cn(c2),cn(c1)];const wc=b>a?c1:c2;
-        story=E(`${c2[0]} on ${degF(a)} ja ${c1[0]} ${degF(b)}. Kuinka monta astetta lämpimämpää on ${wc[0]}?`,`In ${cn(c2)} it is ${degF(a)} and in ${cn(c1)} it is ${degF(b)}. How many degrees warmer is it in ${cn(wc)}?`)}}
+        story=E(`${c2[0]} on ${degF(a)} ja ${c1[0]} ${degF(b)}. Montako astetta lämpimämpää on ${wc[0]}?`,`In ${cn(c2)} it is ${degF(a)} and in ${cn(c1)} it is ${degF(b)}. How many degrees warmer is it in ${cn(wc)}?`)}}
     const hint=EN?(cold<0&&warm>0?`<p>Count via zero. From the colder temperature, ${degF(cold)}, up to zero is ${-cold} degrees. From zero up to ${degF(warm)} is ${warm} degrees.</p><p>Add these together.</p>`
       :cold<0&&warm===0?`<p>Count how many degrees it is from ${degF(cold)} up to zero.</p>`
       :`<p>Both temperatures are below zero. The warmer one is the one closer to zero. The difference is ${-cold} − ${-warm}.</p>`)
@@ -2472,7 +2474,7 @@ function thermoBase(g){return(L,op,word)=>{
       :cold<0&&warm===0?`<p>Laske, montako astetta lämpötilasta ${degF(cold)} on nollaan.</p>`
       :`<p>Molemmat ovat pakkasella. Lämpimämpi on se, joka on lähempänä nollaa. Ero on ${-cold} − ${-warm}.</p>`;
     return{kind:'int',visual:`${thermoFig(a,lo,hi,caps[0])}${thermoFig(b,lo,hi,caps[1])}`,story,storyIcon:null,
-      text:word?null:`<span class="bg" style="font-size:.7em">${E('Kuinka monta astetta lämpötilat eroavat?','How many degrees apart are the temperatures?')}</span>`,unit:E('astetta','degrees'),ans:d,answerText:`${d} ${E('astetta','degrees')}`,hint,
+      text:word?null:`<span class="bg" style="font-size:.7em">${E('Montako astetta lämpötilat eroavat?','How many degrees apart are the temperatures?')}</span>`,unit:E('astetta','degrees'),ans:d,answerText:`${d} ${E('astetta','degrees')}`,hint,
       explain:`<p><b>${E(`Ero on ${d} astetta.`,`The difference is ${d} degrees.`)}</b></p><p>${cold<0&&warm>0?`${-cold} + ${warm} = ${d}`:`${degN(warm)} − (${degN(cold)}) = ${d}`}</p>`}}
   let t0,k;
   if(mode==='rise'){if(L===1){t0=-R(1,h);k=R(-t0+1,-t0+h)}else if(L===2){t0=-R(2,M);k=R(1,M)}else{t0=R(-M,h);k=R(2,M)}}
@@ -3220,7 +3222,7 @@ function shopGen(g){return L=>{
   const calc=offs.map((o,i)=>`<p>${SN[i][0]}: ${shCalc(o,N)}</p>`).join('');
   const hint=E(`<p>Laske jokaisesta kaupasta, paljonko ${N} ${part} maksaa yhteensä. Lue tarjoukset tarkasti.</p>${lo?'<p>Pusseja pitää ostaa kokonaisia, joten joskus osa jää yli. Silloin pussi voi tulla kalliimmaksi, vaikka kappalehinta on pienempi.</p>':''}${offs.some(o=>o.t==='pct')?'<p>Alennus vähennetään hinnasta: 50 % alennus tarkoittaa, että maksat puolet. 25 % on neljäsosa, 20 % viidesosa ja 10 % kymmenesosa hinnasta.</p>':''}<p>Kaikki kortin tieto ei vaikuta hintaan – mieti, mikä on olennaista.</p>`,`${offs.some(o=>o.t==='pct')?'<p>The discount comes off the price: 50 % off means you pay half. 25 % is a quarter, 20 % a fifth and 10 % a tenth of the price.</p>':''}<p>Work out how much ${N} ${part} cost in total in each shop. Read the offers carefully.</p>${lo?'<p>You have to buy whole bags, so sometimes some are left over. Then a bag can cost more in total, even if each one is cheaper.</p>':''}<p>Not everything on the cards affects the price – think about what matters.</p>`);
   if(save){const d=tt[worst]-tt[best];return{storyC:1,kind:Number.isInteger(d/100)?'int':'dec',ans:d/100,answerText:eurS(d),unit:'€',visual:vis,
-      story:E(`Tarvitset ${N} ${part}. Kuinka monta euroa säästät, kun ostat ne halvimmasta kaupasta kalleimman sijaan?`,`You need ${N} ${part}. How many euros do you save by buying them in the cheapest shop instead of the most expensive one?`),
+      story:E(`Tarvitset ${N} ${part}. Montako euroa säästät, kun ostat ne halvimmasta kaupasta kalleimman sijaan?`,`You need ${N} ${part}. How many euros do you save by buying them in the cheapest shop instead of the most expensive one?`),
       hint,explain:calc+`<p><b>${eurS(tt[worst])} − ${eurS(tt[best])} = ${eurS(d)}</b></p>`}}
   return{kind:'choice',shopopts:1,storyC:1,choices:offs.map((o,i)=>[String(i),shCard(o,i,k,ex[i])]),ans:String(best),answerText:SN[best][0],
     story:E(`Tarvitset ${N} ${part}. Mistä kaupasta saat ne halvimmalla?`,`You need ${N} ${part}. Which shop sells them cheapest?`),hint,
@@ -3816,7 +3818,7 @@ function mapGen(g){return L=>{
     hint:hintS+E(`<p>Mittakaava 1 : ${fmtInt(sc)} tarkoittaa, että 1 cm kartalla on ${fmtInt(sc)} cm luonnossa. ${fmtInt(sc)} cm = ${fmtInt(cmM)} m.</p>`,`<p>1 : ${fmtInt(sc)} means 1 cm on the map is ${fmtInt(sc)} cm in real life. ${fmtInt(sc)} cm = ${fmtInt(cmM)} m.</p>`),
     explain:`${solved}<p>${E(`Reitti on kartalla ${d} cm.`,`The route is ${d} cm on the map.`)}</p><p>1 cm = ${fmtInt(sc)} cm = ${fmtInt(cmM)} m</p><p><b>${d} · ${fmtInt(cmM)} m = ${mFm(dist)}</b></p>`};
   /* rev */const km=d*cmM/1000;return{kind:'int',ans:d,answerText:`${d} cm`,unit:'cm',visual:vis,storyC:1,
-    story:E(`Kartan mittakaava on 1 : ${fmtInt(sc)}. Matka ${A.el} ${B.il} on oikeasti ${String(km).replace('.',',')} km. Kuinka monta senttiä matka on kartalla?`,`The map scale is 1 : ${fmtInt(sc)}. The real distance from ${A.el} to ${B.il} is ${km} km. How many centimetres is it on the map?`),
+    story:E(`Kartan mittakaava on 1 : ${fmtInt(sc)}. Matka ${A.el} ${B.il} on oikeasti ${String(km).replace('.',',')} km. Montako senttiä matka on kartalla?`,`The map scale is 1 : ${fmtInt(sc)}. The real distance from ${A.el} to ${B.il} is ${km} km. How many centimetres is it on the map?`),
     hint:E(`<p>1 cm kartalla on ${fmtInt(cmM)} m luonnossa. Muuta ensin kilometrit metreiksi ja jaa sitten ${fmtInt(cmM)} metrillä.</p>`,`<p>1 cm on the map is ${fmtInt(cmM)} m in real life. Change the kilometres to metres and divide by ${fmtInt(cmM)}.</p>`),
     explain:`<p>${String(km).replace('.',',')} km = ${fmtInt(d*cmM)} m</p><p>1 cm = ${fmtInt(cmM)} m</p><p><b>${fmtInt(d*cmM)} m : ${fmtInt(cmM)} m = ${d} cm</b></p>${solved}`}}}
 
@@ -3880,7 +3882,7 @@ function unitGen(g){return(L,op,word)=>{const C=UCFG[g][L-1],[K]=two();
   const icon=s=>{const i=USYS[s].icon;return typeof i==='function'?i():i};
   if(C.mixed){const[sys,big,small]=pick(C.mixed),U=USYS[sys],r=U.u[big]/U.u[small];
     const a=R(1,g===2?3:9),b=R(1,r-1>99?999:r-1),ans=a*r+b,F=`${a} ${UL(big)} ${b} ${UL(small)}`;if(g===3&&ans>1000)return unitGen(g)(L,op,word);const st=word?unitStory(sys,F,small,K,ans*U.u[small]):null;if(word&&!st)return unitGen(g)(L,op,word);
-    return{kind:'int',visual:`<span class="uicon">${icon(sys)}</span>`,story:st,text:word?null:`<span class="bg">${F} = ${BOX} ${UL(small)}</span>`,unit:UL(small),ans,answerText:`${fmtInt(ans)} ${UL(small)}`,
+    return{kind:'int',visual:word?null:`<span class="uicon">${icon(sys)}</span>`,storyIcon:word?icon(sys):null,story:st,text:word?null:`<span class="bg">${F} = ${BOX} ${UL(small)}</span>`,unit:UL(small),ans,answerText:`${fmtInt(ans)} ${UL(small)}`,
       hint:E(`<p>Muuta ensin ${a} ${big} ${small}-yksiköiksi: ${a} · ${fmtInt(r)} = ${fmtInt(a*r)} ${small}. Lisää sitten ${b} ${small}.</p>`,`<p>First change ${a} ${UL(big)} into ${UL(small)}: ${a} · ${fmtInt(r)} = ${fmtInt(a*r)} ${UL(small)}. Then add ${b} ${UL(small)}.</p>`)+ladder(sys,big,small),
       explain:`<p><b>${F} = ${fmtInt(ans)} ${UL(small)}</b></p><p>${a} · ${fmtInt(r)} + ${b} = ${fmtInt(ans)}</p>`}}
   if(C.sum){for(let t=0;t<200;t++){const sys=pick(g===5?['len','vol','mass']:['len','vol','mass','money']),o=USYS[sys].order.filter(u=>sys!=='mass'||g===6||u!=='t');
@@ -3897,7 +3899,7 @@ function unitGen(g){return(L,op,word)=>{const C=UCFG[g][L-1],[K]=two();
         mass:B<300?`Taikinaan laitetaan ${A1} sokeria ja ${A2} voita. Paljonko niitä on yhteensä?${vt}`:B<=20000?`Kassissa on ${A1} omenoita ja ${A2} perunoita. Paljonko kassi painaa yhteensä?${vt}`:`Kuorma-autoon lastataan ${A1} ja ${A2} tavaraa. Paljonko kuorma painaa yhteensä?${vt}`,
         money:`${K.n} ostaa kirjan hintaan ${A1} ja kortin hintaan ${A2}. Paljonko hän maksaa yhteensä?${vt}`}[sys];
       const ou=tu===u1?u2:u1,ox=tu===u1?x2:x1,oc=ox*USYS[sys].u[ou]/USYS[sys].u[tu];
-      return{kind:'dec',visual:`<span class="uicon">${icon(sys)}</span>`,story,text:word?null:`<span class="bg">${F} = ${BOX} ${UL(tu)}</span>`,unit:UL(tu),ans:tot,answerText:uq(tot,tu),
+      return{kind:'dec',visual:word?null:`<span class="uicon">${icon(sys)}</span>`,storyIcon:word?icon(sys):null,story,text:word?null:`<span class="bg">${F} = ${BOX} ${UL(tu)}</span>`,unit:UL(tu),ans:tot,answerText:uq(tot,tu),
         hint:E(`<p>Muuta ensin molemmat samaan yksikköön (${tu}). Laske sitten yhteen.</p>`,`<p>First change both into the same unit (${UL(tu)}). Then add them together.</p>`)+convHint(sys,ou,tu,ox),
         explain:`<p><b>${F} = ${uq(tot,tu)}</b></p><p>${uq(ox,ou)} = ${uq(oc,tu)}, ${E('joten','so')} ${unum(tu===u1?x1:x2,tu)} + ${unum(oc,tu)} = ${unum(tot,tu)}.</p>`}}}
   for(let t=0;t<300;t++){const[sys,fu,tu]=pick(C.pairs),U=USYS[sys],ff=U.u[fu],ft=U.u[tu];
@@ -3906,7 +3908,7 @@ function unitGen(g){return(L,op,word)=>{const C=UCFG[g][L-1],[K]=two();
     const y=x*ff/ft;if(g<=3&&Math.max(x,y)>1000)continue;if(!(x>0)||dcnt(y)>(C.dTo!=null?C.dTo:0)||dcnt(x)>(C.dFrom||0)||y>1e6)continue;
     if(sys==='money'&&(dcnt(x)>0&&fu==='snt'||dcnt(y)>2))continue;
     const F=uq(x,fu),st=word?unitStory(sys,F,tu,K,x*ff):null;if(word&&!st)continue;
-    return{kind:dcnt(y)?'dec':'int',visual:`<span class="uicon">${icon(sys)}</span>`,story:st,text:word?null:`<span class="bg">${F} = ${BOX} ${UL(tu)}</span>`,unit:UL(tu),ans:y,answerText:uq(y,tu),
+    return{kind:dcnt(y)?'dec':'int',visual:word?null:`<span class="uicon">${icon(sys)}</span>`,storyIcon:word?icon(sys):null,story:st,text:word?null:`<span class="bg">${F} = ${BOX} ${UL(tu)}</span>`,unit:UL(tu),ans:y,answerText:uq(y,tu),
       hint:convHint(sys,fu,tu,x),explain:`<p><b>${F} = ${uq(y,tu)}</b></p><p>${unum(x,fu)} ${ff>ft?'·':':'} ${fmtInt(ff>ft?ff/ft:ft/ff)} = ${unum(y,tu)}</p>`}}
   return word?unitGen(g)(L,op,false):unitGen(g)(1,op,word)}}
 const ULV={2:['Eurot ja metrit','Kaksi yksikköä','Pienestä isoon'],3:['Isosta pieneen','Pienestä isoon','Kaksi yksikköä'],4:['Lähiyksiköt','Desimaaliksi','Desimaaleista'],5:['Desimaaliluvut','Kahden askeleen muunnokset','Yhteenlasku eri yksiköillä'],6:['Desimaaliluvut','Tonnit ja millilitrat','Yhteenlasku eri yksiköillä']};
@@ -4226,7 +4228,7 @@ function thermoDec(word){const mode=pick(['diff','diff','rise','drop']);
     if(EN)return{kind:'dec',visual:`${thermoFig(a,lo,hi,'Morning')}${thermoFig(b,lo,hi,'Afternoon')}`,story:`In the morning the temperature was ${degD(a)}. In the afternoon the thermometer showed ${degD(b)}. How many degrees did the temperature ${b>a?'rise':'fall'}?`,unit:'degrees',ans:d,answerText:`${unum(d)} degrees`,
       hint:cold<0&&warm>0?`<p>Count via zero: ${degD(cold)} is ${unum(-cold)} degrees below zero and ${degD(warm)} is ${unum(warm)} degrees above zero. Add these together.</p>`:`<p>Both are below zero. Work out ${unum(-cold)} − ${unum(-warm)}.</p>`,
       explain:`<p><b>The difference is ${unum(d)} degrees.</b></p>`};
-    return{kind:'dec',visual:`${thermoFig(a,lo,hi,'Aamulla')}${thermoFig(b,lo,hi,'Iltapäivällä')}`,story:`Aamulla lämpötila oli ${degD(a)}. Iltapäivällä mittari näytti ${degD(b)}. Kuinka monta astetta lämpötila ${b>a?'nousi':'laski'}?`,unit:'astetta',ans:d,answerText:`${unum(d)} astetta`,
+    return{kind:'dec',visual:`${thermoFig(a,lo,hi,'Aamulla')}${thermoFig(b,lo,hi,'Iltapäivällä')}`,story:`Aamulla lämpötila oli ${degD(a)}. Iltapäivällä mittari näytti ${degD(b)}. Montako astetta lämpötila ${b>a?'nousi':'laski'}?`,unit:'astetta',ans:d,answerText:`${unum(d)} astetta`,
       hint:cold<0&&warm>0?`<p>Laske nollan kautta: ${degD(cold)} on ${unum(-cold)} astetta nollan alapuolella ja ${degD(warm)} ${unum(warm)} astetta nollan yläpuolella. Laske nämä yhteen.</p>`:`<p>Molemmat ovat pakkasella. Laske ${unum(-cold)} − ${unum(-warm)}.</p>`,
       explain:`<p><b>Ero on ${unum(d)} astetta.</b></p>`}}
   const t0=mode==='rise'?-R(10,150)/10:R(10,150)/10,k=R(20,250)/10,t1=r1(mode==='rise'?t0+k:t0-k),[lo,hi]=thermoScale([t0,t1]);
@@ -4316,7 +4318,7 @@ function diaQuestion(cats,vals,unit,allowDiff,th){const D=th&&th.days;const i=R(
   const tot=vals.reduce((x,y)=>x+y,0);return{kind:'int',q:D?'How many loans were there in total?':'How many pupils answered the survey in total?',ans:tot,ex:`${vals.join(' + ')} = ${tot}`}}
   if(qt==='count')return{kind:'int',q:D?`Montako lainaa oli ${cats[i].l}?`:`Montako oppilasta ${dq(cats[i])}?`,ans:vals[i],ex:`${cats[i].n}: ${vals[i]}`};
   if(qt==='most'||qt==='least'){const k=vals.indexOf(qt==='most'?mx:mn);return{kind:'choice',q:D?`Minä päivänä lainoja oli ${qt==='most'?'eniten':'vähiten'}?`:`Mikä vaihtoehto sai ${qt==='most'?'eniten':'vähiten'} vastauksia?`,choices:cats.map((c,x)=>[String(x),D?cap(c.l.replace(/na$/,'')).replace('Maanantai','Maanantai'):c.n]),ans:String(k),ex:`${cats[k].n}: ${vals[k]}`}}
-  if(qt==='diff'){const[a,b]=vals[i]>=vals[j]?[i,j]:[j,i];if(vals[a]===vals[b])return diaQuestion(cats,vals,unit,allowDiff,th);return{kind:'int',q:D?`Kuinka monta lainaa enemmän oli ${cats[a].l} kuin ${cats[b].l}?`:`Kuinka monta oppilasta enemmän vastasi ”${cats[a].n.toLowerCase()}” kuin ”${cats[b].n.toLowerCase()}”?`,ans:vals[a]-vals[b],ex:`${vals[a]} − ${vals[b]} = ${vals[a]-vals[b]}`}}
+  if(qt==='diff'){const[a,b]=vals[i]>=vals[j]?[i,j]:[j,i];if(vals[a]===vals[b])return diaQuestion(cats,vals,unit,allowDiff,th);return{kind:'int',q:D?`Montako lainaa enemmän oli ${cats[a].l} kuin ${cats[b].l}?`:`Montako oppilasta enemmän vastasi ”${cats[a].n.toLowerCase()}” kuin ”${cats[b].n.toLowerCase()}”?`,ans:vals[a]-vals[b],ex:`${vals[a]} − ${vals[b]} = ${vals[a]-vals[b]}`}}
   const tot=vals.reduce((x,y)=>x+y,0);return{kind:'int',q:D?'Montako lainaa oli yhteensä?':'Montako oppilasta vastasi kyselyyn yhteensä?',ans:tot,ex:`${vals.join(' + ')} = ${tot}`}}
 function diaGen(g){return(L)=>{const th=pick(DTHEME),cats=th.cats.slice(0,g<=2?3:4);const n=cats.length;
   const mkQ=(vis,vals,allow,hint)=>{const Q=diaQuestion(cats,vals,th.u,allow,th);return{kind:Q.kind,choices:Q.choices,ans:Q.ans,answerText:Q.kind==='choice'?cats[+Q.ans].n:String(Q.ans),visual:vis,story:`${th.t} ${Q.q}`,hint,explain:`<p><b>${Q.ex}</b></p>`}};
@@ -4353,7 +4355,7 @@ function diaGen(g){return(L)=>{const th=pick(DTHEME),cats=th.cats.slice(0,g<=2?3
   if(th.days)return diaGen(g)(L);
   for(let t=0;t<100;t++){const ps=[pick([10,20,25,30,40,50])];while(ps.length<3){const rest=100-ps.reduce((a,b)=>a+b,0);if(ps.length===2){ps.push(rest);break}const p=pick([10,15,20,25,30,35,40].filter(x=>x<rest-5));if(!p)break;ps.push(p)}
     if(ps.length<3||ps.some(p=>p<=0))continue;const c3=cats.slice(0,3),N=pick([20,40,60,80,200]),q=Math.random()<.5;
-    if(q){const h=R(0,2),known=ps.filter((_,i)=>i!==h);return{kind:'int',visual:pieChart(c3,ps,h),story:`${th.t} ${E(`Kuinka monta prosenttia vastaajista vastasi ”${c3[h].n.toLowerCase()}”?`,`What percentage of the people answered “${c3[h].n.toLowerCase()}”?`)}`,unit:'%',ans:ps[h],answerText:`${ps[h]} %`,hint:E('<p>Koko ympyrä on 100 %. Vähennä tunnetut osat sadasta.</p>','<p>The whole circle is 100 %. Subtract the parts you know from 100.</p>'),explain:`<p><b>100 − ${known.join(' − ')} = ${ps[h]} %</b></p>`}}
+    if(q){const h=R(0,2),known=ps.filter((_,i)=>i!==h);return{kind:'int',visual:pieChart(c3,ps,h),story:`${th.t} ${E(`Montako prosenttia vastaajista vastasi ”${c3[h].n.toLowerCase()}”?`,`What percentage of the people answered “${c3[h].n.toLowerCase()}”?`)}`,unit:'%',ans:ps[h],answerText:`${ps[h]} %`,hint:E('<p>Koko ympyrä on 100 %. Vähennä tunnetut osat sadasta.</p>','<p>The whole circle is 100 %. Subtract the parts you know from 100.</p>'),explain:`<p><b>100 − ${known.join(' − ')} = ${ps[h]} %</b></p>`}}
     const h=R(0,2);if((ps[h]*N)%100)continue;const a=ps[h]*N/100;
     return{kind:'int',visual:pieChart(c3,ps,-1),story:`${th.t} ${E(`Vastaajia oli ${N}. Montako vastaajaa vastasi ”${c3[h].n.toLowerCase()}”?`,`${N} people answered. How many of them answered “${c3[h].n.toLowerCase()}”?`)}`,ans:a,answerText:String(a),hint:E(`<p>${ps[h]} % tarkoittaa ${ps[h]} sadasosaa. Laske ${ps[h]} % luvusta ${N}: ensin 1 % on ${N} : 100.</p>`,`<p>${ps[h]} % means ${ps[h]} hundredths. Work out ${ps[h]} % of ${N}: first, 1 % is ${N} : 100.</p>`),explain:`<p><b>${ps[h]} % · ${N} = ${a}</b></p>`}}
   return diaGen(g)(1)}}
@@ -4862,14 +4864,24 @@ function renderControls(){
 
 /* ---------- tehtävä ---------- */
 let P=null,tries=0,done=false;
+function storyB(t){if(/<b>|<strong/.test(t))return t;return t.replace(/(^|[.!?:]\s+)([^.!?<>:]*\?)\s*$/,(m,a,q)=>`${a}<b>${q}</b>`)}
+function normPrompts(){document.querySelectorAll('#sheet .expr span.bg').forEach(sp=>{const fs=sp.style.fontSize;if(!/^0?\.(55|62|7|75)em$/.test(fs))return;const t=sp.textContent.replace(/\s+/g,' ').trim();if(!/[a-zåäö]{3}/i.test(t))return;sp.style.fontSize=t.length<=48?'.7em':'.56em'})}
 function newProblem(keep){
   if(S.mix&&!(keep&&RND)){const g=S.grade,all=[];navTops(g).forEach(t=>navSubs(g,t).forEach(s=>navTypes(g,s).forEach(y=>all.push([t,s,y]))));
     const[t,s,y]=pick(all);RND=navPick(g,t.id,s.id,y.id)}
   const c=cur(),pr=prog();
   P=c.inst.gen(pr.level);tries=0;done=false;
-  if(EN)['story','text','hint','explain','answerText','unit','visual'].forEach(k=>{if(typeof P[k]==='string')P[k]=enFix(P[k])});
+  ['story','text','hint','explain','answerText','unit','visual'].forEach(k=>{if(typeof P[k]==='string')P[k]=EN?enFix(P[k]):fiFix(P[k])});
   draw()}
 
+/* suomen yksikkö luvun 1 jälkeen: "1 karkkia" -> "1 karkki" / "1 karkin" */
+const FI1={karkkia:['karkki','karkin'],euroa:['euro','euron'],keräilykorttia:['keräilykortti','keräilykortin'],tarraa:['tarra','tarran'],simpukkaa:['simpukka','simpukan'],helmeä:['helmi','helmen'],pistettä:['piste','pisteen'],pulloa:['pullo','pullon'],sivua:['sivu','sivun'],astetta:['aste','asteen'],heittoa:['heitto','heiton'],askelta:['askel','askeleen'],minuuttia:['minuutti','minuutin'],osaa:['osa','osan'],hedelmää:['hedelmä','hedelmän'],numeroa:['numero','numeron'],'ylimääräistä pulpettia':['ylimääräinen pulpetti','ylimääräisen pulpetin'],
+  mansikka:['mansikka','mansikan'],omena:['omena','omenan'],päärynä:['päärynä','päärynän'],appelsiini:['appelsiini','appelsiinin'],euro:['euro','euron']};
+const FI1GEN=new Set(['poimii','syö','lukee','saa','laittaa','keräsi','nousee','laskee','nousi','laski','peittää','siirtyy','ostaa','antaa','löytää','lukenut','syönyt','poiminut','kerännyt','saanut','ostanut']),FI1NOM=new Set(['on','oli','tarvitaan','Lisää','Vähennä','Laske','Siirry','Ero']);
+const FI1RE=new RegExp('(^|[^\\d,.\\/−+·:=-])1 ('+Object.keys(FI1).sort((a,b)=>b.length-a.length).join('|')+')(?![a-zåäö])','g');
+function fiFix(s){s=s.replace(/\bon 1 väliä luvusta/g,'on 1 välin päässä luvusta');
+  return s.replace(FI1RE,(m,a,w,off,str)=>{const pre=str.slice(Math.max(0,off-90),off+a.length).replace(/<[^>]*>/g,' ').split(/[.?!:]/).pop().trim().split(/\s+/).reverse();
+    let gen=false;for(const x of pre){if(FI1NOM.has(x))break;if(FI1GEN.has(x)){gen=true;break}}return `${a}1 ${FI1[w][gen?1:0]}`})}
 const SING={degrees:'degree',euros:'euro',stickers:'sticker',sweets:'sweet',points:'point',shells:'shell',beads:'bead','trading cards':'trading card',pages:'page',bottles:'bottle',books:'book',minutes:'minute',hours:'hour',squares:'square',steps:'step',balls:'ball',apples:'apple',pears:'pear',oranges:'orange',strawberries:'strawberry',pupils:'pupil',loans:'loan',answers:'answer',parts:'part',days:'day',weeks:'week',years:'year',evenings:'evening',kilometres:'kilometre',metres:'metre',litres:'litre',ways:'way',tests:'test',games:'game',listeners:'listener',passengers:'passenger',seats:'seat',levels:'level',tickets:'ticket',winners:'winner',friends:'friend',boxes:'box',bags:'bag',crates:'crate',sheets:'sheet',baskets:'basket',blocks:'block',rows:'row',groups:'group',numbers:'number'};
 const SINGRE=new RegExp('(^|[^\\d,.\\/−-])1 ((?:more |fewer |new |full |other )?)('+Object.keys(SING).join('|')+')\\b','g');
 function enFix(s){return s.replace(SINGRE,(m,a,b,w)=>`${a}1 ${b}${SING[w]}`).replace(/\b([Tt]here) are 1 /g,'$1 is 1 ').replace(/\b1 ([a-z]+) are (shared|put|packed|sold)/g,'1 $1 is $2')}
@@ -4920,10 +4932,10 @@ function draw(){const t=cur(),pr=prog();const IA=inlineAns();
       <div class="streak" id="streak">${streakHTML()}</div>
     </div>
     ${P.visual?`<div class="visual">${P.visual}</div>`:''}
-    ${P.story?`<div class="story${P.storyC?' c':''}">${P.storyIcon?`<span class="sicon" aria-hidden="true">${P.storyIcon}</span>`:''}<p>${P.story}</p></div>`:''}
+    ${P.story?`<div class="story">${P.storyIcon?`<span class="sicon" aria-hidden="true">${P.storyIcon}</span>`:''}<p>${storyB(P.story)}</p></div>`:''}
     ${P.text?`<div class="expr">${IA?P.text.replace(BOX,IA):P.text}</div>`:''}
     ${P.after||''}
-    ${P.kind==='col'?`<p class="inst"><span>${E('Laske allekkain. Aloita oikealta.','Work it out in columns. Start from the right.')}</span></p>`:''}
+    ${P.kind==='col'?`<p class="inst"><span>${E('Laske allekkain. Aloita oikealta.','Work it out in columns. Start from the right.')}</span></p>`:P.ldiv?`<p class="inst"><span>${E('Laske allekkain. Aloita vasemmalta.','Work it out in columns. Start from the left.')}</span></p>`:''}
     ${IA?'':answerHTML()}
     ${(kp=>`<div class="kpwrap${kp?' side':''}">${kp}`)(keypad())}
     <div class="actions">
@@ -4940,7 +4952,7 @@ function draw(){const t=cur(),pr=prog();const IA=inlineAns();
     <div class="panel" id="hint" hidden><h3>${E('Vihje','Hint')}</h3>${P.hint}</div>
     <div class="panel explain" id="explain" hidden><h3>${E('Näin se lasketaan','How to work it out')}</h3>${P.explain}</div>`;
   const first=P.kind==='coord'?$('#cx'):P.steps?$('#sc0'):P.kind==='col'?document.getElementById('r'+(P.L.N-1)):document.querySelector('#mw,#ans,#fn,#th,#me,#fq0,#tq0,#ca');
-  activeEl=first;if(first&&!holdFocus)first.focus({preventScroll:true});holdFocus=0;if(P.mount)P.mount()}
+  normPrompts();activeEl=first;if(first&&!holdFocus)first.focus({preventScroll:true});holdFocus=0;if(P.mount)P.mount()}
 function fb(msg,cls){const e=$('#fb');e.hidden=false;e.className='fb '+cls;e.innerHTML=msg}
 function evaluate(){
   if(P.kind==='turn')return holeEval();
