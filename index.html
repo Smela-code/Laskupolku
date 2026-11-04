@@ -149,7 +149,7 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--sun);outline-of
 .levels{display:flex;align-items:center;gap:6px;background:var(--paper);border-radius:999px;padding:2px}
 .lv{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);background:var(--paper);color:var(--ink);font:800 1rem var(--display);cursor:pointer}
 .lv[aria-pressed="true"]{background:var(--sun);border-color:var(--sun);color:#1C2742}
-.lvname{font-weight:700;font-size:.9rem;color:var(--soft);background:var(--paper);padding:0 6px;border-radius:6px}
+.lvname{font-weight:700;font-size:.9rem;color:var(--soft);background:var(--paper);padding:0 6px;border-radius:6px}@media (max-width:560px){.levels.long{flex-wrap:wrap;border-radius:14px;row-gap:2px}.levels.long .lvname{flex-basis:100%;padding:0 6px 4px}}
 .streak{display:flex;gap:5px;align-items:center;background:var(--paper);padding:2px 6px;border-radius:999px;font-size:.8rem;color:var(--soft);font-weight:700}
 .stlbl{font-size:.75rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--soft);padding-left:8px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
@@ -673,7 +673,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.11</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.12</span></h1>
       <p class="sub">Monipuolista matematiikkaa kuvien avulla 1.–6. luokalle: laskuja, lukuja, mittaamista, geometriaa, tilastoja ja päättelyä.</p>
     </div>
     <div class="hright">
@@ -1264,7 +1264,7 @@ function fdGen(g){return L=>{
       hint:E(`<p>Katso, montako desimaalia luvussa on: yksi desimaali → nimittäjä 10, kaksi → 100, kolme → 1000.</p><p>${dec} on ${fmtInt(u)} ${u===1?unitWord(k).replace(/aa$/,'a').replace(/s$/,''):unitWord(k)}.${gcd(u,D)>1?' Voit myös supistaa.':''}</p>`,`<p>Look at how many decimal places the number has: one place → denominator 10, two → 100, three → 1000.</p><p>${dec} is ${fmtInt(u)} ${u===1?unitWord(k).replace(/aa$/,'a').replace(/s$/,''):unitWord(k)}.${gcd(u,D)>1?' You can also simplify.':''}</p>`),explain:ex+(gcd(u,D)>1?`<p>${E('Supistettuna','Simplified')}: ${fracRes(u,D)}</p>`:'')}}
   return fdGen(g)(1)}}
 const pcf=p=>String(+p.toFixed(3)).replace('.',',');
-function pgrid(N,c){const[cols,rows]={100:[10,10],50:[10,5],25:[5,5],20:[5,4],10:[5,2],5:[5,1],4:[2,2]}[N],s=cols>5?20:28;let p='';
+function pgrid(N,c){const[cols,rows]={100:[10,10],50:[10,5],25:[5,5],20:[5,4],10:[5,2],5:[5,1],4:[2,2]}[N],s=Math.min(56,Math.floor(220/cols));let p='';
   for(let i=0;i<N;i++){const x=(i%cols)*s,y=Math.floor(i/cols)*s;p+=`<rect x="${x+1.5}" y="${y+1.5}" width="${s-3}" height="${s-3}" rx="3" fill="${i<c?'var(--cake)':'var(--plate)'}"/>`}
   return `<svg viewBox="0 0 ${cols*s} ${rows*s}" width="${cols*s}" height="${rows*s}" role="img" aria-label="${c}/${N}">${p}</svg>`}
 const decOf=(n,d)=>{let k=0;while(k<3&&(n*10**k)%d)k++;return fd({u:n*10**k/d,d:k})};
@@ -1474,7 +1474,7 @@ function areaGen(g){return L=>{
   const unitTxt=g===3?E('ruutua','squares'):'cm²';
   if((g<=4&&L===1)||(g===3&&L===3)){const half=g===3&&L===3||(g===4&&Math.random()<.4);const sh=polyo(g===3?5:6,g===3?4:4,g===3?R(4,10):R(7,14));
     const hv=half?addHalves(sh,2*R(1,g===3?2:3)):[];const A=sh.cells.length+hv.length/2;
-    return{kind:'int',showOk:1,visual:vis(gridSVG(sh,'area',0,hv)),text:plbl(g===3?E('Montako ruutua kuvion pinta-ala on?','How many squares is the area of the shape?'):E('Yksi ruutu on 1 cm². Laske kuvion pinta-ala.','One square is 1 cm². Find the area of the shape.'),`${E('Pinta-ala','Area')} = ${BOX} ${unitTxt}`),ans:A,answerText:A+' '+unitTxt,
+    return{kind:'int',showOk:1,visual:vis(gridSVG(sh,'area',0,hv)),text:plbl(g===3?E('Montako ruutua kuvion pinta-ala on?','How many squares is the area of the shape?'):E('Yksi ruutu on 1 cm². Laske kuvion pinta-ala.','One square is 1 cm². Find the area of the shape.'),g===3?`${BOX} ${unitTxt}`:`${E('Pinta-ala','Area')} = ${BOX} ${unitTxt}`),ans:A,answerText:A+' '+unitTxt,
       hint:E('<p>Pinta-ala kertoo, kuinka paljon tilaa kuvio peittää. Laske, montako ruutua kuviossa on.</p>','<p>The area tells you how much space the shape covers. Count how many squares there are in the shape.</p>')+(hv.length?E('<p>Kaksi puolikasta ruutua on yhdessä yksi kokonainen ruutu.</p>','<p>Two half squares make one whole square.</p>'):''),
       explain:`<p>${E('Kokonaisia ruutuja','Whole squares')}: ${sh.cells.length}${hv.length?`, ${E('puolikkaita','halves')}: ${hv.length} = ${hv.length/2} ${E('kokonaista','whole squares')}`:''}</p><p><b>${E('Pinta-ala','Area')} = ${A} ${unitTxt}</b></p>`+vis(gridSVG(sh,'area',1,hv))}}
   const mode=g===3?'rgrid':g===4?['rect','lsh'][L-2]:['rect','lsh',g===5?'miss':'tri'][L-1];
@@ -4879,7 +4879,7 @@ const FI1={karkkia:['karkki','karkin'],euroa:['euro','euron'],keräilykorttia:['
   mansikka:['mansikka','mansikan'],omena:['omena','omenan'],päärynä:['päärynä','päärynän'],appelsiini:['appelsiini','appelsiinin'],euro:['euro','euron']};
 const FI1GEN=new Set(['poimii','syö','lukee','saa','laittaa','keräsi','nousee','laskee','nousi','laski','peittää','siirtyy','ostaa','antaa','löytää','lukenut','syönyt','poiminut','kerännyt','saanut','ostanut']),FI1NOM=new Set(['on','oli','tarvitaan','Lisää','Vähennä','Laske','Siirry','Ero']);
 const FI1RE=new RegExp('(^|[^\\d,.\\/−+·:=-])1 ('+Object.keys(FI1).sort((a,b)=>b.length-a.length).join('|')+')(?![a-zåäö])','g');
-function fiFix(s){s=s.replace(/\bon 1 väliä luvusta/g,'on 1 välin päässä luvusta');
+function fiFix(s){s=s.replace(/\bon 1 väliä luvusta/g,'on 1 välin päässä luvusta').replace(/([Pp]inta)-ala/g,'$1\u2011ala');
   return s.replace(FI1RE,(m,a,w,off,str)=>{const pre=str.slice(Math.max(0,off-90),off+a.length).replace(/<[^>]*>/g,' ').split(/[.?!:]/).pop().trim().split(/\s+/).reverse();
     let gen=false;for(const x of pre){if(FI1NOM.has(x))break;if(FI1GEN.has(x)){gen=true;break}}return `${a}1 ${FI1[w][gen?1:0]}`})}
 const SING={degrees:'degree',euros:'euro',stickers:'sticker',sweets:'sweet',points:'point',shells:'shell',beads:'bead','trading cards':'trading card',pages:'page',bottles:'bottle',books:'book',minutes:'minute',hours:'hour',squares:'square',steps:'step',balls:'ball',apples:'apple',pears:'pear',oranges:'orange',strawberries:'strawberry',pupils:'pupil',loans:'loan',answers:'answer',parts:'part',days:'day',weeks:'week',years:'year',evenings:'evening',kilometres:'kilometre',metres:'metre',litres:'litre',ways:'way',tests:'test',games:'game',listeners:'listener',passengers:'passenger',seats:'seat',levels:'level',tickets:'ticket',winners:'winner',friends:'friend',boxes:'box',bags:'bag',crates:'crate',sheets:'sheet',baskets:'basket',blocks:'block',rows:'row',groups:'group',numbers:'number'};
@@ -4928,7 +4928,7 @@ function draw(){const t=cur(),pr=prog();const IA=inlineAns();
   $('#sheet').innerHTML=`
     ${S.mix?`<p class="mixlbl">${pathLabel(t)}</p>`:''}
     <div class="status">
-      <div class="levels" role="group" aria-label="${E('Taso','Level')}"><span class="stlbl">${E('Taso','Level')}</span>${[1,2,3].map(l=>`<button type="button" class="lv" data-level="${l}" aria-pressed="${l===pr.level}" aria-label="${E('Taso','Level')} ${l}">${l}</button>`).join('')}<span class="lvname">${lvLabel(t,pr.level)}</span></div>
+      <div class="levels${lvLabel(t,pr.level).length>18?' long':''}" role="group" aria-label="${E('Taso','Level')}"><span class="stlbl">${E('Taso','Level')}</span>${[1,2,3].map(l=>`<button type="button" class="lv" data-level="${l}" aria-pressed="${l===pr.level}" aria-label="${E('Taso','Level')} ${l}">${l}</button>`).join('')}<span class="lvname">${lvLabel(t,pr.level)}</span></div>
       <div class="streak" id="streak">${streakHTML()}</div>
     </div>
     ${P.visual?`<div class="visual">${P.visual}</div>`:''}
