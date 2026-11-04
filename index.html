@@ -142,6 +142,14 @@ h1{display:flex;flex-wrap:wrap;align-items:center;gap:.25em .35em}.ver{font:700 
 .tiles[hidden]{display:none}
 .tiles.tpath{display:block;max-width:440px;width:100%;margin:0 auto}
 .tpwrap{position:relative;width:100%}.tpath .trail{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.wsign{position:absolute;width:140px;transform:translate(-50%,-62px);display:flex;flex-direction:column;align-items:center;background:none;border:0;padding:0;cursor:pointer;font:inherit;color:#fff}
+.wsign .sboard{position:relative;z-index:1;width:100%;min-height:46px;display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:6px;row-gap:4px;background:var(--c);padding:6px 10px 8px 22px;box-shadow:inset 0 -4px 0 color-mix(in srgb,var(--c) 70%,#000);clip-path:polygon(16px 0,100% 0,100% 100%,16px 100%,0 50%);text-align:left}
+.wsign.r .sboard{padding:6px 22px 8px 10px;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 50%,calc(100% - 16px) 100%,0 100%)}
+.wsign .sic{width:22px;height:22px;flex:none}.wsign .sname{font:800 .82rem/1.12 var(--body);overflow-wrap:break-word;hyphens:manual;min-width:0}
+.wsign .sbar{grid-column:1/-1;height:3px;border-radius:2px;background:color-mix(in srgb,currentColor 32%,transparent)}.wsign .sbar i{display:block;height:100%;border-radius:2px;background:currentColor}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .wsign{color:#221d18}}:root[data-theme="dark"] .wsign{color:#221d18}
+.wsign .spost{width:7px;height:20px;background:var(--stem);border-radius:0 0 2px 2px;margin-top:-2px}
+.wsign:hover .sboard{filter:brightness(1.06)}.wsign:focus-visible{outline:none}.wsign:focus-visible .sboard{outline:3px solid var(--ink);outline-offset:-3px}.wsign:disabled{opacity:.45;cursor:default}
 .tpath .tile{position:absolute;width:108px;transform:translate(-50%,-34px);background:transparent}
 .tpath .tile .ti{width:64px;height:64px;border-radius:18px}.tpath .tile .tl{background:color-mix(in srgb,var(--bg) 85%,transparent);border-radius:6px;padding:1px 4px;font-size:.8rem}
 .tile .ti{position:relative}.tiles .tile .ti svg.tring{position:absolute;inset:-7px;width:calc(100% + 14px);height:calc(100% + 14px);pointer-events:none}
@@ -690,8 +698,8 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.19</span></h1>
-      <p class="sub">Matematiikkaa monipuolisesti ala-asteikäisille</p>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.20</span></h1>
+      <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
     <div class="langsw" role="group" aria-label="Kieli / Language"><button type="button" data-lang="fi" aria-pressed="true" lang="fi" title="Suomeksi">FI</button><button type="button" data-lang="en" aria-pressed="false" lang="en" title="In English">EN</button></div>
@@ -4895,24 +4903,34 @@ function navTile(kind,id,lbl,on,col,dis,pr,pos){const ring=pr>0?`<svg class="tri
 let navUp=true,holdFocus=0,showTask=false;
 function subProg(g,t,sb){const ty=navTypes(g,sb);if(!ty.length)return 0;let sc=0;ty.forEach(y=>{const k=`${g}|${t.id}|${sb.id}|${y.id}`,pr=(S.prog||{})[k];sc+=(S.medals||{})[k]?1:pr?(pr.level-1)/3+(pr.streak||0)/9:0});return Math.min(1,sc/ty.length)}
 function areaProg(g,t){const ss=navSubs(g,t);return ss.length?ss.reduce((a,sb)=>a+subProg(g,t,sb),0)/ss.length:0}
-function pathHTML(g,tops,selId,dis){const W=360,n=tops.length,DY=118,Y0=96,H=Y0+(n-1)*DY+90,mx=y=>180+34*Math.sin(y/62);
-  const pts=[];for(let y=14;y<=H-14;y+=6)pts.push([mx(y),y]);const main='M'+pts.map(p=>p[0].toFixed(1)+' '+p[1]).join('L');
-  const nodes=tops.map((t,i)=>{const y=Y0+i*DY,x=i%2?W-66:66;return{t,x,y}});
-  let side='';nodes.forEach(o=>{const m=mx(o.y),dir=o.x<180?-1:1;side+=`M${m.toFixed(1)} ${o.y+14}C${(m+dir*40).toFixed(1)} ${o.y+14} ${(o.x-dir*50).toFixed(1)} ${o.y} ${o.x} ${o.y}`});
+function signHTML(t,x,y,W,H,dis,pr,left){const nm=tr(t.n);return `<button type="button" class="wsign${left?' l':' r'}" data-nt="top" data-v="${t.id}" style="--c:var(${NCOL[t.id]||'--blue'});left:${(x/W*100).toFixed(2)}%;top:${(y/H*100).toFixed(2)}%"${dis?' disabled':''} aria-label="${esc(nm)}${pr>0?` – ${Math.round(pr*100)} %`:''}"><span class="sboard"><svg class="sic" viewBox="0 0 40 40" aria-hidden="true">${NICO[t.id]||''}</svg><span class="sname">${navShy(nm)}</span>${pr>0?`<span class="sbar" aria-hidden="true"><i style="width:${Math.max(6,Math.round(pr*100))}%"></i></span>`:''}</span><span class="spost" aria-hidden="true"></span></button>`}
+function pathHTML(g,tops,selId,dis){const W=360,n=tops.length,DY=94,Y0=84,H=Y0+(n-1)*DY+56,mx=y=>180+30*Math.sin(y/48);
+  const pts=[];for(let y=10;y<=H-14;y+=5)pts.push([mx(y),y]);const main='M'+pts.map(p=>p[0].toFixed(1)+' '+p[1]).join('L');
+  const nodes=tops.map((t,i)=>{const y=Y0+i*DY,left=i%2===0,x=left?78:W-78;return{t,x,y,left}});
+  let side='';nodes.forEach(o=>{const m=mx(o.y+10),dir=o.left?-1:1;side+=`M${m.toFixed(1)} ${o.y+10}C${(m+dir*36).toFixed(1)} ${o.y+10} ${(o.x-dir*40).toFixed(1)} ${o.y+2} ${o.x} ${o.y+2}`});
   const tree=(x,y,k=1)=>`<g transform="translate(${x} ${y}) scale(${k})"><rect x="-2.5" y="-6" width="5" height="16" rx="2" fill="var(--stem)"/><circle cx="0" cy="-16" r="13" fill="var(--good)"/><circle cx="-8" cy="-9" r="9" fill="var(--leaf)"/><circle cx="8" cy="-10" r="9" fill="var(--leaf)"/></g>`;
   const pine=(x,y,k=1)=>`<g transform="translate(${x} ${y}) scale(${k})"><rect x="-2" y="-4" width="4" height="10" fill="var(--stem)"/><path d="M0 -34L12 -14H6L15 -2H-15L-6 -14H-12Z" fill="var(--good)"/></g>`;
   const bush=(x,y)=>`<g transform="translate(${x} ${y})"><circle cx="-8" cy="-5" r="7" fill="var(--leaf)"/><circle cx="6" cy="-6" r="8" fill="var(--leaf)"/><circle cx="-1" cy="-11" r="7.5" fill="var(--good)"/><circle cx="-5" cy="-8" r="1.8" fill="var(--berry)"/><circle cx="4" cy="-12" r="1.8" fill="var(--berry)"/><circle cx="7" cy="-4" r="1.8" fill="var(--berry)"/></g>`;
   const flower=(x,y,c)=>`<g transform="translate(${x} ${y})"><path d="M0 0V-9" stroke="var(--leaf)" stroke-width="1.6"/>${[0,72,144,216,288].map(a=>`<circle cx="${(3.2*Math.sin(a*Math.PI/180)).toFixed(1)}" cy="${(-11-3.2*Math.cos(a*Math.PI/180)).toFixed(1)}" r="2.4" fill="var(${c})"/>`).join('')}<circle cx="0" cy="-11" r="1.8" fill="var(--sun)"/></g>`;
   const grass=(x,y)=>`<path d="M${x-4} ${y}q1-5 -2-9M${x} ${y}q0-6 1-11M${x+4} ${y}q-1-5 2-8" stroke="var(--leaf)" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
   const stone=(x,y,r=6)=>`<ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r*.62}" fill="var(--line)"/><ellipse cx="${x-r*.25}" cy="${y-r*.18}" rx="${r*.45}" ry="${r*.22}" fill="var(--paper)" opacity=".5"/>`;
+  const pond=(x,y)=>`<ellipse cx="${x}" cy="${y}" rx="30" ry="11" fill="var(--glass)" opacity=".45"/><ellipse cx="${x}" cy="${y}" rx="30" ry="11" fill="none" stroke="var(--glass)" stroke-width="1.5" opacity=".7"/><path d="M${x-18} ${y-2}q4-3 8 0M${x+6} ${y+3}q4-3 8 0" stroke="#fff" stroke-width="1.2" fill="none" opacity=".7"/>`;
+  const an=(k,x,y,s=.8,flip)=>`<g transform="translate(${x} ${y}) scale(${flip?-s:s} ${s}) translate(-24 -42)">${k}</g>`;
+  const A=[()=>ADR.kettu(),()=>ADR.kani('rus'),()=>ADR.ankka(),()=>ADR.pollo(),()=>ADR.sammakko(),()=>ADR.kilpikonna(),()=>ADR.lammas('valk'),()=>ADR.hevonen('rus')];
   const FC=['--candy','--apple','--sun','--berry'];let deco='';
-  nodes.forEach((o,i)=>{const op=o.x<180?W-62:62,y=o.y;deco+=i%3===0?tree(op,y+10,1.45)+bush(op-34*(op>180?1:-1),y+30):i%3===1?pine(op,y+14,1.5)+pine(op+26*(op>180?1:-1),y+22,1.05):bush(op,y+16)+tree(op+30*(op>180?1:-1),y-2,1.2);
-    deco+=flower(op+(op>180?-38:38),y+40,FC[i%4])+flower(op+(op>180?-28:28),y+46,FC[(i+1)%4])+grass(mx(y+58)+(i%2?-30:30),y+60)+stone(mx(y+70)+(i%2?28:-28),y+66,4+i%3)});
-  deco+=grass(mx(40)-28,40)+flower(mx(46)+30,48,'--candy')+grass(mx(H-30)+30,H-24)+flower(mx(H-36)-34,H-30,'--sun');
-  const flag=(x,y,chk)=>`<g transform="translate(${x} ${y})"><path d="M0 0V-28" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round"/>${chk?`<path d="M0 -28h18v12H0z" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.4"/><path d="M0 -28h4.5v6H0zM9 -28h4.5v6H9zM4.5 -22h4.5v6H4.5zM13.5 -22h4.5v6h-4.5z" fill="var(--ink)"/>`:`<path d="M0 -28l18 6L0 -16z" fill="var(--apple)"/>`}</g>`;
+  nodes.forEach((o,i)=>{const op=o.left?W-64:64,d=o.left?-1:1,y=o.y;
+    if(i%3===0)deco+=tree(op+d*14,y-22,1.35)+bush(op-d*26,y-2);else if(i%3===1)deco+=pine(op+d*10,y-14,1.4)+pine(op+d*34,y-4,1);else deco+=bush(op+d*20,y-20)+tree(op-d*20,y-30,1.1);
+    const k=i%A.length;
+    if(k===2)deco+=pond(op-d*6,y+16)+an(A[k](),op-d*12,y+18,.62,o.left);
+    else if(k===4)deco+=pond(op-d*4,y+18)+an(A[k](),op-d*4,y+20,.6,!o.left);
+    else if(k===3)deco+=an(A[k](),op+d*14,y-40,.5,0);
+    else deco+=an(A[k](),op-d*22,y+20,.75,o.left);
+    deco+=flower(op+d*30,y+24,FC[i%4])+flower(op+d*40,y+20,FC[(i+1)%4])+grass(o.x+(o.left?44:-44),y+40)+stone(mx(y+50)+(o.left?-30:30),y+52,3+i%3)+grass(mx(y+28)+(o.left?28:-28),y+30)});
+  deco+=grass(mx(30)-28,30)+flower(mx(36)+30,40,'--candy')+an(ADR.perhonen(),W-40,26,.5,0)+an(ADR.leppakerttu(),44,H-6,.42,0)+grass(mx(H-24)+28,H-18)+flower(mx(H-30)-30,H-22,'--sun');
+  const flag=(x,y)=>`<g transform="translate(${x} ${y})"><path d="M0 0V-28" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round"/><path d="M0 -28l18 6L0 -16z" fill="var(--apple)"/></g>`;
   const tr0=(d,w,c,extra='')=>`<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"${extra}/>`;
-  const svg=`<svg class="trail" viewBox="0 0 ${W} ${H}" aria-hidden="true">${deco}${tr0(side,19,'var(--line)')}${tr0(main,31,'var(--line)')}${tr0(side,15,'var(--plate)')}${tr0(main,27,'var(--plate)')}${tr0(main,2.4,'var(--soft)',' stroke-dasharray="1 10" opacity=".55"')}${tr0(side,2,'var(--soft)',' stroke-dasharray="1 9" opacity=".5"')}${flag(mx(16)+16,22)}${flag(mx(H-16)+16,H-8,1)}</svg>`;
-  return `<div class="tpwrap" style="aspect-ratio:${W}/${H}">${svg}${nodes.map(o=>navTile('top',o.t.id,tr(o.t.n),o.t.id===selId,NCOL[o.t.id]||'--blue',dis,dis?0:areaProg(g,o.t),`left:${(o.x/W*100).toFixed(2)}%;top:${(o.y/H*100).toFixed(2)}%`)).join('')}</div>`}
+  const svg=`<svg class="trail" viewBox="0 0 ${W} ${H}" aria-hidden="true">${tr0(side,19,'var(--line)')}${tr0(main,31,'var(--line)')}${tr0(side,15,'var(--plate)')}${tr0(main,27,'var(--plate)')}${tr0(main,2.4,'var(--soft)',' stroke-dasharray="1 10" opacity=".55"')}${tr0(side,2,'var(--soft)',' stroke-dasharray="1 9" opacity=".5"')}${deco}${flag(mx(30)+17,34)}</svg>`;
+  return `<div class="tpwrap" style="aspect-ratio:${W}/${H}">${svg}${nodes.map(o=>signHTML(o.t,o.x,o.y,W,H,dis,dis?0:areaProg(g,o.t),o.left)).join('')}</div>`}
 function applyView(){const sh=$('#sheet');sh.hidden=!showTask;const ft=document.querySelector('footer');if(ft)ft.hidden=!showTask;$('#goal').hidden=navUp&&!showTask;if(!showTask){$('#typeBox').hidden=true}}
 function navTiles(c){const g=S.grade,tT=$('#topTiles'),sT=$('#subTiles'),h=$('#navHead'),lbl=`<p class="lbl" id="navLbl">${E('Valitse alue','Choose an area')}</p>`;
   tT.classList.add('tpath');
@@ -4921,8 +4939,8 @@ function navTiles(c){const g=S.grade,tT=$('#topTiles'),sT=$('#subTiles'),h=$('#n
   if(navUp){h.innerHTML=lbl;tT.hidden=false;sT.hidden=true;sT.innerHTML='';tT.innerHTML=pathHTML(g,c.tops,null,0);return}
   h.innerHTML=`<button type="button" class="navback" id="navBack" aria-label="${E('Takaisin alueisiin','Back to areas')}"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4 6.5 10l6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>${E('Alueet','Areas')}</button><span class="navcur" style="--c:var(${col})"><span class="ti"><svg viewBox="0 0 40 40" aria-hidden="true">${NICO[c.top.id]||''}</svg></span><span id="navLbl">${tr(c.top.n)}</span></span>`;
   tT.hidden=true;tT.innerHTML='';sT.hidden=false;sT.innerHTML=c.subs.map(t=>navTile('sub',t.id,tr(t.n),showTask&&t.id===c.sub.id,col,0,subProg(g,c.top,t))).join('')}
-document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#navBack')){navUp=true;showTask=false;renderControls();const f=$(`#topTiles .tile[data-v="${S.top}"]`);if(f)f.focus();return}
-  const b=e.target.closest&&e.target.closest('.tile[data-nt]');if(!b||b.disabled)return;const c=cur(),g=S.grade;S.subs=S.subs||{};
+document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#navBack')){navUp=true;showTask=false;renderControls();const f=$(`#topTiles [data-v="${S.top}"]`);if(f)f.focus();return}
+  const b=e.target.closest&&e.target.closest('[data-nt]');if(!b||b.disabled)return;const c=cur(),g=S.grade;S.subs=S.subs||{};
   if(b.dataset.nt==='top'){navUp=false;showTask=false;S.top=b.dataset.v;renderControls();save();const f=$('#subTiles .tile');if(f)f.focus({preventScroll:true});return}
   if(showTask&&c.sub.id===b.dataset.v)return;S.subs[g+'|'+c.top.id]=b.dataset.v;showTask=true;
   holdFocus=1;renderControls();newProblem();holdFocus=0;save();const nf=$(`#subTiles .tile[aria-pressed="true"]`);if(nf)nf.focus({preventScroll:true});const sh=$('#sheet');if(sh&&sh.getBoundingClientRect().top>innerHeight*.6)sh.scrollIntoView({behavior:'smooth',block:'start'})});
