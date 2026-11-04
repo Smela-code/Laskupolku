@@ -689,8 +689,8 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.17</span></h1>
-      <p class="sub">Matematiikkaa kuvien avulla 1.–6. luokalle.</p>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.18</span></h1>
+      <p class="sub">Matematiikkaa monipuolisesti ala-asteikäisille</p>
     </div>
     <div class="hright">
     <div class="langsw" role="group" aria-label="Kieli / Language"><button type="button" data-lang="fi" aria-pressed="true" lang="fi" title="Suomeksi">FI</button><button type="button" data-lang="en" aria-pressed="false" lang="en" title="In English">EN</button></div>
@@ -734,7 +734,7 @@ const tr=s=>EN&&TR[s]||s;
 const GOALG={1:'<b>Numbers 0–20.</b> Addition and subtraction, number bonds for 0–10, and swapping the order (3 + 5 = 5 + 3).',2:'<b>Numbers 0–100.</b> Mental addition and subtraction, and place value: tens and ones.',3:'<b>Numbers 0–1000.</b> Mental maths with hundreds and tens, and column addition and subtraction.',4:'<b>Column calculations with bigger numbers,</b> column addition and subtraction with decimals, and fractions with the same denominator.',5:'<b>Numbers 0–1 000 000</b>, and addition and subtraction with decimals and fractions, including equivalent fractions.',6:'<b>Fractions with different denominators</b>: addition and subtraction, plus stronger decimal skills.'};
 
 if(EN){const q=s=>document.querySelector(s);
-  q('.sub').textContent='Maths with pictures for grades 1–6.';
+  q('.sub').textContent='Varied maths for primary school children';
   q('#playerBtn').setAttribute('aria-label','Player');
   document.querySelectorAll('.wrap > section > .lbl')[0].textContent='Grade';
   q('label[for="types"]').textContent='Task';q('#mixTxt').textContent='Surprise';
