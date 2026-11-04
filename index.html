@@ -110,6 +110,7 @@ h1{display:flex;flex-wrap:wrap;align-items:center;gap:.25em .35em}.ver{font:700 
 .ptl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}.ptl li{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:700}.ptl .pt{flex:1;min-width:0}
 .plv{display:inline-flex;align-items:center;gap:2px;flex:none}.plv i{width:7px;height:7px;border-radius:50%;background:var(--line)}.plv i.on{background:var(--blue)}.plv svg{width:16px;height:16px;margin-left:2px}
 .pchip{flex:none;font-size:.75rem;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--chip);color:var(--ink);white-space:nowrap}.pchip.good{background:var(--good-bg);color:var(--good)}.pchip.bad{background:var(--bad-bg);color:var(--bad)}.pchip.mid{background:var(--sun-bg)}
+.prst{display:flex;flex-direction:column;gap:6px;border-top:1px dashed var(--line);padding-top:10px}.prst .prowf{flex-wrap:wrap}.prst .btn{font-size:.85rem}
 .pall{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:8px 12px}.pall summary{cursor:pointer;font-weight:800;font-size:.9rem}.pall .ptl{margin-top:8px}
 .ptip{font-size:.82rem;color:var(--soft);margin:0}
 .pmed{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px}
@@ -689,7 +690,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.18</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.19</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala-asteikäisille</p>
     </div>
     <div class="hright">
@@ -4637,8 +4638,8 @@ const dnum=(off=0)=>{const d=new Date();d.setDate(d.getDate()-off);return Math.r
 function logEv(k,lv,res,up,down){S.log=S.log||[];S.log.push([dnum(),k,lv,res+(up?4:0)+(down?8:0)]);const lim=dnum()-400;if(S.log.length>6000||S.log[0][0]<lim)S.log=S.log.filter(e=>e[0]>=lim).slice(-6000)}
 let plPer=7;
 const plLvl=(st,k)=>{const m=(st.medals||{})[k],l=((st.prog||{})[k]||{}).level||1;return `<span class="plv" title="${E('Taso','Level')} ${l}">${[1,2,3].map(i=>`<i class="${i<=l?'on':''}"></i>`).join('')}${m?`<svg viewBox="0 0 24 24" aria-label="${E('Mitali','Medal')}"><circle cx="12" cy="14" r="7" fill="var(--sun)" stroke="var(--coin-edge)" stroke-width="1.5"/><path d="M8 2l4 6 4-6" fill="none" stroke="var(--blue)" stroke-width="3"/></svg>`:''}</span>`};
-function plReport(st){const N=plPer,from=dnum(N-1),days=st.days||{},lg=(st.log||[]).filter(e=>e[0]>=from);
-  const dayList=[...Array(N).keys()].reverse().map(o=>({d:today(o),n:days[today(o)]||0}));
+function plReport(st){const N=plPer,since=st.since||0,from=Math.max(dnum(N-1),since),days=st.days||{},lg=(()=>{let skip=st.sinceN||0;return(st.log||[]).filter(e=>{if(e[0]<from)return false;if(e[0]===since&&skip>0){skip--;return false}return true})})();
+  const dayList=[...Array(N).keys()].reverse().map(o=>({d:today(o),n:dnum(o)>since?days[today(o)]||0:dnum(o)===since?Math.max(0,(days[today(o)]||0)-(st.sinceD||0)):0}));
   const solved=dayList.reduce((a,x)=>a+x.n,0),played=dayList.filter(x=>x.n).length,first=lg.filter(e=>(e[3]&3)===0).length,ups=lg.filter(e=>e[3]&4).length;
   const by={};lg.forEach(e=>{const o=by[e[1]]||(by[e[1]]={k:e[1],n:0,ok:0,first:0,fail:0,up:0,down:0,last:0});o.n++;const r=e[3]&3;if(r<2)o.ok++;if(r===0)o.first++;if(r===2)o.fail++;if(e[3]&4)o.up++;if(e[3]&8)o.down++;o.last=Math.max(o.last,e[0])});
   const T=Object.values(by),lvl=k=>((st.prog||{})[k]||{}).level||1,med=k=>!!(st.medals||{})[k];
@@ -4654,7 +4655,7 @@ function plReport(st){const N=plPer,from=dnum(N-1),days=st.days||{},lg=(st.log||
   const bars=dayList.map((w,i)=>{const dt=new Date(w.d),lb=N===7?wd[dt.getDay()]:(i%5===4||i===N-1?String(dt.getDate()):'');return `<div class="pw" title="${dt.getDate()}.${dt.getMonth()+1}.: ${w.n}">${N===7?`<span class="pwn">${w.n||''}</span>`:''}<span class="pwb" style="height:${Math.max(w.n?4:2,w.n/wm*60)}px"></span><span class="pwl">${lb}</span></div>`}).join('');
   const nMed=Object.keys(st.medals||{}).length,ds=dayStreak(st);
   return `<p class="psum">${(st.stars||0)===1?E('<b>1</b> tähti','<b>1</b> star'):E(`<b>${st.stars||0}</b> tähteä`,`<b>${st.stars||0}</b> stars`)} · ${nMed===1?E('<b>1</b> mitali','<b>1</b> medal'):E(`<b>${nMed}</b> mitalia`,`<b>${nMed}</b> medals`)} · ${ds===1?E('<b>1</b> päivä putkeen','<b>1</b> day in a row'):E(`<b>${ds}</b> päivää putkeen`,`<b>${ds}</b> days in a row`)}</p>
-  <div class="pseg" role="group" aria-label="${E('Aikaväli','Period')}"><button type="button" data-pper="7" aria-pressed="${N===7}">${E('Viikko','Week')}</button><button type="button" data-pper="30" aria-pressed="${N===30}">${E('Kuukausi','Month')}</button></div>
+  <div class="pseg" role="group" aria-label="${E('Aikaväli','Period')}"><button type="button" data-pper="7" aria-pressed="${N===7}">${E('Viikko','Week')}</button><button type="button" data-pper="30" aria-pressed="${N===30}">${E('Kuukausi','Month')}</button></div>${since>dnum(N-1)?`<p class="ptip">${E('Seuranta aloitettu alusta','Tracking restarted on')} ${(d=>`${d.getDate()}.${d.getMonth()+1}.${d.getFullYear()}`)(new Date(since*864e5))}.</p>`:''}
   <div class="pstats"><div><b>${solved}</b><span>${E('oikein ratkaistu','solved')}</span></div><div><b>${lg.length?Math.round(first/lg.length*100)+' %':'–'}</b><span>${E('oikein heti','right first time')}</span></div><div><b>${played}</b><span>${E('pelipäivää','days played')}</span></div><div><b>${ups}</b><span>${E('tasonousua','levels up')}</span></div></div>
   <div class="pweek${N===30?' m':''}">${bars}</div>
   ${lg.length?sec(E('Vahvuudet','Strengths'),'good',strong,E('Vahvuudet näkyvät, kun samaa aihetta on tehty useamman kerran hyvin tuloksin.','Strengths appear once a topic has been done several times with good results.'))
@@ -4672,6 +4673,11 @@ function renderPlayers(mode){const p=curPl(),st=p.state;
   ${mode==='del'?`<div class="pconf"><p>${E(`Poistetaanko ${esc(p.name)}? Kaikki tämän pelaajan tähdet ja tasot häviävät.`,`Delete ${esc(p.name)}? All of this player's stars and levels will be lost.`)}</p><div class="prowf"><button type="button" class="btn pdel" data-pdelok="1">${E('Poista','Delete')}</button><button type="button" class="btn ghost" data-pdelno="1">${E('Peruuta','Cancel')}</button></div></div>`:''}
   ${p.av==null?`<p class="lbl">${E('Valitse hahmo','Choose a character')}</p><p class="ptip pavtip">${E('Hahmoa ei voi vaihtaa valinnan jälkeen.','You can’t change the character after choosing.')}</p><div class="pavg" role="group" aria-label="${E('Hahmo','Character')}">${AVS.map((a,i)=>`<button type="button" class="pavb" data-pav="${i}" aria-pressed="false" aria-label="${a.n}" title="${a.n}">${avSvg(i,avBg(p))}</button>`).join('')}</div>`:''}
   ${plReport(st)}
+  <div class="prst"><p class="lbl">${E('Nollaus','Reset')}</p>
+  ${mode==='rst1'?`<div class="pconf"><p>${E(`Nollataanko pelaajan ${esc(p.name)} viikko- ja kuukausiseuranta? Tähdet, tasot, mitalit ja päiväputki säilyvät.`,`Reset the weekly and monthly tracking for ${esc(p.name)}? Stars, levels, medals and the day streak are kept.`)}</p><div class="prowf"><button type="button" class="btn pdel" data-prstok="1">${E('Nollaa seuranta','Reset tracking')}</button><button type="button" class="btn ghost" data-pdelno="1">${E('Peruuta','Cancel')}</button></div></div>`
+   :mode==='rst2'?`<div class="pconf"><p>${E(`Nollataanko pelaajan ${esc(p.name)} tasot ja mitalit? Kaikki aiheet alkavat taas tasolta 1 ja seuranta nollautuu. Tähdet säilyvät.`,`Reset the levels and medals for ${esc(p.name)}? All topics start again from level 1 and tracking is reset. Stars are kept.`)}</p><div class="prowf"><button type="button" class="btn pdel" data-prstok="2">${E('Nollaa tasot','Reset levels')}</button><button type="button" class="btn ghost" data-pdelno="1">${E('Peruuta','Cancel')}</button></div></div>`
+   :`<div class="prowf"><button type="button" class="btn ghost" data-prst="1">${E('Nollaa seuranta','Reset tracking')}</button><button type="button" class="btn ghost" data-prst="2">${E('Nollaa tasot ja mitalit','Reset levels and medals')}</button></div>`}
+  <p class="ptip">${E('Tähdet säilyvät aina. Koko pelaajan voi poistaa roskakorista.','Stars are always kept. To remove the whole player, use the bin.')}</p></div>
   <p class="ptip">${E('Tiedot tallentuvat vain tähän selaimeen tällä laitteella. Niitä ei lähetetä minnekään.','Your data is saved only in this browser on this device. It is not sent anywhere.')}</p>`}
 function openPlayers(){renderPlayers();$('#pmodal').hidden=false;$('#playerBtn').setAttribute('aria-expanded','true')}
 function closePlayers(){$('#pmodal').hidden=true;$('#playerBtn').setAttribute('aria-expanded','false')}
@@ -4687,6 +4693,8 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');
   if(b.dataset.pdel){renderPlayers('del');const c=$('[data-pdelno]');if(c)c.focus();return}
   if(b.dataset.pedit){renderPlayers('edit');const r=$('#renName');if(r){r.focus();r.select()}return}
   if(b.dataset.pdelno){renderPlayers();return}
+  if(b.dataset.prst){renderPlayers('rst'+b.dataset.prst);const c=$('[data-prstok]');if(c)c.focus();return}
+  if(b.dataset.prstok){const st=curPl().state;st.since=dnum();st.sinceN=(st.log||[]).filter(e=>e[0]===st.since).length;st.sinceD=(st.days||{})[today()]||0;if(b.dataset.prstok==='2'){st.prog={};st.medals={}}save();if(st===S){renderControls();if(showTask)newProblem()}renderPlayers();return}
   if(b.dataset.pper){plPer=+b.dataset.pper;renderPlayers();const nb=document.querySelector(`[data-pper="${plPer}"]`);if(nb)nb.focus();return}
   if(b.dataset.pdelok){DB.players=DB.players.filter(p=>p.id!==DB.cur);if(!DB.players.length)DB.players.push({id:'p'+Date.now(),name:E('Pelaaja 1','Player 1'),col:0,state:mkState()});switchPlayer(DB.players[0].id);return}},true);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#pmodal').hidden)closePlayers();if(e.key==='Enter'&&e.target.closest&&e.target.closest('#pmodal')){e.stopImmediatePropagation();e.preventDefault();const b=e.target.id==='newName'?$('[data-padd]'):e.target.id==='renName'?$('[data-pren]'):null;if(b)b.click()}},true);
