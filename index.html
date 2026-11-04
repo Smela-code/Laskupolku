@@ -139,10 +139,10 @@ h1{display:flex;flex-wrap:wrap;align-items:center;gap:.25em .35em}.ver{font:700 
 .tile{display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 2px 6px;border-radius:16px;border:2px solid transparent;background:none;cursor:pointer;color:var(--ink);font:700 .74rem/1.15 var(--body);text-align:center;min-width:0}
 .tile .ti{width:54px;height:54px;border-radius:15px;display:grid;place-items:center;background:var(--c);color:#fff;box-shadow:0 3px 0 color-mix(in srgb,var(--c) 70%,#000)}.tile .ti svg{width:64%;height:64%}
 .tiles[hidden]{display:none}
-.tiles.tpath{display:block;position:relative;height:300px;max-width:560px;width:100%;margin:0 auto}
-.tpath .trail,.tpath .tflags{position:absolute;inset:0;width:100%;height:290px;pointer-events:none}.tpath .tflags{width:360px;max-width:100%}
-.tpath .tile{position:absolute;width:104px;transform:translate(-50%,-30px);background:transparent}
-.tpath .tile .ti{width:60px;height:60px;border-radius:17px}.tpath .tile .tl{background:color-mix(in srgb,var(--bg) 82%,transparent);border-radius:6px;padding:0 3px}
+.tiles.tpath{display:block;max-width:440px;width:100%;margin:0 auto}
+.tpwrap{position:relative;width:100%}.tpath .trail{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.tpath .tile{position:absolute;width:108px;transform:translate(-50%,-34px);background:transparent}
+.tpath .tile .ti{width:64px;height:64px;border-radius:18px}.tpath .tile .tl{background:color-mix(in srgb,var(--bg) 85%,transparent);border-radius:6px;padding:1px 4px;font-size:.8rem}
 .tile .ti{position:relative}.tiles .tile .ti svg.tring{position:absolute;inset:-7px;width:calc(100% + 14px);height:calc(100% + 14px);pointer-events:none}
 .tdone{position:absolute;right:-8px;top:-8px;width:20px;height:20px;border-radius:50%;background:var(--good);display:grid;place-items:center;box-shadow:0 0 0 2px var(--bg)}.tdone svg{width:16px;height:16px}
 .sheet[hidden],footer[hidden],.goal[hidden]{display:none}.ti .qm{fill:var(--paper)}.ti .cut{stroke:var(--c)}.ti .cutf{fill:var(--c)}.ti .ed{stroke:color-mix(in srgb,var(--c) 15%,var(--paper));stroke-width:1;stroke-linejoin:round}.tiles.sm .tile[aria-pressed="true"] .ti .ed{stroke:var(--c)}.tiles.sm .tile[aria-pressed="true"] .ti .qm{fill:var(--c)}.navhead{display:flex;align-items:center;gap:10px;min-height:34px}.navhead .lbl{margin:0}
@@ -689,7 +689,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.16</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.17</span></h1>
       <p class="sub">Matematiikkaa kuvien avulla 1.–6. luokalle.</p>
     </div>
     <div class="hright">
@@ -4887,11 +4887,24 @@ function navTile(kind,id,lbl,on,col,dis,pr,pos){const ring=pr>0?`<svg class="tri
 let navUp=true,holdFocus=0,showTask=false;
 function subProg(g,t,sb){const ty=navTypes(g,sb);if(!ty.length)return 0;let sc=0;ty.forEach(y=>{const k=`${g}|${t.id}|${sb.id}|${y.id}`,pr=(S.prog||{})[k];sc+=(S.medals||{})[k]?1:pr?(pr.level-1)/3+(pr.streak||0)/9:0});return Math.min(1,sc/ty.length)}
 function areaProg(g,t){const ss=navSubs(g,t);return ss.length?ss.reduce((a,sb)=>a+subProg(g,t,sb),0)/ss.length:0}
-const PXY=[[17,62],[50,62],[83,62],[83,212],[50,212],[17,212]];
-function pathHTML(g,tops,selId,dis){const flag=(x,y,chk)=>`<g transform="translate(${x} ${y})"><path d="M0 0V-26" stroke="var(--ink)" stroke-width="2.2" stroke-linecap="round"/>${chk?`<path d="M0 -26h16v11H0z" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.4"/><path d="M0 -26h4v5.5H0zM8 -26h4v5.5H8zM4 -20.5h4V-15H4zM12 -20.5h4V-15h-4z" fill="var(--ink)"/>`:`<path d="M0 -26l16 5.5L0 -15z" fill="var(--apple)"/>`}</g>`;
-  const svg=`<svg class="trail" viewBox="0 0 360 290" preserveAspectRatio="none" aria-hidden="true"><path d="M14 62H300C352 62 352 212 300 212H14" fill="none" stroke="var(--plate)" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/><path d="M14 62H300C352 62 352 212 300 212H14" fill="none" stroke="var(--line)" stroke-width="2.5" stroke-dasharray="2 9" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`;
-  const fl=`<svg class="tflags" viewBox="0 0 360 290" preserveAspectRatio="xMinYMin meet" aria-hidden="true">${flag(8,64)}${flag(8,214,1)}</svg>`;
-  return svg+fl+tops.map((t,i)=>{const[x,y]=PXY[i]||[50,62+150*Math.floor(i/3)];return navTile('top',t.id,tr(t.n),t.id===selId,NCOL[t.id]||'--blue',dis,dis?0:areaProg(g,t),`left:${x}%;top:${y}px`)}).join('')}
+function pathHTML(g,tops,selId,dis){const W=360,n=tops.length,DY=118,Y0=96,H=Y0+(n-1)*DY+90,mx=y=>180+34*Math.sin(y/62);
+  const pts=[];for(let y=14;y<=H-14;y+=6)pts.push([mx(y),y]);const main='M'+pts.map(p=>p[0].toFixed(1)+' '+p[1]).join('L');
+  const nodes=tops.map((t,i)=>{const y=Y0+i*DY,x=i%2?W-66:66;return{t,x,y}});
+  let side='';nodes.forEach(o=>{const m=mx(o.y),dir=o.x<180?-1:1;side+=`M${m.toFixed(1)} ${o.y+14}C${(m+dir*40).toFixed(1)} ${o.y+14} ${(o.x-dir*50).toFixed(1)} ${o.y} ${o.x} ${o.y}`});
+  const tree=(x,y,k=1)=>`<g transform="translate(${x} ${y}) scale(${k})"><rect x="-2.5" y="-6" width="5" height="16" rx="2" fill="var(--stem)"/><circle cx="0" cy="-16" r="13" fill="var(--good)"/><circle cx="-8" cy="-9" r="9" fill="var(--leaf)"/><circle cx="8" cy="-10" r="9" fill="var(--leaf)"/></g>`;
+  const pine=(x,y,k=1)=>`<g transform="translate(${x} ${y}) scale(${k})"><rect x="-2" y="-4" width="4" height="10" fill="var(--stem)"/><path d="M0 -34L12 -14H6L15 -2H-15L-6 -14H-12Z" fill="var(--good)"/></g>`;
+  const bush=(x,y)=>`<g transform="translate(${x} ${y})"><circle cx="-8" cy="-5" r="7" fill="var(--leaf)"/><circle cx="6" cy="-6" r="8" fill="var(--leaf)"/><circle cx="-1" cy="-11" r="7.5" fill="var(--good)"/><circle cx="-5" cy="-8" r="1.8" fill="var(--berry)"/><circle cx="4" cy="-12" r="1.8" fill="var(--berry)"/><circle cx="7" cy="-4" r="1.8" fill="var(--berry)"/></g>`;
+  const flower=(x,y,c)=>`<g transform="translate(${x} ${y})"><path d="M0 0V-9" stroke="var(--leaf)" stroke-width="1.6"/>${[0,72,144,216,288].map(a=>`<circle cx="${(3.2*Math.sin(a*Math.PI/180)).toFixed(1)}" cy="${(-11-3.2*Math.cos(a*Math.PI/180)).toFixed(1)}" r="2.4" fill="var(${c})"/>`).join('')}<circle cx="0" cy="-11" r="1.8" fill="var(--sun)"/></g>`;
+  const grass=(x,y)=>`<path d="M${x-4} ${y}q1-5 -2-9M${x} ${y}q0-6 1-11M${x+4} ${y}q-1-5 2-8" stroke="var(--leaf)" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
+  const stone=(x,y,r=6)=>`<ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r*.62}" fill="var(--line)"/><ellipse cx="${x-r*.25}" cy="${y-r*.18}" rx="${r*.45}" ry="${r*.22}" fill="var(--paper)" opacity=".5"/>`;
+  const FC=['--candy','--apple','--sun','--berry'];let deco='';
+  nodes.forEach((o,i)=>{const op=o.x<180?W-62:62,y=o.y;deco+=i%3===0?tree(op,y+10,1.45)+bush(op-34*(op>180?1:-1),y+30):i%3===1?pine(op,y+14,1.5)+pine(op+26*(op>180?1:-1),y+22,1.05):bush(op,y+16)+tree(op+30*(op>180?1:-1),y-2,1.2);
+    deco+=flower(op+(op>180?-38:38),y+40,FC[i%4])+flower(op+(op>180?-28:28),y+46,FC[(i+1)%4])+grass(mx(y+58)+(i%2?-30:30),y+60)+stone(mx(y+70)+(i%2?28:-28),y+66,4+i%3)});
+  deco+=grass(mx(40)-28,40)+flower(mx(46)+30,48,'--candy')+grass(mx(H-30)+30,H-24)+flower(mx(H-36)-34,H-30,'--sun');
+  const flag=(x,y,chk)=>`<g transform="translate(${x} ${y})"><path d="M0 0V-28" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round"/>${chk?`<path d="M0 -28h18v12H0z" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.4"/><path d="M0 -28h4.5v6H0zM9 -28h4.5v6H9zM4.5 -22h4.5v6H4.5zM13.5 -22h4.5v6h-4.5z" fill="var(--ink)"/>`:`<path d="M0 -28l18 6L0 -16z" fill="var(--apple)"/>`}</g>`;
+  const tr0=(d,w,c,extra='')=>`<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"${extra}/>`;
+  const svg=`<svg class="trail" viewBox="0 0 ${W} ${H}" aria-hidden="true">${deco}${tr0(side,19,'var(--line)')}${tr0(main,31,'var(--line)')}${tr0(side,15,'var(--plate)')}${tr0(main,27,'var(--plate)')}${tr0(main,2.4,'var(--soft)',' stroke-dasharray="1 10" opacity=".55"')}${tr0(side,2,'var(--soft)',' stroke-dasharray="1 9" opacity=".5"')}${flag(mx(16)+16,22)}${flag(mx(H-16)+16,H-8,1)}</svg>`;
+  return `<div class="tpwrap" style="aspect-ratio:${W}/${H}">${svg}${nodes.map(o=>navTile('top',o.t.id,tr(o.t.n),o.t.id===selId,NCOL[o.t.id]||'--blue',dis,dis?0:areaProg(g,o.t),`left:${(o.x/W*100).toFixed(2)}%;top:${(o.y/H*100).toFixed(2)}%`)).join('')}</div>`}
 function applyView(){const sh=$('#sheet');sh.hidden=!showTask;const ft=document.querySelector('footer');if(ft)ft.hidden=!showTask;$('#goal').hidden=navUp&&!showTask;if(!showTask){$('#typeBox').hidden=true}}
 function navTiles(c){const g=S.grade,tT=$('#topTiles'),sT=$('#subTiles'),h=$('#navHead'),lbl=`<p class="lbl" id="navLbl">${E('Valitse alue','Choose an area')}</p>`;
   tT.classList.add('tpath');
