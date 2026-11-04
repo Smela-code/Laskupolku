@@ -365,6 +365,7 @@ button.trow{cursor:pointer;touch-action:manipulation}button.trow:active{transfor
 .rcflag{position:absolute;left:108%;top:0;bottom:0;width:30px;transform:translateX(-50%);background:repeating-conic-gradient(#1d1d1d 0 25%,#fff 0 50%) 0 0/15px 15px;z-index:3;box-shadow:0 0 0 3px #1d1d1d;opacity:.92}
 .rcgo{position:absolute;left:66%;top:50%;transform:translate(-50%,-50%);z-index:3;font-size:1.15rem;padding:10px 26px}
 .rcctl{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:8px}.rcbtn{font-size:1.3rem;min-width:64px}#rcprog{font:800 1.1rem var(--display)}
+.bnsum{max-width:420px;margin:10px auto 0;padding:10px 14px;border:2px solid var(--line);border-radius:14px;background:var(--paper);font:600 .95rem/1.4 var(--body);color:var(--ink)}.bnsum p{margin:0}.bnsum ul{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}.bnsum .bnx{display:inline-grid;place-items:center;width:1.4em;height:1.4em;border-radius:50%;background:var(--bad);color:#fff;font:800 .8em/1 var(--body);margin-right:4px}
 .bnrule{text-align:center;font:800 1.25rem/1.3 var(--display);margin:4px 0 6px;color:var(--ink)}.bnwrap{position:relative;max-width:520px;width:100%;margin:0 auto;display:flex;justify-content:center;touch-action:none}.bnwrap canvas{display:block;border-radius:14px;touch-action:none;cursor:pointer}
 .rcstat{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:8px;flex-wrap:wrap}.rcen{display:inline-flex;align-items:center;gap:6px;color:var(--ink)}.rcen svg{width:22px;height:22px}#rcen{display:inline-flex;gap:3px}#rcen i{width:14px;height:20px;border-radius:3px;background:var(--line)}#rcen i.on{background:#FFC928;box-shadow:inset 0 0 0 1.5px #A07800}#rcen.drop{animation:rcpulse .4s}@keyframes rcpulse{50%{transform:scale(1.25)}}
 .rcdist{display:inline-flex;align-items:center;gap:8px;font:700 .85rem var(--body);color:var(--soft)}.rcbar{width:110px;height:10px;border-radius:6px;background:var(--line);overflow:hidden}.rcbar i{display:block;height:100%;background:var(--blue)}
@@ -672,7 +673,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.08</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.09</span></h1>
       <p class="sub">Monipuolista matematiikkaa kuvien avulla 1.–6. luokalle: laskuja, lukuja, mittaamista, geometriaa, tilastoja ja päättelyä.</p>
     </div>
     <div class="hright">
@@ -3659,6 +3660,7 @@ document.addEventListener('click',e=>{if(!P||P.kind!=='race'||done)return;const 
 document.addEventListener('keydown',e=>{if(!P||P.kind!=='race'||done)return;if(e.key==='ArrowUp'||e.key==='w'){raceMove(-1);e.preventDefault()}else if(e.key==='ArrowDown'||e.key==='s'){raceMove(1);e.preventDefault()}});
 /* torjuntapeli */
 const isPrime=n=>{if(n<2)return false;for(let d=2;d*d<=n;d++)if(n%d===0)return false;return true};
+const BSH1={tri:E('kolmio','triangle'),sq:E('neliö','square'),hex:E('kuusikulmio','hexagon'),rect:E('suorakulmio','rectangle')};
 const BSH={tri:E('kolmiot','triangles'),sq:E('neliöt','squares'),hex:E('kuusikulmiot','hexagons'),rect:E('suorakulmiot','rectangles')};
 function bnRules(g,L){const num=(t,lo,hi,f)=>({t,mk:()=>{const want=Math.random()<.45;for(let k=0;k<200;k++){const v=R(lo,hi);if(!!f(v)===want)return{v:fmtInt(v),hit:want}}const v=R(lo,hi);return{v:fmtInt(v),hit:!!f(v)}}});
   const shp=k=>({t:E(`Torju ${BSH[k]}`,`Block the ${BSH[k]}`),mk:()=>{const want=Math.random()<.45,ks=Object.keys(BSH);const s=want?k:pick(ks.filter(x=>x!==k));return{s,hit:s===k}}});
@@ -3673,12 +3675,21 @@ function bnRules(g,L){const num=(t,lo,hi,f)=>({t,mk:()=>{const want=Math.random(
 function bounceGen(g){return L=>{const rule=bnRules(g,L),goal=L===1?10:L===2?15:20,sp=(g<=2?.85:1)*(L===1?170:L===2?200:230);
   return{kind:'bounce',bn:{rule,goal,sp,L,state:'ready',tries:0},answerText:'',visual:null,storyC:1,
     story:E(`Palloja putoaa ylhäältä. Ohjaa alareunan mailaa ja torju vain ne pallot, jotka sääntö sanoo. Muut pallot saavat mennä ohi. Jos torjut väärän pallon tai torjuttava pallo pääsee läpi, menetät sydämen. Kun sydämet loppuvat, peli loppuu. Torju ${goal} oikeaa palloa!`,`Balls fall from above. Move the paddle at the bottom and block only the balls the rule says. Let the other balls go past. Blocking a wrong ball or letting a ball you should block get through costs a heart. When the hearts run out, the game ends. Block ${goal} right balls!`),
-    after:`<p class="bnrule">${rule.t}</p><div class="bnwrap" id="bnwrap"><canvas id="bncv" aria-label="${E('Pelialue','Game area')}"></canvas><button type="button" class="btn rcgo" id="bngo">${E('Aloita','Start')}</button></div><div class="rcctl"><button type="button" class="btn ghost rcbtn" data-bnm="-1" aria-label="${E('Vasemmalle','Left')}">◀</button><button type="button" class="btn ghost rcbtn" data-bnm="1" aria-label="${E('Oikealle','Right')}">▶</button></div><p class="rctip">${E('Liikuta mailaa sormella tai hiirellä pelialueella, nuolinäppäimillä tai napeilla.','Move the paddle with your finger or mouse on the game area, the arrow keys or the buttons.')}</p>`,
+    after:`<p class="bnrule">${rule.t}</p><div class="bnwrap" id="bnwrap"><canvas id="bncv" aria-label="${E('Pelialue','Game area')}"></canvas><button type="button" class="btn rcgo" id="bngo">${E('Aloita','Start')}</button></div><div class="bnsum" id="bnsum" aria-live="polite" hidden></div><div class="rcctl"><button type="button" class="btn ghost rcbtn" data-bnm="-1" aria-label="${E('Vasemmalle','Left')}">◀</button><button type="button" class="btn ghost rcbtn" data-bnm="1" aria-label="${E('Oikealle','Right')}">▶</button></div><p class="rctip">${E('Liikuta mailaa sormella tai hiirellä pelialueella, nuolinäppäimillä tai napeilla.','Move the paddle with your finger or mouse on the game area, the arrow keys or the buttons.')}</p>`,
     mount:()=>{const c=$('#check'),h=$('#hintBtn');if(c)c.hidden=true;if(h)h.hidden=true;bnInit()},
     failMsg:E('Yritä uudelleen seuraavassa pelissä!','Try again in the next game!'),explain:`<p>${rule.t}.</p>`}}}
 function bnInit(){const B=P.bn,cv=$('#bncv'),wrap=$('#bnwrap');if(!cv)return;const W=Math.round(Math.min((wrap.clientWidth||340)*.86,360)),H=Math.round(W*1.3),dpr=window.devicePixelRatio||1;
   cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';const ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
-  Object.assign(B,{W,H,ctx,px:W/2,pw:Math.max(80,W*.24),ph:14,py:H-30,balls:[],score:0,hearts:3,keys:{},t:0,next:0});bnDraw()}
+  Object.assign(B,{W,H,ctx,px:W/2,pw:Math.max(80,W*.24),ph:14,py:H-30,balls:[],score:0,hearts:3,keys:{},t:0,next:0,fx:[],errs:[],hurt:-9});bnDraw()}
+const BNOUT=()=>E('Sydämet loppuivat! Katso virheet pelin alta.','Out of hearts! See your mistakes below the game.');
+const bnLbl=b=>b.s?BSH1[b.s]:b.v;
+function bnErr(B,b,k){B.errs.push({k,s:b.s,v:b.v});B.hurt=B.t;
+  B.fx.push({t:B.t,x:b.x,y:k==='wrong'?B.py-30:B.H-48,txt:k==='wrong'?E(`${cap(String(bnLbl(b)))}: väärä pallo!`,`${cap(String(bnLbl(b)))}: wrong ball!`):E(`${cap(String(bnLbl(b)))} pääsi ohi!`,`${cap(String(bnLbl(b)))} got past!`)});B.fx=B.fx.filter(f=>B.t-f.t<1.6)}
+function bnSummary(B,won){const el=$('#bnsum');if(!el)return;const rl=`<i>${B.rule.t}</i>`,it=e=>e.s?E(`${BSH1[e.s]}pallon`,`the ${BSH1[e.s]} ball`):E(`pallon ${e.v}`,`ball ${e.v}`);
+  const li=B.errs.map(e=>e.k==='wrong'?`<li><span class="bnx">✕</span> ${E(`Torjuit ${it(e)}, vaikka sitä ei olisi pitänyt torjua.`,`You blocked ${it(e)}, but it should have gone past.`)}</li>`
+    :`<li><span class="bnx">↓</span> ${E(`Päästit ${it(e)} ohi, vaikka se olisi pitänyt torjua.`,`You let ${it(e)} get past, but it should have been blocked.`)}</li>`).join('');
+  el.innerHTML=B.errs.length?`<p><b>${E(`Virheet (${B.errs.length}):`,`Mistakes (${B.errs.length}):`)}</b> ${E('Sääntö oli','The rule was')} ${rl}.</p><ul>${li}</ul>`
+    :`<p><b>${won?E('Ei yhtään virhettä – hienoa!','No mistakes at all – great!'):''}</b></p>`;el.hidden=!B.errs.length&&!won}
 function bnCol(n){const cs=getComputedStyle(document.documentElement);return cs.getPropertyValue(n).trim()||'#888'}
 function bnShape(ctx,s,x,y,r){ctx.beginPath();if(s==='tri'){ctx.moveTo(x,y-r);ctx.lineTo(x+r*.95,y+r*.7);ctx.lineTo(x-r*.95,y+r*.7);ctx.closePath()}else if(s==='sq'){ctx.rect(x-r*.75,y-r*.75,r*1.5,r*1.5)}else if(s==='hex'){for(let i=0;i<6;i++){const a=i*Math.PI/3;ctx.lineTo(x+r*.95*Math.cos(a),y+r*.95*Math.sin(a))}ctx.closePath()}else{ctx.rect(x-r*1.05,y-r*.55,r*2.1,r*1.1)}ctx.fill()}
 function bnDraw(){const B=P.bn,c=B.ctx;if(!c)return;const{W,H}=B;c.clearRect(0,0,W,H);c.fillStyle=bnCol('--paper');c.fillRect(0,0,W,H);
@@ -3686,7 +3697,11 @@ function bnDraw(){const B=P.bn,c=B.ctx;if(!c)return;const{W,H}=B;c.clearRect(0,0
   for(const b of B.balls){c.globalAlpha=b.pop?Math.max(0,1-b.pop/0.35):b.up?.3:1;c.fillStyle=b.bad?bnCol('--bad'):b.col;c.beginPath();c.arc(b.x,b.y,b.r,0,7);c.fill();c.fillStyle='#fff';
     if(b.s)bnShape(c,b.s,b.x,b.y,b.r*.55);else{c.font=`800 ${b.v.length>2?15:18}px ${getComputedStyle(document.body).fontFamily}`;c.textAlign='center';c.textBaseline='middle';c.fillText(b.v,b.x,b.y+1)}c.globalAlpha=1}
   c.fillStyle=bnCol('--blue');const x0=B.px-B.pw/2;c.beginPath();c.roundRect?c.roundRect(x0,B.py,B.pw,B.ph,7):c.rect(x0,B.py,B.pw,B.ph);c.fill();
-  c.font=`800 16px ${getComputedStyle(document.body).fontFamily}`;c.textBaseline='top';c.textAlign='left';c.fillStyle=bnCol('--bad');c.fillText('♥'.repeat(B.hearts)+'♡'.repeat(3-B.hearts),10,8);
+  const ff0=getComputedStyle(document.body).fontFamily,hk=Math.max(0,1-(B.t-B.hurt)/.6);
+  if(hk>0){c.save();c.globalAlpha=hk*.55;c.strokeStyle=bnCol('--bad');c.lineWidth=10;c.strokeRect(5,5,W-10,H-10);c.restore()}
+  for(const f of B.fx){const q=B.t-f.t,a=q<1.1?1:Math.max(0,1-(q-1.1)/.4),y=f.y-q*26;if(a<=0)continue;c.save();c.globalAlpha=a;c.font=`800 15px ${ff0}`;c.textAlign='center';c.textBaseline='middle';
+    const tw=c.measureText(f.txt).width+22,x=Math.max(tw/2+4,Math.min(W-tw/2-4,f.x));c.fillStyle=bnCol('--bad');c.beginPath();c.roundRect?c.roundRect(x-tw/2,y-14,tw,28,14):c.rect(x-tw/2,y-14,tw,28);c.fill();c.fillStyle='#fff';c.fillText(f.txt,x,y+1);c.restore()}
+  c.save();c.font=`800 ${16+hk*8}px ${ff0}`;c.textBaseline='top';c.textAlign='left';c.fillStyle=bnCol('--bad');c.fillText('♥'.repeat(B.hearts)+'♡'.repeat(3-B.hearts),10,8);c.restore();c.font=`800 16px ${ff0}`;c.textBaseline='top';
   c.textAlign='right';c.fillStyle=bnCol('--ink');c.fillText(`${B.score} / ${B.goal}`,W-10,8)}
 function bnSpawn(B){const r=22,rnd=B.rule.mk(),sp=B.sp*(1+B.score*.035),a=(Math.random()*.6+.25)*(Math.random()<.5?-1:1);
   B.balls.push({...rnd,r,x:R(r+4,B.W-r-4),y:-r,vx:Math.sin(a)*sp,vy:Math.cos(a)*sp,col:bnCol(pick(['--apple','--good','--candy','--orange','--blk']))})}
@@ -3700,12 +3715,12 @@ function bnLoop(ts){const B=P&&P.bn;if(!B||P.kind!=='bounce'||B.state!=='run'||!
     if(b.vy>0&&!b.up&&b.y+b.r>=B.py&&b.y+b.r<=B.py+B.ph+b.vy*dt+2&&Math.abs(b.x-B.px)<=B.pw/2+b.r*.6){
       if(b.hit){const off=Math.max(-1,Math.min(1,(b.x-B.px)/(B.pw/2))),s=Math.hypot(b.vx,b.vy),ang=off*1.05;b.vx=Math.sin(ang)*s;b.vy=-Math.abs(Math.cos(ang)*s);b.up=1;b.y=B.py-b.r;B.score++;
         if(B.score>=B.goal){bnWin(B);return}}
-      else{b.bad=1;b.pop=.001;B.hearts--;if(B.hearts<=0){bnEnd(B,E(`Sydämet loppuivat! Viimeksi torjuit pallon ${b.v||''}, jota ei olisi pitänyt torjua.`.replace('pallon , ','pallon, '),`Out of hearts! You last blocked a ball you should have let through.`));return}}}
+      else{b.bad=1;b.pop=.001;bnErr(B,b,'wrong');B.hearts--;if(B.hearts<=0){bnDraw();bnEnd(B,BNOUT());return}}}
     if(b.up&&b.y<-b.r)b.out=1;
-    if(b.y-b.r>B.H){b.out=1;if(b.hit&&!b.up){B.hearts--;if(B.hearts<=0){bnDraw();bnEnd(B,b.s?E('Sydämet loppuivat! Viimeinen torjuttava pallo pääsi läpi.','Out of hearts! The last ball you should have blocked got through.'):E(`Sydämet loppuivat! Pallo ${b.v} pääsi läpi, vaikka se olisi pitänyt torjua.`,`Out of hearts! Ball ${b.v} got through although you should have blocked it.`));return}}}}
+    if(b.y-b.r>B.H){b.out=1;if(b.hit&&!b.up){bnErr(B,b,'miss');B.hearts--;if(B.hearts<=0){bnDraw();bnEnd(B,BNOUT());return}}}}
   const live=B.balls.filter(b=>!b.pop&&!b.out&&!b.up);for(let i=0;i<live.length;i++)for(let j=i+1;j<live.length;j++){const a=live[i],c=live[j],dx=c.x-a.x,dy=c.y-a.y,d=Math.hypot(dx,dy),m=a.r+c.r;if(d>0&&d<m){const nx=dx/d,ny=dy/d,ov=(m-d)/2;a.x-=nx*ov;a.y-=ny*ov;c.x+=nx*ov;c.y+=ny*ov;const rel=(a.vx-c.vx)*nx+(a.vy-c.vy)*ny;if(rel>0){a.vx-=rel*nx;a.vy-=rel*ny;c.vx+=rel*nx;c.vy+=rel*ny}}}
-  B.balls=B.balls.filter(b=>!b.out&&!(b.pop&&b.pop>.35));bnDraw();requestAnimationFrame(bnLoop)}
-function bnWin(B){B.state='win';const cols=['--apple','--good','--candy','--orange','--blk','--sun'].map(bnCol),ps=[];for(let i=0;i<90;i++){const a=-Math.PI/2+(Math.random()-.5)*2.2,v=200+Math.random()*320;ps.push({x:B.px+(Math.random()-.5)*B.pw,y:B.py,vx:Math.cos(a)*v,vy:Math.sin(a)*v,c:pick(cols),s:4+Math.random()*5,r:Math.random()*6})}
+  B.balls=B.balls.filter(b=>!b.out&&!(b.pop&&b.pop>.35));B.fx=B.fx.filter(f=>B.t-f.t<1.6);bnDraw();requestAnimationFrame(bnLoop)}
+function bnWin(B){B.state='win';bnSummary(B,1);const cols=['--apple','--good','--candy','--orange','--blk','--sun'].map(bnCol),ps=[];for(let i=0;i<90;i++){const a=-Math.PI/2+(Math.random()-.5)*2.2,v=200+Math.random()*320;ps.push({x:B.px+(Math.random()-.5)*B.pw,y:B.py,vx:Math.cos(a)*v,vy:Math.sin(a)*v,c:pick(cols),s:4+Math.random()*5,r:Math.random()*6})}
   const t0=performance.now(),c=B.ctx,ff=getComputedStyle(document.body).fontFamily;let lt=t0;
   const fr=t=>{if(!c.canvas.isConnected)return;const dt=Math.min(.05,(t-lt)/1000),q=(t-t0)/1000;lt=t;B.balls.forEach(b=>{b.pop=b.pop||.001;b.pop+=dt});B.balls=B.balls.filter(b=>b.pop<.35);bnDraw();
     for(const p of ps){p.vy+=520*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.r+=dt*8;c.save();c.translate(p.x,p.y);c.rotate(p.r);c.fillStyle=p.c;c.fillRect(-p.s/2,-p.s/3,p.s,p.s*.66);c.restore()}
@@ -3713,8 +3728,8 @@ function bnWin(B){B.state='win';const cols=['--apple','--good','--candy','--oran
     c.font=`800 ${Math.round(B.W*.16)}px ${ff}`;c.lineWidth=8;c.strokeStyle=bnCol('--paper');c.strokeText(E('Voitit!','You won!'),0,0);c.fillStyle=bnCol('--good');c.fillText(E('Voitit!','You won!'),0,0);
     c.font=`800 ${Math.round(B.W*.06)}px ${ff}`;c.fillStyle=bnCol('--ink');c.fillText(E(`${B.goal} torjuntaa`,`${B.goal} blocks`),0,B.W*.13);c.restore();
     if(q<2.4)requestAnimationFrame(fr);else{B.state='done';check()}};requestAnimationFrame(fr)}
-function bnEnd(B,msg){B.state='crash';P.bnMsg=msg;setTimeout(()=>{check();if(!done){B.state='ready';const go=$('#bngo');if(go){go.textContent=E('Pelaa uudelleen','Play again');go.hidden=false}}},400)}
-function bnStart(){const B=P.bn;bnInit();B.state='run';B.lt=null;$('#bngo').hidden=true;$('#fb').hidden=true;requestAnimationFrame(bnLoop)}
+function bnEnd(B,msg){B.state='crash';P.bnMsg=msg;bnSummary(B,0);setTimeout(()=>{check();if(!done){B.state='ready';const go=$('#bngo');if(go){go.textContent=E('Pelaa uudelleen','Play again');go.hidden=false}}},400)}
+function bnStart(){const B=P.bn;bnInit();const sm=$('#bnsum');if(sm)sm.hidden=true;B.state='run';B.lt=null;$('#bngo').hidden=true;$('#fb').hidden=true;requestAnimationFrame(bnLoop)}
 function bnEval(){const B=P.bn;if(B.state==='done')return{ok:true};if(B.state==='crash')return{ok:false};return{wait:1}}
 document.addEventListener('click',e=>{if(!P||P.kind!=='bounce'||done)return;if(e.target.closest&&e.target.closest('#bngo'))bnStart()});
 document.addEventListener('pointerdown',e=>{const m=e.target.closest&&e.target.closest('[data-bnm]');if(!m||!P||P.kind!=='bounce')return;P.bn.keys[+m.dataset.bnm>0?'r':'l']=1;const up=()=>{P.bn.keys={};removeEventListener('pointerup',up);removeEventListener('pointercancel',up)};addEventListener('pointerup',up);addEventListener('pointercancel',up)});
