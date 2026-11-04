@@ -138,7 +138,13 @@ h1{display:flex;flex-wrap:wrap;align-items:center;gap:.25em .35em}.ver{font:700 
 .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:6px}.tiles.sm{grid-template-columns:repeat(auto-fill,minmax(74px,1fr))}
 .tile{display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 2px 6px;border-radius:16px;border:2px solid transparent;background:none;cursor:pointer;color:var(--ink);font:700 .74rem/1.15 var(--body);text-align:center;min-width:0}
 .tile .ti{width:54px;height:54px;border-radius:15px;display:grid;place-items:center;background:var(--c);color:#fff;box-shadow:0 3px 0 color-mix(in srgb,var(--c) 70%,#000)}.tile .ti svg{width:64%;height:64%}
-.tiles[hidden]{display:none}.ti .qm{fill:var(--paper)}.ti .cut{stroke:var(--c)}.ti .cutf{fill:var(--c)}.ti .ed{stroke:color-mix(in srgb,var(--c) 15%,var(--paper));stroke-width:1;stroke-linejoin:round}.tiles.sm .tile[aria-pressed="true"] .ti .ed{stroke:var(--c)}.tiles.sm .tile[aria-pressed="true"] .ti .qm{fill:var(--c)}.navhead{display:flex;align-items:center;gap:10px;min-height:34px}.navhead .lbl{margin:0}
+.tiles[hidden]{display:none}.nmap[hidden]{display:none}
+.navhead .nseg{margin-left:auto}.nseg button{padding:5px 12px;font-size:.8rem}
+.nmap{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:6px 4px 10px;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:16px 16px}
+.msvg{display:block;width:100%;max-width:560px;height:auto;margin:0 auto}
+.mlab{font:700 11px var(--body);fill:var(--ink)}.mline{font:800 10px var(--body);letter-spacing:.06em;text-transform:uppercase}
+.mst{cursor:pointer;outline:none}.mst:hover .mlab,.mst:focus-visible .mlab{fill:var(--blue);text-decoration:underline}.mst:focus-visible circle:nth-of-type(2){stroke:var(--blue);stroke-width:2}
+.mleg{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;font-size:.78rem;font-weight:700;color:var(--soft);margin-top:4px}.mleg span{display:inline-flex;align-items:center;gap:4px}.mleg svg{width:16px;height:16px}.ti .qm{fill:var(--paper)}.ti .cut{stroke:var(--c)}.ti .cutf{fill:var(--c)}.ti .ed{stroke:color-mix(in srgb,var(--c) 15%,var(--paper));stroke-width:1;stroke-linejoin:round}.tiles.sm .tile[aria-pressed="true"] .ti .ed{stroke:var(--c)}.tiles.sm .tile[aria-pressed="true"] .ti .qm{fill:var(--c)}.navhead{display:flex;align-items:center;gap:10px;min-height:34px}.navhead .lbl{margin:0}
 .navback{display:inline-flex;align-items:center;gap:2px;padding:6px 12px 6px 6px;border-radius:999px;border:2px solid var(--line);background:var(--paper);color:var(--ink);font:800 .85rem/1 var(--body);cursor:pointer}.navback svg{width:18px;height:18px}.navback:hover{border-color:var(--ink)}.navback:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
 .navcur{display:inline-flex;align-items:center;gap:8px;font:800 1rem/1.2 var(--display);color:var(--ink);min-width:0}.navcur .ti{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--c);color:#fff;flex:none}.navcur .ti svg{width:70%;height:70%}.tile .tl{overflow-wrap:break-word;hyphens:manual;max-width:100%}.tiles.sm .tl.lw{font-size:.64rem;letter-spacing:-.01em}.tiles.sm .ti svg{width:76%;height:76%}
 .tile[aria-pressed="true"]{background:color-mix(in srgb,var(--c) 14%,var(--paper));border-color:var(--c)}.tile:focus-visible{outline:3px solid var(--blue);outline-offset:2px}.tile:disabled{opacity:.4;cursor:default}
@@ -682,7 +688,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.13</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.14</span></h1>
       <p class="sub">Monipuolista matematiikkaa kuvien avulla 1.–6. luokalle: laskuja, lukuja, mittaamista, geometriaa, tilastoja ja päättelyä.</p>
     </div>
     <div class="hright">
@@ -702,7 +708,7 @@ footer p{margin:0 0 6px}
   <p class="goal" id="goal"></p>
 
   <section class="controls">
-    <div class="navt"><div class="navhead" id="navHead"></div><div class="tiles" id="topTiles" role="group" aria-labelledby="navLbl"></div>
+    <div class="navt"><div class="navhead" id="navHead"></div><div class="tiles" id="topTiles" role="group" aria-labelledby="navLbl"></div><div class="nmap" id="navMap" hidden></div>
     <div class="tiles sm" id="subTiles" role="group" aria-labelledby="navLbl"></div></div>
     <div id="typeBox"><label class="lbl" for="types">Tehtävä</label><select class="sel" id="types" data-sel="typ"></select></div>
     <div class="mixbox"><span class="lbl" aria-hidden="true">&nbsp;</span><button type="button" class="btn ghost mixbtn" id="mixBtn" aria-pressed="false"><svg class="hat" viewBox="0 0 32 32" aria-hidden="true"><path d="M8.5 12v14c0 1.3 3.4 2.3 7.5 2.3s7.5-1 7.5-2.3V12z" fill="#3A3355" stroke="#8E86B5" stroke-width=".7"/><path d="M8.5 13.2v3c0 1 3.4 1.8 7.5 1.8s7.5-.8 7.5-1.8v-3z" fill="#E5484D"/><path d="M3 11.6c0-1.6 5.8-2.9 13-2.9s13 1.3 13 2.9-5.8 2.9-13 2.9-13-1.3-13-2.9z" fill="#2A2440" stroke="#8E86B5" stroke-width=".7"/><ellipse cx="16" cy="11.6" rx="7.5" ry="1.9" fill="#120F22"/><path d="M16 1.2l.7 1.6 1.7.2-1.3 1.1.4 1.7-1.5-.9-1.5.9.4-1.7-1.3-1.1 1.7-.2z" fill="#F4C02E"/><path d="M9 3.6l.45 1 1.05.15-.8.7.25 1.05-.95-.55-.95.55.25-1.05-.8-.7 1.05-.15z" fill="#F4C02E"/><path d="M23 3.6l.45 1 1.05.15-.8.7.25 1.05-.95-.55-.95.55.25-1.05-.8-.7 1.05-.15z" fill="#F4C02E"/><circle cx="12.5" cy="8" r=".8" fill="#F4C02E"/><circle cx="19.8" cy="7.6" r=".8" fill="#F4C02E"/></svg><span id="mixTxt">Yllätys</span></button></div>
@@ -4877,8 +4883,32 @@ const NICO={laskut:'<rect x="3.5" y="3.5" width="15" height="15" rx="3.5" fill="
 const NSHY=['odennä|köisyys','ksikkö|muunnokset','äättely|tehtävät','ähennys|lasku','askujär|jestys','esimaali|luvut','uku|pyramidit','uku|jonot','uviojonot','hteen|lasku','uva|pulmat','hjelmoin|ti','istelmät','ultipli|cation','ercent|ages'];
 function navShy(t){NSHY.forEach(w=>{if(w.includes('|'))t=t.split(w.replace('|','')).join(w.replace('|','\u00AD'))});return t}
 function navTile(kind,id,lbl,on,col,dis){return `<button type="button" class="tile" data-nt="${kind}" data-v="${id}" aria-pressed="${on}" style="--c:var(${col})"${dis?' disabled':''}><span class="ti"><svg viewBox="0 0 40 40" aria-hidden="true">${NICO[id]||NTX(lbl.slice(0,2),15)}</svg></span><span class="tl${Math.max(...lbl.split(/\s+/).map(w=>w.length))>11?' lw':''}">${navShy(lbl)}</span></button>`}
-let navUp=false,holdFocus=0;
-function navTiles(c){const g=S.grade,tT=$('#topTiles'),sT=$('#subTiles'),h=$('#navHead'),lbl=`<p class="lbl" id="navLbl">${E('Alue','Area')}</p>`;
+let navUp=false,holdFocus=0,navMap=true;
+try{if(MAPG_INIT())navUp=true}catch(e){}
+const MAPG=g=>g===3;function MAPG_INIT(){return MAPG(curPl().state.grade)}/* luonnos: linjakartta vain 3. luokalle */
+function mapSt(g,t,sb){const ty=navTypes(g,sb);let sc=0,touched=false;ty.forEach(y=>{const k=`${g}|${t.id}|${sb.id}|${y.id}`,pr=(S.prog||{})[k];if(pr||(S.log||[]).some(e=>e[1]===k))touched=true;const l=pr?pr.level:1;sc+=(S.medals||{})[k]?1:(l-1)/3});return{f:ty.length?sc/ty.length:0,touched}}
+function mapSVG(g){const tops=navTops(g),W=400,X0=78,BH=124,TOP=100,maxN=Math.max(...tops.map(t=>navSubs(g,t).length)),sp=Math.min(46,(W-X0-92)/(maxN-1));
+  const last=(S.log||[]).length?S.log[S.log.length-1][1]:null;let o='',H=TOP+tops.length*BH-50;
+  tops.forEach((t,li)=>{const subs=navSubs(g,t),col=`var(${NCOL[t.id]||'--blue'})`,y0=TOP+li*BH,jog=14,jj=Math.max(1,Math.floor(subs.length/2));
+    const pos=subs.map((sb,i)=>[X0+i*sp,y0+(i>=jj?jog:0)]);
+    let d=`M44 ${y0}H${pos[0][0]}`;for(let i=1;i<pos.length;i++){const[a,b]=pos[i-1],[x,y]=pos[i];if(y!==b){const m=(a+x)/2;d+=`H${m-7}L${m+7} ${y}H${x}`}else d+=`H${x}`}
+    o+=`<path d="${d}" fill="none" stroke="${col}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>`;
+    o+=`<g class="mterm" style="--c:${col}"><rect x="16" y="${y0-17}" width="34" height="34" rx="9" fill="${col}"/><svg x="19" y="${y0-14}" width="28" height="28" viewBox="0 0 40 40" style="color:#fff">${NICO[t.id]||''}</svg></g>`;
+    o+=`<text class="mline" x="16" y="${y0+36}" fill="${col}">${esc(tr(t.n))}</text>`;
+    subs.forEach((sb,i)=>{const[x,y]=pos[i],st=mapSt(g,t,sb),f=st.f,r=8.5,isLast=last&&last.startsWith(`${g}|${t.id}|${sb.id}|`);
+      let mark=`<circle cx="${x}" cy="${y}" r="${r}" fill="var(--paper)" stroke="${col}" stroke-width="3.2"/>`;
+      if(f>=.999)mark+=`<circle cx="${x}" cy="${y}" r="${r-1.6}" fill="${col}"/><path d="M${x-3.6} ${y+.2}l2.5 2.6 4.8-5.2" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`;
+      else if(f>0){const a=f*2*Math.PI,rr=r-3.2,ex=x+rr*Math.sin(a),ey=y-rr*Math.cos(a);mark+=`<path d="M${x} ${y}V${y-rr}A${rr} ${rr} 0 ${f>.5?1:0} 1 ${ex.toFixed(1)} ${ey.toFixed(1)}Z" fill="${col}"/>`}
+      else if(st.touched)mark+=`<circle cx="${x}" cy="${y}" r="2.6" fill="${col}"/>`;
+      const lab=esc(tr(sb.n));
+      o+=`<g class="mst" data-mt="${t.id}" data-ms="${sb.id}" role="button" tabindex="0" aria-label="${esc(tr(t.n))}: ${lab}">${isLast?`<circle cx="${x}" cy="${y}" r="${r+5}" fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-dasharray="3 2.4"/>`:''}<circle cx="${x}" cy="${y}" r="16" fill="transparent"/>${mark}<text class="mlab" x="${x+5}" y="${y-14}" transform="rotate(-42 ${x+5} ${y-14})">${lab}</text></g>`})});
+  return `<svg class="msvg" viewBox="0 0 ${W} ${H}" role="group" aria-label="${E('Linjakartta','Line map')}">${o}</svg>
+  <div class="mleg"><span><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="var(--paper)" stroke="var(--soft)" stroke-width="2.6"/></svg>${E('Aloittamatta','Not started')}</span><span><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="var(--paper)" stroke="var(--soft)" stroke-width="2.6"/><path d="M10 10V5.4A4.6 4.6 0 0 1 14.6 10Z" fill="var(--soft)"/></svg>${E('Kesken','In progress')}</span><span><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="var(--soft)"/><path d="M6.6 10.2l2.4 2.5 4.4-4.9" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>${E('Valmis','Done')}</span><span><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="none" stroke="var(--ink)" stroke-width="1.4" stroke-dasharray="3 2.4"/></svg>${E('Viimeksi','Last played')}</span></div>`}
+function mapGo(t,sb){const g=S.grade;S.top=t;S.subs=S.subs||{};S.subs[g+'|'+t]=sb;navUp=false;holdFocus=1;renderControls();newProblem();holdFocus=0;save();const nf=$(`#subTiles .tile[aria-pressed="true"]`);if(nf)nf.focus({preventScroll:true})}
+document.addEventListener('click',e=>{const m=e.target.closest&&e.target.closest('.mst');if(m){mapGo(m.dataset.mt,m.dataset.ms);return}const v=e.target.closest&&e.target.closest('[data-nview]');if(v){navMap=v.dataset.nview==='map';renderControls()}});
+document.addEventListener('keydown',e=>{const m=e.target.closest&&e.target.closest('.mst');if(m&&(e.key==='Enter'||e.key===' ')){e.preventDefault();mapGo(m.dataset.mt,m.dataset.ms)}});
+function navTiles(c){const g=S.grade,tT=$('#topTiles'),sT=$('#subTiles'),h=$('#navHead'),mp=$('#navMap'),useMap=MAPG(g)&&navMap&&c&&navUp,lbl=`<p class="lbl" id="navLbl">${E('Alue','Area')}</p>`+(MAPG(g)&&c?`<div class="pseg nseg" role="group" aria-label="${E('Näkymä','View')}"><button type="button" data-nview="map" aria-pressed="${!!navMap}">${E('Kartta','Map')}</button><button type="button" data-nview="tiles" aria-pressed="${!navMap}">${E('Kuvakkeet','Icons')}</button></div>`:'');
+  mp.hidden=!useMap;if(useMap){h.innerHTML=lbl;tT.hidden=true;tT.innerHTML='';sT.hidden=true;sT.innerHTML='';mp.innerHTML=mapSVG(g);return}mp.innerHTML='';
   if(!c){h.innerHTML=lbl;tT.hidden=false;sT.hidden=true;sT.innerHTML='';tT.innerHTML=navTops(g).map(t=>navTile('top',t.id,tr(t.n),false,NCOL[t.id]||'--blue',1)).join('');return}
   const col=NCOL[c.top.id]||'--blue';
   if(navUp){h.innerHTML=lbl;tT.hidden=false;sT.hidden=true;sT.innerHTML='';tT.innerHTML=c.tops.map(t=>navTile('top',t.id,tr(t.n),t.id===c.top.id,NCOL[t.id]||'--blue')).join('');return}
