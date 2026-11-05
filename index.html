@@ -714,7 +714,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.34</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.35</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -3581,7 +3581,7 @@ function ftreeGen(g,op='*'){return L=>{const plus=op==='+',OP=plus?'+':'·',IOP=
   for(let t=0;t<2000;t++){const nb=four?4:3,b=Array.from({length:nb},()=>R(lo,hi));if(!plus&&b.filter(x=>x===1).length>1)continue;
     let rows=[b];while(rows[0].length>1){const r=rows[0];rows.unshift(r.slice(1).map((x,k)=>plus?r[k]+x:r[k]*x))}const v=rows.flat();
     if(v[0]>cap||(!plus&&L>=2&&v[0]<(four?24:50)))continue;
-    const hid=shuffle([...Array(NC).keys()].slice(1)).slice(0,need);
+    const hid=Math.random()<.35?[0,...shuffle([...Array(NC).keys()].slice(1)).slice(0,need-1)]:shuffle([...Array(NC).keys()].slice(1)).slice(0,need);
     const kn=new Set([...Array(NC).keys()].filter(i=>!hid.includes(i))),steps=[];let ch=true,div=0;
     while(ch){ch=false;for(const[p,a,c]of FTR){if(!kn.has(p)&&kn.has(a)&&kn.has(c)){kn.add(p);steps.push([p,`${fmtInt(v[a])} ${OP} ${fmtInt(v[c])} = ${fmtInt(v[p])}`]);ch=true}
       else if(kn.has(p)&&kn.has(a)&&!kn.has(c)){kn.add(c);steps.push([c,`${fmtInt(v[p])} ${IOP} ${fmtInt(v[a])} = ${fmtInt(v[c])}`]);div++;ch=true}
