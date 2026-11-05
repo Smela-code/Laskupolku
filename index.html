@@ -108,7 +108,7 @@ h1{display:flex;flex-wrap:wrap;align-items:center;gap:.25em .35em}.ver{font:700 
 .psec{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 12px;border-left:5px solid var(--line)}.psec.good{border-left-color:var(--good)}.psec.bad{border-left-color:var(--bad)}.psec.mid{border-left-color:var(--sun)}
 .psec h4{margin:0 0 6px;font:800 1rem var(--display)}
 .ptl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}.ptl li{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:700}.ptl .pt{flex:1;min-width:0}
-.plv{display:inline-flex;align-items:center;gap:2px;flex:none}.plv i{width:7px;height:7px;border-radius:50%;background:var(--line)}.plv i.on{background:var(--blue)}.plv svg{width:16px;height:16px;margin-left:2px}
+.plv{display:inline-flex;align-items:center;gap:2px;flex:none}.plv i{width:7px;height:7px;border-radius:50%;background:var(--line)}.plv i.on{background:var(--blue)}.plv svg{width:20px;height:20px}
 .pchip{flex:none;font-size:.75rem;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--chip);color:var(--ink);white-space:nowrap}.pchip.good{background:var(--good-bg);color:var(--good)}.pchip.bad{background:var(--bad-bg);color:var(--bad)}.pchip.mid{background:var(--sun-bg)}
 .prst{display:flex;flex-direction:column;gap:6px;border-top:1px dashed var(--line);padding-top:10px}.prst .prowf{flex-wrap:wrap}.prst .btn{font-size:.85rem}
 .pall{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:8px 12px}.pall summary{cursor:pointer;font-weight:800;font-size:.9rem}.pall .ptl{margin-top:8px}
@@ -707,7 +707,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.31</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.32</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -4663,7 +4663,7 @@ function topicName(key){if(key.includes('|')){const[g,t,s,y]=key.split('|'),T=NA
 const dnum=(off=0)=>{const d=new Date();d.setDate(d.getDate()-off);return Math.round(new Date(d.getFullYear(),d.getMonth(),d.getDate())/864e5)};
 function logEv(k,lv,res,up,down){S.log=S.log||[];S.log.push([dnum(),k,lv,res+(up?4:0)+(down?8:0)]);const lim=dnum()-400;if(S.log.length>6000||S.log[0][0]<lim)S.log=S.log.filter(e=>e[0]>=lim).slice(-6000)}
 let plPer=7;
-const plLvl=(st,k)=>{const m=(st.medals||{})[k],l=((st.prog||{})[k]||{}).level||1;return `<span class="plv" title="${E('Taso','Level')} ${l}">${[1,2,3].map(i=>`<i class="${i<=l?'on':''}"></i>`).join('')}${m?`<svg viewBox="0 0 24 24" aria-label="${E('Mitali','Medal')}"><circle cx="12" cy="14" r="7" fill="var(--sun)" stroke="var(--coin-edge)" stroke-width="1.5"/><path d="M8 2l4 6 4-6" fill="none" stroke="var(--blue)" stroke-width="3"/></svg>`:''}</span>`};
+const plLvl=(st,k)=>{const m=(st.medals||{})[k],l=((st.prog||{})[k]||{}).level||1;return `<span class="plv" title="${m?E('Mitali: ylin taso suoritettu','Medal: top level done'):E('Taso','Level')+' '+l}">${m?'':[1,2,3].map(i=>`<i class="${i<=l?'on':''}"></i>`).join('')}${m?`<svg viewBox="0 0 24 24" aria-label="${E('Mitali','Medal')}"><circle cx="12" cy="14" r="7" fill="var(--sun)" stroke="var(--coin-edge)" stroke-width="1.5"/><path d="M8 2l4 6 4-6" fill="none" stroke="var(--blue)" stroke-width="3"/></svg>`:''}</span>`};
 function plReport(st){const N=plPer,since=st.since||0,from=Math.max(dnum(N-1),since),days=st.days||{},lg=(()=>{let skip=st.sinceN||0;return(st.log||[]).filter(e=>{if(e[0]<from)return false;if(e[0]===since&&skip>0){skip--;return false}return true})})();
   const dayList=[...Array(N).keys()].reverse().map(o=>({d:today(o),n:dnum(o)>since?days[today(o)]||0:dnum(o)===since?Math.max(0,(days[today(o)]||0)-(st.sinceD||0)):0}));
   const solved=dayList.reduce((a,x)=>a+x.n,0),played=dayList.filter(x=>x.n).length,first=lg.filter(e=>(e[3]&3)===0).length,ups=lg.filter(e=>e[3]&4).length;
