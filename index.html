@@ -715,7 +715,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.39</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.40</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -1746,7 +1746,7 @@ const cheekD=(x,y)=>`<circle cx="${x}" cy="${y}" r="9" fill="hsl(345,80%,72%)" o
 const ANIMS={
   nalle:{n:E('nalle','teddy bear'),f:{ear:['small','big'],earIn:[1,0],eye:['dot','big','line'],cheek:[1,0],brow:[0,1],bow:[0,1]},
     d:p=>{const B='hsl(28,45%,50%)',L='hsl(32,55%,78%)',r=p.ear==='big'?25:18;let s=`<circle cx="-48" cy="-46" r="${r}" fill="${B}" ${DSW}/>`;
-      if(p.earIn)s+=`<circle cx="-48" cy="-46" r="${r-8}" fill="${L}"/>`;if(p.bow)s+=`<path d="M-70 -70l-14 -8v18zM-70 -70l12 -10v20z" fill="var(--berry)" ${DSW}/>`;
+      if(p.earIn)s+=`<circle cx="-48" cy="-46" r="${r-8}" fill="${L}"/>`;if(p.bow){const bx=-48-r*.62,by=-46-r*.78;s+=`<g transform="translate(${bx.toFixed(1)} ${by.toFixed(1)}) rotate(-38)"><path d="M0 0l-16 -9v18zM0 0l16 -9v18z" fill="var(--berry)" ${DSW}/><circle r="4.5" fill="var(--berry)" ${DSW}/></g>`}
       s+=`<circle cx="0" cy="0" r="60" fill="${B}" ${DSW}/>`+eyeD(p.eye,-22,-14);if(p.brow)s+=`<path d="M-32 -30l16 -4" ${DSW}/>`;if(p.cheek)s+=cheekD(-38,10);
       return s+`<ellipse cx="0" cy="20" rx="26" ry="19" fill="${L}" ${DSW}/><ellipse cx="0" cy="9" rx="9" ry="6" fill="${DINK}"/><path d="M0 15v9q-8 8 -15 2" fill="none" ${DSW}/>`}},
   janis:{n:E('jänis','rabbit'),f:{ear:['up','tilt','fold'],earIn:[1,0],whisk:[2,3],tooth:[1,0],eye:['dot','big'],cheek:[1,0]},
