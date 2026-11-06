@@ -715,7 +715,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.36</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.37</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -1767,7 +1767,7 @@ const ANIMS={
     d:p=>{const W='hsl(200,70%,62%)',sc=p.spotCol==='sun'?'var(--sun)':'var(--berry)';let s='';
       s+=p.lower==='tail'?`<path d="M-4 10Q-60 10 -58 40Q-56 62 -30 54L-40 82L-18 50Q-6 40 -4 30Z" fill="${W}" ${DSW}/>`:`<ellipse cx="-34" cy="32" rx="30" ry="24" fill="${W}" ${DSW}/>`;
       s+=p.upper==='point'?`<path d="M-4 0Q-40 -80 -96 -62Q-80 -10 -4 8Z" fill="${W}" ${DSW}/>`:`<ellipse cx="-48" cy="-22" rx="46" ry="34" transform="rotate(-18 -48 -22)" fill="${W}" ${DSW}/>`;
-      [[-52,-28],[-74,-16],[-34,-40]].slice(0,p.spots).forEach(([x,y])=>s+=`<circle cx="${x}" cy="${y}" r="8" fill="${sc}" ${DSW}/>`);
+      (p.upper==='point'?[[-50,-33,8],[-74,-45,6.5],[-27,-18,6.5]]:[[-52,-28,8],[-74,-16,8],[-34,-40,8]]).slice(0,p.spots).forEach(([x,y,r])=>s+=`<circle cx="${x}" cy="${y}" r="${r}" fill="${sc}" ${DSW}/>`);
       s+=`<path d="M-2 -36Q-10 -60 -24 -72" fill="none" ${DSW}/>`+(p.ant==='curl'?`<path d="M-24 -72q-8 -4 -4 -10q6 -2 6 5" fill="none" ${DSW}/>`:`<circle cx="-24" cy="-72" r="4.5" fill="${DINK}"/>`);
       return s+`<ellipse cx="0" cy="4" rx="7" ry="42" fill="hsl(25,30%,30%)" ${DSW}/>`}}};
 const DR=104,DT=142,DH=240;
