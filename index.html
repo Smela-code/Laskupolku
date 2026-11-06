@@ -715,7 +715,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.41</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.42</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -1751,7 +1751,7 @@ const ANIMS={
       return s+`<ellipse cx="0" cy="20" rx="26" ry="19" fill="${L}" ${DSW}/><ellipse cx="0" cy="9" rx="9" ry="6" fill="${DINK}"/><path d="M0 15v9q-8 8 -15 2" fill="none" ${DSW}/>`}},
   janis:{n:E('jänis','rabbit'),f:{ear:['up','tilt','fold'],earIn:[1,0],whisk:[2,3],tooth:[1,0],eye:['dot','big'],cheek:[1,0]},
     d:p=>{const B='hsl(30,12%,90%)',P='hsl(345,75%,80%)';let s='';
-      if(p.ear==='fold'){const e1=`<ellipse cx="-24" cy="-68" rx="13" ry="30"`,e2=`<ellipse cx="-42" cy="-94" rx="10" ry="23" transform="rotate(-58 -42 -94)"`;s+=`${e1} fill="${B}" stroke="var(--ink)" stroke-width="5"/>${e2} fill="${B}" stroke="var(--ink)" stroke-width="5"/>${e1} fill="${B}"/>${e2} fill="${B}"/><path d="M-30 -92q8 -4 14 2" fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>`}
+      if(p.ear==='fold'){s+=`<path d="M-11 -44C-8 -80 -16 -110 -44 -113C-58 -114 -70 -106 -75 -94C-64 -97 -52 -99 -44 -97C-34 -93 -36 -70 -37 -44Z" fill="${B}" ${DSW}/>`;if(p.earIn)s+=`<path d="M-17 -50C-15 -78 -22 -102 -44 -106C-54 -107 -62 -102 -66 -98C-56 -101 -48 -102 -41 -100C-31 -95 -30 -72 -30 -50Z" fill="${P}"/>`}
       else{const a=p.ear==='tilt'?-28:-8;s+=`<g transform="rotate(${a} -24 -45)"><ellipse cx="-24" cy="-85" rx="14" ry="42" fill="${B}" ${DSW}/>${p.earIn?`<ellipse cx="-24" cy="-83" rx="7" ry="32" fill="${P}"/>`:''}</g>`}
       s+=`<ellipse cx="0" cy="0" rx="56" ry="52" fill="${B}" ${DSW}/>`+eyeD(p.eye,-22,-12);if(p.cheek)s+=cheekD(-36,12);
       s+=`<path d="M-8 6h16l-8 8z" fill="${P}" ${DSW}/><path d="M0 14v7q-7 7 -14 2" fill="none" ${DSW}/>`;if(p.tooth)s+=`<rect x="-7" y="22" width="7" height="10" fill="#fff" ${DSW}/>`;
