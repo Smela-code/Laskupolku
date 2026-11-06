@@ -715,7 +715,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.42</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.43</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -3833,7 +3833,7 @@ function mSVG(M,route,opt={}){const W=MOX*2+MW*MCS,H=MOY*2+MH*MCS,key=(i,j)=>i+'
   if(opt.rt2)s+=`<polyline points="${pts(opt.rt2)}" fill="none" stroke="var(--good)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 8" opacity=".9"/>`;
   if(route)s+=`<polyline points="${pts(route)}" fill="none" stroke="var(--orange)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity=".88"/>`;
   return s+'</svg>'}
-function mLegend(M,sc){return `<div class="mleg">${M.lm.map(l=>`<span><svg viewBox="0 0 40 40" width="28" height="28"><rect width="40" height="40" rx="4" fill="#efe7d4"/>${MPIC[l.k]}</svg>${l.n}</span>`).join('')}${M.river!=null?`<span><i style="background:#8cc8ec"></i>${E('joki','river')}</span>`:''}</div><div class="mscale"><svg viewBox="0 0 22 22" width="22" height="22"><rect x="1" y="1" width="20" height="20" fill="#efe7d4" stroke="#8a95a5" stroke-width="2"/></svg>${sc}</div><p class="mnote">${E('Kuljetaan vain teitä pitkin ruudusta viereiseen ruutuun. Rakennuksiin mennään sisään ovesta.','Move only along the roads, from square to square. You go into a building through its door.')}</p>`}
+function mLegend(M,sc,drawn){return `<div class="mleg">${M.lm.map(l=>`<span><svg viewBox="0 0 40 40" width="28" height="28"><rect width="40" height="40" rx="4" fill="#efe7d4"/>${MPIC[l.k]}</svg>${l.n}</span>`).join('')}${M.river!=null?`<span><i style="background:#8cc8ec"></i>${E('joki','river')}</span>`:''}</div><div class="mscale"><svg viewBox="0 0 22 22" width="22" height="22"><rect x="1" y="1" width="20" height="20" fill="#efe7d4" stroke="#8a95a5" stroke-width="2"/></svg>${sc}</div>${drawn?'':`<p class="mnote">${E('Kuljetaan vain teitä pitkin ruudusta viereiseen ruutuun. Rakennuksiin mennään sisään ovesta.','Move only along the roads, from square to square. You go into a building through its door.')}</p>`}`}
 const mFm=m=>m>=1000&&m%100===0?`${fmtInt(m)} m (${String(m/1000).replace('.',',')} km)`:`${fmtInt(m)} m`;
 function mapGen(g){return L=>{
   const cfg={3:[['drawn',100],['short',100],['cmp',100]],4:[['drawn',100],['short',100],['shortR',200]],5:[['shortR',250],['time',100],['ratio',10000]],6:[['ratio',20000],['ttime',250],['rev',20000]]}[g][L-1];
@@ -3847,7 +3847,7 @@ function mapGen(g){return L=>{
     break}
   const d=(rt||P).length-1,dist=d*(ty==='ratio'||ty==='rev'?sc/100:sc);
   const scTxt=ty==='ratio'||ty==='rev'?E(`1 ruutu = 1 cm kartalla. Mittakaava 1 : ${fmtInt(sc)}`,`1 square = 1 cm on the map. Scale 1 : ${fmtInt(sc)}`):E(`1 ruutu = ${fmtInt(sc)} m`,`1 square = ${fmtInt(sc)} m`);
-  const vis=`<div class="mapw">${mSVG(M,ty==='drawn'?rt:null)}${mLegend(M,scTxt)}</div>`;
+  const vis=`<div class="mapw">${mSVG(M,ty==='drawn'?rt:null)}${mLegend(M,scTxt,ty==='drawn')}</div>`;
   const solved=`<div class="mapw">${mSVG(M,rt||P,{rt2:ty==='cmp'?M.P2:null})}</div>`;
   const cnt=E(`Reitillä on ${d} askelta ruudusta toiseen.`,`The route has ${d} steps from square to square.`);
   const hintS=E('<p>Etsi ensin lyhin reitti teitä pitkin – kokeile eri vaihtoehtoja. Laske sitten, montako askelta ruudusta toiseen reitillä on. Lähtöruutua ei lasketa. Kerro lopuksi askelten määrä mittakaavalla.</p>','<p>First find the shortest route along the roads – try different ways. Then count the steps from square to square. Do not count the starting square. Finally multiply the steps by the scale.</p>')+(river?E('<p>Jokea ei voi ylittää muualta kuin siltaa pitkin!</p>','<p>You can only cross the river on a bridge!</p>'):'');
