@@ -715,7 +715,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.37</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.38</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -4424,7 +4424,7 @@ function cgridSVG(o){const{min,max,pts=[],path=null,id=''}=o,n=max-min,c=n>8?24:
   for(let v=min;v<=max;v++){if(v===0&&min<0)continue;s+=`<text x="${X(v)}" y="${Y(oy)+14}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--soft)" font-family="Nunito, sans-serif">${degN(v)}</text>`;if(v!==oy||min<0)s+=`<text x="${X(ox)-6}" y="${Y(v)+3.5}" text-anchor="end" font-size="10" font-weight="700" fill="var(--soft)" font-family="Nunito, sans-serif">${degN(v)}</text>`}
   if(min<0)s+=`<text x="${X(0)-6}" y="${Y(0)+14}" text-anchor="end" font-size="10" font-weight="700" fill="var(--soft)" font-family="Nunito, sans-serif">0</text>`;
   s+=`<g class="ctap">${path?cpath(path,o):''}</g>`;
-  pts.forEach(p=>{if(p.piece)s+=`<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="9" fill="var(--apple)" stroke="var(--ink)" stroke-width="2"/><circle cx="${X(p.x)-3}" cy="${Y(p.y)-3}" r="2.5" fill="#fff" opacity=".6"/>`;
+  pts.forEach(p=>{if(p.piece)s+=`<path class="ctrail" d="M${X(p.x)} ${Y(p.y)}" fill="none" stroke="var(--sun)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><g class="cpiece" data-x="${X(p.x)}" data-y="${Y(p.y)}"><circle cx="${X(p.x)}" cy="${Y(p.y)}" r="9" fill="var(--apple)" stroke="var(--ink)" stroke-width="2"/><circle cx="${X(p.x)-3}" cy="${Y(p.y)-3}" r="2.5" fill="#fff" opacity=".6"/></g>`;
     else s+=`<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="5.5" fill="var(--blue)"/><text x="${X(p.x)+7}" y="${Y(p.y)-7}" font-size="14" font-weight="800" fill="var(--blue)" font-family="Baloo 2, sans-serif">${p.l}</text>`});
   return s+'</svg>'}
 function cpath([x,y],o){const{min,max}=o,n=max-min,c=n>8?24:30,pad=26,X=v=>pad+(v-min)*c,Y=v=>pad+(max-v)*c,ox=min<0?0:min,oy=min<0?0:min;
@@ -4433,7 +4433,7 @@ function cpath([x,y],o){const{min,max}=o,n=max-min,c=n>8?24:30,pad=26,X=v=>pad+(
   return s+`<circle cx="${X(x)}" cy="${Y(y)}" r="11" fill="none" stroke="var(--sun)" stroke-width="3.5"/>`}
 const DIRW=EN?{r:'right',l:'left',u:'up',d:'down'}:{r:'oikealle',l:'vasemmalle',u:'ylös',d:'alas'};
 function coordGen(g){return(L)=>{const neg=g===6,min=neg?-5:0,max=neg?5:(g===3?6:g===4?8:10),rnd=()=>R(min,max),inR=v=>v>=min&&v<=max;
-  const ans=(x,y,base)=>({...base,kind:Math.random()<(g===3?.5:.3)?'cchoice':'coord',ax:x,ay:y,neg});
+  const ans=(x,y,base)=>({...base,kind:Math.random()<(g===3?.5:.3)?'cchoice':'coord',ax:x,ay:y,neg,c1:Math.max(Math.abs(min),Math.abs(max))<10});
   const mkChoices=(x,y)=>{const set=new Set([`${x},${y}`]),opts=[[x,y],[y,x]];[[1,0],[0,1],[-1,0],[0,-1],[1,1]].forEach(([a,b])=>opts.push([x+a,y+b]));const out=[];opts.forEach(([a,b])=>{const k=`${a},${b}`;if(inR(a)&&inR(b)&&(out.length===0||!set.has(k))&&out.length<4){set.add(k);out.push([a,b])}});return shuffle(out)};
   const TAP=E('<p>Napauta koordinaatistossa pistettä, niin näet askeleet siihen.</p>','<p>Tap a point on the grid to see the steps to it.</p>');
   const hintBase=E(`<p>Ensimmäinen luku (x) kertoo, montako askelta mennään vaakasuunnassa, ja toinen luku (y), montako pystysuunnassa. Aloita origosta ${cfmt(0,0)}.</p>${neg?'<p>Negatiivinen x tarkoittaa vasemmalle ja negatiivinen y alas.</p>':''}`,`<p>The first number (x) tells you how many steps to go across, and the second number (y) how many steps to go up or down. Start from the origin ${cfmt(0,0)}.</p>${neg?'<p>A negative x means left, and a negative y means down.</p>':''}`)+TAP;
@@ -4450,11 +4450,16 @@ function coordGen(g){return(L)=>{const neg=g===6,min=neg?-5:0,max=neg?5:(g===3?6
     if(L===2&&dirs.length===4){moves.length=0;x=x0;y=y0;const hd=pick(['r','l']),vd=pick(['u','d']),a=R(1,neg?6:4),b=R(1,neg?6:4);moves.push([hd,a],[vd,b]);x+=hd==='r'?a:-a;y+=vd==='u'?b:-b}
     if(!inR(x)||!inR(y)||(x===x0&&y===y0))continue;if(neg&&L===3&&Math.sign(x)===Math.sign(x0)&&Math.sign(y)===Math.sign(y0))continue;
     const desc=moves.map(([d,k])=>EN?`${k} ${k===1?'square':'squares'} ${DIRW[d]}`:`${k} ${k===1?'ruudun':'ruutua'} ${DIRW[d]}`).join(E(' ja sitten ',' and then '));
-    const P0=ans(x,y,{visual:cgridSVG({...opt,pts:[{x:x0,y:y0,piece:true}],id:'cgrid'}),story:E(`Nappula on pisteessä ${cfmt(x0,y0)}. Se siirtyy ${desc}. Missä pisteessä nappula on nyt?`,`A counter is at the point ${cfmt(x0,y0)}. It moves ${desc}. Which point is the counter at now?`),
+    const P0=ans(x,y,{onOk:()=>cAnim(moves),onFail:()=>cAnim(moves),visual:cgridSVG({...opt,pts:[{x:x0,y:y0,piece:true}],id:'cgrid'}),story:E(`Nappula on pisteessä ${cfmt(x0,y0)}. Se siirtyy ${desc}. Missä pisteessä nappula on nyt?`,`A counter is at the point ${cfmt(x0,y0)}. It moves ${desc}. Which point is the counter at now?`),
       hint:E(`<p>Siirtymä oikealle tai vasemmalle muuttaa x-koordinaattia (ensimmäistä lukua). Siirtymä ylös tai alas muuttaa y-koordinaattia (toista lukua).</p>`,`<p>Moving right or left changes the x-coordinate (the first number). Moving up or down changes the y-coordinate (the second number).</p>`)+`<p>x: ${degN(x0)}${moves.filter(m=>m[0]==='r'||m[0]==='l').map(([d,k])=>` ${d==='r'?'+':'−'} ${k}`).join('')} = ?</p>`+TAP,
       explain:`<p>x: ${degN(x0)}${moves.filter(m=>m[0]==='r'||m[0]==='l').map(([d,k])=>` ${d==='r'?'+':'−'} ${k}`).join('')} = ${degN(x)}</p><p>y: ${degN(y0)}${moves.filter(m=>m[0]==='u'||m[0]==='d').map(([d,k])=>` ${d==='u'?'+':'−'} ${k}`).join('')} = ${degN(y)}</p><p><b>${E(`Nappula on pisteessä ${cfmt(x,y)}.`,`The counter is at the point ${cfmt(x,y)}.`)}</b></p>${cgridSVG({...opt,pts:[{x:x0,y:y0,piece:true}],path:[x,y]})}`,answerText:cfmt(x,y)});
     if(P0.kind==='cchoice'){P0.kind='choice';const ch=mkChoices(x,y);P0.choices=ch.map(([a,b])=>[`${a},${b}`,cfmt(a,b)]);P0.ans=`${x},${y}`}return P0}
   return coordGen(g)(1)}}
+function cAnim(moves){const sv=$('#cgrid'),pc=sv&&sv.querySelector('.cpiece'),tr=sv&&sv.querySelector('.ctrail');if(!pc||pc.dataset.done)return;pc.dataset.done=1;
+  const c=+sv.dataset.c,x0=+pc.dataset.x,y0=+pc.dataset.y,steps=[];let x=x0,y=y0;moves.forEach(([d,k])=>{for(let i=0;i<k;i++){x+=d==='r'?c:d==='l'?-c:0;y+=d==='u'?-c:d==='d'?c:0;steps.push([x,y])}});
+  const red=window.matchMedia('(prefers-reduced-motion: reduce)').matches,T=red?0:260;let i=0,d=`M${x0} ${y0}`;
+  pc.style.transition=red?'none':`transform ${T*0.8}ms ease-in-out`;
+  const go=()=>{if(i>=steps.length)return;const[nx,ny]=steps[i++];d+=`L${nx} ${ny}`;pc.style.transform=`translate(${nx-x0}px,${ny-y0}px)`;setTimeout(()=>{if(tr)tr.setAttribute('d',d);go()},T)};setTimeout(go,red?0:250)}
 function ctap(e){const sv=e.target.closest&&e.target.closest('#cgrid');if(!sv||done)return;const r=sv.getBoundingClientRect(),vb=sv.viewBox.baseVal,sx=(e.clientX-r.left)*vb.width/r.width,sy=(e.clientY-r.top)*vb.height/r.height;
   const min=+sv.dataset.min,max=+sv.dataset.max,c=+sv.dataset.c,pad=+sv.dataset.pad,x=Math.round((sx-pad)/c)+min,y=max-Math.round((sy-pad)/c);if(x<min||x>max||y<min||y>max)return;
   sv.querySelector('.ctap').innerHTML=cpath([x,y],{min,max})}
@@ -5209,7 +5214,7 @@ function pressKey(k){if(done)return;
   else if(k===','){if(el.id==='ans'&&!el.value.includes(','))el.value+=(el.value?'':'0')+',';}
   else if(el.classList.contains('qi')||el.classList.contains('sq')){el.value=k;el.classList.remove('ok','no');const n=el.closest('td').nextElementSibling,nx=n&&n.querySelector('input');if(nx){activeEl=nx;nx.focus({preventScroll:true})}return}
   else if(el.classList.contains('ri')||el.classList.contains('ci')||el.classList.contains('pi')){el.value=k;fire();if(!el.classList.contains('ci'))return}
-  else if(el.classList.contains('tb')){if(el.value.length<2){el.value+=k;fire()}if(el.id==='th'&&el.value.length===2)el=$('#tm')}
+  else if(el.classList.contains('tb')){if(el.value.length<2){el.value+=k;fire()}if(el.id==='th'&&el.value.length===2)el=$('#tm');if(el.id==='cx'&&P.c1&&/\d/.test(el.value)&&$('#cy'))el=$('#cy')}
   else if(el.id==='mc'){if(el.value.length<2){el.value+=k;fire()}}
   else if(el.value.replace(/\D/g,'').length<9){el.value+=k;fire()}
   activeEl=el;el.focus({preventScroll:true})}
