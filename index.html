@@ -715,7 +715,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.43</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.44</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -3829,9 +3829,9 @@ function mSVG(M,route,opt={}){const W=MOX*2+MW*MCS,H=MOY*2+MH*MCS,key=(i,j)=>i+'
   for(let i=0;i<=MW;i++)s+=`<path d="M${MOX+i*MCS} ${MOY}v${MH*MCS}" stroke="#55606e" stroke-opacity=".22" stroke-width="1"/>`;
   for(let j=0;j<=MH;j++)s+=`<path d="M${MOX} ${MOY+j*MCS}h${MW*MCS}" stroke="#55606e" stroke-opacity=".22" stroke-width="1"/>`;
   M.lm.forEach(l=>{const x=MOX+l.p[0]*MCS,y=MOY+l.p[1]*MCS;s+=`<rect x="${x+1}" y="${y+1}" width="${MCS-2}" height="${MCS-2}" rx="3" fill="#efe7d4"/><rect x="${x+15}" y="${y+31}" width="10" height="18" fill="#d6cbb3" stroke="#9c8f74" stroke-width="1.2"/><path d="M${x+15.6} ${y+37}h8.8M${x+15.6} ${y+43}h8.8" stroke="#b3a68a" stroke-width="1"/><g transform="translate(${x} ${y})">${MPIC[l.k]}</g>`});
-  const pts=rt=>rt.map((p,i)=>{const[x,y]=mN(...p);return(i===0||i===rt.length-1)&&(M.door||{})[p[0]+','+p[1]]?[x,y+MCS/2]:[x,y]}).map(q=>q.join(',')).join(' ');
+  const pts=rt=>rt.map(p=>mN(...p).join(',')).join(' '),ends=(rt,c)=>{const[a,b]=mN(...rt[0]),[x,y]=mN(...rt[rt.length-1]);return `<circle cx="${a}" cy="${b}" r="7" fill="#fff" stroke="${c}" stroke-width="4"/><circle cx="${x}" cy="${y}" r="8" fill="${c}" stroke="#fff" stroke-width="2.5"/>`};
   if(opt.rt2)s+=`<polyline points="${pts(opt.rt2)}" fill="none" stroke="var(--good)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 8" opacity=".9"/>`;
-  if(route)s+=`<polyline points="${pts(route)}" fill="none" stroke="var(--orange)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity=".88"/>`;
+  if(route)s+=`<polyline points="${pts(route)}" fill="none" stroke="var(--orange)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity=".88"/>${ends(route,'var(--orange)')}`;
   return s+'</svg>'}
 function mLegend(M,sc,drawn){return `<div class="mleg">${M.lm.map(l=>`<span><svg viewBox="0 0 40 40" width="28" height="28"><rect width="40" height="40" rx="4" fill="#efe7d4"/>${MPIC[l.k]}</svg>${l.n}</span>`).join('')}${M.river!=null?`<span><i style="background:#8cc8ec"></i>${E('joki','river')}</span>`:''}</div><div class="mscale"><svg viewBox="0 0 22 22" width="22" height="22"><rect x="1" y="1" width="20" height="20" fill="#efe7d4" stroke="#8a95a5" stroke-width="2"/></svg>${sc}</div>${drawn?'':`<p class="mnote">${E('Kuljetaan vain teitä pitkin ruudusta viereiseen ruutuun. Rakennuksiin mennään sisään ovesta.','Move only along the roads, from square to square. You go into a building through its door.')}</p>`}`}
 const mFm=m=>m>=1000&&m%100===0?`${fmtInt(m)} m (${String(m/1000).replace('.',',')} km)`:`${fmtInt(m)} m`;
