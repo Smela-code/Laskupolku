@@ -715,7 +715,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.44</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.45</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -3829,7 +3829,7 @@ function mSVG(M,route,opt={}){const W=MOX*2+MW*MCS,H=MOY*2+MH*MCS,key=(i,j)=>i+'
   for(let i=0;i<=MW;i++)s+=`<path d="M${MOX+i*MCS} ${MOY}v${MH*MCS}" stroke="#55606e" stroke-opacity=".22" stroke-width="1"/>`;
   for(let j=0;j<=MH;j++)s+=`<path d="M${MOX} ${MOY+j*MCS}h${MW*MCS}" stroke="#55606e" stroke-opacity=".22" stroke-width="1"/>`;
   M.lm.forEach(l=>{const x=MOX+l.p[0]*MCS,y=MOY+l.p[1]*MCS;s+=`<rect x="${x+1}" y="${y+1}" width="${MCS-2}" height="${MCS-2}" rx="3" fill="#efe7d4"/><rect x="${x+15}" y="${y+31}" width="10" height="18" fill="#d6cbb3" stroke="#9c8f74" stroke-width="1.2"/><path d="M${x+15.6} ${y+37}h8.8M${x+15.6} ${y+43}h8.8" stroke="#b3a68a" stroke-width="1"/><g transform="translate(${x} ${y})">${MPIC[l.k]}</g>`});
-  const pts=rt=>rt.map(p=>mN(...p).join(',')).join(' '),ends=(rt,c)=>{const[a,b]=mN(...rt[0]),[x,y]=mN(...rt[rt.length-1]);return `<circle cx="${a}" cy="${b}" r="7" fill="#fff" stroke="${c}" stroke-width="4"/><circle cx="${x}" cy="${y}" r="8" fill="${c}" stroke="#fff" stroke-width="2.5"/>`};
+  const pts=rt=>rt.map(p=>mN(...p).join(',')).join(' '),ends=(rt,c)=>{const[a,b]=mN(...rt[0]),[x,y]=mN(...rt[rt.length-1]);return `<circle cx="${a}" cy="${b}" r="7" fill="none" stroke="${c}" stroke-width="3.5" opacity=".75"/><circle cx="${x}" cy="${y}" r="7" fill="${c}" fill-opacity=".35" stroke="${c}" stroke-width="3.5" stroke-opacity=".75"/>`};
   if(opt.rt2)s+=`<polyline points="${pts(opt.rt2)}" fill="none" stroke="var(--good)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 8" opacity=".9"/>`;
   if(route)s+=`<polyline points="${pts(route)}" fill="none" stroke="var(--orange)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity=".88"/>${ends(route,'var(--orange)')}`;
   return s+'</svg>'}
