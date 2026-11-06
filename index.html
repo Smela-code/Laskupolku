@@ -715,7 +715,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.38</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.39</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -4117,15 +4117,17 @@ const cpart={r:'punaista',b:'sinistä',y:'keltaista',g:'vihreää'},cgen={r:'pun
 const cap=x=>x[0].toUpperCase()+x.slice(1);
 const VMM={varma:'certainly',mahdollinen:'possibly',mahdoton:'never'},VMF={varma:'varmasti',mahdollinen:'mahdollisesti',mahdoton:'en ikinä'},vmm=a=>EN?VMM[a]:VMF[a],VMCH=()=>E([['varma','Varmasti'],['mahdollinen','Mahdollisesti'],['mahdoton','En ikinä']],[['varma','Certainly'],['mahdollinen','Possibly'],['mahdoton','Never']]);
 function bagSVG(cnt){const balls=[];Object.entries(cnt).forEach(([c,n])=>{for(let i=0;i<n;i++)balls.push(c)});const sh=shuffle(balls);
-  let s=`<svg class="bag" viewBox="0 0 160 150" aria-hidden="true"><path d="M52 22C40 30 14 60 12 96c-2 32 22 48 68 48s70-16 68-48c-2-36-28-66-40-74z" fill="var(--sun-bg)" stroke="var(--stem)" stroke-width="3"/><path d="M50 22c10-8 50-8 60 0" fill="none" stroke="var(--stem)" stroke-width="5" stroke-linecap="round"/>`;
+  let s=`<svg class="bag" viewBox="0 0 160 150" aria-hidden="true"><path d="M54 40C30 52 10 74 12 100C14 130 40 145 80 145S146 130 148 100C150 74 130 52 106 40Z" fill="var(--sun-bg)" stroke="var(--stem)" stroke-width="3" stroke-linejoin="round"/><path d="M40 66q-9 24 -2 50M120 66q9 24 2 50M80 128v12" fill="none" stroke="var(--stem)" stroke-width="2" stroke-linecap="round" opacity=".25"/>`;
   const n=sh.length,r=n<=6?13:n<=10?12:n<=15?11:n<=20?10:8.6,placed=[];
-  const floor=x=>{const ex=(x-80)/(66-r);return ex*ex>=1?-1:97+(46-r)*Math.sqrt(1-ex*ex)};
-  for(let k=0;k<n;k++){let best=[];for(let x=80-(66-r)+.5;x<=80+(66-r)-.5;x+=1){let y=floor(x);if(y<0)continue;
+  const floor=x=>{const ex=(x-80)/(61-r);return ex*ex>=1?-1:97+(46-r)*Math.sqrt(1-ex*ex)};
+  for(let k=0;k<n;k++){let best=[];for(let x=80-(61-r)+.5;x<=80+(61-r)-.5;x+=1){let y=floor(x);if(y<0)continue;
       for(const[bx,by]of placed){const d=Math.abs(x-bx);if(d<2*r){const yy=by-Math.sqrt(4*r*r-d*d);if(yy<y)y=yy}}
-      if(y<34+r)continue;best.push([x,y])}
+      if(y<52+r)continue;best.push([x,y])}
     const my=Math.max(...best.map(b=>b[1])),c=best.filter(b=>b[1]>=my-1.5);placed.push(c.length?pick(c):[80,70])}
   sh.forEach((c,k)=>{const[x,y]=placed[k];
     s+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="var(${KCOL[c][0]})" stroke="var(--ink)" stroke-opacity=".3"/><circle cx="${(x-r*.32).toFixed(1)}" cy="${(y-r*.32).toFixed(1)}" r="${(r*.27).toFixed(1)}" fill="#fff" opacity=".5"/>`});
+  s+=`<path d="M54 41C46 31 40 22 34 13Q45 20 51 12Q59 22 66 11Q74 21 80 11Q86 21 94 11Q101 22 109 12Q115 20 126 13C120 22 114 31 106 41Z" fill="var(--sun-bg)" stroke="var(--stem)" stroke-width="3" stroke-linejoin="round"/><path d="M58 30q2 -8 0 -12M80 30v-12M102 30q-2 -8 0 -12" stroke="var(--stem)" stroke-width="1.6" stroke-linecap="round" opacity=".3" fill="none"/>`;
+  s+=`<path d="M50 42Q80 50 110 42" fill="none" stroke="var(--berry)" stroke-width="5" stroke-linecap="round"/><path d="M100 46q4 10 -1 20M104 45q12 6 13 18" fill="none" stroke="var(--berry)" stroke-width="2.6" stroke-linecap="round"/><circle cx="99" cy="67" r="3.4" fill="var(--berry)"/><circle cx="117" cy="64" r="3.4" fill="var(--berry)"/><circle cx="101" cy="45" r="4.2" fill="var(--berry)"/>`;
   return s+'</svg>'}
 function spinSVG(secs){const n=secs.length,c=60,r=54;let s=`<svg class="spin" viewBox="0 0 120 130" aria-hidden="true">`;
   secs.forEach((col,i)=>{const a0=(-90+360*i/n)*D2R,a1=(-90+360*(i+1)/n)*D2R;s+=`<path d="M${c} ${c}L${(c+r*Math.cos(a0)).toFixed(1)} ${(c+r*Math.sin(a0)).toFixed(1)}A${r} ${r} 0 0 1 ${(c+r*Math.cos(a1)).toFixed(1)} ${(c+r*Math.sin(a1)).toFixed(1)}Z" fill="var(${KCOL[col][0]})" stroke="var(--paper)" stroke-width="2"/>`});
