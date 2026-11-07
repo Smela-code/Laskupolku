@@ -717,7 +717,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.57</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.58</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -4258,10 +4258,16 @@ function simRun(n){if(SIM.run||!$('.sim'))return;const red=window.matchMedia('(p
   if(n===1){simShake(()=>{if($('.sim')){simRoll();simUpdate()}end()});return}
   let i=0;const delay=n>=100?60:260;const step=()=>{if(!$('.sim')){end();return}simRoll();i++;simUpdate();if(i<n)setTimeout(step,delay);else end()};step()}
 function kokeiluGen(g){return(L)=>{SIM={counts:{},n:0,run:false};
-  if(L===1){const q=pick([0,1]);
-    return{kind:'choice',below:simHTML('one'),choices:q?[['1',E('Ykkönen','1')],['6',E('Kuutonen','6')],['all',E('Kaikki yhtä todennäköisiä','All equally likely')]]:[['yes',E('Kyllä, kuutonen on harvinaisempi','Yes, a 6 is rarer')],['no',E('Ei, ne ovat yhtä todennäköisiä','No, they are equally likely')]],ans:q?'all':'no',answerText:'',
-      text:`<span class="bg" style="font-size:.7em">${q?E('Heitä noppaa monta kertaa. Mikä silmäluku on todennäköisin?','Roll the dice many times. Which number is the most likely?'):E('Onko kuutosen saaminen vaikeampaa kuin ykkösen?','Is it harder to get a 6 than a 1?')}</span>`,
-      hint:E('<p>Kokeile heittää 100 kertaa. Mitä useammin heität, sitä tasaisemmiksi pylväät tulevat.</p>','<p>Try rolling 100 times. The more times you roll, the more even the bars get.</p>'),explain:E('<p><b>Nopan kaikki kuusi silmälukua ovat yhtä todennäköisiä.</b> Jokaisen todennäköisyys on 1/6. Pienessä kokeilussa jokin luku voi silti tulla sattumalta useammin.</p>','<p><b>All six numbers on a dice are equally likely.</b> The probability of each one is 1/6. In a small experiment, one number can still come up more often just by chance.</p>')}}
+  if(L===1){const q=R(0,3),NG=['','ykkösen','kakkosen','kolmosen','nelosen','vitosen','kuutosen'],NN=['','Ykkönen','Kakkonen','Kolmonen','Nelonen','Vitonen','Kuutonen'];let[a,b]=shuffle([1,2,3,4,5,6]).slice(0,2);if(a<b&&Math.random()<.6)[a,b]=[b,a];
+    const Q=[
+      {ch:[['1',NN[1]],['6',NN[6]],['all',E('Kaikki yhtä todennäköisiä','All equally likely')]].map(([k,f])=>[k,k==='all'?f:E(f,k)]),ans:'all',t:E('Heitä noppaa monta kertaa. Mikä silmäluku on todennäköisin?','Roll the dice many times. Which number is the most likely?')},
+      {ch:[['yes',E(`Kyllä, ${NN[a].toLowerCase()} on harvinaisempi`,`Yes, a ${a} is rarer`)],['no',E('Ei, ne ovat yhtä todennäköisiä','No, they are equally likely')]],ans:'no',t:E(`Onko ${NG[a]} saaminen vaikeampaa kuin ${NG[b]}?`,`Is it harder to get a ${a} than a ${b}?`)},
+      {ch:[['even',E('Parillinen (2, 4, 6)','Even (2, 4, 6)')],['odd',E('Pariton (1, 3, 5)','Odd (1, 3, 5)')],['same',E('Yhtä usein','Equally often')]],ans:'same',t:E('Kumpi tulee useammin: parillinen vai pariton silmäluku?','Which comes up more often: an even or an odd number?')},
+      {ch:[['six',E('Kuutonen','A 6')],['other',E('Jokin muu kuin kuutonen','Something other than a 6')],['same',E('Yhtä todennäköisiä','Equally likely')]],ans:'other',t:E('Kumpi on todennäköisempää: saada kuutonen vai jokin muu silmäluku?','Which is more likely: rolling a 6 or rolling any other number?')}][q];
+    return{kind:'choice',below:simHTML('one'),choices:Q.ch,ans:Q.ans,answerText:'',
+      text:`<span class="bg" style="font-size:.7em">${Q.t}</span>`,
+      hint:E('<p>Kokeile heittää 100 kertaa. Mitä useammin heität, sitä tasaisemmiksi pylväät tulevat.</p>','<p>Try rolling 100 times. The more times you roll, the more even the bars get.</p>'),
+      explain:q===3?E('<p><b>Nopan kaikki kuusi silmälukua ovat yhtä todennäköisiä.</b> Kuutonen on vain yksi kuudesta vaihtoehdosta (1/6), mutta muita silmälukuja on viisi (5/6). Siksi jokin muu kuin kuutonen tulee paljon useammin.</p>','<p><b>All six numbers on a dice are equally likely.</b> A 6 is only one of six outcomes (1/6), but there are five other numbers (5/6). So something other than a 6 comes up much more often.</p>'):q===2?E('<p><b>Nopan kaikki kuusi silmälukua ovat yhtä todennäköisiä.</b> Parillisia on kolme (2, 4, 6) ja parittomia kolme (1, 3, 5), joten kumpaakin tulee pitkässä kokeilussa suunnilleen yhtä usein.</p>','<p><b>All six numbers on a dice are equally likely.</b> There are three even numbers (2, 4, 6) and three odd ones (1, 3, 5), so in a long experiment both come up about equally often.</p>'):E('<p><b>Nopan kaikki kuusi silmälukua ovat yhtä todennäköisiä.</b> Jokaisen todennäköisyys on 1/6. Pienessä kokeilussa jokin luku voi silti tulla sattumalta useammin.</p>','<p><b>All six numbers on a dice are equally likely.</b> The probability of each one is 1/6. In a small experiment, one number can still come up more often just by chance.</p>')}}
   if(L===2){let x,y;do{[x,y]=shuffle([2,3,4,5,6,7,8,9,10,11,12]).slice(0,2)}while(ways(x)===ways(y)||Math.random()<.4&&x!==7&&y!==7);
     const q=Math.random()<.4;const ans=q?'7':String(ways(x)>ways(y)?x:y);
     return{kind:'choice',below:simHTML('two'),choices:q?[['2','2'],['7','7'],['12','12'],['all',E('Kaikki yhtä todennäköisiä','All equally likely')]]:[[String(x),`${E('Summa','Total')} ${x}`],[String(y),`${E('Summa','Total')} ${y}`],['same',E('Yhtä todennäköisiä','Equally likely')]],ans,answerText:'',
@@ -5032,11 +5038,18 @@ function renderControls(){
 let P=null,tries=0,done=false;
 function storyB(t){if(/<b>|<strong/.test(t))return t;return t.replace(/(^|[.!?:]\s+)([^.!?<>:]*\?)\s*$/,(m,a,q)=>`${a}<b>${q}</b>`)}
 function normPrompts(){document.querySelectorAll('#sheet .expr span.bg').forEach(sp=>{const fs=sp.style.fontSize;if(!/^0?\.(55|62|7|75)em$/.test(fs))return;const t=sp.textContent.replace(/\s+/g,' ').trim();if(!/[a-zåäö]{3}/i.test(t))return;sp.style.fontSize=t.length<=48?'.7em':'.56em'})}
+const PHIST={};
+const pSig=Q=>{if(!Q)return '';let t='';try{t=JSON.stringify(Q,(k,v)=>k==='hint'||k==='explain'||v instanceof Node?undefined:v)}catch(e){return ''}
+  return (t||'').replace(/hsl\([^)]*\)/g,'').replace(/\s+/g,' ')};
 function newProblem(keep){
   if(S.mix&&!(keep&&RND)){const g=S.grade,all=[];navTops(g).forEach(t=>navSubs(g,t).forEach(s=>navTypes(g,s).forEach(y=>all.push([t,s,y]))));
     const[t,s,y]=pick(all);RND=navPick(g,t.id,s.id,y.id)}
   const c=cur(),pr=prog();
-  P=c.inst.gen(pr.level);tries=0;done=false;
+  /* estä sama tehtävä uudelleen: verrataan viimeisiin tehtäviin samassa aiheessa */
+  const hk=c.key+'|'+pr.level,hs=PHIST[hk]||(PHIST[hk]=[]);let sig='';
+  for(let t=0;t<12;t++){P=c.inst.gen(pr.level);sig=P.mount&&!P.text?'':pSig(P);if(!sig||!hs.includes(sig))break}
+  if(sig){hs.push(sig);if(hs.length>6)hs.shift()}
+  tries=0;done=false;
   ['story','text','hint','explain','answerText','unit','visual'].forEach(k=>{if(typeof P[k]==='string')P[k]=EN?enFix(P[k]):fiFix(P[k])});
   draw()}
 
