@@ -171,6 +171,7 @@ label.lbl{display:block}
 button:focus-visible,input:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
 .sheet{background-color:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px;background-position:-1px -1px;
   border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:16px;box-shadow:0 6px 18px -12px rgba(20,40,90,.35)}
+.sheet.plain{background-image:none}
 .status{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
 .levels{display:flex;align-items:center;gap:6px;background:var(--paper);border-radius:999px;padding:2px}
 .lv{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);background:var(--paper);color:var(--ink);font:800 1rem var(--display);cursor:pointer}
@@ -716,7 +717,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.53</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.54</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -5083,7 +5084,7 @@ function maxDigits(){const t=((P.text||'')+' '+(P.story||'')+' '+(P.steps?P.visu
 const padOK=()=>P&&!['col','choice','multi'].includes(P.kind)&&!P.ldiv&&!NOPAD.has(cur().inst.oid)&&(cur().inst.oid==='keskiarvo'||maxDigits()>=3);
 function padHTML(){const C=8,row=(r,cls)=>`<tr class="${cls}"><td class="pop">${r===2?`<button type="button" class="padop" data-padop="0" aria-label="${E('Vaihda laskumerkki','Change the operation sign')}">+</button>`:''}</td>${Array.from({length:C},(_,c)=>`<td><input class="sq${r===0?' small':''}" inputmode="none" maxlength="1" autocomplete="off" aria-label="${E('Ruutu','Square')}"></td>`).join('')}</tr>`;
   return `<div class="panel pad" id="pad" hidden><h3>${E('Ruutupaperi','Squared paper')}</h3><p class="padtip">${E('Kirjoita luvut allekkain omiin ruutuihinsa. Ylärivi on muistinumeroille. Napauta laskumerkkiä vaihtaaksesi sen.','Write the numbers in columns, one digit in each square. The top row is for carried digits. Tap the sign to change it.')}</p><div class="calc-wrap"><table class="calc padt"><tbody>${row(0,'carry')}${row(1,'')}${row(2,'')}${row(3,'res')}</tbody></table></div><button type="button" class="btn ghost padclr" data-padclr="1">${E('Tyhjennä ruudut','Clear the squares')}</button></div>`}
-function draw(){const t=cur(),pr=prog();const IA=inlineAns();
+function draw(){const t=cur(),pr=prog();const IA=inlineAns();{const sh=$('#sheet');if(sh)sh.classList.toggle('plain',!(t.top.id==='laskut'&&['yht','vah','ker','jak','lj','des','mur','pro'].includes(t.sub.id)&&!['kuva','san','ver','sul'].includes(t.type.id)))}
   $('#sheet').innerHTML=`
     ${S.mix?`<p class="mixlbl">${pathLabel(t)}</p>`:''}
     <div class="status">
