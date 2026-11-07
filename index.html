@@ -726,7 +726,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.64</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.65</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -3102,8 +3102,8 @@ function jakGen(g){return(L)=>{
 function alkuGen(g){return(L)=>{
   const def=E('Alkuluku on luku, joka on jaollinen vain 1:llä ja itsellään. Luku 1 ei ole alkuluku.','A prime number is divisible only by 1 and by itself. The number 1 is not a prime.');
   if(L===1){const yes=Math.random()<.5;let n;do{n=R(5,20)}while(jIsP(n)!==yes||n===14);
-    const intro=E(`Tässä on ${n} palikkaa. Saatko siirtelemällä muodostettua niistä suorakulmion?`,`Here are ${n} blocks. Can you move them to make a rectangle?`);const rects=jRectsHTML(n);P={alkS:alkStart(n),alkIntro:intro};const vis=alkHTML();
-    return{kind:'choice',confirm:1,yn:1,choices:[['1',E(`${n} on alkuluku`,`${n} is a prime`)],['0',E(`${n} ei ole alkuluku`,`${n} is not a prime`)]],ans:yes?'1':'0',alkS:P.alkS,alkIntro:intro,visual:vis,mount:alkDraw,
+    const intro=E(`Tässä on ${n} palikkaa. Yritä siirtelemällä muodostaa niistä suorakulmio.`,`Here are ${n} blocks. Try to move them to make a rectangle.`);const rects=jRectsHTML(n);P={alkS:alkStart(n),alkIntro:intro};const vis=alkHTML();
+    return{kind:'choice',confirm:1,yn:1,choices:jYN(),ans:yes?'1':'0',alkS:P.alkS,alkIntro:intro,visual:vis,mount:alkDraw,
       text:plbl(E(`Onko ${n} alkuluku?`,`Is ${n} a prime number?`),''),answerText:'',
       hint:E(`<p>Voiko palikat järjestää suorakulmioksi, jossa on vähintään kaksi riviä ja kaikki rivit ovat yhtä pitkiä? Jos ei voi, luku on alkuluku.</p>`,`<p>Can you arrange the blocks into a rectangle with at least two rows, all the same length? If not, the number is a prime.</p>`),
       explain:`<p><b>${def}</b></p>${yes?E(`<p>${n} on alkuluku: palikoista ei saa suorakulmiota, jossa olisi vähintään kaksi riviä.</p>`,`<p>${n} is a prime: the blocks cannot make a rectangle with at least two rows.</p>`):E(`<p>${n} ei ole alkuluku, koska palikoista saa suorakulmion:</p>`,`<p>${n} is not a prime, because the blocks make a rectangle:</p>`)+rects}`}}
