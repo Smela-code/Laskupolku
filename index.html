@@ -726,7 +726,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.66</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.67</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -5332,7 +5332,7 @@ document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#cg
   else if(b.id==='clearBtn'){if(done)return;document.querySelectorAll('#sheet .calc-wrap input').forEach(x=>{x.value='';x.classList.remove('ok','no','hinted')});const fb0=$('#fb');if(fb0)fb0.hidden=true;
     const f=P.kind==='col'?document.getElementById('r'+(P.L.N-1)):document.querySelector('#sheet .calc-wrap input');if(f){activeEl=f;f.focus({preventScroll:true})}}
   else if(b.id==='padBtn'){const pd=$('#pad');pd.hidden=!pd.hidden;b.setAttribute('aria-expanded',String(!pd.hidden));b.textContent=pd.hidden?E('Ruutupaperi','Squared paper'):E('Piilota ruudut','Hide squares');if(!pd.hidden){const f=pd.querySelector('tr:nth-child(2) .sq');if(f){activeEl=f;f.focus({preventScroll:true})}}return}
-  else if(b.dataset.padop){const o=['+','−','·',':'],i=(+b.dataset.padop+1)%4;b.dataset.padop=i;b.textContent=o[i];return}
+  else if(b.dataset.padop){const o=['+','−','·'],i=(+b.dataset.padop+1)%3;b.dataset.padop=i;b.textContent=o[i];return}
   else if(b.dataset.padclr){document.querySelectorAll('#pad .sq').forEach(x=>x.value='');return}
   else if(b.id==='hintBtn'){const h=$('#hint');h.hidden=!h.hidden;b.textContent=h.hidden?E('Vihje','Hint'):E('Piilota vihje','Hide hint')}
   else if(b.id==='next'||b.id==='skip')newProblem()});
