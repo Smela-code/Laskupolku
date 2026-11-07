@@ -717,7 +717,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.56</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.57</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -2163,11 +2163,11 @@ function solidSVG(M,th,ph){const k=M.shape,phi=ph??.5,cs=Math.cos(th),sn=Math.si
     o+=smooth&&q.f.length<=4?`<polygon points="${pts}" fill="${col}" stroke="${col}" stroke-width="1"/>`:`<polygon points="${pts}" fill="${col}" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/>`}
   if(smooth){const pts=allP.map(p=>P(p)).map(r=>[r[0],r[1]]).sort((a,b)=>a[0]-b[0]||a[1]-b[1]);const cr=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);const lo=[],up=[];for(const p of pts){while(lo.length>=2&&cr(lo[lo.length-2],lo[lo.length-1],p)<=0)lo.pop();lo.push(p)}for(const p of pts.slice().reverse()){while(up.length>=2&&cr(up[up.length-2],up[up.length-1],p)<=0)up.pop();up.push(p)}const h=lo.slice(0,-1).concat(up.slice(0,-1));o+=`<polygon points="${h.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/>`}
   return `<svg class="pa c3s" viewBox="0 0 ${W} ${W}" width="${W}" height="${W}">${o}</svg>`}
-let SOLH=[];const solPick=pool=>{const c=pool.filter(x=>!SOLH.includes(x));const k=pick(c.length?c:pool);SOLH.push(k);if(SOLH.length>2)SOLH.shift();return k};
+let SOLH=[],SOLQ=[];const solPick=pool=>{const c=pool.filter(x=>!SOLH.includes(x));const k=pick(c.length?c:pool);SOLH.push(k);if(SOLH.length>2)SOLH.shift();return k};
 const SOLL1=['kuutio','pallo','lierio','kartio','sarmio'],SOLL2=['kuutio','pallo','lierio','kartio','sarmio','pyramidi','kolmisarmio'];
 function solidGen(g){return L=>{
   if(L===3&&g>=3){const pool=g>=5?['kuutio','sarmio','pyramidi','kolmisarmio','kuusisarmio','tetra']:['kuutio','sarmio','pyramidi','kolmisarmio'];const k=solPick(pool),[f,e,v]=SOLC[k];
-    const ask=pick(g>=5?['f','e','v']:['f','v']),ans={f,e,v}[ask],wN=E({f:'tahkoa',e:'särmää',v:'kärkeä'},{f:'faces',e:'edges',v:'vertices'})[ask];
+    const ask=(SOLQ=(SOLQ.length?SOLQ:shuffle(['f','e','v']))).pop(),ans={f,e,v}[ask],wN=E({f:'tahkoa',e:'särmää',v:'kärkeä'},{f:'faces',e:'edges',v:'vertices'})[ask];
     return{kind:'int',showOk:1,visual:c3dBox({shape:k,th:-.5,hue:R(0,360)},SOLN[k]),text:plbl(E(`Kappale on ${SOLN[k]}. Montako ${wN} sillä on?`,`How many ${wN} does the ${SOLN[k]} have?`),`${BOX} ${wN}`),ans,answerText:`${ans} ${wN}`,
       hint:E('<p>Tahko on kappaleen tasainen pinta, särmä on kahden tahkon välinen reuna ja kärki on kohta, jossa särmät kohtaavat.</p><p>Pyöritä kappaletta ja laske järjestelmällisesti: ensin ylhäältä, sitten keskeltä ja lopuksi alhaalta.</p>','<p>A face is a flat surface of the solid, an edge is where two faces meet, and a vertex is a corner where edges meet.</p><p>Turn the solid and count systematically: first the top, then the middle, then the bottom.</p>'),
       explain:`<p>${SOLN[k]}: ${f} ${E('tahkoa','faces')}, ${e} ${E('särmää','edges')}, ${v} ${E('kärkeä','vertices')}.</p>${g>=6?`<p>${E('Tarkistus','Check')}: ${f} + ${v} − ${e} = 2</p>`:''}`}}
