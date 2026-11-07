@@ -559,13 +559,13 @@ button.trow{cursor:pointer;touch-action:manipulation}button.trow:active{transfor
 .mnote{text-align:center;font-size:.82rem;color:var(--soft);margin:.2em 0 0;font-weight:600}.mscale{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px;font-size:.85rem;font-weight:800;color:var(--ink)}
 .gtile.ntile{aspect-ratio:auto;min-height:58px;font:800 1.55rem var(--display);color:var(--ink)}
 .jvis{display:block;margin:0 auto;max-width:100%;height:auto}
-.alkw{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%}
-.alkb{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;font-weight:700;color:var(--soft)}
-.alkb span{margin-right:4px}
-.alkc{min-width:36px;height:36px;border-radius:10px;border:2px solid var(--line);background:var(--paper);color:var(--ink);font:inherit;font-weight:800;cursor:pointer}
-.alkc.on{background:var(--sun);border-color:var(--coin-edge);color:#3a2a05}
-.alkg{min-height:60px;display:flex;align-items:center}
-.alks{margin:0;font-weight:700;text-align:center}.alks.ok{color:var(--good)}.alks.no{color:var(--soft)}
+.alkw{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}.alkw .story{align-self:stretch;margin:0}
+.agrid{display:grid;grid-template-columns:repeat(6,var(--agz));grid-template-rows:repeat(6,var(--agz));gap:4px;--agz:min(44px,12vw);padding:6px;border-radius:12px;background:var(--grid);position:relative;touch-action:none}
+.agc{width:var(--agz);height:var(--agz);border-radius:7px;border:1.5px dashed var(--line);background:var(--paper);padding:0;cursor:pointer}
+.agc.on{background:var(--sun);border:1.5px solid var(--coin-edge);box-shadow:inset 0 -3px 0 rgba(0,0,0,.12);cursor:grab}
+.agc.sel{outline:3px solid var(--blue);outline-offset:1px}
+.agok{border:3px solid var(--good);border-radius:9px;margin:-4px;pointer-events:none;z-index:1}
+.alks{margin:0;font-weight:700;text-align:center;color:var(--good);min-height:1.4em}
 .gtile{aspect-ratio:1;padding:4px;border-radius:14px;border:3px solid var(--line);background:var(--paper);cursor:pointer;touch-action:manipulation;display:grid;place-items:center}
 .gtile svg{width:100%;height:100%;display:block}
 .gtile[aria-pressed="true"]{border-color:var(--blue);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 25%,transparent)}
@@ -724,7 +724,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.60</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.61</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -3040,14 +3040,22 @@ function jGroupSVG(n,k){const gw=k*19+8,maxW=330,pos=[];let x=4,y=6;const G=Math
   return `<svg class="jvis" viewBox="0 0 ${W} ${H}" width="${Math.min(340,W*1.4)}" role="img" aria-label="${n}">${s}</svg>`}
 const jBlk=(x,y,z=12)=>`<rect x="${x}" y="${y}" width="${z}" height="${z}" rx="2" fill="var(--sun)" stroke="var(--ink)" stroke-opacity=".35"/>`;
 function jRowSVG(n){const W=8+n*14;let s='';for(let i=0;i<n;i++)s+=jBlk(4+i*14,4);return `<svg class="jvis" viewBox="0 0 ${W} 20" width="${Math.min(340,W*2.2)}" role="img" aria-label="${n}">${s}</svg>`}
-/* palikat riveihin: lapsi valitsee montako palikkaa riviin */
-function alkGridSVG(n,c){const r=Math.ceil(n/c),z=12,gp=14;let o='';for(let i=0;i<r*c;i++){const x=4+(i%c)*gp,y=4+Math.floor(i/c)*gp;o+=i<n?jBlk(x,y,z):`<rect x="${x}" y="${y}" width="${z}" height="${z}" rx="2" fill="none" stroke="var(--apple)" stroke-width="1.2" stroke-dasharray="2.5 2"/>`}
-  const ok=n%c===0&&r>1;if(ok)o+=`<rect x="1.5" y="1.5" width="${c*gp+3}" height="${r*gp+3}" rx="4" fill="none" stroke="var(--good)" stroke-width="2"/>`;
-  const W=c*gp+8,H=r*gp+8;return `<svg class="jvis" viewBox="0 0 ${W} ${H}" width="${Math.min(320,W*2.4)}" role="img" aria-label="${n}">${o}</svg>`}
-function alkHTML(n,c){const r=Math.ceil(n/c),ok=n%c===0;
-  return `<div class="alkw"><div class="alkb" role="group" aria-label="${E('Palikoita rivissä','Blocks in a row')}"><span>${E('Palikoita rivissä:','Blocks in a row:')}</span>${Array.from({length:Math.min(10,n-1)-1},(_,i)=>i+2).map(k=>`<button type="button" class="alkc${k===c?' on':''}" data-alc="${k}" aria-pressed="${k===c}">${k}</button>`).join('')}</div>
-  <div class="alkg">${alkGridSVG(n,c)}</div>${ok?`<p class="alks ok">${E(`${r} riviä, joissa kussakin ${c} palikkaa – suorakulmio!`,`${r} rows of ${c} blocks – a rectangle!`)}</p>`:''}</div>`}
-document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-alc]');if(!b||!P||!P.alkN)return;P.alkC=+b.dataset.alc;const w=b.closest('.alkw');if(w)w.outerHTML=alkHTML(P.alkN,P.alkC)});
+/* palikat ruudukossa: siirrä palikoita ja yritä muodostaa suorakulmio */
+const AG=6;
+function alkStart(n){const c=[6,5,4,3].find(k=>n%k!==0&&Math.ceil(n/k)<=AG)||4;const S=[];for(let i=0;i<n;i++)S.push(Math.floor(i/c)*AG+i%c);return S}
+function alkRect(cells){const rs=cells.map(i=>Math.floor(i/AG)),cs=cells.map(i=>i%AG),r0=Math.min(...rs),r1=Math.max(...rs),c0=Math.min(...cs),c1=Math.max(...cs),h=r1-r0+1,w=c1-c0+1;return h*w===cells.length&&h>=2&&w>=2?{r0,c0,h,w}:null}
+function alkHTML(){const set=new Set(P.alkS),rc=alkRect(P.alkS);let o='';
+  for(let i=0;i<AG*AG;i++)o+=`<button type="button" style="grid-row:${Math.floor(i/AG)+1};grid-column:${i%AG+1}" class="agc${set.has(i)?' on':''}${P.alkSel===i?' sel':''}" data-agc="${i}" aria-label="${set.has(i)?E('Palikka','Block'):E('Tyhjä','Empty')}"></button>`;
+  if(rc)o+=`<div class="agok" style="grid-row:${rc.r0+1}/span ${rc.h};grid-column:${rc.c0+1}/span ${rc.w}"></div>`;
+  return `<div class="alkw">${P.alkIntro?`<div class="story"><p>${P.alkIntro}</p></div>`:''}<div class="agrid" role="group" aria-label="${E('Ruudukko','Grid')}">${o}</div><p class="alks">${rc?E(`${rc.h} · ${rc.w} – suorakulmio!`,`${rc.h} · ${rc.w} – a rectangle!`):'&nbsp;'}</p></div>`}
+function alkDraw(){const w=document.querySelector('#sheet .alkw');if(w)w.outerHTML=alkHTML()}
+function alkMove(a,b){const k=P.alkS.indexOf(a);if(k<0||P.alkS.includes(b))return false;P.alkS[k]=b;return true}
+let AGD=null;
+document.addEventListener('pointerdown',e=>{const c=e.target.closest&&e.target.closest('[data-agc]');if(!c||!P||!P.alkS||done)return;const i=+c.dataset.agc;
+  if(P.alkS.includes(i)){e.preventDefault();AGD={i,id:e.pointerId};P.alkSel=i;alkDraw()}
+  else if(P.alkSel!=null){alkMove(P.alkSel,i);P.alkSel=null;alkDraw()}});
+document.addEventListener('pointerup',e=>{if(!AGD||!P||!P.alkS)return;const d=AGD;AGD=null;const el=document.elementFromPoint(e.clientX,e.clientY),c=el&&el.closest&&el.closest('[data-agc]');
+  if(c){const j=+c.dataset.agc;if(j!==d.i&&alkMove(d.i,j)){P.alkSel=null;alkDraw()}}});
 function jRectsHTML(n){const out=[];for(let a=2;a*a<=n;a++)if(n%a===0){const b=n/a;let s='';for(let r=0;r<a;r++)for(let c=0;c<b;c++)s+=jBlk(2+c*11,2+r*11,10);out.push(`<figure style="display:inline-block;margin:4px 10px;text-align:center"><svg viewBox="0 0 ${4+b*11} ${4+a*11}" width="${Math.min(150,(4+b*11)*2)}">${s}</svg><figcaption>${a} · ${b}</figcaption></figure>`)}return out.join('')}
 function jMulti(nums,isF,txt,hint,exp){const ans=nums.map((x,i)=>isF(x)?i:-1).filter(i=>i>=0);
   return{kind:'multi',after:`<div class="ggrid g4" role="group" aria-label="${E('Luvut','Numbers')}">${nums.map((x,i)=>`<button type="button" class="gtile ntile" data-pick="${i}" aria-pressed="false">${x}</button>`).join('')}</div>`,
@@ -3086,10 +3094,10 @@ function jakGen(g){return(L)=>{
     a=>`<p><b>${jRule(k)}</b></p>${uses?a.map(x=>`<p>${x}: ${jDs(x).join(' + ')} = ${jDs(x).reduce((p,q)=>p+q,0)}</p>`).join(''):`<p>${E('Jaollisia:','Divisible:')} ${jList(a)}</p>`}`)}}
 function alkuGen(g){return(L)=>{
   const def=E('Alkuluku on luku, joka on jaollinen vain 1:llä ja itsellään. Luku 1 ei ole alkuluku.','A prime number is divisible only by 1 and by itself. The number 1 is not a prime.');
-  if(L===1){const yes=Math.random()<.5;let n;do{n=R(5,20)}while(jIsP(n)!==yes);
-    const rects=jRectsHTML(n),cs=[3,4,5,6,7].filter(k=>k<n&&n%k!==0),c0=pick(cs.length?cs:[2]);
-    return{kind:'choice',confirm:1,yn:1,choices:jYN(),ans:yes?'1':'0',alkN:n,alkC:c0,visual:alkHTML(n,c0),
-      text:plbl(E(`Tässä on ${n} palikkaa. Saatko palikoista suorakulmion? Onko ${n} alkuluku?`,`Here are ${n} blocks. Can you make a rectangle? Is ${n} a prime number?`),''),answerText:'',
+  if(L===1){const yes=Math.random()<.5;let n;do{n=R(5,20)}while(jIsP(n)!==yes||n===14);
+    const intro=E(`Tässä on ${n} palikkaa. Voit siirrellä niitä ruudukossa.`,`Here are ${n} blocks. You can move them around the grid.`);const rects=jRectsHTML(n);P={alkS:alkStart(n),alkIntro:intro};const vis=alkHTML();
+    return{kind:'choice',confirm:1,yn:1,choices:jYN(),ans:yes?'1':'0',alkS:P.alkS,alkIntro:intro,visual:vis,mount:alkDraw,
+      text:plbl(E(`Saatko palikoista suorakulmion? Onko ${n} alkuluku?`,`Can you make a rectangle? Is ${n} a prime number?`),''),answerText:'',
       hint:E(`<p>Voiko palikat järjestää suorakulmioksi, jossa on vähintään kaksi riviä ja kaikki rivit ovat yhtä pitkiä? Jos ei voi, luku on alkuluku.</p>`,`<p>Can you arrange the blocks into a rectangle with at least two rows, all the same length? If not, the number is a prime.</p>`),
       explain:`<p><b>${def}</b></p>${yes?E(`<p>${n} on alkuluku: palikoista ei saa suorakulmiota, jossa olisi vähintään kaksi riviä.</p>`,`<p>${n} is a prime: the blocks cannot make a rectangle with at least two rows.</p>`):E(`<p>${n} ei ole alkuluku, koska palikoista saa suorakulmion:</p>`,`<p>${n} is not a prime, because the blocks make a rectangle:</p>`)+rects}`}}
   const hi=L===2?50:100,nums=jPickNums(2,hi,12,jIsP,3,6);
