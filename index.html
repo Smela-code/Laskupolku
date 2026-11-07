@@ -716,7 +716,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.52</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.53</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -2237,9 +2237,10 @@ function holeCubesSVG(cubes,box,o={}){const th=(P&&P.hth!=null)?P.hth:HTH,ph=(P&
 function holeWall(hole){const hk=new Set(hole.map(p=>p.join(',')));const HY=Math.max(...hole.map(p=>p[0])),HZ=Math.max(...hole.map(p=>p[1]));const w=[];
   for(let y=-1;y<=HY+1;y++)for(let z=0;z<=HZ+1;z++)if(!hk.has(y+','+z))w.push({x:HWX,y,z,hue:22,sat:45,wall:1});return w}
 function holeScene(pc,dx,o={}){const f=holeFit(pcProj(pc),P.hole),my=Math.min(...pc.map(p=>p[1]));const hy=f.dy-my;const tw=pc.map(([x,y,z])=>({x:x+dx,y:y+hy,z,front:1}));
-  const HY=Math.max(...P.hole.map(p=>p[0])),HZ=Math.max(...P.hole.map(p=>p[1]));const ys=[-1,HY+2,...tw.map(c=>c.y),...tw.map(c=>c.y+1)];
-  const box=[-.3,HWX+4.3,Math.min(...ys)-.3,Math.max(...ys)+.3,Math.max(HZ+2,...pc.map(p=>p[2]+1))];
-  const mx=Math.max(...tw.map(c=>c.x))+1;if(!o.cubes&&dx===0)o.arrow=[(mx+HWX)/2-.75,(mx+HWX)/2+.75,(Math.min(...tw.map(c=>c.y))+Math.max(...tw.map(c=>c.y))+1)/2];
+  const HY=Math.max(...P.hole.map(p=>p[0])),HZ=Math.max(...P.hole.map(p=>p[1]));const mx=Math.max(...[0,1,2].map(k=>Math.max(...pc.map(p=>p[k]))-Math.min(...pc.map(p=>p[k]))))+1,hys=P.hole.map(p=>p[0]);if(!P.hyr){let lo=-1,hi=HY+2;const seen=new Set(),q=[pcNorm(pc)];while(q.length){const c=q.pop(),k=JSON.stringify([...c].map(String).sort());if(seen.has(k))continue;seen.add(k);const d=holeFit(pcProj(c),P.hole).dy-Math.min(...c.map(p=>p[1]));lo=Math.min(lo,...c.map(p=>p[1]+d));hi=Math.max(hi,...c.map(p=>p[1]+d+1));for(const m of ['roll','yaw','pitch'])q.push(pcNorm(c.map(PCROT[m])))}P.hyr=[lo,hi]}
+  const ys=[...P.hyr,...tw.map(c=>c.y),...tw.map(c=>c.y+1)];
+  const box=[-.3,HWX+4.3,Math.min(...ys)-.3,Math.max(...ys)+.3,Math.max(HZ+2,mx)];
+  if(!o.cubes&&dx===0)o.arrow=[(mx+HWX)/2-.75,(mx+HWX)/2+.75,(Math.min(...hys)+Math.max(...hys)+1)/2];
   return holeCubesSVG([...holeWall(P.hole),...(o.cubes||tw)],box,o)}
 let HDR=null;
 document.addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest('#hbox');if(!b||!P||P.kind!=='turn'||P.running)return;HDR={id:e.pointerId,x:e.clientX,y:e.clientY,th:P.hth??HTH,ph:P.hph??HPH};try{b.setPointerCapture(e.pointerId)}catch(_){}});
