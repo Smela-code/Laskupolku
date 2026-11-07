@@ -726,7 +726,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.65</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.66</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -3044,7 +3044,7 @@ const jBlk=(x,y,z=12)=>`<rect x="${x}" y="${y}" width="${z}" height="${z}" rx="2
 function jRowSVG(n){const W=8+n*14;let s='';for(let i=0;i<n;i++)s+=jBlk(4+i*14,4);return `<svg class="jvis" viewBox="0 0 ${W} 20" width="${Math.min(340,W*2.2)}" role="img" aria-label="${n}">${s}</svg>`}
 /* palikat ruudukossa: siirrä palikoita ja yritä muodostaa suorakulmio */
 const AG=6;
-function alkStart(n){const c=[6,5,4,3].find(k=>n%k!==0&&Math.ceil(n/k)<=AG)||4;const S=[];for(let i=0;i<n;i++)S.push(Math.floor(i/c)*AG+i%c);return S}
+function alkStart(n){let S;do{S=shuffle([...Array(AG*AG).keys()]).slice(0,n).sort((a,b)=>a-b)}while(alkRect(S));return S}
 function alkRect(cells){const rs=cells.map(i=>Math.floor(i/AG)),cs=cells.map(i=>i%AG),r0=Math.min(...rs),r1=Math.max(...rs),c0=Math.min(...cs),c1=Math.max(...cs),h=r1-r0+1,w=c1-c0+1;return h*w===cells.length&&h>=2&&w>=2?{r0,c0,h,w}:null}
 function alkHTML(){const set=new Set(P.alkS),rc=alkRect(P.alkS);let o='';
   for(let i=0;i<AG*AG;i++)o+=`<button type="button" style="grid-row:${Math.floor(i/AG)+1};grid-column:${i%AG+1}" class="agc${set.has(i)?' on':''}${P.alkSel===i?' sel':''}" data-agc="${i}" aria-label="${set.has(i)?E('Palikka','Block'):E('Tyhjä','Empty')}"></button>`;
