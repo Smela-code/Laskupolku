@@ -716,7 +716,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.51</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.52</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -3821,19 +3821,17 @@ function mMap(river){const key=(i,j)=>i+','+j,M={river:river?pick([1,3,5]):null,
   const L=shuffle(MLM());for(const l of L){const c=shuffle(free).find(p=>!M.lm.some(m=>Math.abs(m.p[0]-p[0])+Math.abs(m.p[1]-p[1])<3));if(c){M.lm.push({...l,p:c});M.door[key(...c)]=[c[0],c[1]+1]}}
   const dk=Object.keys(MDECO);for(let i=0;i<MW;i++)for(let j=0;j<MH;j++){const k=key(i,j);if(M.road.has(k)||j===M.river||M.lm.some(m=>m.p[0]===i&&m.p[1]===j))continue;M.deco[k]=pick(dk)}
   return M}
-function mAnim(rt,rt2){const sv=document.querySelector('#sheet .visual svg.map');if(!sv||sv.dataset.anim)return;sv.dataset.anim=1;const NS='http://www.w3.org/2000/svg',red=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const draw=(r,c,dash,delay)=>{const pts=r.map(p=>mN(...p));const pl=document.createElementNS(NS,'polyline');pl.setAttribute('points',pts.map(q=>q.join(',')).join(' '));pl.setAttribute('fill','none');pl.setAttribute('stroke',c);pl.setAttribute('stroke-width',dash?'5':'6');pl.setAttribute('stroke-linecap','round');pl.setAttribute('stroke-linejoin','round');pl.setAttribute('opacity','.88');
-    let len=0;for(let i=1;i<pts.length;i++)len+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);const dur=red?0:Math.min(2600,300+len*6);
-    const end=(x,y,f)=>{const ci=document.createElementNS(NS,'circle');ci.setAttribute('cx',x);ci.setAttribute('cy',y);ci.setAttribute('r','7');ci.setAttribute('fill',f?c:'none');if(f)ci.setAttribute('fill-opacity','.35');ci.setAttribute('stroke',c);ci.setAttribute('stroke-width','3.5');ci.setAttribute('stroke-opacity','.75');return ci};
-    const st=end(...pts[0],0);sv.appendChild(st);
-    if(dash){pl.setAttribute('stroke-dasharray','2 8');pl.style.opacity='0';pl.style.transition=`opacity ${dur}ms ease ${delay}ms`;sv.appendChild(pl);requestAnimationFrame(()=>requestAnimationFrame(()=>pl.style.opacity='.9'))}
-    else{const STEP=red?0:170,PAUSE=red?0:190,gL=document.createElementNS(NS,'g'),gD=document.createElementNS(NS,'g');sv.appendChild(gL);sv.appendChild(gD);let t=delay;for(let k=1;k<pts.length;k++){const[a,b]=pts[k-1],[x,y]=pts[k],L=Math.hypot(x-a,y-b),ln=document.createElementNS(NS,'line');ln.setAttribute('x1',a);ln.setAttribute('y1',b);ln.setAttribute('x2',x);ln.setAttribute('y2',y);ln.setAttribute('stroke',c);ln.setAttribute('stroke-width','6');ln.setAttribute('stroke-linecap','round');ln.setAttribute('opacity','.88');ln.setAttribute('stroke-dasharray',`${L} ${L}`);ln.setAttribute('stroke-dashoffset',String(L));ln.style.transition=`stroke-dashoffset ${STEP}ms linear`;
-        const at=t;setTimeout(()=>{gL.appendChild(ln);requestAnimationFrame(()=>requestAnimationFrame(()=>ln.setAttribute('stroke-dashoffset','0')))},at);
-        if(k<pts.length-1)setTimeout(()=>{const d=document.createElementNS(NS,'circle');d.setAttribute('cx',x);d.setAttribute('cy',y);d.setAttribute('r','4.6');d.setAttribute('fill','var(--apple)');d.setAttribute('class','mpop');gD.appendChild(d)},at+STEP);
-        t+=STEP+(k<pts.length-1?PAUSE:0)}
-      const tot=t-delay;setTimeout(()=>{sv.appendChild(end(...pts[pts.length-1],1))},delay+tot);return tot}
-    setTimeout(()=>{sv.appendChild(end(...pts[pts.length-1],1))},delay+dur);return dur};
-  const d1=draw(rt,'var(--orange)',0,150);if(rt2)draw(rt2,'var(--good)',1,250+d1)}
+function mAnim(rt,c1,rt2,c2){const sv=document.querySelector('#sheet .visual svg.map');if(!sv||sv.dataset.anim)return;sv.dataset.anim=1;const NS='http://www.w3.org/2000/svg',red=window.matchMedia('(prefers-reduced-motion: reduce)').matches,STEP=red?0:170,PAUSE=red?0:190;
+  const mk=(tag,at)=>{const e=document.createElementNS(NS,tag);for(const k in at)e.setAttribute(k,at[k]);return e};
+  const gL=mk('g',{}),gD=mk('g',{});sv.appendChild(gL);sv.appendChild(gD);
+  const routes=[[rt,c1],...(rt2?[[rt2,c2]]:[])].map(([r,c])=>({c,pts:r.map(p=>mN(...p))}));
+  routes.forEach(o=>gD.appendChild(mk('circle',{cx:o.pts[0][0],cy:o.pts[0][1],r:7,fill:'none',stroke:o.c,'stroke-width':3.5,opacity:.75})));
+  const maxK=Math.max(...routes.map(o=>o.pts.length-1));
+  for(let k=1;k<=maxK;k++){const at=150+(k-1)*(STEP+PAUSE);
+    routes.forEach(o=>{if(k>o.pts.length-1)return;const[a,b]=o.pts[k-1],[x,y]=o.pts[k],L=Math.hypot(x-a,y-b),last=k===o.pts.length-1;
+      const ln=mk('line',{x1:a,y1:b,x2:x,y2:y,stroke:o.c,'stroke-width':6,'stroke-linecap':'round',opacity:.88,'stroke-dasharray':`${L} ${L}`,'stroke-dashoffset':L});ln.style.transition=`stroke-dashoffset ${STEP}ms linear`;
+      setTimeout(()=>{gL.appendChild(ln);requestAnimationFrame(()=>requestAnimationFrame(()=>ln.setAttribute('stroke-dashoffset','0')))},at);
+      setTimeout(()=>{gD.appendChild(last?mk('circle',{cx:x,cy:y,r:7,fill:o.c,'fill-opacity':.35,stroke:o.c,'stroke-width':3.5,'stroke-opacity':.75,class:'mpop'}):mk('circle',{cx:x,cy:y,r:4.6,fill:'var(--apple)',class:'mpop'}))},at+STEP)})}}
 function mSVG(M,route,opt={}){const W=MOX*2+MW*MCS,H=MOY*2+MH*MCS,key=(i,j)=>i+','+j;let s=`<svg class="map" viewBox="0 0 ${W} ${H}" role="img" aria-label="${E('Kartta','Map')}"><rect width="${W}" height="${H}" rx="10" fill="#dfe8cf"/>`;
   if(M.river!=null){const y=MOY+M.river*MCS;s+=`<rect x="${MOX}" y="${y}" width="${MW*MCS}" height="${MCS}" fill="#8cc8ec"/><path d="M${MOX} ${y+14}${'q5-3 10 0t10 0'.repeat(MW*2)}M${MOX} ${y+27}${'q5-3 10 0t10 0'.repeat(MW*2)}" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="1.5"/>`}
   let rd='';for(let i=0;i<MW;i++)for(let j=0;j<MH;j++){if(!M.road.has(key(i,j)))continue;const[x,y]=mN(i,j);rd+=`M${x} ${y}h0`;if(M.road.has(key(i+1,j)))rd+=`M${x} ${y}h${MCS}`;if(M.road.has(key(i,j+1)))rd+=`M${x} ${y}v${MCS}`}
@@ -3844,8 +3842,9 @@ function mSVG(M,route,opt={}){const W=MOX*2+MW*MCS,H=MOY*2+MH*MCS,key=(i,j)=>i+'
   for(let j=0;j<=MH;j++)s+=`<path d="M${MOX} ${MOY+j*MCS}h${MW*MCS}" stroke="#55606e" stroke-opacity=".22" stroke-width="1"/>`;
   M.lm.forEach(l=>{const x=MOX+l.p[0]*MCS,y=MOY+l.p[1]*MCS;s+=`<rect x="${x+1}" y="${y+1}" width="${MCS-2}" height="${MCS-2}" rx="3" fill="#efe7d4"/><rect x="${x+15}" y="${y+31}" width="10" height="18" fill="#d6cbb3" stroke="#9c8f74" stroke-width="1.2"/><path d="M${x+15.6} ${y+37}h8.8M${x+15.6} ${y+43}h8.8" stroke="#b3a68a" stroke-width="1"/><g transform="translate(${x} ${y})">${MPIC[l.k]}</g>`});
   const pts=rt=>rt.map(p=>mN(...p).join(',')).join(' '),ends=(rt,c)=>{const[a,b]=mN(...rt[0]),[x,y]=mN(...rt[rt.length-1]);return `<circle cx="${a}" cy="${b}" r="7" fill="none" stroke="${c}" stroke-width="3.5" opacity=".75"/><circle cx="${x}" cy="${y}" r="7" fill="${c}" fill-opacity=".35" stroke="${c}" stroke-width="3.5" stroke-opacity=".75"/>`};
-  if(opt.rt2)s+=`<polyline points="${pts(opt.rt2)}" fill="none" stroke="var(--good)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 8" opacity=".9"/>`;
-  if(route)s+=`<polyline points="${pts(route)}" fill="none" stroke="var(--orange)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity=".88"/>${route.slice(1,-1).map(p=>{const[x,y]=mN(...p);return `<circle cx="${x}" cy="${y}" r="4.6" fill="var(--apple)"/>`}).join('')}${ends(route,'var(--orange)')}`;
+  const drawR=(r,c)=>`<polyline points="${pts(r)}" fill="none" stroke="${c}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity=".88"/>${r.slice(1,-1).map(p=>{const[x,y]=mN(...p);return `<circle cx="${x}" cy="${y}" r="4.6" fill="var(--apple)"/>`}).join('')}${ends(r,c)}`;
+  if(opt.rt2)s+=drawR(opt.rt2,opt.col2||'var(--orange)');
+  if(route)s+=drawR(route,opt.col||'var(--orange)');
   return s+'</svg>'}
 function mLegend(M,sc,drawn){return `<div class="mleg">${M.lm.map(l=>`<span><svg viewBox="0 0 40 40" width="28" height="28"><rect width="40" height="40" rx="4" fill="#efe7d4"/>${MPIC[l.k]}</svg>${l.n}</span>`).join('')}${M.river!=null?`<span><i style="background:#8cc8ec"></i>${E('joki','river')}</span>`:''}</div><div class="mscale"><svg viewBox="0 0 22 22" width="22" height="22"><rect x="1" y="1" width="20" height="20" fill="#efe7d4" stroke="#8a95a5" stroke-width="2"/></svg>${sc}</div>${drawn?'':`<p class="mnote">${E('Kuljetaan vain teitä pitkin ruudusta viereiseen ruutuun. Rakennuksiin mennään sisään ovesta.','Move only along the roads, from square to square. You go into a building through its door.')}</p>`}`}
 const mFm=m=>m>=1000&&m%100===0?`${fmtInt(m)} m (${String(m/1000).replace('.',',')} km)`:`${fmtInt(m)} m`;
@@ -3864,8 +3863,9 @@ function mapGen(g){return L=>{
   const d=(rt||P).length-1,cmS=ty==='ratio'||ty==='rev'||ty==='whereR'||ty==='scale',dist=d*(cmS?sc/100:sc);
   const scTxt=ty==='scale'?E('1 ruutu = 1 cm kartalla','1 square = 1 cm on the map'):cmS?E(`1 ruutu = 1 cm kartalla. Mittakaava 1 : ${fmtInt(sc)}`,`1 square = 1 cm on the map. Scale 1 : ${fmtInt(sc)}`):E(`1 ruutu = ${fmtInt(sc)} m`,`1 square = ${fmtInt(sc)} m`);
   const vis=`<div class="mapw">${mSVG(M,ty==='drawn'?rt:null)}${mLegend(M,scTxt,ty==='drawn')}</div>`;
-  const solved=`<div class="mapw">${mSVG(M,rt||P,{rt2:ty==='cmp'?M.P2:null})}</div>`;
-  const an=ty==='drawn'?null:()=>mAnim(rt||P,ty==='cmp'?M.P2:null);
+  const GR='var(--good)',OR='var(--orange)',nearB=ty!=='cmp'||P.length<=M.P2.length;
+  const solved=`<div class="mapw">${mSVG(M,rt||P,{col:nearB?GR:OR,rt2:ty==='cmp'?M.P2:null,col2:nearB?OR:GR})}</div>`;
+  const an=ty==='drawn'?null:()=>mAnim(rt||P,nearB?GR:OR,ty==='cmp'?M.P2:null,nearB?OR:GR);
   const cnt=E(`Reitillä on ${d} askelta ruudusta toiseen.`,`The route has ${d} steps from square to square.`);
   const hintS=E('<p>Etsi ensin lyhin reitti teitä pitkin – kokeile eri vaihtoehtoja. Laske sitten, montako askelta ruudusta toiseen reitillä on. Lähtöruutua ei lasketa. Kerro lopuksi askelten määrä mittakaavalla.</p>','<p>First find the shortest route along the roads – try different ways. Then count the steps from square to square. Do not count the starting square. Finally multiply the steps by the scale.</p>')+(river?E('<p>Jokea ei voi ylittää muualta kuin siltaa pitkin!</p>','<p>You can only cross the river on a bridge!</p>'):'');
   if(ty==='drawn')return{kind:'int',ans:dist,answerText:`${fmtInt(dist)} m`,unit:'m',visual:vis,onOk:an,onFail:an,storyC:1,story:E(`Kartalla on merkitty oranssilla reitti ${A.el} ${B.il}. Kuinka pitkä reitti on?`,`The orange line on the map is a route from ${A.el} to ${B.il}. How long is the route?`),
