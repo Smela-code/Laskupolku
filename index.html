@@ -724,7 +724,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.59</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.60</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -3046,7 +3046,7 @@ function alkGridSVG(n,c){const r=Math.ceil(n/c),z=12,gp=14;let o='';for(let i=0;
   const W=c*gp+8,H=r*gp+8;return `<svg class="jvis" viewBox="0 0 ${W} ${H}" width="${Math.min(320,W*2.4)}" role="img" aria-label="${n}">${o}</svg>`}
 function alkHTML(n,c){const r=Math.ceil(n/c),ok=n%c===0;
   return `<div class="alkw"><div class="alkb" role="group" aria-label="${E('Palikoita rivissä','Blocks in a row')}"><span>${E('Palikoita rivissä:','Blocks in a row:')}</span>${Array.from({length:Math.min(10,n-1)-1},(_,i)=>i+2).map(k=>`<button type="button" class="alkc${k===c?' on':''}" data-alc="${k}" aria-pressed="${k===c}">${k}</button>`).join('')}</div>
-  <div class="alkg">${alkGridSVG(n,c)}</div><p class="alks ${ok?'ok':'no'}">${ok?E(`${r} riviä, joissa kussakin ${c} palikkaa – suorakulmio!`,`${r} rows of ${c} blocks – a rectangle!`):E(`${r-1===1?'1 täysi rivi':`${r-1} täyttä riviä`}, viimeiseen jää ${c-n%c} ${c-n%c===1?'aukko':'aukkoa'}.`,`${r-1} full ${r-1===1?'row':'rows'}, the last one is ${c-n%c} short.`)}</p></div>`}
+  <div class="alkg">${alkGridSVG(n,c)}</div>${ok?`<p class="alks ok">${E(`${r} riviä, joissa kussakin ${c} palikkaa – suorakulmio!`,`${r} rows of ${c} blocks – a rectangle!`)}</p>`:''}</div>`}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-alc]');if(!b||!P||!P.alkN)return;P.alkC=+b.dataset.alc;const w=b.closest('.alkw');if(w)w.outerHTML=alkHTML(P.alkN,P.alkC)});
 function jRectsHTML(n){const out=[];for(let a=2;a*a<=n;a++)if(n%a===0){const b=n/a;let s='';for(let r=0;r<a;r++)for(let c=0;c<b;c++)s+=jBlk(2+c*11,2+r*11,10);out.push(`<figure style="display:inline-block;margin:4px 10px;text-align:center"><svg viewBox="0 0 ${4+b*11} ${4+a*11}" width="${Math.min(150,(4+b*11)*2)}">${s}</svg><figcaption>${a} · ${b}</figcaption></figure>`)}return out.join('')}
 function jMulti(nums,isF,txt,hint,exp){const ans=nums.map((x,i)=>isF(x)?i:-1).filter(i=>i>=0);
@@ -3089,7 +3089,7 @@ function alkuGen(g){return(L)=>{
   if(L===1){const yes=Math.random()<.5;let n;do{n=R(5,20)}while(jIsP(n)!==yes);
     const rects=jRectsHTML(n),cs=[3,4,5,6,7].filter(k=>k<n&&n%k!==0),c0=pick(cs.length?cs:[2]);
     return{kind:'choice',confirm:1,yn:1,choices:jYN(),ans:yes?'1':'0',alkN:n,alkC:c0,visual:alkHTML(n,c0),
-      text:plbl(E(`Tässä on ${n} palikkaa. Kokeile, montako palikkaa laitat riviin. Saatko palikoista suorakulmion? Onko ${n} alkuluku?`,`Here are ${n} blocks. Try how many blocks to put in a row. Can you make a rectangle? Is ${n} a prime number?`),''),answerText:'',
+      text:plbl(E(`Tässä on ${n} palikkaa. Saatko palikoista suorakulmion? Onko ${n} alkuluku?`,`Here are ${n} blocks. Can you make a rectangle? Is ${n} a prime number?`),''),answerText:'',
       hint:E(`<p>Voiko palikat järjestää suorakulmioksi, jossa on vähintään kaksi riviä ja kaikki rivit ovat yhtä pitkiä? Jos ei voi, luku on alkuluku.</p>`,`<p>Can you arrange the blocks into a rectangle with at least two rows, all the same length? If not, the number is a prime.</p>`),
       explain:`<p><b>${def}</b></p>${yes?E(`<p>${n} on alkuluku: palikoista ei saa suorakulmiota, jossa olisi vähintään kaksi riviä.</p>`,`<p>${n} is a prime: the blocks cannot make a rectangle with at least two rows.</p>`):E(`<p>${n} ei ole alkuluku, koska palikoista saa suorakulmion:</p>`,`<p>${n} is not a prime, because the blocks make a rectangle:</p>`)+rects}`}}
   const hi=L===2?50:100,nums=jPickNums(2,hi,12,jIsP,3,6);
