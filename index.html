@@ -726,7 +726,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.67</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.68</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -4136,13 +4136,28 @@ for(const g of [4,5,6])GR[g].topics.push({id:'muodot',fam:'mit',name:'Muodot',le
 /* keskiarvo */
 const DAYS=E(['ma','ti','ke','to','pe','la','su'],['Mon','Tue','Wed','Thu','Fri','Sat','Sun']);
 function bars(vals,labels,mean,miss){const n=vals.length,PW=Math.max(200,n*48+40),EX=mean!=null?70:0,W=PW+EX,H=150,top=18,bot=118,mx=Math.max(...vals.map(v=>v??0),mean||0)*1.12,bw=Math.min(34,(PW-40)/n-10);
-  const y=v=>bot-(v/mx)*(bot-top);let s=`<svg class="bars" viewBox="0 0 ${W} ${H}" style="max-width:${W}px" aria-hidden="true"><path d="M20 ${bot}H${W-10}" stroke="var(--line)" stroke-width="2"/>`;
+  const y=v=>bot-(v/mx)*(bot-top);let s=`<svg class="bars" data-bot="${bot}" data-k="${(bot-top)/mx}" viewBox="0 0 ${W} ${H}" style="max-width:${W}px" aria-hidden="true"><path d="M20 ${bot}H${W-10}" stroke="var(--line)" stroke-width="2"/>`;
   vals.forEach((v,i)=>{const x=30+i*((PW-40)/n)+((PW-40)/n-bw)/2;
     if(i===miss)s+=`<rect x="${x}" y="${top+20}" width="${bw}" height="${bot-top-20}" rx="4" fill="none" stroke="var(--blue)" stroke-width="2" stroke-dasharray="5 4"/><text x="${x+bw/2}" y="${top+14}" text-anchor="middle" font-size="14" font-weight="800" fill="var(--blue)" font-family="Baloo 2, sans-serif">?</text>`;
-    else s+=`<rect x="${x}" y="${y(v)}" width="${bw}" height="${bot-y(v)}" rx="4" fill="var(--blue)" opacity=".8"/><text x="${x+bw/2}" y="${y(v)-5}" text-anchor="middle" font-size="12" font-weight="800" fill="var(--ink)" font-family="Nunito, sans-serif">${String(v).replace('.',',')}</text>`;
+    else s+=`<rect class="abar" data-i="${i}" x="${x}" y="${y(v)}" width="${bw}" height="${bot-y(v)}" rx="4" fill="var(--blue)" opacity=".8"/><text class="aval" data-i="${i}" x="${x+bw/2}" y="${y(v)-5}" text-anchor="middle" font-size="12" font-weight="800" fill="var(--ink)" font-family="Nunito, sans-serif">${String(v).replace('.',',')}</text>`;
     s+=`<text x="${x+bw/2}" y="${bot+16}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--soft)" font-family="Nunito, sans-serif">${labels[i]}</text>`});
   if(mean!=null)s+=`<path d="M20 ${y(mean).toFixed(1)}H${PW-4}" stroke="var(--sun)" stroke-width="2.5" stroke-dasharray="7 5"/><text x="${PW}" y="${(y(mean)+4).toFixed(1)}" text-anchor="start" font-size="11" font-weight="800" fill="var(--coin-edge)" font-family="Nunito, sans-serif">${E('keskiarvo','average')} ${unum(mean)}</text>`;
   return s+'</svg>'}
+/* keskiarvon tasoitus: ylimääräiset ykkösen siivut siirtyvät matalimpiin pylväisiin */
+function avgAnim(vals,labels,mean){const box=document.querySelector('#sheet > .visual');if(!box||box.dataset.anim)return;box.dataset.anim=1;box.innerHTML=bars(vals,labels,mean);
+  const sv=box.querySelector('svg.bars'),NS='http://www.w3.org/2000/svg',bot=+sv.dataset.bot,k=+sv.dataset.k,red=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const v=vals.slice(),R_=[...sv.querySelectorAll('.abar')],T=[...sv.querySelectorAll('.aval')];
+  const set=i=>{const h=v[i]*k;R_[i].setAttribute('y',bot-h);R_[i].setAttribute('height',h);T[i].setAttribute('y',bot-h-5);T[i].textContent=unum(Math.round(v[i]*100)/100)};
+  const mv=[];{const w=v.slice();for(let g=0;g<400;g++){let a=-1,b=-1;w.forEach((x,i)=>{if(x-mean>=1-1e-9&&(a<0||x>w[a]))a=i;if(mean-x>=1-1e-9&&(b<0||x<w[b]))b=i});if(a<0||b<0)break;w[a]--;w[b]++;mv.push([a,b])}}
+  const fin=()=>{v.forEach((_,i)=>{R_[i].style.transition='y .5s ease,height .5s ease';v[i]=mean;set(i)})};
+  if(red||!mv.length){setTimeout(fin,red?0:400);return}
+  const per=Math.max(170,Math.min(620,6500/mv.length)),D=per*.75;let t=500;
+  mv.forEach(([a,b])=>{setTimeout(()=>{const bx=+R_[a].getAttribute('x'),bw=+R_[a].getAttribute('width'),tx=+R_[b].getAttribute('x'),h=k,y0=bot-v[a]*k;
+      v[a]--;set(a);const sl=document.createElementNS(NS,'rect');sl.setAttribute('x',bx);sl.setAttribute('y',y0);sl.setAttribute('width',bw);sl.setAttribute('height',h);sl.setAttribute('rx',2);sl.setAttribute('fill','var(--sun)');sl.setAttribute('stroke','var(--coin-edge)');sl.setAttribute('stroke-width','1');
+      sl.style.transition=`transform ${D}ms ease-in-out`;sv.appendChild(sl);const y1=bot-(v[b]+1)*k;
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{sl.style.transform=`translate(${tx-bx}px,${y1-y0}px)`}));
+      setTimeout(()=>{sl.remove();v[b]++;set(b)},D+20)},t);t+=per});
+  setTimeout(fin,t+200)}
 function avgGen(g){return(L,op,word)=>{const[K]=two();
   const ctx=pick(['koe','pullo','piste']);
   for(let t=0;t<300;t++){let n,lo,hi,decAns=false,missing=false;
@@ -4161,13 +4176,13 @@ function avgGen(g){return(L,op,word)=>{const[K]=two();
         :c==='koe'?`${K.ll} on ${n} koetta, ja niiden keskiarvo on ${mean}. Ensimmäisistä kokeista hän sai ${ks}. Minkä arvosanan hän sai viimeisestä kokeesta?`
         :c==='pullo'?`Luokka keräsi pulloja ${n} päivänä, keskimäärin ${mean} pulloa päivässä. Ensimmäisinä päivinä pulloja tuli ${ks}. Montako pulloa tuli viimeisenä päivänä?`
         :`${K.n} pelasi ${n} peliä, ja hänen pisteidensä keskiarvo oli ${mean}. Ensimmäisissä peleissä hän sai ${ks} pistettä. Montako pistettä hän sai viimeisessä pelissä?`;
-      return{kind:'int',visual:bars(vals,labels,null,mi),story,ans,answerText:String(ans),
+      return{kind:'int',visual:bars(vals,labels,null,mi),story,ans,answerText:String(ans),onOk:()=>avgAnim(vals,labels,mean),onFail:()=>avgAnim(vals,labels,mean),
         hint:E(`<p>Keskiarvosta saat kaikkien lukujen summan: ${n} · ${mean} = ${n*mean}.</p><p>Vähennä summasta tunnetut luvut, niin jäljelle jää puuttuva luku.</p>`,`<p>The average gives you the total of all the numbers: ${n} · ${mean} = ${n*mean}.</p><p>Subtract the numbers you know from the total. What is left is the missing number.</p>`),
         explain:`<p><b>${n} · ${mean} = ${n*mean}</b></p><p>${n*mean} − ${known.join(' − ')} = ${ans}</p><div class="visual">${bars(vals,labels,mean)}</div>`}}
     const story=word&&EN?(c==='koe'?`${K.n} got the grades ${list} in tests. What is the average grade?`:c==='pullo'?`A class collected bottles: ${vals.map((v,i)=>`${v} on ${['Monday','Tuesday','Wednesday','Thursday','Friday'][i]}`).join(', ').replace(/, ([^,]*)$/,' and $1')}. How many bottles did the class collect per day on average?`
       :`${K.n} scored ${list} points in games. What is the average score?`):word?(c==='koe'?`${K.n} sai kokeista arvosanat ${list}. Mikä on arvosanojen keskiarvo?`:c==='pullo'?`Luokka keräsi pulloja: ${vals.map((v,i)=>`${['maanantaina','tiistaina','keskiviikkona','torstaina','perjantaina'][i]} ${v}`).join(', ').replace(/, ([^,]*)$/,' ja $1')}. Montako pulloa luokka keräsi keskimäärin päivässä?`
       :`${K.n} sai peleissä ${list} pistettä. Mikä on pisteiden keskiarvo?`):null;
-    return{kind:decAns?'dec':'int',visual:bars(vals,labels,null),story,text:word?null:`<span class="bg" style="font-size:.7em">${E(`Laske lukujen ${list} keskiarvo.`,`Work out the average of ${list}.`)}</span>`,ans:mean,answerText:unum(mean),
+    return{kind:decAns?'dec':'int',visual:bars(vals,labels,null),story,text:word?null:`<span class="bg" style="font-size:.7em">${E(`Laske lukujen ${list} keskiarvo.`,`Work out the average of ${list}.`)}</span>`,ans:mean,answerText:unum(mean),onOk:()=>avgAnim(vals,labels,mean),onFail:()=>avgAnim(vals,labels,mean),
       hint:E(`<p>Keskiarvo lasketaan kahdessa vaiheessa:</p><ol><li>Laske kaikki luvut yhteen.</li><li>Jaa summa lukujen määrällä. Tässä lukuja on ${n}.</li></ol><p>Keskiarvo on kuin pylväiden tasoitus: korkeista pylväistä siirretään matalille, kunnes kaikki ovat yhtä korkeita.</p>`,`<p>You work out the average in two steps:</p><ol><li>Add all the numbers together.</li><li>Divide the total by how many numbers there are. Here there are ${n} numbers.</li></ol><p>The average is like levelling out the bars: move some from the tall bars to the short ones until they are all the same height.</p>`),
       explain:`<p><b>${vals.join(' + ')} = ${sum}</b></p><p><b>${sum} : ${n} = ${unum(mean)}</b></p><div class="visual">${bars(vals,labels,mean)}</div>`}}
   return avgGen(g)(1,op,word)}}
