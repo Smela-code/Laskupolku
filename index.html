@@ -726,7 +726,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.68</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.69</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -4135,13 +4135,13 @@ for(const g of [4,5,6])GR[g].topics.push({id:'muodot',fam:'mit',name:'Muodot',le
 
 /* keskiarvo */
 const DAYS=E(['ma','ti','ke','to','pe','la','su'],['Mon','Tue','Wed','Thu','Fri','Sat','Sun']);
-function bars(vals,labels,mean,miss){const n=vals.length,PW=Math.max(200,n*48+40),EX=mean!=null?70:0,W=PW+EX,H=150,top=18,bot=118,mx=Math.max(...vals.map(v=>v??0),mean||0)*1.12,bw=Math.min(34,(PW-40)/n-10);
+function bars(vals,labels,mean,miss){const n=vals.length,PW=Math.max(200,n*48+40),W=PW,H=150,top=18,bot=118,mx=Math.max(...vals.map(v=>v??0),mean||0)*1.12,bw=Math.min(34,(PW-40)/n-10);
   const y=v=>bot-(v/mx)*(bot-top);let s=`<svg class="bars" data-bot="${bot}" data-k="${(bot-top)/mx}" viewBox="0 0 ${W} ${H}" style="max-width:${W}px" aria-hidden="true"><path d="M20 ${bot}H${W-10}" stroke="var(--line)" stroke-width="2"/>`;
   vals.forEach((v,i)=>{const x=30+i*((PW-40)/n)+((PW-40)/n-bw)/2;
     if(i===miss)s+=`<rect x="${x}" y="${top+20}" width="${bw}" height="${bot-top-20}" rx="4" fill="none" stroke="var(--blue)" stroke-width="2" stroke-dasharray="5 4"/><text x="${x+bw/2}" y="${top+14}" text-anchor="middle" font-size="14" font-weight="800" fill="var(--blue)" font-family="Baloo 2, sans-serif">?</text>`;
     else s+=`<rect class="abar" data-i="${i}" x="${x}" y="${y(v)}" width="${bw}" height="${bot-y(v)}" rx="4" fill="var(--blue)" opacity=".8"/><text class="aval" data-i="${i}" x="${x+bw/2}" y="${y(v)-5}" text-anchor="middle" font-size="12" font-weight="800" fill="var(--ink)" font-family="Nunito, sans-serif">${String(v).replace('.',',')}</text>`;
     s+=`<text x="${x+bw/2}" y="${bot+16}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--soft)" font-family="Nunito, sans-serif">${labels[i]}</text>`});
-  if(mean!=null)s+=`<path d="M20 ${y(mean).toFixed(1)}H${PW-4}" stroke="var(--sun)" stroke-width="2.5" stroke-dasharray="7 5"/><text x="${PW}" y="${(y(mean)+4).toFixed(1)}" text-anchor="start" font-size="11" font-weight="800" fill="var(--coin-edge)" font-family="Nunito, sans-serif">${E('keskiarvo','average')} ${unum(mean)}</text>`;
+  if(mean!=null)s+=`<path d="M20 ${y(mean).toFixed(1)}H${PW-10}" stroke="var(--sun)" stroke-width="2.5" stroke-dasharray="7 5"/>`;
   return s+'</svg>'}
 /* keskiarvon tasoitus: ylimääräiset ykkösen siivut siirtyvät matalimpiin pylväisiin */
 function avgAnim(vals,labels,mean){const box=document.querySelector('#sheet > .visual');if(!box||box.dataset.anim)return;box.dataset.anim=1;box.innerHTML=bars(vals,labels,mean);
