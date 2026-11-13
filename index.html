@@ -735,7 +735,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.70</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.71</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -809,9 +809,9 @@ document.querySelectorAll('[data-cur]').forEach(b=>b.setAttribute('aria-pressed'
 if(EN){const q=s=>document.querySelector(s);q('#setBtn').setAttribute('aria-label','Settings');q('#setBtn').title='Settings';q('#setLangL').textContent='Language';q('#setCurL').textContent='Currency';
   document.querySelectorAll('[data-cur] span').forEach((x,i)=>x.textContent=['euro','dollar','pound'][i])}
 {const btn=document.getElementById('setBtn'),pan=document.getElementById('setPanel');const show=o=>{pan.hidden=!o;btn.setAttribute('aria-expanded',String(o))};
-  btn.addEventListener('click',e=>{e.stopPropagation();show(pan.hidden)});
-  document.addEventListener('click',e=>{if(!pan.hidden&&!e.target.closest('.setw'))show(false)});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!pan.hidden){show(false);btn.focus()}})}
+  if(btn&&pan)btn.addEventListener('click',e=>{e.stopPropagation();show(pan.hidden)});
+  document.addEventListener('click',e=>{if(pan&&!pan.hidden&&!e.target.closest('.setw'))show(false)});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&pan&&!pan.hidden){show(false);btn.focus()}})}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-cur]');if(!b||b.dataset.cur===CUR)return;
   try{localStorage.setItem('laskupolku-cur',b.dataset.cur)}catch(e){}location.reload()});
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-lang]');if(!b||b.dataset.lang===LANG)return;
