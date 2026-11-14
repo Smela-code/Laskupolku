@@ -568,6 +568,7 @@ button.trow{cursor:pointer;touch-action:manipulation}button.trow:active{transfor
 .mnote{text-align:center;font-size:.82rem;color:var(--soft);margin:.2em 0 0;font-weight:600}.mscale{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px;font-size:.85rem;font-weight:800;color:var(--ink)}
 .gtile.ntile{aspect-ratio:auto;min-height:58px;font:800 1.55rem var(--display);color:var(--ink)}
 .jvis{display:block;margin:0 auto;max-width:100%;height:auto}
+.kkcard{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}.kkcard div{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 18px;border:2px solid var(--line);border-radius:12px;background:var(--paper);min-width:120px}.kkcard b{font-size:1.1rem}.kkcard span{font-weight:700;color:var(--soft)}
 .alkw{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}.alkw .story{align-self:stretch;margin:0}
 .agrid{display:grid;grid-template-columns:repeat(6,var(--agz));grid-template-rows:repeat(6,var(--agz));gap:4px;--agz:min(44px,12vw);padding:6px;border-radius:12px;background:var(--grid);position:relative;touch-action:none}
 .agc{width:var(--agz);height:var(--agz);border-radius:7px;border:1.5px dashed var(--line);background:var(--paper);padding:0;cursor:pointer}
@@ -735,7 +736,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.72</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.73</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -4863,6 +4864,90 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');
   if(b.dataset.pdelok){DB.players=DB.players.filter(p=>p.id!==DB.cur);if(!DB.players.length)DB.players.push({id:'p'+Date.now(),name:E('Pelaaja 1','Player 1'),col:0,state:mkState()});switchPlayer(DB.players[0].id);return}},true);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#pmodal').hidden)closePlayers();if(e.key==='Enter'&&e.target.closest&&e.target.closest('#pmodal')){e.stopImmediatePropagation();e.preventDefault();const b=e.target.id==='newName'?$('[data-padd]'):e.target.id==='renName'?$('[data-pren]'):null;if(b)b.click()}},true);
 
+
+/* ---------- kuukaudet ja vuodet ---------- */
+const KKF=['tammikuu','helmikuu','maaliskuu','huhtikuu','toukokuu','kesäkuu','heinäkuu','elokuu','syyskuu','lokakuu','marraskuu','joulukuu'],
+  KKE=['January','February','March','April','May','June','July','August','September','October','November','December'],
+  KKS=['tammi','helmi','maalis','huhti','touko','kesä','heinä','elo','syys','loka','marras','joulu'],KKSE=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const kkN=i=>EN?KKE[i]:KKF[i],kkGen_=i=>EN?KKE[i]:KKF[i]+'n',kkIn=i=>EN?'in '+KKE[i]:KKF[i]+'ssa',KK=i=>((i%12)+12)%12;
+const kkCap=x=>x.charAt(0).toUpperCase()+x.slice(1);
+const ymT=(y,m)=>E(`${y} v ${m} kk`,`${y} yr ${m} mo`);
+/* kuukausirengas: 12 lohkoa, vuodenajan värit; a = lähtökuu, b = korostettava kuu */
+function kkRing(a,b){const C=110,r1=100,r0=52,col=i=>[11,0,1].includes(i)?'var(--blue)':i<5?'var(--good)':i<8?'var(--sun)':'var(--orange)';
+  const pt=(r,d)=>[C+r*Math.sin(d*Math.PI/180),C-r*Math.cos(d*Math.PI/180)];let o='';
+  for(let i=0;i<12;i++){const d0=i*30-15,d1=i*30+15,[x0,y0]=pt(r1,d0),[x1,y1]=pt(r1,d1),[x2,y2]=pt(r0,d1),[x3,y3]=pt(r0,d0),on=i===a||i===b;
+    o+=`<path class="kkw" data-m="${i}" d="M${x0.toFixed(1)} ${y0.toFixed(1)}A${r1} ${r1} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}L${x2.toFixed(1)} ${y2.toFixed(1)}A${r0} ${r0} 0 0 0 ${x3.toFixed(1)} ${y3.toFixed(1)}Z" fill="${col(i)}" fill-opacity="${on?.85:.22}" stroke="var(--paper)" stroke-width="2"/>`;
+    const[tx,ty]=pt((r1+r0)/2,i*30);o+=`<text x="${tx.toFixed(1)}" y="${(ty+4).toFixed(1)}" text-anchor="middle" font-size="${EN?12:10.5}" font-weight="800" fill="var(--ink)" font-family="Nunito, sans-serif">${EN?KKSE[i]:KKS[i]}</text>`}
+  o+=`<circle cx="${C}" cy="${C}" r="${r0-6}" fill="var(--paper)" stroke="var(--line)" stroke-width="2"/><text class="kkc" x="${C}" y="${C+9}" text-anchor="middle" font-size="26" font-weight="900" fill="var(--ink)" font-family="Nunito, sans-serif">12</text><text x="${C}" y="${C+24}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--soft)" font-family="Nunito, sans-serif" class="kkcl">${E('kuukautta','months')}</text>`;
+  return `<svg class="kkr" viewBox="0 0 220 220" width="230" role="img" aria-label="${E('Vuoden 12 kuukautta','The 12 months of the year')}">${o}</svg>`}
+/* ratkaisuanimaatio: merkki hyppii kuukausi kerrallaan */
+function kkAnim(a,n){const sv=document.querySelector('#sheet > .visual svg.kkr');if(!sv||sv.dataset.anim)return;sv.dataset.anim=1;
+  const W=[...sv.querySelectorAll('.kkw')],c=sv.querySelector('.kkc'),cl=sv.querySelector('.kkcl'),red=window.matchMedia('(prefers-reduced-motion: reduce)').matches,st=n<0?-1:1,N=Math.abs(n),per=red?0:Math.max(220,Math.min(480,4200/Math.max(1,N)));
+  W.forEach(w=>w.setAttribute('fill-opacity',+w.dataset.m===a?.85:.22));if(cl)cl.textContent=E('askelta','steps');if(c)c.textContent='0';
+  for(let k=1;k<=N;k++)setTimeout(()=>{const m=KK(a+st*k);W.forEach(w=>{const i=+w.dataset.m;w.setAttribute('fill-opacity',i===m?.95:i===a?.6:.22)});if(c)c.textContent=String(k)},300+k*per)}
+function kkGen(g){
+  const nm=()=>pick(KIDS);
+  const optsM=(ans,pool)=>{const o=[ans];for(const x of shuffle(pool))if(!o.includes(KK(x))&&o.length<4)o.push(KK(x));return shuffle(o).map(i=>[String(i),kkCap(kkN(i))])};
+  const chM=(ans,pool,extra)=>({kind:'choice',choices:optsM(ans,pool),ans:String(ans),answerText:kkCap(kkN(ans)),...extra});
+  const walk=(a,n)=>{const st=n<0?-1:1;return Array.from({length:Math.abs(n)+1},(_,k)=>kkN(KK(a+st*k))).join(' → ')};
+  /* tyyppi A: n kuukauden päästä / sitten */
+  const later=(n,back,wrap)=>{const a=wrap?R(12-n,11):R(0,11),b=KK(a+(back?-n:n)),k=nm();
+    const story=back?E(`Nyt on ${kkN(a)}. ${k.n} kävi mummolassa ${n} ${n===1?'kuukausi':'kuukautta'} sitten.`,`It is ${kkN(a)} now. ${k.n} visited grandma ${n} ${n===1?'month':'months'} ago.`)
+      :E(`Nyt on ${kkN(a)}. ${k.ll} on syntymäpäivät ${n} ${n===1?'kuukauden':'kuukauden'} päästä.`,`It is ${kkN(a)} now. ${k.n} has a birthday in ${n} ${n===1?'month':'months'}.`);
+    const q=back?E('Missä kuussa se oli?','Which month was it?'):E('Missä kuussa syntymäpäivät ovat?','Which month is the birthday?');
+    return chM(b,[b+1,b-1,b+2,b-2,b+10-n,a+n-10],{story,text:plbl(q,''),visual:kkRing(a),onOk:()=>kkAnim(a,back?-n:n),onFail:()=>kkAnim(a,back?-n:n),
+      hint:E(`<p>Lähde liikkeelle ${KKF[a]}sta ja laske ${n} ${back?'taaksepäin':'eteenpäin'}. Joulukuun jälkeen tulee taas tammikuu.</p>`,`<p>Start from ${kkN(a)} and count ${n} ${back?'back':'forward'}. After December comes January again.</p>`),
+      explain:E(`<p>${walk(a,back?-n:n)}</p><p>Vastaus: <b>${kkN(b)}</b>.</p>`,`<p>${walk(a,back?-n:n)}</p><p>Answer: <b>${kkN(b)}</b>.</p>`)})};
+  /* tyyppi B: seuraava / edellinen */
+  const next=(prev,wrap)=>{let a=R(0,11);if(wrap)a=prev?0:11;const b=KK(a+(prev?-1:1));
+    const q=prev?E(`Mikä kuukausi on ennen ${KKF[a]}ta?`,`Which month comes before ${kkN(a)}?`):E(`Mikä kuukausi tulee ${KKF[a]}n jälkeen?`,`Which month comes after ${kkN(a)}?`);
+    return chM(b,[a,b+1,b-1,a+(prev?1:-1)],{text:plbl(q,''),visual:kkRing(a),onOk:()=>kkAnim(a,prev?-1:1),onFail:()=>kkAnim(a,prev?-1:1),
+      hint:E('<p>Katso kuukausirengasta. Kuukaudet kulkevat myötäpäivään.</p>','<p>Look at the ring of months. The months go clockwise.</p>'),
+      explain:E(`<p>${walk(a,prev?-1:1)}</p>`,`<p>${walk(a,prev?-1:1)}</p>`)})};
+  /* tyyppi C: montako kuukautta kuukaudesta a kuukauteen b */
+  const howMany=()=>{const a=R(0,11),n=R(2,11),b=KK(a+n),k=nm();
+    return{kind:'int',story:E(`Nyt on ${kkN(a)}. ${k.ll} on syntymäpäivät ${kkIn(b)}.`,`It is ${kkN(a)} now. ${k.n}'s birthday is ${kkIn(b)}.`),text:plbl(E('Montako kuukautta syntymäpäiviin on?','How many months until the birthday?'),''),
+      unit:E('kk','months'),ans:n,answerText:String(n),visual:kkRing(a,b),onOk:()=>kkAnim(a,n),onFail:()=>kkAnim(a,n),
+      hint:E(`<p>Laske askeleet ${KKF[a]}sta ${KKF[b]}hun. Vuodessa on 12 kuukautta.</p>`,`<p>Count the steps from ${kkN(a)} to ${kkN(b)}. A year has 12 months.</p>`),
+      explain:E(`<p>${walk(a,n)}</p><p>Askeleita on <b>${n}</b>.${b<a?` Laskun voi tehdä myös näin: ${b+1} + 12 − ${a+1} = ${n}.`:` Laskuna: ${b+1} − ${a+1} = ${n}.`}</p>`,`<p>${walk(a,n)}</p><p>That is <b>${n}</b> steps.${b<a?` As a calculation: ${b+1} + 12 − ${a+1} = ${n}.`:` As a calculation: ${b+1} − ${a+1} = ${n}.`}</p>`)}};
+  /* syntymäajat */
+  const bdays=(maxD)=>{let y1,m1,y2,m2,D;do{y1=R(2012,2018);m1=R(0,11);D=R(maxD>24?14:3,maxD);const t=y1*12+m1+D;y2=Math.floor(t/12);m2=t%12}while(m1===m2||y1===y2&&maxD>12);
+    const [A,B]=two();return{A,B,y1,m1,y2,m2,D,card:`<div class="kkcard"><div><b>${A.n}</b><span>${kkCap(kkN(m1))} ${y1}</span></div><div><b>${B.n}</b><span>${kkCap(kkN(m2))} ${y2}</span></div></div>`}};
+  const ageMonths=()=>{const b=bdays(20);
+    return{kind:'int',visual:b.card,story:E(`${b.A.n} syntyi ${kkIn(b.m1)} ${b.y1}. ${b.B.n} syntyi ${kkIn(b.m2)} ${b.y2}.`,`${b.A.n} was born ${kkIn(b.m1)} ${b.y1}. ${b.B.n} was born ${kkIn(b.m2)} ${b.y2}.`),
+      text:plbl(E(`Montako kuukautta vanhempi ${b.A.n} on?`,`How many months older is ${b.A.n}?`),''),unit:E('kk','months'),ans:b.D,answerText:String(b.D),
+      hint:E(`<p>Laske ensin vuoden ${b.y1} loppuun, sitten lisää kuukaudet seuraavan vuoden puolelta. Vuodessa on 12 kuukautta.</p>`,`<p>First count to the end of ${b.y1}, then add the months in the next year. A year has 12 months.</p>`),
+      explain:(()=>{const r1=12-b.m1,mid=(b.y2-b.y1-1)*12,r2=b.m2;const parts=[r1,...(mid?[mid]:[]),r2];
+        return E(`<p>${kkCap(kkN(b.m1))} ${b.y1} → vuoden loppuun: ${r1} kk${mid?`, koko vuosi ${b.y1+1}: 12 kk`:''}, vuonna ${b.y2} ${kkN(b.m2)}hun asti: ${r2} kk.</p><p>${parts.join(' + ')} = <b>${b.D}</b> kuukautta.</p>`,`<p>${kkN(b.m1)} ${b.y1} → end of the year: ${r1} mo${mid?`, all of ${b.y1+1}: 12 mo`:''}, in ${b.y2} up to ${kkN(b.m2)}: ${r2} mo.</p><p>${parts.join(' + ')} = <b>${b.D}</b> months.</p>`)})()}};
+  const ymOpts=(D,naive)=>{const c=[Math.floor(D/12),D%12],w10=[Math.floor(D/10),D%10],o=[c];
+    for(const x of [w10,naive,[c[0]+1,c[1]],[c[0],12-c[1]],[c[0]-1,c[1]+2]])if(x&&x[0]>=0&&x[1]>=0&&x[1]<12&&!o.some(y=>y[0]===x[0]&&y[1]===x[1])&&o.length<4)o.push(x);
+    return shuffle(o).map(x=>[x[0]+'-'+x[1],ymT(x[0],x[1])])};
+  const ageYM=()=>{const b=bdays(70),c=[Math.floor(b.D/12),b.D%12],naive=[b.y2-b.y1,Math.abs(b.m2-b.m1)];
+    return{kind:'choice',visual:b.card,story:E(`${b.A.n} syntyi ${kkIn(b.m1)} ${b.y1}. ${b.B.n} syntyi ${kkIn(b.m2)} ${b.y2}.`,`${b.A.n} was born ${kkIn(b.m1)} ${b.y1}. ${b.B.n} was born ${kkIn(b.m2)} ${b.y2}.`),
+      text:plbl(E(`Kuinka paljon vanhempi ${b.A.n} on?`,`How much older is ${b.A.n}?`),''),choices:ymOpts(b.D,naive),ans:c[0]+'-'+c[1],answerText:ymT(...c),
+      hint:E('<p>Laske ensin täydet vuodet ja sitten loput kuukaudet. Muista, että vuodessa on 12 kuukautta, ei 10.</p>','<p>Count the full years first, then the remaining months. Remember: a year has 12 months, not 10.</p>'),
+      explain:(()=>{const y=b.m2>=b.m1?b.y2:b.y2-1;return E(`<p>${kkCap(kkN(b.m1))} ${b.y1} → ${kkN(b.m1)} ${y}: <b>${y-b.y1} ${y-b.y1===1?'vuosi':'vuotta'}</b>. Siitä ${kkN(b.m2)}hun ${b.y2}: <b>${c[1]} ${c[1]===1?'kuukausi':'kuukautta'}</b>.</p><p>Ikäero on ${ymT(...c)}.</p>`,`<p>${kkN(b.m1)} ${b.y1} → ${kkN(b.m1)} ${y}: <b>${y-b.y1} years</b>. From there to ${kkN(b.m2)} ${b.y2}: <b>${c[1]} months</b>.</p><p>The age difference is ${ymT(...c)}.</p>`)})()}};
+  const howOld=()=>{const y=R(2013,2019),m=R(0,11),ny=R(2025,2027),nmn=R(0,11),D=(ny*12+nmn)-(y*12+m),c=[Math.floor(D/12),D%12],naive=[ny-y,Math.abs(nmn-m)],k=nm();
+    return{kind:'choice',story:E(`${k.n} syntyi ${kkIn(m)} ${y}.`,`${k.n} was born ${kkIn(m)} ${y}.`),text:plbl(E(`Kuinka vanha ${k.n} on ${kkIn(nmn)} ${ny}?`,`How old is ${k.n} ${kkIn(nmn)} ${ny}?`),''),
+      choices:ymOpts(D,naive),ans:c[0]+'-'+c[1],answerText:ymT(...c),
+      hint:E(`<p>Montako kertaa ${k.n} on täyttänyt vuosia? Laske sitten kuukaudet viimeisistä syntymäpäivistä.</p>`,`<p>How many birthdays has ${k.n} had? Then count the months since the last birthday.</p>`),
+      explain:(()=>{const ly=nmn>=m?ny:ny-1;return E(`<p>Viimeiset syntymäpäivät olivat ${kkIn(m)} ${ly}: silloin ${k.n} täytti <b>${ly-y}</b>. Siitä ${kkN(nmn)}hun ${ny} on <b>${c[1]}</b> ${c[1]===1?'kuukausi':'kuukautta'}.</p>`,`<p>The last birthday was ${kkIn(m)} ${ly}: ${k.n} turned <b>${ly-y}</b>. From then to ${kkN(nmn)} ${ny} is <b>${c[1]}</b> months.</p>`)})()}};
+  const ends=()=>{const y=R(2024,2027),m=R(0,11),n=R(14,34),t=y*12+m+n,ey=Math.floor(t/12),em=t%12,w=y*12+m+Math.floor(n/10)*12+n%10;
+    const key=(yy,mm)=>yy+'-'+mm,lab=(yy,mm)=>kkCap(kkN(mm))+' '+yy,o=[[ey,em]];
+    for(const x of [[Math.floor(w/12),w%12],[ey,KK(em+1)],[ey,KK(em-1)],[ey+1,em],[ey-1,em]])if(!o.some(z=>z[0]===x[0]&&z[1]===x[1])&&o.length<4)o.push(x);
+    const what=pick([E(['Uimakoulu','kestää'],['Swimming school','lasts']),E(['Kirjastoremontti','kestää'],['The library renovation','lasts']),E(['Puun kasvatusprojekti','kestää'],['The tree project','lasts'])]);
+    return{kind:'choice',story:E(`${what[0]} alkaa ${kkIn(m)} ${y} ja ${what[1]} ${n} kuukautta.`,`${what[0]} starts ${kkIn(m)} ${y} and ${what[1]} ${n} months.`),text:plbl(E('Minä kuukautena ja vuonna se päättyy?','In which month and year does it end?'),''),
+      choices:shuffle(o).map(x=>[key(...x),lab(...x)]),ans:key(ey,em),answerText:lab(ey,em),
+      hint:E(`<p>${n} kuukautta on ${Math.floor(n/12)} ${Math.floor(n/12)===1?'vuosi':'vuotta'} ja ${n%12} ${n%12===1?'kuukausi':'kuukautta'}.</p>`,`<p>${n} months is ${Math.floor(n/12)} years and ${n%12} months.</p>`),
+      explain:E(`<p>${n} kk = ${Math.floor(n/12)} v ${n%12} kk. ${kkCap(kkN(m))} ${y} + ${Math.floor(n/12)} v = ${kkN(m)} ${y+Math.floor(n/12)}, ja siitä ${n%12} kk eteenpäin: <b>${lab(ey,em).toLowerCase()}</b>.</p>`,`<p>${n} months = ${Math.floor(n/12)} yr ${n%12} mo. ${kkN(m)} ${y} + ${Math.floor(n/12)} yr = ${kkN(m)} ${y+Math.floor(n/12)}, then ${n%12} months on: <b>${lab(ey,em)}</b>.</p>`)}};
+  const T={1:[()=>next(false,false),()=>next(Math.random()<.5,Math.random()<.4),()=>later(R(2,3),false)],
+    2:[()=>next(Math.random()<.5,Math.random()<.3),()=>later(R(2,5),false),()=>later(R(2,5),false,true)],
+    3:[()=>later(R(3,8),false),()=>later(R(2,7),true),howMany],
+    4:[howMany,ageMonths,ageYM],5:[ageMonths,ageYM,howOld],6:[ageYM,howOld,ends]};
+  return L=>T[g][L-1]()}
+const KK_LEVELS={1:['Seuraava kuukausi','Ennen ja jälkeen','Kuukausien päästä'],2:['Ennen ja jälkeen','Kuukausien päästä','Yli vuodenvaihteen'],3:['Kuukausien päästä','Kuukausia sitten','Montako kuukautta?'],
+  4:['Montako kuukautta?','Ikäero kuukausina','Ikäero vuosina'],5:['Ikäero kuukausina','Ikäero vuosina','Kuinka vanha?'],6:['Ikäero vuosina','Kuinka vanha?','Milloin se päättyy?']};
+const kkT=g=>({oid:'kk',levels:KK_LEVELS[g].map(x=>[x]),gen:L=>kkGen(g)(L)});
 /* ---------- valikkorakenne: alue › aihe › tehtävä ---------- */
 const PUZ_LEVELS=['Kaksi kuvaa','Kolme kuvaa','Rivit sekaisin'],WP_LEVELS=['Kaksi henkilöä','Kolme henkilöä','Tieto vasta lopussa'];
 const ot=(g,id)=>GR[g].topics.find(t=>t.id===id);
@@ -4935,6 +5020,7 @@ const NAV=[
   {id:'mitta',n:'Mitat ja yksiköt',subs:[
     {id:'aika',n:'Aika',types:[
       {id:'kello',n:'Kellonajat',f:allG(src('kello',['+','-']),2,4)},
+      {id:'kk',n:'Kuukaudet ja vuodet',f:allG(kkT)},
       {id:'nop',n:'Nopeus, matka ja aika',f:allG(src('nopeus','*'),5)},
       {id:'san',n:'Sanalliset',f:allG(src('kello',['+','-'],1),2,4)}]},
     {id:'lampo',n:'Lämpötila',types:[
@@ -5002,7 +5088,7 @@ function navPick(g,tid,sid,yid){const tops=navTops(g),top=tops.find(t=>t.id===ti
 Object.assign(TR,{'Mitat ja yksiköt':'Measures and units','Laskut':'Calculations','Luvut ja jonot':'Numbers and sequences','Mittaaminen':'Measuring','Geometria':'Geometry','Tilastot ja todennäköisyys':'Statistics and probability','Pulmat ja päättely':'Puzzles and logic',
   'Yhteenlasku':'Addition','Vähennyslasku':'Subtraction','Kertolasku':'Multiplication','Jakolasku':'Division','Lämpötila':'Temperature','Raha':'Money',
   'Kuvilla':'With pictures','Sanalliset':'Word problems','Jakaminen tasan':'Sharing equally','Jakokulma':'Long division','Yhteen- ja vähennyslasku':'Addition and subtraction','Kerto- ja jakolasku':'Multiplication and division',
-  'Vertaile lukuja':'Compare numbers','Mikä luku puuttuu?':'Which number is missing?','Kellonajat':'Telling the time','Kolikot ja setelit':'Coins and notes','Muunnokset':'Conversions','Tunnista muodot':'Recognise shapes','Koordinaatit':'Coordinates',
+  'Vertaile lukuja':'Compare numbers','Mikä luku puuttuu?':'Which number is missing?','Kellonajat':'Telling the time','Kuukaudet ja vuodet':'Months and years','Seuraava kuukausi':'Next month','Ennen ja jälkeen':'Before and after','Kuukausien päästä':'Months later','Yli vuodenvaihteen':'Across New Year','Kuukausia sitten':'Months ago','Montako kuukautta?':'How many months?','Ikäero kuukausina':'Age gap in months','Ikäero vuosina':'Age gap in years','Kuinka vanha?':'How old?','Milloin se päättyy?':'When does it end?','Kolikot ja setelit':'Coins and notes','Muunnokset':'Conversions','Tunnista muodot':'Recognise shapes','Koordinaatit':'Coordinates',
   'Lue diagrammia':'Read the chart','Laske keskiarvo':'Work out the average','Pallot, pussit ja noppa':'Balls, bags and dice','Kokeile nopilla':'Experiment with dice',
   'Plus- ja miinuspulmat':'Plus and minus puzzles','Kertopulmat':'Times puzzles','Sekaluvut':'Mixed numbers','Murtoluku ja desimaaliluku':'Fractions and decimals','Prosentit':'Percentages','Päättele sivu':'Work out the side','L-kuvio':'L-shape','Monimutkaisempi kuvio':'More complex shape','Piiri, kun sivu puuttuu':'Perimeter with a missing side','Palikat aukosta':'Blocks through the hole','Kierrä':'Spin','Kierrä ja käännä':'Spin and turn','Kaikki suunnat':'All directions','Lukusuora':'Number line','Merkitse lukusuoralle':'Mark it on the number line','Mikä luku?':'Which number?','Pyöristäminen':'Rounding','Arvioi 0–20':'Estimate 0–20','Kymppien välein':'In tens','Arvioi 0–100':'Estimate 0–100','Satojen välein':'In hundreds','Arvioi 0–1000':'Estimate 0–1000','Kapea väli':'Narrow range','Tuhannet':'Thousands','Negatiiviset luvut':'Negative numbers','Sekaluvut':'Mixed numbers','Negatiiviset desimaalit':'Negative decimals','Ykkösten välein':'In ones','Kahden välein':'In twos','Viitosen välein':'In fives','Luvut 0–200':'Numbers 0–200','50 välein':'In fifties','20 välein':'In twenties','Kahdeksasosat':'Eighths','Neljäsosat':'Quarters','Kymppeihin':'To tens','Tasan keskellä':'Exactly halfway','Satoihin':'To hundreds','Nelinumeroiset':'Four-digit numbers','Tuhansiin':'To thousands','Kokonaisluvuksi':'To whole numbers','Kymmenesosiin':'To tenths','Sadasosiin':'To hundredths','Yhtälöt':'Equations','Vaakayhtälöt':'Balance equations','Yksi laatikko':'One box','Monta punnusta':'Several weights','Kaksi laatikkoa':'Two boxes','Monta laatikkoa':'Several boxes','Laatikot ja punnus':'Boxes and a weight','Laatikoita molemmilla puolilla':'Boxes on both sides','Kappaleet':'Solids','Tunnista kappale':'Name the solid','Taittele kuutio':'Fold a cube','Perusmuodot':'Basic shapes','Lisää kappaleita':'More solids','Kaikki kappaleet':'All solids','Tahkot, särmät ja kärjet':'Faces, edges and vertices','Mikä taittuu kuutioksi?':'Which folds into a cube?','Mikä ei taitu?':'Which does not fold?','Vastakkaiset tahkot':'Opposite faces','Ohjelmointi':'Programming','Mihin robotti päätyy?':'Where does the robot end up?','Ohjelmoi robotti':'Program the robot','Yksittäiset komennot':'Single commands','Monta askelta':'Several steps','Toistot':'Repeats','Suora reitti':'Clear path','Kivet tiellä':'Rocks in the way','Avain ja tähti':'Key and star','Laskujärjestys':'Order of operations','Laske':'Calculate','Mihin sulkeet?':'Where do the brackets go?','Kertolasku ensin':'Multiplication first','Sulkeet ensin':'Brackets first','Sulkeet ja kertolasku':'Brackets and multiplication','Kerto- ja jakolasku ensin':'Multiplication and division first','Sulkeet':'Brackets','Sulkeet ja neljä lukua':'Brackets and four numbers','Plus ja kertaa':'Plus and times','Kaikki laskut':'All operations','Neljä lukua':'Four numbers','Kaksi laskua':'Two operations','Kolme laskua':'Three operations','Yhdistelmät':'Combinations','Asukokonaisuudet':'Outfits','Montako tarvitaan?':'How many are needed?','Kaksi vaatetta':'Two kinds of clothes','Enemmän vaihtoehtoja':'More choices','Kolme vaatetta':'Three kinds of clothes','Neljä vaatetta':'Four kinds of clothes','Monta vaatetta':'Many kinds of clothes','Tasan riittää':'Exactly enough','Vähintään':'At least','Symmetria':'Symmetry','Täydennä kuvio':'Complete the shape','Valitse toinen puoli':'Choose the other half','Onko symmetrinen?':'Is it symmetrical?','Pystysuora akseli':'Vertical line','Vaakasuora akseli':'Horizontal line','Isompi kuvio':'Bigger shape','Yksi väri':'One colour','Kaksi väriä':'Two colours','Kolme väriä':'Three colours','Monta väriä':'Several colours','Akseli sivussa':'Line off-centre','Kaksi akselia':'Two lines','Pienet erot':'Small differences','Piirrokset':'Drawings','Selvät erot':'Clear differences','Kyllä vai ei?':'Yes or no?','Mikä viiva on akseli?':'Which line is the line of symmetry?','Montako akselia?':'How many lines?','Tilavuus':'Volume','Palikkatornit':'Block towers','Suorakulmainen särmiö':'Cuboids','Pienet tornit':'Small towers','Isommat tornit':'Bigger towers','Korkeat tornit':'Tall towers','Montako puuttuu?':'How many are missing?','Kuutioista':'Made of cubes','Mitoista':'From measurements','Puuttuva mitta':'Missing measurement','Litroina':'In litres','Piiri ja pinta-ala':'Perimeter and area','Piiri':'Perimeter','Pinta-ala':'Area','Suorakulmio ja neliö':'Rectangles and squares','Monikulmio':'Polygons','Puuttuva sivu':'Missing side','Yhdistetyt kuviot':'Composite shapes','Ruutujen laskeminen':'Counting squares','Suorakulmio ruudukolla':'Rectangles on a grid','Puolikkaat ruudut':'Half squares','Kolmio':'Triangles','Sekaisin':'Mixed','Hinnat':'Prices','Murtoluku ja prosentti':'Fractions and percentages','Desimaaliluku ja murtoluku':'Decimals and fractions','Desimaaliluku ja prosentti':'Decimals and percentages','Prosentti ja desimaaliluku':'Percentages and decimals','Prosentti ja murtoluku':'Percentages and fractions','Kaikki sekaisin':'All mixed','Montako prosenttia?':'What percentage?','Prosentti luvusta':'Percentage of a number','Ruudukko':'Grid','Luvut':'Numbers','Puolet, neljäsosat ja kymmenesosat':'Halves, quarters and tenths','Muut prosentit':'Other percentages','Osa määrästä':'Part of an amount','Alennukset ja korotukset':'Discounts and price rises','Kymmenesosat ja sadasosat':'Tenths and hundredths','Tutut murtoluvut':'Familiar fractions','Haastavammat':'Harder ones','Murtoluvusta sekaluvuksi':'Fraction to mixed number','Sekaluvusta murtoluvuksi':'Mixed number to fraction','Molemmat suunnat':'Both ways','Kaikki laskut':'All operations','Enemmän ja vähemmän':'More and fewer','Kertaa ja osuudet':'Times and fractions','Mikä kuva tulee seuraavaksi?':'Which picture comes next?','Kaupan kassa':'Change at the till'});
 const andJoin=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+E(' ja ',' and ')+a[a.length-1];
