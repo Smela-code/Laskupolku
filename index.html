@@ -745,7 +745,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.87</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.88</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -756,8 +756,8 @@ footer p{margin:0 0 6px}
         <div class="seg" role="group" aria-labelledby="setLangL"><button type="button" data-lang="fi" aria-pressed="true" lang="fi">Suomi</button><button type="button" data-lang="en" aria-pressed="false" lang="en">English</button></div>
         <p class="setl" id="setCurL">Valuutta</p>
         <div class="seg" role="group" aria-labelledby="setCurL"><button type="button" data-cur="€" aria-pressed="true"><b>€</b> <span>euro</span></button><button type="button" data-cur="$" aria-pressed="false"><b>$</b> <span>dollari</span></button><button type="button" data-cur="£" aria-pressed="false"><b>£</b> <span>punta</span></button></div>
-        <p class="setl" id="setUnitL">Mittayksiköt</p>
-        <div class="seg" role="group" aria-labelledby="setUnitL"><button type="button" data-units="metric" aria-pressed="true">Metrinen</button><button type="button" data-units="us" aria-pressed="false">Imperial (US)</button></div>
+        <p class="setl" id="setUnitL" hidden>Mittayksiköt</p>
+        <div class="seg" id="setUnitG" role="group" aria-labelledby="setUnitL" hidden><button type="button" data-units="metric" aria-pressed="true">Metrinen</button><button type="button" data-units="us" aria-pressed="false">Imperial (US)</button></div>
         <p class="setl" id="setTtsL">Ääneen luku</p>
         <div class="seg" role="group" aria-labelledby="setTtsL"><button type="button" data-tts="1" aria-pressed="true">Päällä</button><button type="button" data-tts="0" aria-pressed="false">Pois</button></div>
       </div>
@@ -798,7 +798,7 @@ try{const h=(location.hash||'').slice(1);if(h==='en'||h==='fi')LANG=h}catch(e){}
 const EN=LANG==='en',E=(fi,en)=>EN?en:fi;
 /* ---------- valuutta ---------- */
 let TTS_ON=true;try{TTS_ON=localStorage.getItem('laskupolku-tts')!=='0'}catch(e){}
-let IMP=false;try{IMP=localStorage.getItem('laskupolku-units')==='us'}catch(e){}
+let IMP=false;try{IMP=EN&&localStorage.getItem('laskupolku-units')==='us'}catch(e){}
 let CUR='€';try{const c=localStorage.getItem('laskupolku-cur');if(c==='$'||c==='£')CUR=c}catch(e){}
 const CURW=(()=>{if(CUR==='€')return[];const D=CUR==='$',P=CUR==='£';const m=[['tasaeuroon',D?'tasadollariin':'tasapuntaan'],['eurokolikot',D?'dollarikolikot':'puntakolikot'],['eurolla',D?'dollarilla':'punnalla'],['euroa',D?'dollaria':'puntaa'],['euron',D?'dollarin':'punnan'],['Euron',D?'Dollarin':'Punnan'],['eurot',D?'dollarit':'punnat'],['Eurot',D?'Dollarit':'Punnat'],['euros',D?'dollars':'pounds'],['Euros',D?'Dollars':'Pounds'],['euro',EN?(D?'dollar':'pound'):(D?'dollari':'punta')]];
   if(P)m.push(['senttikolikot','pennikolikot'],['senttiä','penniä'],['sentteinä','penneinä'],['sentein','pennein'],['senteissä','penneissä'],['senteillä','penneillä'],['senteiksi','penneiksi'],['sentit','pennit'],['Sentit','Pennit'],['Senttejä','Pennejä'],['sentin','pennin'],['sentti','penni'],['snt','p'],['cents','pence'],['Cents','Pence'],['cent','penny'],['CENT','PENCE']);
@@ -806,7 +806,7 @@ const CURW=(()=>{if(CUR==='€')return[];const D=CUR==='$',P=CUR==='£';const m=
   return m.map(([a,b])=>[new RegExp(`(?<![A-Za-zÅÄÖåäö])${a}(?![A-Za-zÅÄÖåäö])`,'g'),b])})();
 const UFX=(()=>{if(!IMP)return null;const L='A-Za-zÅÄÖåäö';const W=(a,b)=>[new RegExp(`(?<![${L}])${a}(?![${L}])`,'g'),b];
   const words=EN?[['square metres','square feet'],['square metre','square foot'],['cubic centimetres','cubic inches'],['kilometres','miles'],['kilometre','mile'],['centimetres','inches'],['centimetre','inch'],['millimetres','inches'],['metres','feet'],['metre','foot'],['decilitres','cups'],['millilitres','fluid ounces'],['litres','quarts'],['litre','quart'],['kilograms','pounds'],['kilos','pounds'],['per kilo','per pound'],['kilo','pound'],['per square metre','per square foot'],['grams','ounces'],['Celsius','Fahrenheit']]
-   :[['neliömetriä','neliöjalkaa'],['neliösenttimetriä','neliötuumaa'],['kuutiosenttimetriä','kuutiotuumaa'],['kilometriä','mailia'],['kilometrin','mailin'],['kilometrit','mailit'],['kilometreinä','maileina'],['kilometriksi','maileiksi'],['senttimetriä','tuumaa'],['senttimetrin','tuuman'],['senttimetreinä','tuumina'],['millimetriä','tuumaa'],['metriä','jalkaa'],['metrin','jalan'],['metreinä','jalkoina'],['metreiksi','jaloiksi'],['metrillä','jalalla'],['metriltä','jalalta'],['metrejä','jalkoja'],['metri','jalka'],['desilitraa','kuppia'],['millilitraa','nesteunssia'],['litraa','kvarttia'],['litran','kvartin'],['litroina','kvartteina'],['kilogrammaa','paunaa'],['kilohinta','paunahinta'],['kilohinnan','paunahinnan'],['kilohinta:','paunahinta:'],['kiloina','paunoina'],['kilosta','paunasta'],['kilo','pauna'],['kiloa','paunaa'],['neliömetriltä','neliöjalalta'],['grammaa','unssia'],['celsiusastetta','fahrenheitastetta']];
+   :[];
   const sym=[['km/h','mph'],['m/min','ft/min'],['cm²','in²'],['m²','ft²'],['cm³','in³'],['dm³','ft³'],['km','mi'],['cm','in'],['mm','in'],['kg','lb'],['ml','fl oz'],['dl','cups'],['g','oz'],['l','qt'],['m','ft']];
   return[...words.map(([a,b])=>W(a,b)),[/°C/g,'°F'],...sym.map(([a,b])=>[new RegExp(`(?<=(?:^|\\d|\\?|\\d\\))[\\u00a0\\u202f ]?)${a.replace('/','\\/')}(?![${L}²³\\/])`,'g'),b])]})();
 function unitFix(s){if(!UFX||typeof s!=='string'||!s)return s;return s.split(/(<[^>]*>)/).map(t=>{if(t.charAt(0)==='<')return t;for(const[re,b]of UFX)t=t.replace(re,b);return t}).join('')}
@@ -833,7 +833,7 @@ document.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-pressed
 document.querySelectorAll('[data-cur]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.cur===CUR)));
 document.querySelectorAll('[data-tts]').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.tts==='1')===TTS_ON)));
 document.querySelectorAll('[data-units]').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.units==='us')===IMP)));
-if(EN){const q=document.querySelector('#setUnitL');if(q)q.textContent='Units';const m=document.querySelector('[data-units="metric"]');if(m)m.textContent='Metric'}
+if(EN){const q=document.querySelector('#setUnitL'),gq=document.querySelector('#setUnitG');if(q){q.textContent='Units';q.hidden=false}if(gq)gq.hidden=false;const m=document.querySelector('[data-units="metric"]');if(m)m.textContent='Metric'}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-units]');if(!b||(b.dataset.units==='us')===IMP)return;try{localStorage.setItem('laskupolku-units',b.dataset.units)}catch(e){}location.reload()});
 if(EN){const q=document.querySelector('#setTtsL');if(q)q.textContent='Read aloud';document.querySelectorAll('[data-tts]').forEach(b=>b.textContent=b.dataset.tts==='1'?'On':'Off')}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-tts]');if(!b)return;TTS_ON=b.dataset.tts==='1';try{localStorage.setItem('laskupolku-tts',TTS_ON?'1':'0')}catch(e){}
