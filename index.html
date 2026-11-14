@@ -745,7 +745,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.98</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.99</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -1027,11 +1027,15 @@ const W_DS=[
   {ok:(A,B)=>(A.d===2||A.d===0)&&B.d===2&&val(A)<=100,unit:'€',icon:'kolikot',t:(A,B,K)=>{const it=pick(ITEMS);return E(`${K.ll} on ${fd(A)} €. Hän ostaa ${it} hintaan ${fd(B)} €. Paljonko rahaa jää?`,`${K.n} has ${fd(A)} €. ${K.n} buys ${it} for ${fd(B)} €. How much money is left?`)}},
   {ok:(A,B)=>val(A)<60,unit:'m',icon:'naru',t:(A,B)=>E(`Narua on ${fdt(A)} m. Siitä leikataan pala, jonka pituus on ${fdt(B)} m. Paljonko narua jää?`,`There is ${fdt(A)} m of string. A piece ${fdt(B)} m long is cut off. How much string is left?`)},
   {ok:(A,B)=>val(A)<7&&(!IMP||val(B)>=3),unit:'m',icon:'mitta',t:(A,B,K,M)=>E(`${K.n} hyppäsi pituutta ${fdt(A)} m ja ${M.n} ${fdt(B)} m. Montako metriä pidemmälle ${K.n} hyppäsi?`,`In the long jump, ${K.n} jumped ${fdt(A)} m and ${M.n} jumped ${fdt(B)} m. How many metres further did ${K.n} jump?`)}];
-const W_LAB={'+':{unit:'mg',icon:'sakki',t:(A,B)=>E(`Laboratoriossa punnitaan ensin ${fdt(A)} mg ainetta ja sitten vielä ${fdt(B)} mg. Paljonko ainetta on yhteensä?`,`In a laboratory, ${fdt(A)} mg of a substance is weighed out, and then another ${fdt(B)} mg. How much is there in total?`)},
-  '-':{unit:IMP?'mL':'ml',icon:'mitta',t:(A,B)=>E(`Laboratorion mittalasissa on ${fdt(A)} ml liuosta. Siitä pipetoidaan pois ${fdt(B)} ml. Paljonko liuosta jää?`,`A flask contains ${fdt(A)} ${IMP?'mL':'ml'} of solution. ${fdt(B)} ${IMP?'mL':'ml'} is removed with a pipette. How much solution is left?`)}};
+const W_PREC={'+':[{ok:(A,B)=>val(A)<(IMP?12:25)&&val(B)<(IMP?12:25),unit:'km',icon:'pyora',t:(A,B,K)=>E(`Juoksusovelluksen mukaan ${K.n} juoksi aamulla ${fdt(A)} km ja illalla ${fdt(B)} km. Kuinka pitkän matkan hän juoksi yhteensä?`,`According to the running app, ${K.n} ran ${fdt(A)} km in the morning and ${fdt(B)} km in the evening. How far did ${K.n} run in total?`)},
+    {ok:(A,B)=>!IMP&&val(A)<30&&val(B)<30,unit:'kg',icon:'sakki',t:(A,B)=>E(`Postissa punnitaan kaksi pakettia. Ensimmäinen painaa ${fdt(A)} kg ja toinen ${fdt(B)} kg. Paljonko ne painavat yhteensä?`,`Two parcels are weighed at the post office. The first weighs ${fdt(A)} kg and the second ${fdt(B)} kg. How much do they weigh in total?`)},
+    {ok:(A,B)=>val(A)+val(B)<(IMP?40:60),unit:'km',icon:'pyora',t:(A,B,K)=>E(`Pyöräilysovelluksen mukaan ${K.n} pyöräili lauantaina ${fdt(A)} km ja sunnuntaina ${fdt(B)} km. Kuinka paljon hän pyöräili yhteensä?`,`According to the cycling app, ${K.n} rode ${fdt(A)} km on Saturday and ${fdt(B)} km on Sunday. How far did ${K.n} ride in total?`)}],
+  '-':[{ok:(A,B)=>val(A)<(IMP?40:60),unit:'km',icon:'pyora',t:(A,B,K)=>E(`Pyöräretki on ${fdt(A)} km pitkä. Sovelluksen mukaan ${K.n} on pyöräillyt jo ${fdt(B)} km. Paljonko matkaa on vielä jäljellä?`,`A bike ride is ${fdt(A)} km long. According to the app, ${K.n} has already cycled ${fdt(B)} km. How far is left?`)},
+    {ok:(A,B)=>!IMP&&val(A)<30,unit:'kg',icon:'sakki',t:(A,B)=>E(`Paketti painaa ${fdt(A)} kg. Siitä otetaan pois kirja, joka painaa ${fdt(B)} kg. Paljonko paketti painaa sen jälkeen?`,`A parcel weighs ${fdt(A)} kg. A book weighing ${fdt(B)} kg is taken out. How much does the parcel weigh now?`)}]};
 function wordDec(A,B,op){const[K,M]=two();const LS=op==='+'?W_DA:W_DS,dd=Math.max(A.d,B.d),big=Math.max(val(A),val(B))>=20;
-  if(dd>=3||(dd>=2&&big)){const w=W_LAB[op==='+'?'+':'-'];return{text:w.t(A,B,K,M),unit:w.unit,icon:ICON[w.icon]}}
-  let cs=LS.filter(w=>w.ok(A,B));if(!cs.length)cs=[W_LAB[op==='+'?'+':'-']];const w=pick(cs);return{text:w.t(A,B,K,M),unit:w.unit,icon:ICON[w.icon]}}
+  let PR=W_PREC[op==='+'?'+':'-'].filter(w=>w.ok(op==='-'&&val(A)<val(B)?B:A,op==='-'&&val(A)<val(B)?A:B));if(!PR.length)PR=W_PREC[op==='+'?'+':'-'].filter(w=>w.icon==='pyora').slice(-1);
+  if(dd>=3||(dd>=2&&big)){const w=pick(PR);return{text:w.t(A,B,K,M),unit:w.unit,icon:ICON[w.icon]}}
+  let cs=LS.filter(w=>w.ok(A,B));if(!cs.length)cs=PR;const w=pick(cs);return{text:w.t(A,B,K,M),unit:w.unit,icon:ICON[w.icon]}}
 
 /* ---------- tehtävien rakentajat ---------- */
 function intProblem({a,b,op,visual,text,story,hint,word,storyIcon}){
@@ -1150,7 +1154,13 @@ function decPair(g,L){const mk=(lo,hi,d)=>({u:R(lo,hi),d});let A,B;
     else{const d=pick([0,1,2]);A=d===0?{u:R(2,30),d:0}:d===1?mk(11,299,1):mk(101,2999,2);B=mk(1001,19999,3)}}
   else{if(L===1){A=mk(101,999,1);B=mk(101,9999,2)}else if(L===2){A=mk(10001,99999,2);B=mk(1001,99999,3)}else{A={u:R(10,500),d:0};B=mk(1001,99999,pick([2,3]))}}
   if(Math.random()<.5)[A,B]=[B,A];return[A,B]}
-const gDec=g=>(L,op,word)=>{const[A,B]=decPair(g,L);return colProblem(A,B,op,word)};
+const gDec=g=>(L,op,word)=>{let[A,B]=decPair(g,L);
+  /* sanallisissa tehtävissä realistiset suuruudet: tuhannesosat vain kilometreissä ja kiloissa */
+  if(word&&g===5&&L===1){const mk=(lo,hi,d)=>({u:R(lo,hi),d});A=mk(101,2999,2);B=mk(101,2999,2)}
+  if(word&&g===6&&L===1){const mk=(lo,hi,d)=>({u:R(lo,hi),d});B=mk(101,2999,2);if(Math.random()<.5)[A,B]=[B,A]}
+  if(word&&g===6&&L>=2){const mk=(lo,hi,d)=>({u:R(lo,hi),d});A=L===2?mk(1001,2999,2):{u:R(2,29),d:0};B=mk(1001,19999,3);if(Math.random()<.5)[A,B]=[B,A]}
+  if(word){const cap=X=>{const f=10**X.d;if(X.u>=30*f)X.u=X.u%(28*f)+f};cap(A);cap(B)}
+  return colProblem(A,B,op,word)};
 function g4Frac(L,op,word){let d,a,b;
   d=L===1?pick([2,3,4,5,6]):L===2?pick([6,8,10,12]):pick([3,4,5,6,8]);
   if(L<3){if(op==='+'){a=R(1,d-1);b=R(1,d-a)}else{a=R(2,d);b=R(1,a-1)}}
@@ -5029,7 +5039,7 @@ function ttsVoice(){if(!TTS)return null;const L=EN?'en':'fi',vs=TTS.getVoices().
   return vs.find(v=>v.default)||vs.find(v=>/fi-FI|en-GB|en-US/i.test(v.lang))||vs[0]||null}
 const DENF={2:'kahdesosa',3:'kolmasosa',4:'neljäsosa',5:'viidesosa',6:'kuudesosa',7:'seitsemäsosa',8:'kahdeksasosa',9:'yhdeksäsosa',10:'kymmenesosa',12:'kahdestoistaosa',100:'sadasosa'};
 const DENE={2:'half',3:'third',4:'quarter',5:'fifth',6:'sixth',7:'seventh',8:'eighth',9:'ninth',10:'tenth',12:'twelfth',100:'hundredth'};
-const UNF={mg:'milligrammaa',mL:'millilitraa','ft²':'neliöjalkaa','in²':'neliötuumaa','ft³':'kuutiojalkaa','in³':'kuutiotuumaa','fl oz':'nesteunssia',mph:'mailia tunnissa','ft/min':'jalkaa minuutissa',ft:'jalkaa',in:'tuumaa',yd:'jaardia',mi:'mailia',lb:'paunaa',oz:'unssia',pt:'pinttiä',qt:'kvarttia',gal:'gallonaa',ton:'tonnia','°F':'astetta','cm²':'neliösenttimetriä','m²':'neliömetriä','km²':'neliökilometriä','mm²':'neliömillimetriä','cm³':'kuutiosenttimetriä','dm³':'kuutiodesimetriä','m³':'kuutiometriä',mm:'millimetriä',cm:'senttimetriä',dm:'desimetriä',km:'kilometriä',m:'metriä',kg:'kilogrammaa',g:'grammaa',dl:'desilitraa',cl:'senttilitraa',ml:'millilitraa',l:'litraa',kk:'kuukautta',v:'vuotta',h:'tuntia',min:'minuuttia',s:'sekuntia',snt:'senttiä','°C':'astetta'};
+const UNF={'ft²':'neliöjalkaa','in²':'neliötuumaa','ft³':'kuutiojalkaa','in³':'kuutiotuumaa','fl oz':'nesteunssia',mph:'mailia tunnissa','ft/min':'jalkaa minuutissa',ft:'jalkaa',in:'tuumaa',yd:'jaardia',mi:'mailia',lb:'paunaa',oz:'unssia',pt:'pinttiä',qt:'kvarttia',gal:'gallonaa',ton:'tonnia','°F':'astetta','cm²':'neliösenttimetriä','m²':'neliömetriä','km²':'neliökilometriä','mm²':'neliömillimetriä','cm³':'kuutiosenttimetriä','dm³':'kuutiodesimetriä','m³':'kuutiometriä',mm:'millimetriä',cm:'senttimetriä',dm:'desimetriä',km:'kilometriä',m:'metriä',kg:'kilogrammaa',g:'grammaa',dl:'desilitraa',cl:'senttilitraa',ml:'millilitraa',l:'litraa',kk:'kuukautta',v:'vuotta',h:'tuntia',min:'minuuttia',s:'sekuntia',snt:'senttiä','°C':'astetta'};
 function ttsSrc(Q){if(Q.ttsSay)return Q.ttsSay;const W=x=>/[A-Za-zÅÄÖåäö]{3}/.test(x||'');let T=String(Q.text||'');
   try{const d=document.createElement('div');d.innerHTML=T;const kids=[...d.childNodes];let prevOpen=false;
     kids.forEach(n=>{const t=(n.textContent||'').trim();if(!t){return}if(n.nodeType===1&&(n.matches('.box')||n.querySelector('.box'))&&!prevOpen){n.remove();return}if(W(t)){prevOpen=!/[.?!:]$/.test(t);return}if(prevOpen){prevOpen=false;return}n.remove?n.remove():n.parentNode.removeChild(n)});T=d.innerHTML}catch(e){}
@@ -5040,7 +5050,7 @@ function ttsText(Q){let h=ttsSrc(Q);
   h=h.replace(/<span class="box">\?<\/span>/g,E(' mikä luku ',' what number ')).replace(/<span[^>]*display:block[^>]*>/g,'. ').replace(/<br\s*\/?>|<\/(p|div|li|h\d)>/g,'. ').replace(/<[^>]*>/g,' ').replace(/&nbsp;|&#160;/g,' ').replace(/&amp;/g,'&');
   h=h.replace(/(\d)\s*[·×]\s*(\d)/g,`$1 ${E('kertaa','times')} $2`).replace(/(\d)\s*:\s*(\d)/g,`$1 ${E('jaettuna','divided by')} $2`).replace(/(\d)\s*[−–-]\s*(\d)/g,`$1 ${E('miinus','minus')} $2`).replace(/(\d)\s*\+\s*(\d)/g,`$1 ${E('plus','plus')} $2`).replace(/\s=\s/g,` ${E('on','equals')} `);
   h=h.replace(/(^|[\s(])[−-](\d)/g,`$1${E('miinus','minus')} $2`).replace(/(^|[\s(])\+(\d)/g,`$1${E('plus','plus')} $2`);
-  if(!EN)h=h.replace(/(mikä luku|\d)\s?(mg|mL|ft²|in²|ft³|in³|fl oz|mph|ft\/min|ft|in|yd|mi|lb|oz|pt|qt|gal|ton|°F|cm²|m²|km²|mm²|cm³|dm³|m³|mm|cm|dm|km|kg|dl|cl|ml|min|snt|°C|kk|m|g|l|h|v|s)(?![A-Za-zÅÄÖåäö²³])/g,(m,a,u)=>`${a} ${UNF[u]}`).replace(/(\d)\s?€/g,'$1 euroa').replace(/(\d)\s?\$/g,'$1 dollaria').replace(/(\d)\s?£/g,'$1 puntaa');
+  if(!EN)h=h.replace(/(mikä luku|\d)\s?(ft²|in²|ft³|in³|fl oz|mph|ft\/min|ft|in|yd|mi|lb|oz|pt|qt|gal|ton|°F|cm²|m²|km²|mm²|cm³|dm³|m³|mm|cm|dm|km|kg|dl|cl|ml|min|snt|°C|kk|m|g|l|h|v|s)(?![A-Za-zÅÄÖåäö²³])/g,(m,a,u)=>`${a} ${UNF[u]}`).replace(/(\d)\s?€/g,'$1 euroa').replace(/(\d)\s?\$/g,'$1 dollaria').replace(/(\d)\s?£/g,'$1 puntaa');
   return h.replace(/\s+/g,' ').replace(/\s+([.,?!])/g,'$1').replace(/:\s*\./g,':').replace(/([.?!])\s*\./g,'$1').replace(/^[.\s]+/,'').trim()}
 function ttsWorth(Q){if(Q.ttsSay)return true;const t=ttsSrc(Q).replace(/<[^>]*>/g,' ');return (t.match(/[A-Za-zÅÄÖåäö]{3,}/g)||[]).length>=3}
 function ttsStop(){if(TTS&&(TTS.speaking||TTS.pending))TTS.cancel();document.querySelectorAll('.spk.on').forEach(b=>{b.classList.remove('on');b.setAttribute('aria-pressed','false')})}
