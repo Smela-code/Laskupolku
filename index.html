@@ -736,7 +736,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.75</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.76</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -4877,8 +4877,8 @@ function kkRing(a,b){const C=110,r1=100,r0=52,col=i=>[11,0,1].includes(i)?'var(-
   const pt=(r,d)=>[C+r*Math.sin(d*Math.PI/180),C-r*Math.cos(d*Math.PI/180)];let o='';
   for(let i=0;i<12;i++){const d0=i*30-15,d1=i*30+15,[x0,y0]=pt(r1,d0),[x1,y1]=pt(r1,d1),[x2,y2]=pt(r0,d1),[x3,y3]=pt(r0,d0),on=i===a||i===b;
     o+=`<path class="kkw" data-m="${i}" d="M${x0.toFixed(1)} ${y0.toFixed(1)}A${r1} ${r1} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}L${x2.toFixed(1)} ${y2.toFixed(1)}A${r0} ${r0} 0 0 0 ${x3.toFixed(1)} ${y3.toFixed(1)}Z" fill="${col(i)}" fill-opacity="${on?.85:.22}" stroke="var(--paper)" stroke-width="2"/>`;
-    const[tx,ty]=pt((r1+r0)/2,i*30);o+=`<text x="${tx.toFixed(1)}" y="${(ty+4).toFixed(1)}" text-anchor="middle" font-size="${EN?12:10.5}" font-weight="800" fill="var(--ink)" font-family="Nunito, sans-serif">${EN?KKSE[i]:KKS[i]}</text>`}
-  o+=`<circle cx="${C}" cy="${C}" r="${r0-6}" fill="var(--paper)" stroke="var(--line)" stroke-width="2"/><text class="kkc" x="${C}" y="${C}" dy=".35em" text-anchor="middle" font-size="26" font-weight="900" fill="var(--ink)" font-family="Nunito, sans-serif">12</text><text x="${C}" y="${C+27}" text-anchor="middle" font-size="9.5" font-weight="700" fill="var(--soft)" font-family="Nunito, sans-serif" class="kkcl">${E('kuukautta','months')}</text>`;
+    const[tx,ty]=pt((r1+r0)/2,i*30);o+=`<text x="${tx.toFixed(1)}" y="${(ty+4).toFixed(1)}" text-anchor="middle" font-size="${EN?13.5:12}" font-weight="800" fill="var(--ink)" font-family="Nunito, sans-serif">${EN?KKSE[i]:KKS[i]}</text>`}
+  o+=`<circle cx="${C}" cy="${C}" r="${r0-6}" fill="var(--paper)" stroke="var(--line)" stroke-width="2"/><text class="kkc" x="${C}" y="${C-6}" dy=".35em" text-anchor="middle" font-size="26" font-weight="900" fill="var(--ink)" font-family="Nunito, sans-serif">12</text><text x="${C}" y="${C+20}" text-anchor="middle" font-size="9.5" font-weight="700" fill="var(--soft)" font-family="Nunito, sans-serif" class="kkcl">${E('kuukautta','months')}</text>`;
   return `<svg class="kkr" viewBox="0 0 220 220" width="190" role="img" aria-label="${E('Vuoden 12 kuukautta','The 12 months of the year')}">${o}</svg>`}
 /* ratkaisuanimaatio: merkki hyppii kuukausi kerrallaan */
 function kkAnim(a,n){const sv=document.querySelector('#sheet > .visual svg.kkr');if(!sv||sv.dataset.anim)return;sv.dataset.anim=1;
