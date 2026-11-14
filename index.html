@@ -569,6 +569,14 @@ button.trow{cursor:pointer;touch-action:manipulation}button.trow:active{transfor
 .gtile.ntile{aspect-ratio:auto;min-height:58px;font:800 1.55rem var(--display);color:var(--ink)}
 .jvis{display:block;margin:0 auto;max-width:100%;height:auto}
 .kkcard{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}.kkcard div{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 18px;border:2px solid var(--line);border-radius:12px;background:var(--paper);min-width:120px}.kkcard b{font-size:1.1rem}.kkcard span{font-weight:700;color:var(--soft)}
+.hasspk{position:relative}
+#sheet > .story.hasspk{padding-right:58px}
+#sheet > .expr.hasspk{padding-left:48px;padding-right:48px}
+.spk{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:999px;border:2px solid var(--line);background:var(--paper);color:var(--blue);display:grid;place-items:center;cursor:pointer;padding:0}
+.spk svg{width:22px;height:22px}.spk:hover{border-color:var(--blue)}
+.spk.on{background:var(--blue);border-color:var(--blue);color:var(--on-blue);animation:spkp 1.2s ease-in-out infinite}
+@keyframes spkp{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--blue) 25%,transparent)}}
+@media (prefers-reduced-motion:reduce){.spk.on{animation:none}}
 .alkw{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}.alkw .story{align-self:stretch;margin:0}
 .agrid{display:grid;grid-template-columns:repeat(6,var(--agz));grid-template-rows:repeat(6,var(--agz));gap:4px;--agz:min(44px,12vw);padding:6px;border-radius:12px;background:var(--grid);position:relative;touch-action:none}
 .agc{width:var(--agz);height:var(--agz);border-radius:7px;border:1.5px dashed var(--line);background:var(--paper);padding:0;cursor:pointer}
@@ -736,7 +744,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.79</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.80</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -747,6 +755,8 @@ footer p{margin:0 0 6px}
         <div class="seg" role="group" aria-labelledby="setLangL"><button type="button" data-lang="fi" aria-pressed="true" lang="fi">Suomi</button><button type="button" data-lang="en" aria-pressed="false" lang="en">English</button></div>
         <p class="setl" id="setCurL">Valuutta</p>
         <div class="seg" role="group" aria-labelledby="setCurL"><button type="button" data-cur="€" aria-pressed="true"><b>€</b> <span>euro</span></button><button type="button" data-cur="$" aria-pressed="false"><b>$</b> <span>dollari</span></button><button type="button" data-cur="£" aria-pressed="false"><b>£</b> <span>punta</span></button></div>
+        <p class="setl" id="setTtsL">Ääneen luku</p>
+        <div class="seg" role="group" aria-labelledby="setTtsL"><button type="button" data-tts="1" aria-pressed="true">Päällä</button><button type="button" data-tts="0" aria-pressed="false">Pois</button></div>
       </div>
     </div>
     <button type="button" class="pchip" id="playerBtn" aria-haspopup="dialog" aria-expanded="false" aria-label="Pelaaja">
@@ -784,6 +794,7 @@ let LANG='fi';try{LANG=localStorage.getItem('laskupolku-lang')==='en'?'en':'fi'}
 try{const h=(location.hash||'').slice(1);if(h==='en'||h==='fi')LANG=h}catch(e){}
 const EN=LANG==='en',E=(fi,en)=>EN?en:fi;
 /* ---------- valuutta ---------- */
+let TTS_ON=true;try{TTS_ON=localStorage.getItem('laskupolku-tts')!=='0'}catch(e){}
 let CUR='€';try{const c=localStorage.getItem('laskupolku-cur');if(c==='$'||c==='£')CUR=c}catch(e){}
 const CURW=(()=>{if(CUR==='€')return[];const D=CUR==='$',P=CUR==='£';const m=[['tasaeuroon',D?'tasadollariin':'tasapuntaan'],['eurokolikot',D?'dollarikolikot':'puntakolikot'],['eurolla',D?'dollarilla':'punnalla'],['euroa',D?'dollaria':'puntaa'],['euron',D?'dollarin':'punnan'],['Euron',D?'Dollarin':'Punnan'],['eurot',D?'dollarit':'punnat'],['Eurot',D?'Dollarit':'Punnat'],['euros',D?'dollars':'pounds'],['Euros',D?'Dollars':'Pounds'],['euro',EN?(D?'dollar':'pound'):(D?'dollari':'punta')]];
   if(P)m.push(['senttikolikot','pennikolikot'],['senttiä','penniä'],['sentteinä','penneinä'],['sentein','pennein'],['senteissä','penneissä'],['senteillä','penneillä'],['senteiksi','penneiksi'],['sentit','pennit'],['Sentit','Pennit'],['Senttejä','Pennejä'],['sentin','pennin'],['sentti','penni'],['snt','p'],['cents','pence'],['Cents','Pence'],['cent','penny'],['CENT','PENCE']);
@@ -809,6 +820,10 @@ if(EN){const q=s=>document.querySelector(s);
   q('#ptitle').textContent='Players';const c=q('.pcl');c.textContent='Close';c.setAttribute('aria-label','Close')}
 document.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===LANG)));
 document.querySelectorAll('[data-cur]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.cur===CUR)));
+document.querySelectorAll('[data-tts]').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.tts==='1')===TTS_ON)));
+if(EN){const q=document.querySelector('#setTtsL');if(q)q.textContent='Read aloud';document.querySelectorAll('[data-tts]').forEach(b=>b.textContent=b.dataset.tts==='1'?'On':'Off')}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-tts]');if(!b)return;TTS_ON=b.dataset.tts==='1';try{localStorage.setItem('laskupolku-tts',TTS_ON?'1':'0')}catch(e){}
+  document.querySelectorAll('[data-tts]').forEach(x=>x.setAttribute('aria-pressed',String((x.dataset.tts==='1')===TTS_ON)));ttsStop();const o=document.querySelector('#sheet .spk');if(o){o.parentNode.classList.remove('hasspk');o.remove()}ttsMount()});
 if(EN){const q=s=>document.querySelector(s);q('#setBtn').setAttribute('aria-label','Settings');q('#setBtn').title='Settings';q('#setLangL').textContent='Language';q('#setCurL').textContent='Currency';
   document.querySelectorAll('[data-cur] span').forEach((x,i)=>x.textContent=['euro','dollar','pound'][i])}
 {const btn=document.getElementById('setBtn'),pan=document.getElementById('setPanel');const show=o=>{pan.hidden=!o;btn.setAttribute('aria-expanded',String(o))};
@@ -4953,6 +4968,31 @@ function kkGen(g){
 const KK_LEVELS={1:['Seuraava kuukausi','Ennen ja jälkeen','Kuukausien päästä'],2:['Ennen ja jälkeen','Kuukausien päästä','Yli vuodenvaihteen'],3:['Kuukausien päästä','Kuukausia sitten','Montako kuukautta?'],
   4:['Montako kuukautta?','Ikäero kuukausina','Ikäero vuosina'],5:['Ikäero kuukausina','Ikäero vuosina','Kuinka vanha?'],6:['Ikäero vuosina','Kuinka vanha?','Milloin se päättyy?']};
 const kkT=g=>({oid:'kk',levels:KK_LEVELS[g].map(x=>[x]),gen:L=>kkGen(g)(L)});
+
+/* ---------- ääneen luku (selaimen puhesynteesi, vain laitteen omat äänet) ---------- */
+const TTS=typeof window!=='undefined'&&window.speechSynthesis&&typeof SpeechSynthesisUtterance!=='undefined'?window.speechSynthesis:null;
+function ttsVoice(){if(!TTS)return null;const L=EN?'en':'fi',vs=TTS.getVoices().filter(v=>v.lang&&v.lang.toLowerCase().startsWith(L)&&v.localService);
+  return vs.find(v=>v.default)||vs.find(v=>/fi-FI|en-GB|en-US/i.test(v.lang))||vs[0]||null}
+const DENF={2:'kahdesosa',3:'kolmasosa',4:'neljäsosa',5:'viidesosa',6:'kuudesosa',7:'seitsemäsosa',8:'kahdeksasosa',9:'yhdeksäsosa',10:'kymmenesosa',12:'kahdestoistaosa',100:'sadasosa'};
+const DENE={2:'half',3:'third',4:'quarter',5:'fifth',6:'sixth',7:'seventh',8:'eighth',9:'ninth',10:'tenth',12:'twelfth',100:'hundredth'};
+const UNF={'cm²':'neliösenttimetriä','m²':'neliömetriä','km²':'neliökilometriä','mm²':'neliömillimetriä','cm³':'kuutiosenttimetriä','dm³':'kuutiodesimetriä','m³':'kuutiometriä',mm:'millimetriä',cm:'senttimetriä',dm:'desimetriä',km:'kilometriä',m:'metriä',kg:'kilogrammaa',g:'grammaa',dl:'desilitraa',cl:'senttilitraa',ml:'millilitraa',l:'litraa',kk:'kuukautta',v:'vuotta',h:'tuntia',min:'minuuttia',s:'sekuntia',snt:'senttiä','°C':'astetta'};
+function ttsText(Q){let h=[Q.story,Q.text].filter(Boolean).join('. ');
+  h=h.replace(/<span class="q"><span>(\d+)<\/span><span>(\d+)<\/span><\/span>/g,(m,n,d)=>{const k=+d,N=+n;if(EN){const w=DENE[k];return w?`${n} ${w}${N===1?'':(w==='half'?'':'s')}`.replace('1 half','one half'):`${n} over ${d}`}const w=DENF[k];return w?`${n} ${N===1?w:w+'a'}`:`${n} per ${d}`});
+  h=h.replace(/<span class="box">\?<\/span>/g,E(' mikä luku ',' what number ')).replace(/<br\s*\/?>|<\/(p|div|li|h\d)>/g,'. ').replace(/<[^>]*>/g,' ').replace(/&nbsp;|&#160;/g,' ').replace(/&amp;/g,'&');
+  h=h.replace(/(\d)\s*[·×]\s*(\d)/g,`$1 ${E('kertaa','times')} $2`).replace(/(\d)\s*:\s*(\d)/g,`$1 ${E('jaettuna','divided by')} $2`).replace(/(\d)\s*[−–-]\s*(\d)/g,`$1 ${E('miinus','minus')} $2`).replace(/(\d)\s*\+\s*(\d)/g,`$1 ${E('plus','plus')} $2`).replace(/\s=\s/g,` ${E('on','equals')} `);
+  h=h.replace(/(^|[\s(])[−-](\d)/g,`$1${E('miinus','minus')} $2`).replace(/(^|[\s(])\+(\d)/g,`$1${E('plus','plus')} $2`);
+  if(!EN)h=h.replace(/(mikä luku|\d)\s?(cm²|m²|km²|mm²|cm³|dm³|m³|mm|cm|dm|km|kg|dl|cl|ml|min|snt|°C|kk|m|g|l|h|v|s)(?![A-Za-zÅÄÖåäö²³])/g,(m,a,u)=>`${a} ${UNF[u]}`).replace(/(\d)\s?€/g,'$1 euroa').replace(/(\d)\s?\$/g,'$1 dollaria').replace(/(\d)\s?£/g,'$1 puntaa');
+  return h.replace(/\s+/g,' ').replace(/\s+([.,?!])/g,'$1').replace(/\.\s*\./g,'.').trim()}
+function ttsWorth(Q){const t=[Q.story,Q.text].filter(Boolean).join(' ').replace(/<[^>]*>/g,' ');return (t.match(/[A-Za-zÅÄÖåäö]{3,}/g)||[]).length>=3}
+function ttsStop(){if(TTS&&(TTS.speaking||TTS.pending))TTS.cancel();document.querySelectorAll('.spk.on').forEach(b=>{b.classList.remove('on');b.setAttribute('aria-pressed','false')})}
+function ttsMount(){const old=document.querySelector('#sheet .spk');if(old)return;if(!TTS_ON||!TTS||!P||!ttsWorth(P)||!ttsVoice())return;
+  const host=document.querySelector('#sheet > .story')||document.querySelector('#sheet > .expr');if(!host)return;host.classList.add('hasspk');
+  const b=document.createElement('button');b.type='button';b.className='spk';b.setAttribute('aria-pressed','false');b.setAttribute('aria-label',E('Lue ääneen','Read aloud'));b.title=E('Lue ääneen','Read aloud');
+  b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z" fill="currentColor"/><path d="M15.2 9a4.2 4.2 0 0 1 0 6M17.8 6.6a7.6 7.6 0 0 1 0 10.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  b.addEventListener('click',e=>{e.preventDefault();if(b.classList.contains('on')){ttsStop();return}ttsStop();const u=new SpeechSynthesisUtterance(ttsText(P)),v=ttsVoice();if(!v)return;u.voice=v;u.lang=v.lang;u.rate=EN?.95:.92;
+    u.onend=u.onerror=()=>{b.classList.remove('on');b.setAttribute('aria-pressed','false')};b.classList.add('on');b.setAttribute('aria-pressed','true');TTS.speak(u)});
+  host.appendChild(b)}
+if(TTS&&TTS.addEventListener)TTS.addEventListener('voiceschanged',()=>{try{ttsMount()}catch(e){}});
 /* ---------- valikkorakenne: alue › aihe › tehtävä ---------- */
 const PUZ_LEVELS=['Kaksi kuvaa','Kolme kuvaa','Rivit sekaisin'],WP_LEVELS=['Kaksi henkilöä','Kolme henkilöä','Tieto vasta lopussa'];
 const ot=(g,id)=>GR[g].topics.find(t=>t.id===id);
@@ -5186,7 +5226,7 @@ function pathHTML(g,tops,selId,dis,mixOn){const W=360,n=tops.length+1,DY=94,Y0=8
   const tr0=(d,w,c,extra='')=>`<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"${extra}/>`;
   const svg=`<svg class="trail" viewBox="0 0 ${W} ${H}" aria-hidden="true">${tr0(side,19,'var(--line)')}${tr0(main,31,'var(--line)')}${tr0(side,15,'var(--plate)')}${tr0(main,27,'var(--plate)')}${tr0(main,2.4,'var(--soft)',' stroke-dasharray="1 10" opacity=".55"')}${tr0(side,2,'var(--soft)',' stroke-dasharray="1 9" opacity=".5"')}${deco}${flag(mx(30)+17,34)}</svg>`;
   return `<div class="tpwrap" style="aspect-ratio:${W}/${H}">${svg}${nodes.map(o=>o.t?signHTML(o.t,o.x,o.y,W,H,dis,dis?0:areaProg(g,o.t),o.left):mixSign(o.x,o.y,W,H,mixOn)).join('')}</div>`}
-function applyView(){const mbx=document.querySelector('.mixbox');if(mbx)mbx.hidden=true;const sh=$('#sheet');sh.hidden=!showTask;const ft=document.querySelector('footer');if(ft)ft.hidden=!showTask;$('#goal').hidden=navUp&&!showTask;if(!showTask){$('#typeBox').hidden=true}}
+function applyView(){if(typeof ttsStop==='function'&&!showTask)ttsStop();const mbx=document.querySelector('.mixbox');if(mbx)mbx.hidden=true;const sh=$('#sheet');sh.hidden=!showTask;const ft=document.querySelector('footer');if(ft)ft.hidden=!showTask;$('#goal').hidden=navUp&&!showTask;if(!showTask){$('#typeBox').hidden=true}}
 function navTiles(c){const g=S.grade,tT=$('#topTiles'),sT=$('#subTiles'),h=$('#navHead'),lbl=`<p class="lbl" id="navLbl">${E('Valitse alue','Choose an area')}</p>`;
   tT.classList.add('tpath');
   if(!c){h.innerHTML=`<button type="button" class="navback" id="navBack" aria-label="${E('Takaisin alueisiin','Back to areas')}"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4 6.5 10l6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>${E('Alueet','Areas')}</button><span class="navcur" style="--c:var(--sun)"><span class="ti"><svg aria-hidden="true"  viewBox="0 0 32 32" aria-hidden="true"><path d="M8.5 12v14c0 1.3 3.4 2.3 7.5 2.3s7.5-1 7.5-2.3V12z" fill="#3A3355" stroke="#8E86B5" stroke-width=".7"/><path d="M8.5 13.2v3c0 1 3.4 1.8 7.5 1.8s7.5-.8 7.5-1.8v-3z" fill="#E5484D"/><path d="M3 11.6c0-1.6 5.8-2.9 13-2.9s13 1.3 13 2.9-5.8 2.9-13 2.9-13-1.3-13-2.9z" fill="#2A2440" stroke="#8E86B5" stroke-width=".7"/><ellipse cx="16" cy="11.6" rx="7.5" ry="1.9" fill="#120F22"/><path d="M16 1.2l.7 1.6 1.7.2-1.3 1.1.4 1.7-1.5-.9-1.5.9.4-1.7-1.3-1.1 1.7-.2z" fill="#F4C02E"/><path d="M9 3.6l.45 1 1.05.15-.8.7.25 1.05-.95-.55-.95.55.25-1.05-.8-.7 1.05-.15z" fill="#F4C02E"/><path d="M23 3.6l.45 1 1.05.15-.8.7.25 1.05-.95-.55-.95.55.25-1.05-.8-.7 1.05-.15z" fill="#F4C02E"/><circle cx="12.5" cy="8" r=".8" fill="#F4C02E"/><circle cx="19.8" cy="7.6" r=".8" fill="#F4C02E"/></svg></span><span id="navLbl">${E('Yllätys','Surprise')}</span></span>`;tT.hidden=true;tT.innerHTML='';sT.hidden=true;sT.innerHTML='';return}
@@ -5308,6 +5348,7 @@ function draw(){const t=cur(),pr=prog();const IA=inlineAns();{const sh=$('#sheet
     <div class="panel" id="hint" hidden><h3>${E('Vihje','Hint')}</h3>${P.hint}</div>
     <div class="panel explain" id="explain" hidden><h3>${E('Näin se lasketaan','How to work it out')}</h3>${P.explain}</div>`;
   if(CUR!=='€'){const sh=$('#sheet');sh.innerHTML=curFix(sh.innerHTML)}
+  ttsStop();ttsMount();
   const first=P.kind==='coord'?$('#cx'):P.steps?$('#sc0'):P.kind==='col'?document.getElementById('r'+(P.L.N-1)):document.querySelector('#mw,#ans,#fn,#th,#me,#fq0,#tq0,#ca');
   normPrompts();activeEl=first;if(first&&!holdFocus)first.focus({preventScroll:true});holdFocus=0;if(P.mount)P.mount()}
 function fb(msg,cls){const e=$('#fb');e.hidden=false;e.className='fb '+cls;e.innerHTML=curFix(msg)}
