@@ -736,7 +736,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.77</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.78</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -4870,6 +4870,7 @@ const KKF=['tammikuu','helmikuu','maaliskuu','huhtikuu','toukokuu','kesäkuu','h
   KKE=['January','February','March','April','May','June','July','August','September','October','November','December'],
   KKS=['tammi','helmi','maalis','huhti','touko','kesä','heinä','elo','syys','loka','marras','joulu'],KKSE=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const kkN=i=>EN?KKE[i]:KKF[i],kkGen_=i=>EN?KKE[i]:KKF[i]+'n',kkIn=i=>EN?'in '+KKE[i]:KKF[i]+'ssa',KK=i=>((i%12)+12)%12;
+const NOWM=()=>new Date().getMonth();
 const kkCap=x=>x.charAt(0).toUpperCase()+x.slice(1);
 const ymT=(y,m)=>E(`${y} v ${m} kk`,`${y} yr ${m} mo`);
 /* kuukausirengas: 12 lohkoa, vuodenajan värit; a = lähtökuu, b = korostettava kuu */
@@ -4891,10 +4892,13 @@ function kkGen(g){
   const chM=(ans,pool,extra)=>({kind:'choice',choices:optsM(ans,pool),ans:String(ans),answerText:kkCap(kkN(ans)),...extra});
   const walk=(a,n)=>{const st=n<0?-1:1;return Array.from({length:Math.abs(n)+1},(_,k)=>kkN(KK(a+st*k))).join(' → ')};
   /* tyyppi A: n kuukauden päästä / sitten */
-  const later=(n,back,wrap)=>{const a=wrap?R(12-n,11):R(0,11),b=KK(a+(back?-n:n)),k=nm();
-    const story=back?E(`Nyt on ${kkN(a)}. ${k.n} kävi mummolassa ${n} ${n===1?'kuukausi':'kuukautta'} sitten.`,`It is ${kkN(a)} now. ${k.n} visited grandma ${n} ${n===1?'month':'months'} ago.`)
-      :E(`Nyt on ${kkN(a)}. ${k.ll} on syntymäpäivät ${n} ${n===1?'kuukauden':'kuukauden'} päästä.`,`It is ${kkN(a)} now. ${k.n} has a birthday in ${n} ${n===1?'month':'months'}.`);
-    const q=back?E('Missä kuussa se oli?','Which month was it?'):E('Missä kuussa syntymäpäivät ovat?','Which month is the birthday?');
+  const later=(n,back,wrap)=>{const cm=NOWM(),now=Math.random()<.5&&(!wrap||cm>=12-n),a=now?cm:wrap?R(12-n,11):R(0,11),b=KK(a+(back?-n:n)),[k,k2]=two();
+    const story=now?(back?E(`Nyt on ${kkN(a)}. ${k.n} kävi mummolassa ${n} kuukautta sitten.`,`It is ${kkN(a)} now. ${k.n} visited grandma ${n} months ago.`)
+      :E(`Nyt on ${kkN(a)}. ${k.ll} on syntymäpäivät ${n} kuukauden päästä.`,`It is ${kkN(a)} now. ${k.n} has a birthday in ${n} months.`))
+      :(back?E(`Koulun retki on ${kkIn(a)}. Retkelle piti ilmoittautua ${n} kuukautta aiemmin.`,`The school trip is ${kkIn(a)}. You had to sign up for it ${n} months earlier.`)
+      :E(`${k.ll} on syntymäpäivät ${kkIn(a)}. ${k2.ll} on syntymäpäivät ${n} kuukautta myöhemmin.`,`${k.n}'s birthday is ${kkIn(a)}. ${k2.n}'s birthday is ${n} months later.`));
+    const q=now?(back?E('Missä kuussa se oli?','Which month was it?'):E('Missä kuussa syntymäpäivät ovat?','Which month is the birthday?'))
+      :(back?E('Missä kuussa piti ilmoittautua?','Which month did you have to sign up?'):E(`Missä kuussa ${k2.ll} on syntymäpäivät?`,`Which month is ${k2.n}'s birthday?`));
     return chM(b,[b+1,b-1,b+2,b-2,b+10-n,a+n-10],{story,text:plbl(q,''),visual:kkRing(a),onOk:()=>kkAnim(a,back?-n:n),onFail:()=>kkAnim(a,back?-n:n),
       hint:E(`<p>Lähde liikkeelle ${KKF[a]}sta ja laske ${n} ${back?'taaksepäin':'eteenpäin'}. Joulukuun jälkeen tulee taas tammikuu.</p>`,`<p>Start from ${kkN(a)} and count ${n} ${back?'back':'forward'}. After December comes January again.</p>`),
       explain:E(`<p>${walk(a,back?-n:n)}</p><p>Vastaus: <b>${kkN(b)}</b>.</p>`,`<p>${walk(a,back?-n:n)}</p><p>Answer: <b>${kkN(b)}</b>.</p>`)})};
@@ -4905,8 +4909,9 @@ function kkGen(g){
       hint:E('<p>Katso kuukausirengasta. Kuukaudet kulkevat myötäpäivään.</p>','<p>Look at the ring of months. The months go clockwise.</p>'),
       explain:E(`<p>${walk(a,prev?-1:1)}</p>`,`<p>${walk(a,prev?-1:1)}</p>`)})};
   /* tyyppi C: montako kuukautta kuukaudesta a kuukauteen b */
-  const howMany=()=>{const a=R(0,11),n=R(2,11),b=KK(a+n),k=nm();
-    return{kind:'int',story:E(`Nyt on ${kkN(a)}. ${k.ll} on syntymäpäivät ${kkIn(b)}.`,`It is ${kkN(a)} now. ${k.n}'s birthday is ${kkIn(b)}.`),text:plbl(E('Montako kuukautta syntymäpäiviin on?','How many months until the birthday?'),''),
+  const howMany=()=>{const now=Math.random()<.5,a=now?NOWM():R(0,11),n=R(2,11),b=KK(a+n),[k,k2]=two();
+    return{kind:'int',story:now?E(`Nyt on ${kkN(a)}. ${k.ll} on syntymäpäivät ${kkIn(b)}.`,`It is ${kkN(a)} now. ${k.n}'s birthday is ${kkIn(b)}.`):E(`${k.ll} on syntymäpäivät ${kkIn(a)} ja ${k2.ll} ${kkIn(b)}.`,`${k.n}'s birthday is ${kkIn(a)} and ${k2.n}'s is ${kkIn(b)}.`),
+      text:plbl(now?E('Montako kuukautta syntymäpäiviin on?','How many months until the birthday?'):E(`Montako kuukautta on ${KKF[a]}sta ${KKF[b]}hun?`,`How many months is it from ${KKE[a]} to ${KKE[b]}?`),''),
       unit:E('kk','months'),ans:n,answerText:String(n),visual:kkRing(a,b),onOk:()=>kkAnim(a,n),onFail:()=>kkAnim(a,n),
       hint:E(`<p>Laske askeleet ${KKF[a]}sta ${KKF[b]}hun. Vuodessa on 12 kuukautta.</p>`,`<p>Count the steps from ${kkN(a)} to ${kkN(b)}. A year has 12 months.</p>`),
       explain:E(`<p>${walk(a,n)}</p><p>Askeleita on <b>${n}</b>.${b<a?` Laskun voi tehdä myös näin: ${b+1} + 12 − ${a+1} = ${n}.`:` Laskuna: ${b+1} − ${a+1} = ${n}.`}</p>`,`<p>${walk(a,n)}</p><p>That is <b>${n}</b> steps.${b<a?` As a calculation: ${b+1} + 12 − ${a+1} = ${n}.`:` As a calculation: ${b+1} − ${a+1} = ${n}.`}</p>`)}};
