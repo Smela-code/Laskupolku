@@ -745,7 +745,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.02</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.03</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -2417,17 +2417,16 @@ function fracMulDiv(L,op,word){const[K]=two();let n,d,k;
         ans:whole?N/d:{n:N,d},answerText:fracRes(N,d),hint:E(`<p>${frac(n,d)} · ${k} tarkoittaa, että ${frac(n,d)} otetaan ${k} kertaa. Kerro osoittaja: ${n} · ${k}. Nimittäjä pysyy samana.</p>`,`<p>${frac(n,d)} · ${k} means taking ${frac(n,d)} ${k} times. Multiply the numerator: ${n} · ${k}. The denominator stays the same.</p>`)+(whole?E(`<p>Sievennä lopuksi: ${frac(N,d)} on kokonaisluku.</p>`,`<p>Finally simplify: ${frac(N,d)} is a whole number.</p>`):''),
         explain:`<p><b>${frac(n,d)} · ${k} = ${fracRes(N,d)}</b></p><div class="visual">${cakes(N,d)}</div>`}}
     do{d=pick([2,3,4,5,6,8,10]);n=R(1,d-1)}while(gcd(n,d)!==1);const m=R(2,6),W=d*m,A=n*m,tk=pick(FK);
-    return{kind:'int',visual:pile(W,fruitSVG(tk,'n')),text:word?null:`${frac(n,d)} · ${W} = ${BOX}`,
+    return{kind:'int',visual:null,text:word?null:`${frac(n,d)} · ${W} = ${BOX}`,
       story:word?E(`Luokassa on ${W} oppilasta. Heistä ${frac(n,d)} käy kuorossa. Montako oppilasta käy kuorossa?`,`There are ${W} pupils in a class. ${frac(n,d)} of them sing in the choir. How many pupils sing in the choir?`):null,
       ans:A,answerText:String(A),
-      hint:E(`<p>Nimittäjä ${d} kertoo, että ${W} jaetaan ${d} yhtä suureen osaan: ${W} : ${d} = ${m}.</p><p>Osoittaja ${n} kertoo, montako osaa otetaan: ${n} · ${m}.</p>`,`<p>The denominator ${d} tells you to split ${W} into ${d} equal parts: ${W} : ${d} = ${m}.</p><p>The numerator ${n} tells you how many parts to take: ${n} · ${m}.</p>`)+`<div class="visual">${mulGroups(d,m,fruitSVG(tk,'n'),'')}</div>`,
+      hint:E(`<p>Nimittäjä ${d} kertoo, että ${W} jaetaan ${d} yhtä suureen osaan: ${W} : ${d} = ${m}.</p><p>Osoittaja ${n} kertoo, montako osaa otetaan: ${n} · ${m}.</p>`,`<p>The denominator ${d} tells you to split ${W} into ${d} equal parts: ${W} : ${d} = ${m}.</p><p>The numerator ${n} tells you how many parts to take: ${n} · ${m}.</p>`)+'',
       explain:`<p><b>${frac(n,d)} · ${W} = ${A}</b>, ${E('koska','because')} ${W} : ${d} = ${m} ${E('ja','and')} ${n} · ${m} = ${A}.</p>`}}
   if(L===1){d=pick([4,6,8,9,10,12]);k=R(2,Math.min(4,d-1));const m=R(1,Math.floor((d-1)/k));n=m*k}
   else{do{d=pick(L===2?[2,3,4,5]:[5,6,7,8,9,10]);n=R(1,d-1)}while(gcd(n,d)!==1);k=R(2,4);if(n%k===0)k=k===2?3:2}
   const hint=n%k===0?E(`<p>Osoittaja ${n} jakautuu tasan: ${n} : ${k} = ${n/k}. Nimittäjä pysyy samana.</p>`,`<p>The numerator ${n} divides exactly: ${n} : ${k} = ${n/k}. The denominator stays the same.</p>`)
     :E(`<p>Osoittaja ei jakaudu tasan, joten jaa jokainen pala ${k} osaan eli kerro nimittäjä luvulla ${k}.</p>`,`<p>The numerator doesn't divide exactly, so split every piece into ${k} parts, which means multiplying the denominator by ${k}.</p>`)+`<div class="visual">${fracOp(n*k,d*k)}</div>`+E(`<p>Nyt palat voi jakaa tasan ${k} osaan.</p>`,`<p>Now the pieces can be shared equally into ${k} parts.</p>`);
-  const osaan=E(k+' osaan','into '+k+' parts');
-  return{kind:'frac',visual:`${fracOp(n,d)}${sign('/')}${opnd(plates(k),osaan,osaan)}`,text:word?null:`${frac(n,d)} : ${k} = ${BOX}`,
+  return{kind:'frac',visual:null,text:word?null:`${frac(n,d)} : ${k} = ${BOX}`,
     story:word?E(`Kakusta on jäljellä ${frac(n,d)}. Se jaetaan tasan ${k} lapselle. Kuinka suuren osan kakusta kukin saa?`,`There is ${frac(n,d)} of a cake left. It is shared equally between ${k} children. What fraction of the cake does each child get?`):null,
     ans:{n,d:d*k},answerText:fracRes(n,d*k),hint,explain:`<p><b>${frac(n,d)} : ${k} = ${fracRes(n,d*k)}</b></p><div class="visual">${cakes(n,d*k)}</div>`}}
 
