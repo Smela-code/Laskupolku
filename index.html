@@ -745,7 +745,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.91</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.92</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -4049,7 +4049,7 @@ const USYS=!IMP?USYS_M:{
   money:USYS_M.money};
 const dcnt=x=>{for(let d=0;d<7;d++){const m=x*10**d;if(Math.abs(Math.round(m)-m)<1e-7)return d}return 7};
 const unum=(x,u)=>{const d=u==='€'&&dcnt(x)>0?2:dcnt(x);let s=x.toFixed(d).replace('.',',');const[i,f]=s.split(',');return fmtInt(+i)+(f?','+f:'')};
-const UL=u=>u==='cup'?(EN?'cups':'kuppia'):EN&&u==='snt'?'c':u;
+const UL=u=>u==='cup'?(EN?'cups':'kuppia'):EN&&u==='snt'?(CUR==='$'?'¢':'c'):u;
 const uq=(x,u)=>`${unum(x,u)} ${u==='cup'?(EN?(x===1?'cup':'cups'):(x===1?'kuppi':'kuppia')):UL(u)}`;
 const UCFG_M={
   2:[{pairs:[['money','€','snt'],['len','m','cm']],fr:[1,9]},{mixed:[['len','m','cm'],['money','€','snt']]},{pairs:[['vol','l','dl'],['mass','kg','g'],['money','snt','€'],['len','cm','m']],fr:[1,9],rev:true}],
@@ -4701,17 +4701,17 @@ function speedGen(g){return(L)=>{
 for(const g of [5,6])GR[g].topics.push({id:'nopeus',fam:'mul',name:'Nopeus, matka ja aika',noWord:true,levels:g===5?['Matka','Aika','Nopeus']:['Kokonaiset tunnit','Puolet ja vartit','Minuutit'],gen:speedGen(g)});
 
 /* ---------- kaupan kassa: kolikot, setelit ja vaihtorahat ---------- */
-const SNT=CUR==='£'?'p':E('snt','c');
+const SNT=CUR==='£'?'p':CUR==='$'&&EN?'¢':E('snt','c');
 const COINR={1:12.5,2:14,5:15.5,10:14.8,20:16,25:16.6,50:17.5,100:16.8,200:18};
 const NOTEC={100:'#8FA88F',200:'#9AA69A',500:'#7E9486',1000:'#D8563A',2000:'#7FB0E0',5000:'#F2A65E',10000:'#3B8F57'},NOTET={2000:'#14304F',5000:'#4A2508'};
 function coinSVG(v){const r=COINR[v],w=Math.round(r*2*1.45),eur=v>=100;
-  const cu=v<10,col=cu?['#C9804F','#8A4B26']:['var(--coin)','var(--coin-edge)'];
+  const US=CUR==='$',cu=US?v===1:v<10,ag=US&&!cu&&v<100,col=cu?['#C9804F','#8A4B26']:ag?['#D3D8E0','#7F8A98']:['var(--coin)','var(--coin-edge)'];
   let body;
   if(v===200)body=`<circle r="${r}" fill="#D3D8E0" stroke="#7F8A98" stroke-width="1.2"/><circle r="${r*.68}" fill="var(--coin)" stroke="var(--coin-edge)" stroke-width=".8"/>`;
   else if(v===100)body=`<circle r="${r}" fill="var(--coin)" stroke="var(--coin-edge)" stroke-width="1.2"/><circle r="${r*.68}" fill="#D3D8E0" stroke="#7F8A98" stroke-width=".8"/>`;
   else body=`<circle r="${r}" fill="${col[0]}" stroke="${col[1]}" stroke-width="1.2"/><circle r="${r*.84}" fill="none" stroke="${col[1]}" stroke-width=".6" opacity=".6"/>`;
-  const tc=v===100?'#2A2F3A':cu?'#4A2510':'#5A3C06',num=eur?v/100:v;
-  return `<svg class="mcoin" width="${w}" height="${w}" viewBox="-20 -20 40 40" aria-hidden="true">${body}<text y="${eur?4.6:2.6}" text-anchor="middle" font-size="${eur?12:num>=10?10.5:12}" font-weight="800" fill="${tc}" font-family="Baloo 2, Trebuchet MS, sans-serif">${num}${eur?'€':CUR==='£'?'p':''}</text>${eur||CUR==='£'?'':`<text y="10.2" text-anchor="middle" font-size="5.6" font-weight="800" fill="${tc}" font-family="Nunito, sans-serif">${EN?'CENT':'SNT'}</text>`}</svg>`}
+  const tc=v===100||ag?'#2A2F3A':cu?'#4A2510':'#5A3C06',num=eur?v/100:v;
+  return `<svg class="mcoin" width="${w}" height="${w}" viewBox="-20 -20 40 40" aria-hidden="true">${body}<text y="${eur?4.6:2.6}" text-anchor="middle" font-size="${eur?12:num>=10?10.5:12}" font-weight="800" fill="${tc}" font-family="Baloo 2, Trebuchet MS, sans-serif">${num}${eur?'€':CUR==='£'?'p':CUR==='$'&&EN?'¢':''}</text>${eur||CUR==='£'||(CUR==='$'&&EN)?'':`<text y="10.2" text-anchor="middle" font-size="5.6" font-weight="800" fill="${tc}" font-family="Nunito, sans-serif">${EN?'CENT':'SNT'}</text>`}</svg>`}
 function noteSVG(v){const c=NOTEC[v];
   return `<svg class="mnote" width="78" height="42" viewBox="0 0 78 42" aria-hidden="true"><rect x="1" y="1" width="76" height="40" rx="4" fill="${c}"/><rect x="4.5" y="4.5" width="69" height="33" rx="2.5" fill="none" stroke="#fff" stroke-opacity=".45"/><path d="M50 37V20a9 9 0 0 1 18 0v17" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3"/><circle cx="16" cy="13" r="4" fill="#fff" opacity=".3"/>${NUMTXT(28,28,17,NOTET[v]||'#fff')}${v/100} €</text></svg>`}
 const moneySVG=v=>v>=(CUR==='$'?100:500)?noteSVG(v):coinSVG(v);
