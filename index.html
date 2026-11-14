@@ -744,7 +744,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.80</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.81</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -2720,7 +2720,8 @@ function cmpGen(g){return(L,op,word)=>{const{A,B,vis}=cmpPair(g,L),{sym,h}=cmpHi
     return{kind:'choice',choices:ch,ans,answerText:ch.find(c=>c[0]===ans)[1],story,visual:vis,hint:h,explain:word2.explain}}
   return{kind:'choice',choices:[['<','&lt;'],['=','='],['>','&gt;']],big:true,cwheel:1,ans:sym,answerText:sym,visual:vis,mount:cwMount,
     onFail:()=>cwSet(['<','=','>'].indexOf(sym)+1,'ok'),
-    text:`<span class="bg">${A.h} ${cwHTML()} ${B.h}</span><span class="bg cwtip" style="display:block;font-size:.4em">${E('Pyöritä tai napauta merkkiä','Spin or tap the sign')}</span>`,hint:h+E(`<p>Valitse oikea merkki: &lt; pienempi kuin, = yhtä suuri kuin, &gt; suurempi kuin.</p>`,`<p>Choose the right sign: &lt; less than, = equal to, &gt; greater than.</p>`),explain:word2.explain}}}
+    ttsSay:E(`Valitse oikea merkki. Onko ${A.h} pienempi kuin, yhtä suuri kuin vai suurempi kuin ${B.h}?`,`Choose the right sign. Is ${A.h} less than, equal to or greater than ${B.h}?`),
+    text:`<span class="bg cwins" style="display:block;font-size:.5em;margin-bottom:.35em">${E('Valitse oikea merkki','Choose the right sign')}</span><span class="bg">${A.h} ${cwHTML()} ${B.h}</span><span class="bg cwtip" style="display:block;font-size:.4em">${E('Pyöritä tai napauta merkkiä','Spin or tap the sign')}</span>`,hint:h+E(`<p>Valitse oikea merkki: &lt; pienempi kuin, = yhtä suuri kuin, &gt; suurempi kuin.</p>`,`<p>Choose the right sign: &lt; less than, = equal to, &gt; greater than.</p>`),explain:word2.explain}}}
 const CWS=['?','<','=','>'];
 const cwHTML=()=>`<span class="cwheel" role="spinbutton" tabindex="0" aria-label="${E('Vertailumerkki','Comparison sign')}" aria-valuetext="?"><span class="cwlist">${CWS.map((c,i)=>`<span class="cwi${i?'':' q'}">${c==='<'?'&lt;':c==='>'?'&gt;':c}</span>`).join('')}</span></span>`;
 function cwSet(i,cls,smooth=true){const w=document.querySelector('.cwheel'),L=w&&w.querySelector('.cwlist');if(!L)return;const ih=L.querySelector('.cwi').offsetHeight;L.scrollTo({top:i*ih,behavior:smooth?'smooth':'auto'});w.dataset.i=i;w.setAttribute('aria-valuetext',CWS[i]);if(cls){w.classList.remove('ok','no');w.classList.add(cls)}}
@@ -4976,14 +4977,15 @@ function ttsVoice(){if(!TTS)return null;const L=EN?'en':'fi',vs=TTS.getVoices().
 const DENF={2:'kahdesosa',3:'kolmasosa',4:'neljäsosa',5:'viidesosa',6:'kuudesosa',7:'seitsemäsosa',8:'kahdeksasosa',9:'yhdeksäsosa',10:'kymmenesosa',12:'kahdestoistaosa',100:'sadasosa'};
 const DENE={2:'half',3:'third',4:'quarter',5:'fifth',6:'sixth',7:'seventh',8:'eighth',9:'ninth',10:'tenth',12:'twelfth',100:'hundredth'};
 const UNF={'cm²':'neliösenttimetriä','m²':'neliömetriä','km²':'neliökilometriä','mm²':'neliömillimetriä','cm³':'kuutiosenttimetriä','dm³':'kuutiodesimetriä','m³':'kuutiometriä',mm:'millimetriä',cm:'senttimetriä',dm:'desimetriä',km:'kilometriä',m:'metriä',kg:'kilogrammaa',g:'grammaa',dl:'desilitraa',cl:'senttilitraa',ml:'millilitraa',l:'litraa',kk:'kuukautta',v:'vuotta',h:'tuntia',min:'minuuttia',s:'sekuntia',snt:'senttiä','°C':'astetta'};
-function ttsText(Q){let h=[Q.story,Q.text].filter(Boolean).join('. ');
-  h=h.replace(/<span class="q"><span>(\d+)<\/span><span>(\d+)<\/span><\/span>/g,(m,n,d)=>{const k=+d,N=+n;if(EN){const w=DENE[k];return w?`${n} ${w}${N===1?'':(w==='half'?'':'s')}`.replace('1 half','one half'):`${n} over ${d}`}const w=DENF[k];return w?`${n} ${N===1?w:w+'a'}`:`${n} per ${d}`});
-  h=h.replace(/<span class="box">\?<\/span>/g,E(' mikä luku ',' what number ')).replace(/<br\s*\/?>|<\/(p|div|li|h\d)>/g,'. ').replace(/<[^>]*>/g,' ').replace(/&nbsp;|&#160;/g,' ').replace(/&amp;/g,'&');
+function ttsText(Q){let h=Q.ttsSay||[Q.story,Q.text].filter(Boolean).join('. ');
+  h=h.replace(/(\d)\s*(<span class="q">)/g,`$1 ${E('ja','and')} $2`);
+  h=h.replace(/<span class="q"><span>(\d+)<\/span><span>(\d+)<\/span><\/span>/g,(m,n,d)=>{if(!EN&&d==='2'&&n==='1')return 'puoli';const k=+d,N=+n;if(EN){const w=DENE[k];return w?`${n} ${w}${N===1?'':(w==='half'?'':'s')}`.replace('1 half','one half'):`${n} over ${d}`}const w=DENF[k];return w?`${n} ${N===1?w:w+'a'}`:`${n} per ${d}`});
+  h=h.replace(/<span class="box">\?<\/span>/g,E(' mikä luku ',' what number ')).replace(/<span[^>]*display:block[^>]*>/g,'. ').replace(/<br\s*\/?>|<\/(p|div|li|h\d)>/g,'. ').replace(/<[^>]*>/g,' ').replace(/&nbsp;|&#160;/g,' ').replace(/&amp;/g,'&');
   h=h.replace(/(\d)\s*[·×]\s*(\d)/g,`$1 ${E('kertaa','times')} $2`).replace(/(\d)\s*:\s*(\d)/g,`$1 ${E('jaettuna','divided by')} $2`).replace(/(\d)\s*[−–-]\s*(\d)/g,`$1 ${E('miinus','minus')} $2`).replace(/(\d)\s*\+\s*(\d)/g,`$1 ${E('plus','plus')} $2`).replace(/\s=\s/g,` ${E('on','equals')} `);
   h=h.replace(/(^|[\s(])[−-](\d)/g,`$1${E('miinus','minus')} $2`).replace(/(^|[\s(])\+(\d)/g,`$1${E('plus','plus')} $2`);
   if(!EN)h=h.replace(/(mikä luku|\d)\s?(cm²|m²|km²|mm²|cm³|dm³|m³|mm|cm|dm|km|kg|dl|cl|ml|min|snt|°C|kk|m|g|l|h|v|s)(?![A-Za-zÅÄÖåäö²³])/g,(m,a,u)=>`${a} ${UNF[u]}`).replace(/(\d)\s?€/g,'$1 euroa').replace(/(\d)\s?\$/g,'$1 dollaria').replace(/(\d)\s?£/g,'$1 puntaa');
-  return h.replace(/\s+/g,' ').replace(/\s+([.,?!])/g,'$1').replace(/\.\s*\./g,'.').trim()}
-function ttsWorth(Q){const t=[Q.story,Q.text].filter(Boolean).join(' ').replace(/<[^>]*>/g,' ');return (t.match(/[A-Za-zÅÄÖåäö]{3,}/g)||[]).length>=3}
+  return h.replace(/\s+/g,' ').replace(/\s+([.,?!])/g,'$1').replace(/([.?!])\s*\./g,'$1').replace(/^[.\s]+/,'').trim()}
+function ttsWorth(Q){if(Q.ttsSay)return true;const t=[Q.story,Q.text].filter(Boolean).join(' ').replace(/<span class="bg cwtip"[^>]*>[^<]*<\/span>/g,' ').replace(/<[^>]*>/g,' ');return (t.match(/[A-Za-zÅÄÖåäö]{3,}/g)||[]).length>=3}
 function ttsStop(){if(TTS&&(TTS.speaking||TTS.pending))TTS.cancel();document.querySelectorAll('.spk.on').forEach(b=>{b.classList.remove('on');b.setAttribute('aria-pressed','false')})}
 function ttsMount(){const old=document.querySelector('#sheet .spk');if(old)return;if(!TTS_ON||!TTS||!P||!ttsWorth(P)||!ttsVoice())return;
   const host=document.querySelector('#sheet > .story')||document.querySelector('#sheet > .expr');if(!host)return;host.classList.add('hasspk');
