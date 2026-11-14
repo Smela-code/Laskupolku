@@ -745,7 +745,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.92</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.93</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -4702,18 +4702,20 @@ for(const g of [5,6])GR[g].topics.push({id:'nopeus',fam:'mul',name:'Nopeus, matk
 
 /* ---------- kaupan kassa: kolikot, setelit ja vaihtorahat ---------- */
 const SNT=CUR==='£'?'p':CUR==='$'&&EN?'¢':E('snt','c');
-const COINR={1:12.5,2:14,5:15.5,10:14.8,20:16,25:16.6,50:17.5,100:16.8,200:18};
-const NOTEC={100:'#8FA88F',200:'#9AA69A',500:'#7E9486',1000:'#D8563A',2000:'#7FB0E0',5000:'#F2A65E',10000:'#3B8F57'},NOTET={2000:'#14304F',5000:'#4A2508'};
+const COINR=CUR==='$'?{1:12.5,5:14,10:11.8,20:16,25:16,50:19,100:16.8,200:18}:CUR==='£'?{1:13,2:16.5,5:11.5,10:15.6,20:13.7,50:17.4,100:15,200:18}:{1:12.5,2:14,5:15.5,10:14.8,20:16,25:16.6,50:17.5,100:16.8,200:18};
+const NOTEC=CUR==='$'?{100:'#B5C4A8',200:'#A9C2A0',500:'#BDB3CF',1000:'#E7CB8E',2000:'#B9CDA8',5000:'#E0B8C6',10000:'#AED3D5'}:CUR==='£'?{500:'#3E9A9A',1000:'#D9822B',2000:'#8159A6',5000:'#C0392B',10000:'#3B8F57'}:{100:'#8FA88F',200:'#9AA69A',500:'#7E9486',1000:'#D8563A',2000:'#7FB0E0',5000:'#F2A65E',10000:'#3B8F57'},NOTET=CUR==='$'?{100:'#1F3B24',200:'#1F3B24',500:'#1F3B24',1000:'#1F3B24',2000:'#1F3B24',5000:'#1F3B24',10000:'#1F3B24'}:CUR==='£'?{}:{2000:'#14304F',5000:'#4A2508'};
 function coinSVG(v){const r=COINR[v],w=Math.round(r*2*1.45),eur=v>=100;
-  const US=CUR==='$',cu=US?v===1:v<10,ag=US&&!cu&&v<100,col=cu?['#C9804F','#8A4B26']:ag?['#D3D8E0','#7F8A98']:['var(--coin)','var(--coin-edge)'];
+  const US=CUR==='$',GB=CUR==='£',cu=US?v===1:GB?v<5:v<10,ag=(US||GB)&&!cu&&v<100,col=cu?['#C9804F','#8A4B26']:ag?['#D3D8E0','#7F8A98']:['var(--coin)','var(--coin-edge)'];
+  const poly=(n,rr)=>Array.from({length:n},(_,i)=>{const a=-Math.PI/2+i*2*Math.PI/n;return (rr*Math.cos(a)).toFixed(2)+','+(rr*Math.sin(a)).toFixed(2)}).join(' '),shp=(rr,f,st,sw)=>GB&&(v===20||v===50)?`<polygon points="${poly(7,rr*1.03)}" fill="${f}" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round"/>`:GB&&v===100?`<polygon points="${poly(12,rr*1.01)}" fill="${f}" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round"/>`:`<circle r="${rr}" fill="${f}" stroke="${st}" stroke-width="${sw}"/>`;
   let body;
-  if(v===200)body=`<circle r="${r}" fill="#D3D8E0" stroke="#7F8A98" stroke-width="1.2"/><circle r="${r*.68}" fill="var(--coin)" stroke="var(--coin-edge)" stroke-width=".8"/>`;
-  else if(v===100)body=`<circle r="${r}" fill="var(--coin)" stroke="var(--coin-edge)" stroke-width="1.2"/><circle r="${r*.68}" fill="#D3D8E0" stroke="#7F8A98" stroke-width=".8"/>`;
-  else body=`<circle r="${r}" fill="${col[0]}" stroke="${col[1]}" stroke-width="1.2"/><circle r="${r*.84}" fill="none" stroke="${col[1]}" stroke-width=".6" opacity=".6"/>`;
-  const tc=v===100||ag?'#2A2F3A':cu?'#4A2510':'#5A3C06',num=eur?v/100:v;
+  const SIL=['#D3D8E0','#7F8A98'],GLD=['var(--coin)','var(--coin-edge)'],bi=(o,i)=>shp(r,o[0],o[1],1.2)+`<circle r="${r*.68}" fill="${i[0]}" stroke="${i[1]}" stroke-width=".8"/>`;
+  if(v===200)body=bi(GLD,SIL);
+  else if(v===100)body=GB?bi(GLD,SIL):bi(SIL,GLD);
+  else body=shp(r,col[0],col[1],1.2)+(GB&&(v===20||v===50)?'':`<circle r="${r*.84}" fill="none" stroke="${col[1]}" stroke-width=".6" opacity=".6"/>`);
+  const tc=(v===100&&!GB)||ag?'#2A2F3A':cu?'#4A2510':'#5A3C06',num=eur?v/100:v;
   return `<svg class="mcoin" width="${w}" height="${w}" viewBox="-20 -20 40 40" aria-hidden="true">${body}<text y="${eur?4.6:2.6}" text-anchor="middle" font-size="${eur?12:num>=10?10.5:12}" font-weight="800" fill="${tc}" font-family="Baloo 2, Trebuchet MS, sans-serif">${num}${eur?'€':CUR==='£'?'p':CUR==='$'&&EN?'¢':''}</text>${eur||CUR==='£'||(CUR==='$'&&EN)?'':`<text y="10.2" text-anchor="middle" font-size="5.6" font-weight="800" fill="${tc}" font-family="Nunito, sans-serif">${EN?'CENT':'SNT'}</text>`}</svg>`}
 function noteSVG(v){const c=NOTEC[v];
-  return `<svg class="mnote" width="78" height="42" viewBox="0 0 78 42" aria-hidden="true"><rect x="1" y="1" width="76" height="40" rx="4" fill="${c}"/><rect x="4.5" y="4.5" width="69" height="33" rx="2.5" fill="none" stroke="#fff" stroke-opacity=".45"/><path d="M50 37V20a9 9 0 0 1 18 0v17" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3"/><circle cx="16" cy="13" r="4" fill="#fff" opacity=".3"/>${NUMTXT(28,28,17,NOTET[v]||'#fff')}${v/100} €</text></svg>`}
+  return `<svg class="mnote" width="78" height="42" viewBox="0 0 78 42" aria-hidden="true"><rect x="1" y="1" width="76" height="40" rx="4" fill="${c}"/><rect x="4.5" y="4.5" width="69" height="33" rx="2.5" fill="none" stroke="#fff" stroke-opacity=".45"/>${CUR==='€'?'<path d="M50 37V20a9 9 0 0 1 18 0v17" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3"/>':`<ellipse cx="59" cy="21" rx="9" ry="12" fill="#fff" fill-opacity=".22" stroke="${CUR==='$'?'#1F3B24':'#fff'}" stroke-opacity=".35" stroke-width="2"/>`}<circle cx="16" cy="13" r="4" fill="#fff" opacity=".3"/>${NUMTXT(27,28,v>=10000?15:17,NOTET[v]||'#fff')}${v/100} €</text></svg>`}
 const moneySVG=v=>v>=(CUR==='$'?100:500)?noteSVG(v):coinSVG(v);
 const mtxt=c=>{const e=Math.floor(c/100),s=c%100;return s===0?`${fmtInt(e)} €`:e===0?`${s} ${SNT}`:`${fmtInt(e)},${pad2(s)} €`};
 const mlong=c=>{const e=Math.floor(c/100),s=c%100;return [e?`${fmtInt(e)} €`:'',s?`${s} ${SNT}`:''].filter(Boolean).join(' ')||'0 €'};
