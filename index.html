@@ -745,7 +745,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.93</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.94</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -4724,7 +4724,8 @@ const MSETS0={
   2:[[[2000,1000,500,200,100],5000,4,7],[[5000,2000,1000,500,200,100],10000,4,8],[[500,200,100,50,20,10],1000,4,8]],
   3:[[[200,100,50,20,10],1000,4,8],[[200,100,50,20,10,5],1000,5,9],[[2000,1000,500,200,100,50,20,10,5],5000,6,10]],
   4:[[[500,200,100,50,20,10,5],2000,5,9],[[5000,2000,1000,500,200,100,50,20,10,5],10000,6,10],[[10000,5000,2000,1000,500,200,100,50,20,10,5],20000,7,12]]};
-const MSETS=CUR==='$'?Object.fromEntries(Object.entries(MSETS0).map(([g,a])=>[g,a.map(([set,...r])=>[set.map(v=>v===20?25:v),...r])])):MSETS0;
+/* vain oikeasti olemassa olevat rahat: $ ei 20 sentin kolikkoa (vaan 25 c), £ ei 100 punnan seteliä */
+const MSETS=CUR==='$'?Object.fromEntries(Object.entries(MSETS0).map(([g,a])=>[g,a.map(([set,...r])=>[set.map(v=>v===20?25:v),...r])])):CUR==='£'?Object.fromEntries(Object.entries(MSETS0).map(([g,a])=>[g,a.map(([set,...r])=>[set.filter(v=>v!==10000),...r])])):MSETS0;
 const MITEMS=[{fi:['Karkkipussi','karkkipussin'],en:'bag of sweets',r:[80,500],svg:()=>UNITS.karkki.ten},{fi:['Mehupullo','mehupullon'],en:'bottle of juice',r:[50,300],svg:()=>UNITS.pullo.one},{fi:['Tarra-arkki','tarra-arkin'],en:'sheet of stickers',r:[100,600],svg:()=>UNITS.tarra.ten},
   {fi:['Kirja','kirjan'],en:'book',r:[500,3000],svg:()=>ICON.kirjat},
   {fi:['Jalkapallo','jalkapallon'],en:'football',r:[700,4000],svg:()=>'<svg viewBox="0 0 48 48"><defs><clipPath id="fbc"><circle cx="24" cy="24" r="19"/></clipPath></defs><circle cx="24" cy="24" r="19" fill="#fff"/><g clip-path="url(#fbc)" fill="var(--ink)"><polygon points="24.0,18.8 28.9,22.4 27.1,28.2 20.9,28.2 19.1,22.4"/><polygon points="24.0,12.5 19.2,9.0 21.1,3.5 26.9,3.5 28.8,9.0"/><polygon points="34.9,20.4 36.8,14.9 42.6,14.9 44.4,20.4 39.7,23.9"/><polygon points="30.8,33.3 36.6,33.3 38.5,38.9 33.7,42.3 28.9,38.9"/><polygon points="17.2,33.3 19.1,38.9 14.3,42.3 9.5,38.9 11.4,33.3"/><polygon points="13.1,20.4 8.3,23.9 3.6,20.4 5.4,14.9 11.2,14.9"/><path d="M24.0 18.8L24.0 12.5M28.9 22.4L34.9 20.4M27.1 28.2L30.8 33.3M20.9 28.2L17.2 33.3M19.1 22.4L13.1 20.4M28.8 9.0L36.8 14.9M39.7 23.9L36.6 33.3M28.9 38.9L19.1 38.9M11.4 33.3L8.3 23.9M11.2 14.9L19.2 9.0" stroke="var(--ink)" stroke-width="1.3" fill="none"/></g><circle cx="24" cy="24" r="19" fill="none" stroke="var(--ink)" stroke-width="2.5"/></svg>'},
@@ -4735,7 +4736,7 @@ const MCHG={
   1:[[100,1,9,[500,1000],1],[100,3,19,[1000,2000],1],[100,1,9,[2000],2]],
   2:[[100,2,19,[2000],1],[100,5,49,[2000,5000],1],[100,3,24,[5000],2]],
   3:[[10,5,99,[500,1000],1],[5,1,399,[1000,2000],1],[10,5,99,[2000],2]],
-  4:[[5,10,999,[2000,5000],1],[5,10,499,[5000],2],[5,10,659,[10000],3]]};
+  4:[[5,10,999,[2000,5000],1],[5,10,499,[5000],2],CUR==='£'?[5,10,329,[5000],3]:[5,10,659,[10000],3]]};
 const mboth=c=>c>=100&&c%100?`${mlong(c)} (${mtxt(c)})`:mlong(c);
 /* montako saa rahalla – jakojäännös */
 const MDIT=[['jäätelö','jäätelöä','jäätelön','ice cream','ice creams',2,5],['sämpylä','sämpylää','sämpylän','bread roll','bread rolls',1,3],['vihko','vihkoa','vihon','notebook','notebooks',2,5],['tarrapaketti','tarrapakettia','tarrapaketin','sticker pack','sticker packs',2,6],
