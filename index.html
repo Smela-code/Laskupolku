@@ -407,8 +407,8 @@ button.trow{cursor:pointer;touch-action:manipulation}button.trow:active{transfor
 .cwheel:focus-visible{outline:3px solid var(--sun);outline-offset:2px}.cwheel.ok{border-color:var(--good);background:var(--good-bg)}.cwheel.no{border-color:var(--bad);background:var(--bad-bg)}
 .cwheel::before,.cwheel::after{content:"";position:absolute;left:0;right:0;height:.6em;z-index:1;pointer-events:none;opacity:.35}.cwheel::before{top:0;background:linear-gradient(rgba(0,0,0,.18),transparent)}.cwheel::after{bottom:0;background:linear-gradient(transparent,rgba(0,0,0,.18))}
 .cwheel.ok::before{background:linear-gradient(var(--good-bg),transparent)}.cwheel.ok::after{background:linear-gradient(transparent,var(--good-bg))}.cwheel.no::before{background:linear-gradient(var(--bad-bg),transparent)}.cwheel.no::after{background:linear-gradient(transparent,var(--bad-bg))}
-.cwlist{display:block;height:100%;perspective:7em;overflow-y:scroll;scroll-snap-type:y mandatory;scrollbar-width:none;padding:.8em 0;box-sizing:border-box;overscroll-behavior:contain}.cwlist::-webkit-scrollbar{display:none}
-.cwi{display:block;height:1em;line-height:1em;text-align:center;scroll-snap-align:center;color:var(--ink);will-change:transform}.cwi.q{color:var(--blue)}
+.cwlist{display:block;height:100%;width:100%;perspective:7em;perspective-origin:50% 50%;overflow-x:hidden;overflow-y:scroll;touch-action:pan-y;overscroll-behavior-x:none;scroll-snap-type:y mandatory;scrollbar-width:none;padding:.8em 0;box-sizing:border-box;overscroll-behavior:contain}.cwlist::-webkit-scrollbar{display:none}
+.cwi{display:block;width:100%;height:1em;line-height:1em;text-align:center;scroll-snap-align:center;color:var(--ink);will-change:transform}.cwi.q{color:var(--blue)}
 .cwtip{color:var(--soft);font-weight:700;margin-top:.3em;background:none!important}
 .mdov{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:16px;background:color-mix(in srgb,var(--ink) 40%,transparent);animation:mdfade .25s ease-out}.mdov.out{opacity:0;transition:opacity .25s}
 .mdbox{background:var(--paper);border-radius:22px;padding:18px 22px 20px;display:flex;flex-direction:column;align-items:center;gap:4px;max-width:320px;width:100%;box-shadow:0 20px 50px -20px rgba(0,0,0,.6);text-align:center}
@@ -745,7 +745,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.83</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.84</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -2728,7 +2728,7 @@ function cwSet(i,cls,smooth=true){const w=document.querySelector('.cwheel'),L=w&
 function cwMount(){const w=document.querySelector('.cwheel'),L=w&&w.querySelector('.cwlist');if(!L)return;let t=null;const ih=()=>L.querySelector('.cwi').offsetHeight;
   const pickI=i=>{if(done)return;i=Math.max(0,Math.min(3,i));w.dataset.i=i;w.setAttribute('aria-valuetext',CWS[i]);P.sel=i?CWS[i]:null;w.classList.remove('ok','no');document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.choice===P.sel)));$('#fb').hidden=true};
   const tilt=()=>{const H=L.clientHeight,c=L.scrollTop+H/2;L.querySelectorAll('.cwi').forEach(it=>{const m=it.offsetTop+it.offsetHeight/2,d=(m-c)/it.offsetHeight,a=Math.max(-70,Math.min(70,d*48));it.style.transform=`rotateX(${-a}deg)`;it.style.opacity=String(Math.max(.2,Math.cos(a*Math.PI/180)))})};tilt();requestAnimationFrame(tilt);
-  L.addEventListener('scroll',()=>{requestAnimationFrame(tilt);clearTimeout(t);t=setTimeout(()=>{if(done){cwSet(+w.dataset.i||0);return}pickI(Math.round(L.scrollTop/ih()))},90)});
+  L.addEventListener('scroll',()=>{if(L.scrollLeft)L.scrollLeft=0;requestAnimationFrame(tilt);clearTimeout(t);t=setTimeout(()=>{if(done){cwSet(+w.dataset.i||0);return}pickI(Math.round(L.scrollTop/ih()))},90)});
   w.addEventListener('click',()=>{if(done)return;const i=(+w.dataset.i||0)%3+1;cwSet(i);pickI(i)});
   w.addEventListener('keydown',e=>{if(done)return;const c=+w.dataset.i||0;let i=null;if(e.key==='ArrowDown'||e.key==='ArrowRight')i=Math.min(3,c+1);else if(e.key==='ArrowUp'||e.key==='ArrowLeft')i=Math.max(1,c-1);else if(e.key==='<'||e.key==='='||e.key==='>')i=CWS.indexOf(e.key);if(i!=null){e.preventDefault();e.stopPropagation();cwSet(i);pickI(i)}})}
 
