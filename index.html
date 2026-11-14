@@ -745,7 +745,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.95</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v1.96</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -1015,17 +1015,19 @@ const W_IS=[
   {icon:'kirjat',t:(a,b)=>E(`Kirjastossa on ${a} kirjaa. Niistä ${b} on lainassa. Montako kirjaa on hyllyssä?`,`The library has ${a} books. ${b} of them are on loan. How many books are on the shelves?`)},
   {icon:'kone',min:500,imax:3000,unit:'km',t:(a,b)=>E(`Lentokone lentää ${a} km pituisen matkan. Se on lentänyt jo ${b} km. Montako kilometriä on vielä jäljellä?`,`A plane is flying a ${a} km journey. It has already flown ${b} km. How many kilometres are left?`)}];
 function wordInt(a,b,op){const[K,M]=two();const mx=Math.max(a,b);
-  const w=pick((op==='+'?W_IA:W_IS).filter(w=>mx<=(IMP&&w.imax?w.imax:(w.max||Infinity))&&mx>=(w.min||0)));
+  const LS=op==='+'?W_IA:W_IS;let cs=LS.filter(w=>mx<=(IMP&&w.imax?w.imax:(w.max||Infinity))&&mx>=(w.min||0));if(!cs.length)cs=LS.filter(w=>mx<=(w.max||Infinity)&&mx>=(w.min||0));const w=pick(cs);
   return{text:w.t(fmtInt(a),fmtInt(b),K,M),unit:w.unit||'',icon:ICON[w.icon]}}
 const W_DA=[
+  {ok:(A,B)=>IMP&&val(A)>=20,unit:'lb',icon:'sakki',t:(A,B)=>`A farm shop sold ${fdt(A)} lb of potatoes on Saturday and ${fdt(B)} lb on Sunday. How many pounds did it sell in total?`},
   {ok:(A,B)=>A.d===2&&B.d===2&&val(A)<50&&val(B)<50,unit:'€',icon:'kolikot',t:(A,B,K)=>{const[i1,i2]=shuffle(ITEMS);return E(`${K.n} ostaa ${i1} hintaan ${fd(A)} € ja ${i2} hintaan ${fd(B)} €. Paljonko hän maksaa yhteensä?`,`${K.n} buys ${i1} for ${fd(A)} € and ${i2} for ${fd(B)} €. How much does ${K.n} pay in total?`)}},
   {ok:(A,B)=>!IMP||val(A)<40&&val(B)<40,unit:'km',icon:'pyora',t:(A,B)=>E(`Pyöräretken ensimmäinen osuus oli ${fdt(A)} km ja toinen osuus ${fdt(B)} km. Kuinka pitkä retki oli yhteensä?`,`The first part of a bike ride was ${fdt(A)} km and the second part ${fdt(B)} km. How long was the ride in total?`)},
   {ok:(A,B)=>val(A)<20&&val(B)<20,unit:'kg',icon:'sakki',t:(A,B)=>E(`Leipomoon tuodaan ${fdt(A)} kg jauhoja ja ${fdt(B)} kg sokeria. Montako kiloa niitä on yhteensä?`,`A bakery gets ${fdt(A)} kg of flour and ${fdt(B)} kg of sugar. How many kilograms is that in total?`)}];
 const W_DS=[
+  {ok:(A,B)=>IMP&&val(A)>=20,unit:'gal',icon:'mitta',t:(A,B)=>`A water tank holds ${fdt(A)} gallons. ${fdt(B)} gallons are used. How many gallons are left?`},
   {ok:(A,B)=>(A.d===2||A.d===0)&&B.d===2&&val(A)<=100,unit:'€',icon:'kolikot',t:(A,B,K)=>{const it=pick(ITEMS);return E(`${K.ll} on ${fd(A)} €. Hän ostaa ${it} hintaan ${fd(B)} €. Paljonko rahaa jää?`,`${K.n} has ${fd(A)} €. ${K.n} buys ${it} for ${fd(B)} €. How much money is left?`)}},
   {ok:(A,B)=>!IMP||val(A)<60,unit:'m',icon:'naru',t:(A,B)=>E(`Narua on ${fdt(A)} m. Siitä leikataan pala, jonka pituus on ${fdt(B)} m. Paljonko narua jää?`,`There is ${fdt(A)} m of string. A piece ${fdt(B)} m long is cut off. How much string is left?`)},
-  {ok:(A,B)=>val(A)<7,unit:'m',icon:'mitta',t:(A,B,K,M)=>E(`${K.n} hyppäsi pituutta ${fdt(A)} m ja ${M.n} ${fdt(B)} m. Montako metriä pidemmälle ${K.n} hyppäsi?`,`In the long jump, ${K.n} jumped ${fdt(A)} m and ${M.n} jumped ${fdt(B)} m. How many metres further did ${K.n} jump?`)}];
-function wordDec(A,B,op){const[K,M]=two();const w=pick((op==='+'?W_DA:W_DS).filter(w=>w.ok(A,B)));return{text:w.t(A,B,K,M),unit:w.unit,icon:ICON[w.icon]}}
+  {ok:(A,B)=>val(A)<7&&(!IMP||val(B)>=3),unit:'m',icon:'mitta',t:(A,B,K,M)=>E(`${K.n} hyppäsi pituutta ${fdt(A)} m ja ${M.n} ${fdt(B)} m. Montako metriä pidemmälle ${K.n} hyppäsi?`,`In the long jump, ${K.n} jumped ${fdt(A)} m and ${M.n} jumped ${fdt(B)} m. How many metres further did ${K.n} jump?`)}];
+function wordDec(A,B,op){const[K,M]=two();const LS=op==='+'?W_DA:W_DS;let cs=LS.filter(w=>w.ok(A,B));if(!cs.length&&IMP){const s0=IMP;IMP=false;cs=LS.filter(w=>w.ok(A,B));IMP=s0}const w=pick(cs);return{text:w.t(A,B,K,M),unit:w.unit,icon:ICON[w.icon]}}
 
 /* ---------- tehtävien rakentajat ---------- */
 function intProblem({a,b,op,visual,text,story,hint,word,storyIcon}){
