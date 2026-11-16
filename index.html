@@ -771,7 +771,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.09</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.10</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -3817,7 +3817,7 @@ function xwEval(){const X=P.xw,ins=[...document.querySelectorAll('.xwg input.xwn
   ins.forEach(x=>{const good=+x.value.replace(/\s/g,'')===X.V[x.dataset.k];x.classList.toggle('ok',good);x.classList.toggle('no',!good);if(!good)ok=false});
   bs.forEach(b=>{const good=b.dataset.v===X.O[b.dataset.k];b.classList.toggle('ok',good);b.classList.toggle('no',!good);if(!good)ok=false});
   if(!ok)P.xwMsg=E('Osa ruuduista ei vielä täsmää – punaiset kannattaa tarkistaa. Muista, että jokaisen vaaka- ja pystylaskun pitää pitää paikkansa.',SVT('Some boxes do not match yet – check the red ones. Remember that every row and column must be true.',"Några rutor stämmer inte ännu – kontrollera de röda. Kom ihåg att varje rad och kolumn måste stämma."));
-  return ok}
+  return{ok}}
 /* summaruudukko: raahaa luvut ruutuihin niin, että jokaisen rivin ja sarakkeen summa täsmää */
 const SGC={1:[[1,9],[1,9],[1,16]],2:[[1,20],[1,20],[1,30]],3:[[1,30],[1,50],[1,30]],4:[[10,99],[10,99],[5,60]],5:[[10,200],[10,200],[10,99]],6:[[-10,20],[-20,30],[-20,20]]};
 /* puolitaikaneliö: kaksi ortogonaalista latinalaista neliötä -> jokaisen rivin ja sarakkeen summa on sama */
@@ -3868,7 +3868,7 @@ function sgMount(){const X=P.sg,w=document.querySelector('.sgw');if(!w)return;
 function sgEval(){const X=P.sg;if(X.blank.some(i=>X.place[i]===undefined))return{empty:1};let ok=true;
   document.querySelectorAll('.sgw .sgc[data-i]').forEach(b=>{const good=X.tiles[X.place[b.dataset.i]]===X.v[+b.dataset.i];b.classList.toggle('ok',good);b.classList.toggle('no',!good);if(!good)ok=false});
   if(!ok)P.sgMsg=E('Kaikki summat eivät vielä täsmää – punaisella merkityt luvut ovat väärissä ruuduissa.',SVT('Not all the sums match yet – the numbers marked in red are in the wrong boxes.',"Alla summor stämmer inte ännu – talen som är markerade med rött står i fel rutor."));
-  return ok}
+  return{ok}}
 /* eläinrivi: päättele eläinten järjestys vihjeistä */
 const OPA=[['koira','rus','koira','koiran','dog','hunden'],['kissa','mus','kissa','kissan','cat','katten'],['lammas','valk','lammas','lampaan','sheep','fåret'],['lehma','','lehmä','lehmän','cow','kon'],['hevonen','rus','hevonen','hevosen','horse','hästen'],['hiiri','','hiiri','hiiren','mouse','musen'],['kani','valk','kani','kanin','rabbit','kaninen'],['kettu','','kettu','ketun','fox','räven'],['possu','','possu','possun','pig','grisen'],['kana','valk','kana','kanan','hen','hönan'],['varis','','varis','variksen','crow','kråkan'],['pollo','','pöllö','pöllön','owl','ugglan'],['ankka','','ankka','ankan','duck','ankan'],['pingviini','','pingviini','pingviinin','penguin','pingvinen'],['sammakko','','sammakko','sammakon','frog','grodan'],['kilpikonna','','kilpikonna','kilpikonnan','turtle','sköldpaddan'],['perhonen','','perhonen','perhosen','butterfly','fjärilen']];
 const OPN={1:[3,3,4],2:[3,4,4],3:[3,4,5],4:[4,4,5],5:[4,5,5],6:[4,5,5]};
@@ -3934,7 +3934,7 @@ function opMount(){const X=P.op,w=document.querySelector('.opw');if(!w)return;
 function opEval(){const X=P.op;if([...Array(X.n).keys()].some(i=>X.place[i]===undefined))return{empty:1};let ok=true;
   document.querySelectorAll('.opw .opc[data-i]').forEach(b=>{const good=X.place[b.dataset.i]===X.sol[+b.dataset.i];b.classList.toggle('ok',good);b.classList.toggle('no',!good);if(!good)ok=false});
   if(!ok)P.opMsg=E('Kaikki vihjeet eivät vielä pidä paikkaansa – punaisella merkityt eläimet ovat väärillä paikoilla.',SVT('Not all the clues are true yet – the animals marked in red are in the wrong places.',"Alla ledtrådar stämmer inte ännu – djuren som är markerade med rött står på fel plats."));
-  return ok}
+  return{ok}}
 /* laskulabyrintti */
 const LABC={1:[{lo:2,hi:12,ops:[['+',1,4],['-',1,4]]},{lo:2,hi:15,ops:[['+',1,5],['-',1,5]]},{lo:4,hi:20,ops:[['+',2,6],['-',2,6]]}],
   2:[{lo:10,hi:40,ops:[['+',2,9],['-',2,9]]},{lo:10,hi:60,ops:[['+',3,15],['-',3,15]]},{lo:20,hi:80,ops:[['+',5,20],['-',5,20],['*',2,2],['/',2,2]]}],
