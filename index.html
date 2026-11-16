@@ -455,6 +455,15 @@ button.trow{cursor:pointer;touch-action:manipulation}button.trow:active{transfor
 .sgt{width:52px;height:48px;border-radius:10px;border:2px solid var(--blue);background:var(--blue);color:#fff;font:800 1.2rem var(--display);cursor:grab;touch-action:none;padding:0}
 .sgt.sel{outline:4px solid var(--sun,#f3c24f);outline-offset:2px}.sgt.drag{opacity:.35}
 .sgghost{position:fixed;z-index:1000;pointer-events:none;transform:translate(-50%,-50%) scale(1.1);box-shadow:0 6px 16px rgba(0,0,0,.25)}
+.opw{display:flex;flex-direction:column;align-items:center;gap:10px;margin:10px auto;max-width:360px}
+.opclues{align-self:stretch;margin:0;padding:10px 12px 10px 30px;background:color-mix(in srgb,var(--sun,#f3c24f) 18%,var(--paper));border:2px solid color-mix(in srgb,var(--sun,#f3c24f) 55%,var(--line));border-radius:12px;font-weight:600;line-height:1.45;text-align:left}
+.opdir{display:flex;justify-content:space-between;align-self:stretch;font-size:.8rem;color:var(--soft);font-weight:700;padding:0 4px}
+.oprow{display:flex;gap:6px;justify-content:center}.opc{width:62px;height:62px;box-sizing:border-box;border-radius:12px;border:3px dashed var(--blue);background:var(--paper);padding:3px;display:grid;place-items:center;cursor:pointer}
+.opc:not(.empty){border-style:solid}.opc.given{border:2px solid var(--line);cursor:default}.oprow.sol .opc{border-color:var(--good)}.opc svg,.opt svg{width:100%;height:100%;display:block}
+.opc.ok{border-color:var(--good)}.opc.no{border-color:var(--bad)}
+.optray{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;min-height:84px}
+.opt{width:66px;height:80px;box-sizing:border-box;border-radius:12px;border:2px solid var(--line);background:var(--paper);padding:3px 3px 2px;display:flex;flex-direction:column;align-items:center;cursor:grab;touch-action:none;color:var(--ink)}
+.opt svg{height:54px}.opt small{font-size:.68rem;font-weight:700;line-height:1.1}.opt.sel{outline:4px solid var(--sun,#f3c24f);outline-offset:2px}.opt.drag{opacity:.35}
 .xwnote{text-align:center;font-size:.85rem;color:var(--soft);margin:2px 0 0}
 .fmach{display:grid;gap:8px;justify-content:center;margin:4px auto}
 .fmhead,.fmrow{display:grid;grid-template-columns:3.4em 1.8em 3.6em 1.8em 3.4em;align-items:center;gap:4px}
@@ -762,7 +771,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.07</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.08</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -3852,6 +3861,72 @@ function sgEval(){const X=P.sg;if(X.blank.some(i=>X.place[i]===undefined))return
   document.querySelectorAll('.sgw .sgc[data-i]').forEach(b=>{const good=X.tiles[X.place[b.dataset.i]]===X.v[+b.dataset.i];b.classList.toggle('ok',good);b.classList.toggle('no',!good);if(!good)ok=false});
   if(!ok)P.sgMsg=E('Kaikki summat eivät vielä täsmää – punaisella merkityt luvut ovat väärissä ruuduissa.',SVT('Not all the sums match yet – the numbers marked in red are in the wrong boxes.',"Alla summor stämmer inte ännu – talen som är markerade med rött står i fel rutor."));
   return ok}
+/* eläinrivi: päättele eläinten järjestys vihjeistä */
+const OPA=[['koira','rus','koira','koiran','dog','hunden'],['kissa','mus','kissa','kissan','cat','katten'],['lammas','valk','lammas','lampaan','sheep','fåret'],['lehma','','lehmä','lehmän','cow','kon'],['hevonen','rus','hevonen','hevosen','horse','hästen'],['hiiri','','hiiri','hiiren','mouse','musen'],['kani','valk','kani','kanin','rabbit','kaninen'],['kettu','','kettu','ketun','fox','räven'],['possu','','possu','possun','pig','grisen'],['kana','valk','kana','kanan','hen','hönan'],['varis','','varis','variksen','crow','kråkan'],['pollo','','pöllö','pöllön','owl','ugglan'],['ankka','','ankka','ankan','duck','ankan'],['pingviini','','pingviini','pingviinin','penguin','pingvinen'],['sammakko','','sammakko','sammakon','frog','grodan'],['kilpikonna','','kilpikonna','kilpikonnan','turtle','sköldpaddan'],['perhonen','','perhonen','perhosen','butterfly','fjärilen']];
+const OPN={1:[3,3,4],2:[3,4,4],3:[3,4,5],4:[4,4,5],5:[4,5,5],6:[4,5,5]};
+const opSvg=a=>`<svg viewBox="0 0 48 48" aria-hidden="true">${ADR[a[0]](a[1])}</svg>`;
+const opCap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+function opClueTxt(c,A){const N=i=>opCap(E(A[i][2],SV?A[i][5]:'the '+A[i][4])),G=i=>E(A[i][3],SV?A[i][5]:'the '+A[i][4]),[x,y,z]=c.a;
+  const ORDF=['ensimmäisenä','toisena','kolmantena','neljäntenä','viidentenä'],ORDE=['first','second','third','fourth','fifth'];
+  switch(c.t){
+    case 'L':return E(`${N(x)} on vasemmassa reunassa.`,SVT(`${N(x)} is at the left end.`,`${N(x)} står längst till vänster.`));
+    case 'R':return E(`${N(x)} on oikeassa reunassa.`,SVT(`${N(x)} is at the right end.`,`${N(x)} står längst till höger.`));
+    case 'M':return E(`${N(x)} on keskellä.`,SVT(`${N(x)} is in the middle.`,`${N(x)} står i mitten.`));
+    case 'P':return E(`${N(x)} on ${ORDF[c.k]} vasemmalta.`,SVT(`${N(x)} is ${ORDE[c.k]} from the left.`,`${N(x)} står som nummer ${c.k+1} från vänster.`));
+    case 'NE':return E(`${N(x)} ei ole kummassakaan reunassa.`,SVT(`${N(x)} is not at either end.`,`${N(x)} står inte i någon av ändarna.`));
+    case 'IL':return E(`${N(x)} on heti ${G(y)} vasemmalla puolella.`,SVT(`${N(x)} is right next to ${G(y)}, on its left.`,`${N(x)} står direkt till vänster om ${G(y)}.`));
+    case 'LO':return E(`${N(x)} on jossain ${G(y)} vasemmalla puolella.`,SVT(`${N(x)} is somewhere to the left of ${G(y)}.`,`${N(x)} står någonstans till vänster om ${G(y)}.`));
+    case 'RO':return E(`${N(x)} on jossain ${G(y)} oikealla puolella.`,SVT(`${N(x)} is somewhere to the right of ${G(y)}.`,`${N(x)} står någonstans till höger om ${G(y)}.`));
+    case 'AD':return E(`${N(x)} on ${G(y)} vieressä.`,SVT(`${N(x)} is next to ${G(y)}.`,`${N(x)} står bredvid ${G(y)}.`));
+    case 'NA':return E(`${N(x)} ei ole ${G(y)} vieressä.`,SVT(`${N(x)} is not next to ${G(y)}.`,`${N(x)} står inte bredvid ${G(y)}.`));
+    case 'BT':return E(`${N(x)} on jossain ${G(y)} ja ${G(z)} välissä.`,SVT(`${N(x)} is somewhere between ${G(y)} and ${G(z)}.`,`${N(x)} står någonstans mellan ${G(y)} och ${G(z)}.`))}}
+function opTrue(c,p,n){const[x,y,z]=c.a,P=p;switch(c.t){case 'L':return P[x]===0;case 'R':return P[x]===n-1;case 'M':return P[x]===(n-1)/2;case 'P':return P[x]===c.k;case 'NE':return P[x]>0&&P[x]<n-1;
+  case 'IL':return P[x]===P[y]-1;case 'LO':return P[x]<P[y];case 'RO':return P[x]>P[y];case 'AD':return Math.abs(P[x]-P[y])===1;case 'NA':return Math.abs(P[x]-P[y])!==1;case 'BT':return P[x]>Math.min(P[y],P[z])&&P[x]<Math.max(P[y],P[z])}}
+function opPerms(n){const out=[],a=[...Array(n).keys()],rec=k=>{if(k===n){out.push(a.slice());return}for(let i=k;i<n;i++){[a[k],a[i]]=[a[i],a[k]];rec(k+1);[a[k],a[i]]=[a[i],a[k]]}};rec(0);return out}
+function opGen(g){return L=>{const n=OPN[g][L-1],perms=opPerms(n);
+  const types=L===1?['L','R','M','IL','AD','P','LO']:L===2?['L','R','M','IL','AD','LO','RO','NE']:['IL','AD','LO','RO','NE','NA','BT','L','R'];
+  for(let t=0;t<400;t++){const A=shuffle([...OPA]).slice(0,n),sol=shuffle([...Array(n).keys()]);/* sol[pos]=animal */const pos=[];sol.forEach((a,i)=>pos[a]=i);
+    const cand=[];const ids=[...Array(n).keys()];
+    for(const x of ids){for(const tt of ['L','R','M','NE'])cand.push({t:tt,a:[x]});if(g<=2||L===1)for(let k=0;k<n;k++)cand.push({t:'P',a:[x],k});
+      for(const y of ids)if(y!==x){for(const tt of ['IL','LO','RO','AD','NA'])cand.push({t:tt,a:[x,y]});for(const z of ids)if(z>y&&z!==x)cand.push({t:'BT',a:[x,y,z]})}}
+    let C=shuffle(cand.filter(c=>types.includes(c.t)&&(c.t!=='M'||n%2)&&opTrue(c,pos,n)));
+    if(L===3)C.sort((a,b)=>(['NA','BT','NE'].includes(b.t)?1:0)-(['NA','BT','NE'].includes(a.t)?1:0)+(Math.random()-.5)*.8);
+    const chosen=[];const left=()=>perms.filter(pm=>{const P=[];pm.forEach((a,i)=>P[a]=i);return chosen.every(c=>opTrue(c,P,n))}).length;
+    for(const c of C){if(chosen.some(d=>d.t===c.t&&d.a[0]===c.a[0]))continue;const before=left();chosen.push(c);if(left()===before)chosen.pop();if(left()===1)break}
+    if(left()!==1)continue;
+    for(const c of shuffle(chosen.slice())){const i=chosen.indexOf(c);chosen.splice(i,1);if(left()!==1)chosen.splice(i,0,c)}
+    if(chosen.length>(n<=3?3:n===4?5:6)||chosen.length<2)continue;
+    if(chosen.filter(c=>c.t==='P').length>1)continue;
+    if(L===3&&!chosen.some(c=>['NA','BT','NE'].includes(c.t)))continue;
+    const order=shuffle([...Array(n).keys()]),clues=chosen.map(c=>opClueTxt(c,A));
+    const row=mode=>`<div class="oprow${mode==='sol'?' sol':''}">${[...Array(n).keys()].map(i=>mode==='in'?`<button type="button" class="opc empty" data-i="${i}" aria-label="${E('Paikka',SVT('Place',"Plats"))} ${i+1}"></button>`:`<span class="opc given">${opSvg(A[sol[i]])}</span>`).join('')}</div>`;
+    return{kind:'op',op:{n,A,sol,place:{},sel:null},answerText:'',visual:null,
+      text:plbl(E('Vedä eläimet ruutuihin oikeaan järjestykseen vihjeiden avulla.',SVT('Drag the animals into the boxes in the right order using the clues.',"Dra djuren till rutorna i rätt ordning med hjälp av ledtrådarna.")),''),
+      after:`<div class="answer opw"><ul class="opclues">${clues.map(c=>`<li>${c}</li>`).join('')}</ul><div class="opdir"><span>← ${E('vasen',SVT('left',"vänster"))}</span><span>${E('oikea',SVT('right',"höger"))} →</span></div>${row('in')}<div class="optray">${order.map(j=>`<button type="button" class="opt" data-t="${j}" aria-label="${E(A[j][2],SV?A[j][5]:A[j][4])}">${opSvg(A[j])}<small>${E(A[j][2],SV?A[j][5]:A[j][4])}</small></button>`).join('')}</div><p class="xwnote">${E('Voit myös napauttaa eläintä ja sitten ruutua. Napauta täytettyä ruutua palauttaaksesi eläimen.',SVT('You can also tap an animal and then a box. Tap a filled box to take the animal back.',"Du kan också trycka på ett djur och sedan på en ruta. Tryck på en fylld ruta för att ta tillbaka djuret."))}</p></div>`,
+      ttsSay:E('Vedä eläimet oikeaan järjestykseen. ',SVT('Drag the animals into the right order. ','Dra djuren i rätt ordning. '))+clues.join(' '),
+      mount:()=>opMount(),
+      hint:E('<p>Aloita vihjeistä, jotka kertovat paikan suoraan, esimerkiksi reunassa tai keskellä. Laita sitten eläimet, jotka ovat heti jonkun vieressä. Tarkista lopuksi jokainen vihje vuorollaan.</p>',SVT('<p>Start with the clues that tell you a place directly, for example at an end or in the middle. Then place the animals that are right next to another one. Finally check each clue in turn.</p>',"<p>Börja med ledtrådarna som direkt säger en plats, till exempel i en ände eller i mitten. Placera sedan djuren som står direkt bredvid ett annat. Kontrollera till sist varje ledtråd i tur och ordning.</p>")),
+      failMsg:E('Oikea järjestys näkyy alla.',SVT('The correct order is shown below.',"Den rätta ordningen visas nedan.")),
+      explain:`<p>${E('Oikea järjestys vasemmalta oikealle:',SVT('The correct order from left to right:',"Rätt ordning från vänster till höger:"))}</p>${row('sol')}<p>${sol.map(a=>E(A[a][2],SV?A[a][5]:A[a][4])).join(' – ')}</p><ul class="opclues">${clues.map(c=>`<li>✓ ${c}</li>`).join('')}</ul>`}}
+  return opGen(g)(Math.max(1,L-1))}}
+function opRender(){const X=P.op;document.querySelectorAll('.opw .opc[data-i]').forEach(b=>{const j=X.place[b.dataset.i];b.classList.remove('ok','no');
+    if(j===undefined){b.innerHTML='';b.classList.add('empty')}else{b.innerHTML=opSvg(X.A[j]);b.classList.remove('empty')}});
+  const placed=new Set(Object.values(X.place));document.querySelectorAll('.opw .opt').forEach(t=>{t.hidden=placed.has(+t.dataset.t);t.classList.toggle('sel',X.sel===+t.dataset.t)})}
+function opPut(i,j){const X=P.op;for(const k in X.place)if(X.place[k]===j)delete X.place[k];X.place[i]=j;X.sel=null;opRender()}
+function opMount(){const X=P.op,w=document.querySelector('.opw');if(!w)return;
+  w.querySelectorAll('.opc[data-i]').forEach(b=>b.addEventListener('click',()=>{if(X.sel!==null)opPut(b.dataset.i,X.sel);else if(X.place[b.dataset.i]!==undefined){delete X.place[b.dataset.i];opRender()}}));
+  w.querySelectorAll('.opt').forEach(t=>{t.addEventListener('pointerdown',e=>{if(e.button)return;const j=+t.dataset.t,sx=e.clientX,sy=e.clientY;let gh=null;
+    const mv=ev=>{if(!gh&&Math.hypot(ev.clientX-sx,ev.clientY-sy)>6){gh=t.cloneNode(true);gh.classList.add('sgghost');document.body.appendChild(gh);t.classList.add('drag')}
+      if(gh){gh.style.left=ev.clientX+'px';gh.style.top=ev.clientY+'px';ev.preventDefault()}};
+    const up=ev=>{document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up);document.removeEventListener('pointercancel',up);t.classList.remove('drag');
+      if(gh){gh.remove();const el=document.elementFromPoint(ev.clientX,ev.clientY),c=el&&el.closest('.opw .opc[data-i]');if(c)opPut(c.dataset.i,j)}
+      else{X.sel=X.sel===j?null:j;opRender()}};
+    document.addEventListener('pointermove',mv,{passive:false});document.addEventListener('pointerup',up);document.addEventListener('pointercancel',up)})});
+  opRender()}
+function opEval(){const X=P.op;if([...Array(X.n).keys()].some(i=>X.place[i]===undefined))return{empty:1};let ok=true;
+  document.querySelectorAll('.opw .opc[data-i]').forEach(b=>{const good=X.place[b.dataset.i]===X.sol[+b.dataset.i];b.classList.toggle('ok',good);b.classList.toggle('no',!good);if(!good)ok=false});
+  if(!ok)P.opMsg=E('Kaikki vihjeet eivät vielä pidä paikkaansa – punaisella merkityt eläimet ovat väärillä paikoilla.',SVT('Not all the clues are true yet – the animals marked in red are in the wrong places.',"Alla ledtrådar stämmer inte ännu – djuren som är markerade med rött står på fel plats."));
+  return ok}
 /* laskulabyrintti */
 const LABC={1:[{lo:2,hi:12,ops:[['+',1,4],['-',1,4]]},{lo:2,hi:15,ops:[['+',1,5],['-',1,5]]},{lo:4,hi:20,ops:[['+',2,6],['-',2,6]]}],
   2:[{lo:10,hi:40,ops:[['+',2,9],['-',2,9]]},{lo:10,hi:60,ops:[['+',3,15],['-',3,15]]},{lo:20,hi:80,ops:[['+',5,20],['-',5,20],['*',2,2],['/',2,2]]}],
@@ -5309,6 +5384,7 @@ const NAV=[
       {id:'asu',n:'Asukokonaisuudet',f:g=>({oid:'asut',levels:g<=2?[['Kaksi vaatetta'],['Enemmän vaihtoehtoja'],['Kolme vaatetta']]:g<=4?[['Kaksi vaatetta'],['Kolme vaatetta'],['Montako tarvitaan?']]:[['Kolme vaatetta'],['Monta vaatetta'],['Montako tarvitaan?']],gen:L=>asuGen(g)(L)})}]}]},
   {id:'pulmat',n:'Pulmat ja päättely',subs:[
     {id:'kuv',n:'Kuvapulmat',types:[{id:'pm',n:'Plus- ja miinuspulmat',f:puz(false,1,4)},{id:'ker',n:'Kertopulmat',f:puz(true,2,4)},{id:'kaikki',n:'Kaikki laskut',f:puz(false,5)}]},
+    {id:'jarj',n:'Eläinrivi',types:[{id:'jarj',n:'Päättele järjestys',f:g=>({oid:'jarj',levels:[['Selvät vihjeet'],['Enemmän eläimiä'],['Kieltävät vihjeet']],gen:L=>opGen(g)(L)})}]},
     {id:'pää',n:'Päättelytehtävät',types:[{id:'ev',n:'Enemmän ja vähemmän',f:wpz(false,1)},{id:'ko',n:'Kertaa ja osuudet',f:wpz(true,2)}]},
     {id:'kj',n:'Kuviojonot',types:[{id:'kj',n:'Mikä kuva tulee seuraavaksi?',f:allG(src('c-kuviot','cmp'))}]},
     {id:'logi',n:'Logiikka',types:[
@@ -5327,7 +5403,7 @@ function navPick(g,tid,sid,yid){const tops=navTops(g),top=tops.find(t=>t.id===ti
   const subs=navSubs(g,top),sub=subs.find(s=>s.id===sid)||subs[0];
   const types=navTypes(g,sub),type=types.find(t=>t.id===yid)||types[0];
   return{top,sub,type,tops,subs,types,inst:type.f(g),key:`${g}|${type.pk||top.id+'|'+sub.id+'|'+type.id}`}}
-Object.assign(TR,{'Summaruudukko':SVT('Sum grid','Summarutnät'),'Raahaa luvut':SVT('Drag the numbers','Dra talen'),'Kolme puuttuu':SVT('Three missing','Tre fattas'),'Viisi puuttuu':SVT('Five missing','Fem fattas'),'Isompi ruudukko':SVT('Bigger grid','Större rutnät'),'Kuusi puuttuu':SVT('Six missing','Sex fattas'),'Laskuristikko':SVT('Maths crossword','Räknekorsord'),'Täytä ristikko':SVT('Fill in the crossword','Fyll i korsordet'),'Kaksi laskua':SVT('Two calculations','Två uträkningar'),'Koko ristikko':SVT('Whole crossword','Hela korsordet'),'Myös laskumerkit':SVT('Signs too','Också räknetecken')});
+Object.assign(TR,{'Eläinrivi':SVT('Animal line-up','Djurraden'),'Päättele järjestys':SVT('Work out the order','Lista ut ordningen'),'Selvät vihjeet':SVT('Clear clues','Tydliga ledtrådar'),'Enemmän eläimiä':SVT('More animals','Fler djur'),'Kieltävät vihjeet':SVT('Clues with not','Ledtrådar med inte'),'Summaruudukko':SVT('Sum grid','Summarutnät'),'Raahaa luvut':SVT('Drag the numbers','Dra talen'),'Kolme puuttuu':SVT('Three missing','Tre fattas'),'Viisi puuttuu':SVT('Five missing','Fem fattas'),'Isompi ruudukko':SVT('Bigger grid','Större rutnät'),'Kuusi puuttuu':SVT('Six missing','Sex fattas'),'Laskuristikko':SVT('Maths crossword','Räknekorsord'),'Täytä ristikko':SVT('Fill in the crossword','Fyll i korsordet'),'Kaksi laskua':SVT('Two calculations','Två uträkningar'),'Koko ristikko':SVT('Whole crossword','Hela korsordet'),'Myös laskumerkit':SVT('Signs too','Också räknetecken')});
 Object.assign(TR,{'Mitat ja yksiköt':SVT('Measures and units',"Mått och enheter"),'Laskut':SVT('Calculations',"Uträkningar"),'Luvut ja jonot':SVT('Numbers and sequences',"Tal och följder"),'Mittaaminen':SVT('Measuring',"Mätning"),'Geometria':SVT('Geometry',"Geometri"),'Tilastot ja todennäköisyys':SVT('Statistics and probability',"Statistik och sannolikhet"),'Pulmat ja päättely':SVT('Puzzles and logic',"Gåtor och logik"),
   'Yhteenlasku':'Addition','Vähennyslasku':SVT('Subtraction',"Subtraktion"),'Kertolasku':SVT('Multiplication',"Multiplikation"),'Jakolasku':'Division','Lämpötila':SVT('Temperature',"Temperatur"),'Raha':SVT('Money',"Pengar"),
   'Kuvilla':SVT('With pictures',"Med bilder"),'Sanalliset':SVT('Word problems',"Lästal"),'Jakaminen tasan':SVT('Sharing equally',"Dela lika"),'Jakokulma':SVT('Long division',"Division med uppställning"),'Yhteen- ja vähennyslasku':SVT('Addition and subtraction',"Addition och subtraktion"),'Kerto- ja jakolasku':SVT('Multiplication and division',"Multiplikation och division"),
@@ -5368,6 +5444,7 @@ const NICO={laskut:'<rect x="3.5" y="3.5" width="15" height="15" rx="3.5" fill="
   tilastot:'<path d="M7 33V20M15 33V10M23 33V16M31 33V24M4 33h32" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/>',
   pulmat:'<path d="M20 6a9 9 0 0 0-5 16.5V27h10v-4.5A9 9 0 0 0 20 6zM16 31h8M17 34h6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',
   yht:NTX('+',38),vah:NTX('−',38),ker:NTX('·',44),jak:NTX(':',35),lj:NTX('( )',26),des:NTX('0,5',18),mur:'<text x="20" y="11" text-anchor="middle" dominant-baseline="middle" style="font-size:18px;font-weight:800" fill="currentColor">1</text><path d="M10 20.5h20" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><text x="20" y="31" text-anchor="middle" dominant-baseline="middle" style="font-size:18px;font-weight:800" fill="currentColor">2</text>',pro:NTX('%',29),
+  jarj:'<rect x="3" y="14" width="10" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="15" y="14" width="10" height="12" rx="2" fill="currentColor"/><rect x="27" y="14" width="10" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M8 9q12-7 24 0M29 6.5 32 9l-3.2 1.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
   sumg:'<path d="M5 6h22v22H5zM12.3 6v22M19.6 6v22M5 13.3h22M5 20.6h22" fill="none" stroke="currentColor" stroke-width="2"/><path d="M30 9h6M30 17h6M30 25h6M8 33h3M15 33h3M22 33h3" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>',
   risti:'<rect x="5" y="5" width="30" height="30" rx="3" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15 5v30M25 5v30M5 15h30M5 25h30" stroke="currentColor" stroke-width="2"/><rect x="15" y="15" width="10" height="10" fill="currentColor"/><path d="M8 10h4M10 8v4M28 10h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
   pyr:'<rect x="15" y="5" width="10" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="9" y="16" width="10" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="21" y="16" width="10" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="3" y="27" width="10" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="15" y="27" width="10" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="27" y="27" width="10" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>',
@@ -5495,7 +5572,7 @@ function answerHTML(){
     </tbody></table></div>`}
   if(P.steps||P.inline||P.kind==='multi')return '';
   if(P.kind==='prog')return progUI();
-  if(P.kind==='nline'||P.kind==='venn'||P.kind==='fmach'||P.kind==='ftree'||P.kind==='xw'||P.kind==='sg'||P.kind==='maze'||P.kind==='race'||P.kind==='bounce'||P.kind==='drawchart'||P.kind==='tally'||P.kind==='cexnum')return '';
+  if(P.kind==='nline'||P.kind==='venn'||P.kind==='fmach'||P.kind==='ftree'||P.kind==='xw'||P.kind==='sg'||P.kind==='op'||P.kind==='maze'||P.kind==='race'||P.kind==='bounce'||P.kind==='drawchart'||P.kind==='tally'||P.kind==='cexnum')return '';
   if(P.kind==='turn')return holeUI();
   if(P.kind==='sym')return P.ncol>1?`<div class="sympal" role="group" aria-label="${E('Väri',SVT('Colour',"Färg"))}">${[...Array(P.ncol).keys()].map(i=>`<button type="button" data-symcol="${i}" aria-pressed="${i===P.cur}" aria-label="${SYN[i]}" style="background:${SYC[i]}"></button>`).join('')}</div>`:'';
   if(P.kind==='choice')return `<div class="choices${P.cwheel?' cwhide':''}${P.plcopts?' plcopts':''}${P.ljopts?' ljopts':''}${P.big?' big':''}${P.yn?' yn':''}${P.symopts?' symopts':''}${P.drawopts?' drawopts':''}${P.pics?' pics':''}${P.chartopts?' charts':''}${P.shopopts?' shopopts':''}${P.lopts?' lopts':''}${P.sentopts?' sentopts':''}${P.lpairs?' lpairs':''}" role="group" aria-label="${E('Vastausvaihtoehdot',SVT('Answer options',"Svarsalternativ"))}">${P.choices.map(([v,l])=>`<button type="button" class="choice" data-choice="${v}">${l}</button>`).join('')}</div>${P.chFoot?`<p class="chfoot">${P.chFoot}</p>`:''}`;
@@ -5564,6 +5641,7 @@ function evaluate(){
   if(P.kind==='ftree')return ftEval();
   if(P.kind==='xw')return xwEval();
   if(P.kind==='sg')return sgEval();
+  if(P.kind==='op')return opEval();
   if(P.kind==='maze')return labEval();
   if(P.kind==='race')return raceEval();
   if(P.kind==='bounce')return bnEval();
@@ -5648,7 +5726,7 @@ function check(){if(done)return;const r=evaluate(),pr=prog();if(r.wait)return;co
     logEv(lgK,lgL,lgT?1:0,pr.level>lgL,0);
     fb(msg,'good');const st=$('#playerBtn');st.classList.remove('pop');void st.offsetWidth;st.classList.add('pop');updHeader();finish()}
   else{tries++;P.vMsg='';if(P.onWrong){const v=parseFloat((($('#ans')||{}).value||'').replace(',','.').replace('−','-'));if(!isNaN(v))P.onWrong(v)}
-    if(tries===1){fb(P.kind==='turn'&&P.holeMsg?P.holeMsg:P.vMsg?P.vMsg:P.kind==='prog'&&P.progMsg?P.progMsg+' '+E('Korjaa ohjelmaa ja kokeile uudelleen.',SVT('Fix the program and try again.',"Rätta programmet och försök igen.")):P.kind==='sym'&&P.symMsg?P.symMsg:P.kind==='multi'&&P.multiMsg?P.multiMsg:P.kind==='venn'&&P.vennMsg?P.vennMsg:P.kind==='fmach'&&P.fmMsg?P.fmMsg:(P.kind==='drawchart'||P.kind==='tally')&&P.dcMsg?P.dcMsg:P.kind==='cexnum'&&P.cxMsg?P.cxMsg:P.kind==='ftree'&&P.ftMsg?P.ftMsg:P.kind==='xw'&&P.xwMsg?P.xwMsg:P.kind==='sg'&&P.sgMsg?P.sgMsg:P.kind==='race'&&P.raceMsg?P.raceMsg:P.kind==='bounce'&&P.bnMsg?P.bnMsg:E('Ei vielä ihan. Tarkista vastaus tai katso vihje.',SVT('Not quite yet. Check your answer or look at the hint.',"Inte riktigt ännu. Kontrollera ditt svar eller titta på ledtråden.")),'bad')}
+    if(tries===1){fb(P.kind==='turn'&&P.holeMsg?P.holeMsg:P.vMsg?P.vMsg:P.kind==='prog'&&P.progMsg?P.progMsg+' '+E('Korjaa ohjelmaa ja kokeile uudelleen.',SVT('Fix the program and try again.',"Rätta programmet och försök igen.")):P.kind==='sym'&&P.symMsg?P.symMsg:P.kind==='multi'&&P.multiMsg?P.multiMsg:P.kind==='venn'&&P.vennMsg?P.vennMsg:P.kind==='fmach'&&P.fmMsg?P.fmMsg:(P.kind==='drawchart'||P.kind==='tally')&&P.dcMsg?P.dcMsg:P.kind==='cexnum'&&P.cxMsg?P.cxMsg:P.kind==='ftree'&&P.ftMsg?P.ftMsg:P.kind==='xw'&&P.xwMsg?P.xwMsg:P.kind==='sg'&&P.sgMsg?P.sgMsg:P.kind==='op'&&P.opMsg?P.opMsg:P.kind==='race'&&P.raceMsg?P.raceMsg:P.kind==='bounce'&&P.bnMsg?P.bnMsg:E('Ei vielä ihan. Tarkista vastaus tai katso vihje.',SVT('Not quite yet. Check your answer or look at the hint.',"Inte riktigt ännu. Kontrollera ditt svar eller titta på ledtråden.")),'bad')}
     else{done=true;pr.streak=0;pr.fails++;if(P.kind==='sym')symReveal();if(P.onFail)P.onFail();let msg=P.failMsg||(P.answerText?E(`Oikea vastaus on ${P.answerText}.`,SVT(`The correct answer is ${P.answerText}.`,`Rätt svar är ${P.answerText}.`)):E('Oikea vaihtoehto on merkitty vihreällä.',SVT('The correct option is marked in green.',"Rätt alternativ är markerat med grönt.")));if(P.kind==='choice'){const cb=document.querySelector(`.choice[data-choice="${P.ans}"]`);if(cb)cb.classList.add('ok')}if(P.kind==='multi')P.ans.forEach(i=>{const t=document.querySelector(`.gtile[data-pick="${i}"]`);if(t&&!t.classList.contains('ok'))t.classList.add('miss')});
       if(pr.fails>=2&&pr.level>1){pr.level--;pr.fails=0;msg+=E(' Harjoitellaan välillä vähän helpompia.',SVT(" Let's practise some easier ones for a while."," Nu övar vi några lättare ett tag."))}
       logEv(lgK,lgL,2,0,pr.level<lgL);
@@ -5667,7 +5745,7 @@ let activeEl=null;
 const BACK='<svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M9 5h11v14H9l-6-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 9l5 6M17 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
 function keypad(){const KP=E('Numeronäppäimistö',SVT('Number keypad',"Siffertangentbord")),MS=E('Miinusmerkki',SVT('Minus sign',"Minustecken")),PY=E('Pyyhi',SVT('Delete',"Ta bort"));
   if(P.kind==='coord'){const ks=[1,2,3,4,5,6,7,8,9].map(n=>`<button type="button" class="key" data-key="${n}">${n}</button>`).join('');return `<div class="keypad" role="group" aria-label="${KP}">${ks}${P.neg?`<button type="button" class="key alt" data-key="neg" aria-label="${MS}">−</button>`:'<span></span>'}<button type="button" class="key" data-key="0">0</button><button type="button" class="key alt" data-key="back" aria-label="${PY}">${BACK}</button><button type="button" class="key alt wide" data-key="swap" aria-label="${E('Vaihda x ja y',SVT('Switch between x and y',"Växla mellan x och y"))}">x ↔ y</button></div>`}
-  if(P.kind==='choice'||P.kind==='multi'||P.kind==='race'||P.kind==='bounce'||P.kind==='sym'||P.kind==='prog'||P.kind==='nline'||P.kind==='turn'||P.kind==='venn'||P.kind==='sg'||P.kind==='drawchart')return '';
+  if(P.kind==='choice'||P.kind==='multi'||P.kind==='race'||P.kind==='bounce'||P.kind==='sym'||P.kind==='prog'||P.kind==='nline'||P.kind==='turn'||P.kind==='venn'||P.kind==='sg'||P.kind==='op'||P.kind==='drawchart')return '';
   if(P.neg&&P.kind==='dec')return `<div class="keypad" role="group" aria-label="${KP}">${[1,2,3,4,5,6,7,8,9].map(n=>`<button type="button" class="key" data-key="${n}">${n}</button>`).join('')}<button type="button" class="key alt" data-key="neg" aria-label="${MS}">−</button><button type="button" class="key" data-key="0">0</button><button type="button" class="key" data-key="," aria-label="${E('Pilkku',SVT('Comma',"Kommatecken"))}">,</button><button type="button" class="key alt wide" data-key="back" aria-label="${PY}">${BACK}</button></div>`;
   const last=P.neg?`<button type="button" class="key alt" data-key="neg" aria-label="${MS}">−</button>`:P.kind==='dec'?`<button type="button" class="key" data-key="," aria-label="${E('Pilkku',SVT('Comma',"Kommatecken"))}">,</button>`
     :P.kind==='frac'?`<button type="button" class="key alt" data-key="swap" aria-label="${E('Vaihda osoittajan ja nimittäjän välillä',SVT('Switch between numerator and denominator',"Växla mellan täljare och nämnare"))}">↕</button>`
