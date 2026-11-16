@@ -464,6 +464,8 @@ button.trow{cursor:pointer;touch-action:manipulation}button.trow:active{transfor
 .eqopts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}.eqopt{min-width:84px;padding:10px 14px;border-radius:12px;border:2px solid var(--blue);background:var(--paper);color:var(--ink);font:800 1.15rem var(--display);cursor:pointer}.eqopt.no{border-color:var(--bad);opacity:.5;text-decoration:line-through}
 .eqline{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;min-height:56px;min-width:260px;padding:6px 10px;border:3px dashed var(--blue);border-radius:12px;background:var(--paper)}.eqph{color:var(--soft);font-size:.9rem}
 .eqtray{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center;max-width:380px}.eqtg{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}.eqtile{min-width:44px;height:46px;padding:0 12px;border-radius:10px;border:2px solid var(--blue);background:var(--blue);color:#fff;font:800 1.15rem var(--display);cursor:pointer}.eqtile.in{background:var(--paper);color:var(--ink)}
+.eqslot{min-width:46px;height:50px;padding:0 10px;border-radius:10px;border:3px dashed var(--blue);background:var(--paper);color:var(--ink);font:800 1.15rem var(--display);cursor:pointer}.eqslot.full{border-style:solid;border-width:2px}.eqslot.full.op{border-radius:50%;width:50px;min-width:50px;padding:0;background:color-mix(in srgb,var(--sun,#F2A20C) 30%,var(--paper));border-color:color-mix(in srgb,var(--sun,#F2A20C) 70%,var(--ink))}
+.eqtile{touch-action:none}.eqtile.sel{outline:4px solid var(--sun,#F2A20C);outline-offset:2px}.eqtile.drag{opacity:.35}
 .eqtile.op{width:46px;min-width:46px;padding:0;border-radius:50%;background:var(--sun,#F2A20C);border-color:color-mix(in srgb,var(--sun,#F2A20C) 70%,var(--ink));color:var(--ink);font-size:1.4rem}.eqtile.op.in{background:color-mix(in srgb,var(--sun,#F2A20C) 30%,var(--paper))}
 .eqrow{display:flex;align-items:center;gap:6px;justify-content:center;flex-wrap:wrap;font:800 1.25rem var(--display)}.eqrow input.no{border-color:var(--bad)}
 .xwnote{text-align:center;font-size:.85rem;color:var(--soft);margin:2px 0 0}
@@ -773,7 +775,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.14</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.15</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -3929,7 +3931,7 @@ function eqwGen(g){return L=>{const ctxk=pick(L===1?['age','money','cards']:L===
     const lines={x:`x = ${C.xl(A)}`,r:rels.map((r,i)=>`${C.xl(ppl[i+1])} = ${eqX(r)}`),eq:`${['x',...rels.map(eqT)].join(' + ')} = ${fmtInt(S)}`,
       simp:`${eqLhs(N,c)} = ${fmtInt(S)}`,move:`${N}x = ${fmtInt(S-c)}`,div:`x = ${fmtInt(x)}`};
     const chk=`${vals.map(fmtInt).join(' + ')} = ${fmtInt(S)} ✓`;
-    return{kind:'eqw',eq:{st:0,stages,ppl,rels,opts,xopts,tiles,built:[],N,c,S,x,vals,C,lines,err:0},answerText:'',visual:null,
+    return{kind:'eqw',eq:{st:0,stages,ppl,rels,opts,xopts,tiles,built:[],slots:Array(2*rels.length+3).fill(null),sel:null,N,c,S,x,vals,C,lines,err:0},answerText:'',visual:null,
       story,text:'',
       after:`<div class="eqbook" id="eqwork"></div><div class="eqstep" id="eqstep"></div>`,
       mount:()=>eqwRender(),ttsSay:story,
@@ -3949,9 +3951,10 @@ function eqwRender(){const Q=P.eq,wk=$('#eqwork'),box=$('#eqstep');if(!wk||!box)
   const choice=(q,opts,kind)=>{box.innerHTML=`<p class="eqq">${q}</p><div class="eqopts">${opts.map((o,j)=>`<button type="button" class="eqopt${o.tried?' no':''}" data-eqc="${kind}:${j}"${o.tried?' disabled':''}>${o.s}</button>`).join('')}</div>`;if(kp)kp.hidden=true};
   if(st==='x')return choice(E('Mitä merkitään x:llä?',SVT('What do we call x?',"Vad kallar vi x?")),Q.xopts,'x');
   if(st[0]==='r'&&st.length===2){const i=+st[1];return choice(E(`${opCap(Q.C.xl(Q.ppl[i+1]))} on silloin`,SVT(`Then ${Q.C.xl(Q.ppl[i+1])} is`,`Då är ${Q.C.xl(Q.ppl[i+1])}`)),Q.opts[i],'r'+i)}
-  if(st==='eq'){const used=new Set(Q.built);box.innerHTML=`<p class="eqq">${E('Kokoa yhtälö palikoista: kaikki yhteensä on yhtä kuin summa.',SVT('Build the equation from the blocks: everyone together equals the total.',"Bygg ekvationen av klossarna: alla tillsammans är lika med summan."))}</p>
-    <div class="eqline" id="eqline">${Q.built.length?Q.built.map(i=>`<button type="button" class="eqtile in${Q.tiles[i].op?' op':''}" data-eqb="${i}">${Q.tiles[i].s}</button>`).join(''):`<span class="eqph">${E('Napauta palikoita',SVT('Tap the blocks',"Tryck på klossarna"))}</span>`}</div>
-    <div class="eqtray"><div class="eqtg">${Q.tiles.filter(t=>!t.op).map(t=>`<button type="button" class="eqtile" data-eqt="${t.i}"${used.has(t.i)?' hidden':''}>${t.s}</button>`).join('')}</div><div class="eqtg">${Q.tiles.filter(t=>t.op).map(t=>`<button type="button" class="eqtile op" data-eqt="${t.i}"${used.has(t.i)?' hidden':''}>${t.s}</button>`).join('')}</div></div>`;if(kp)kp.hidden=true;return}
+  if(st==='eq'){const used=new Set(Q.slots.filter(v=>v!==null)),tl=t=>`<button type="button" class="eqtile${t.op?' op':''}${Q.sel===t.i?' sel':''}" data-eqt="${t.i}"${used.has(t.i)?' hidden':''}>${t.s}</button>`;
+    box.innerHTML=`<p class="eqq">${E('Muodosta yhtälö osista: raahaa osat oikeisiin kohtiin. Kaikki yhteensä on yhtä kuin summa.',SVT('Form the equation from the parts: drag the parts into the right places. Everyone together equals the total.',"Bilda ekvationen av delarna: dra delarna till rätt platser. Alla tillsammans är lika med summan."))}</p>
+    <div class="eqline">${Q.slots.map((v,k)=>v===null?`<button type="button" class="eqslot" data-eqs="${k}" aria-label="${E('Tyhjä paikka',SVT('Empty place',"Tom plats"))}"></button>`:`<button type="button" class="eqslot full${Q.tiles[v].op?' op':''}" data-eqs="${k}">${Q.tiles[v].s}</button>`).join('')}</div>
+    <div class="eqtray"><div class="eqtg">${Q.tiles.filter(t=>!t.op).map(tl).join('')}</div><div class="eqtg">${Q.tiles.filter(t=>t.op).map(tl).join('')}</div></div><p class="xwnote">${E('Voit myös napauttaa osaa ja sitten paikkaa. Napauta täytettyä paikkaa palauttaaksesi osan.',SVT('You can also tap a part and then a place. Tap a filled place to take the part back.',"Du kan också trycka på en del och sedan på en plats. Tryck på en fylld plats för att ta tillbaka delen."))}</p>`;if(kp)kp.hidden=true;return}
   const inp=(id,w)=>`<input class="num nb" id="${id}" inputmode="none" autocomplete="off" style="width:${w}ch" aria-label="${E('Vastaus',SVT('Answer',"Svar"))}">`;
   let q='',row='';
   if(st==='simp'){q=E('Sievennä: laske x:t yhteen ja luvut yhteen.',SVT('Simplify: add up the x terms and add up the numbers.',"Förenkla: addera x-termerna och addera talen."));row=`${inp('eqa',3)}<span>x</span>${Q.c?`<span>${Q.c>0?'+':'−'}</span>${inp('eqb',String(Math.abs(Q.c)).length+1.6)}`:''}<span>= ${fmtInt(Q.S)}</span>`}
@@ -3965,10 +3968,16 @@ document.addEventListener('click',e=>{if(!P||P.kind!=='eqw'||done)return;const Q
   const c=e.target.closest&&e.target.closest('.eqopt');if(c){const[k,j]=c.dataset.eqc.split(':'),list=k==='x'?Q.xopts:Q.opts[+k.slice(1)],o=list[+j];
     if(!o.ok){o.tried=1;Q.err++;eqwRender();fb(k==='x'?E('Merkitse x:llä se, mitä tehtävässä kysytään.',SVT('Call x the thing the question asks about.',"Kalla det som frågan gäller för x.")):E('Lue vihje uudelleen: onko hänellä enemmän vai vähemmän, vai monta kertaa niin paljon?',SVT('Read the clue again: does this person have more, less or several times as much?',"Läs ledtråden igen: har personen mer, mindre eller flera gånger så mycket?")),'bad');return}
     eqwNext(E('Oikein!',SVT('Correct!',"Rätt!")));return}
-  const t=e.target.closest&&e.target.closest('.eqtile');if(t){if(t.dataset.eqt!==undefined)Q.built.push(+t.dataset.eqt);else{const i=Q.built.indexOf(+t.dataset.eqb);if(i>=0)Q.built.splice(i,1)}$('#fb').hidden=true;eqwRender()}});
+  const sl=e.target.closest&&e.target.closest('.eqslot');if(sl){const k=+sl.dataset.eqs;if(Q.sel!==null)eqPut(k,Q.sel);else if(Q.slots[k]!==null){Q.slots[k]=null;eqwRender()}$('#fb').hidden=true}});
+function eqPut(k,i){const Q=P.eq;Q.slots=Q.slots.map(v=>v===i?null:v);Q.slots[k]=i;Q.sel=null;eqwRender()}
+document.addEventListener('pointerdown',e=>{const t=e.target.closest&&e.target.closest('.eqtile[data-eqt]');if(!t||!P||P.kind!=='eqw'||done||e.button)return;const Q=P.eq,i=+t.dataset.eqt,sx=e.clientX,sy=e.clientY;let gh=null;
+  const mv=ev=>{if(!gh&&Math.hypot(ev.clientX-sx,ev.clientY-sy)>6){gh=t.cloneNode(true);gh.classList.add('sgghost');document.body.appendChild(gh);t.classList.add('drag')}if(gh){gh.style.left=ev.clientX+'px';gh.style.top=ev.clientY+'px';ev.preventDefault()}};
+  const up=ev=>{document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up);document.removeEventListener('pointercancel',up);t.classList.remove('drag');$('#fb').hidden=true;
+    if(gh){gh.remove();const el=document.elementFromPoint(ev.clientX,ev.clientY),c=el&&el.closest('.eqslot');if(c)eqPut(+c.dataset.eqs,i)}else{Q.sel=Q.sel===i?null:i;eqwRender()}};
+  document.addEventListener('pointermove',mv,{passive:false});document.addEventListener('pointerup',up);document.addEventListener('pointercancel',up)});
 function eqwEval(){const Q=P.eq,st=Q.stages[Q.st];
   if(st==='x'||st[0]==='r'&&st.length===2)return{bad:E('Valitse ensin vaihtoehto.',SVT('Choose an option first.',"Välj först ett alternativ."))};
-  if(st==='eq'){const b=Q.built.map(i=>Q.tiles[i]);if(!b.length)return{empty:1};const eqI=b.findIndex(t=>t.id==='=');
+  if(st==='eq'){if(Q.slots.some(v=>v===null))return{bad:E('Täytä ensin kaikki paikat.',SVT('Fill all the places first.',"Fyll först alla platser."))};const b=Q.slots.map(i=>Q.tiles[i]);const eqI=b.findIndex(t=>t.id==='=');
     let ok=eqI>0&&b.filter(t=>t.id==='=').length===1;if(ok){const L=b.slice(0,eqI),R=b.slice(eqI+1),side=R.length===1&&R[0].id==='S'?L:L.length===1&&L[0].id==='S'?R:null;
       ok=!!side&&side.length===2*Q.rels.length+1&&side.every((t,j)=>j%2?t.s==='+':/^p/.test(t.id))&&new Set(side.filter((t,j)=>!(j%2)).map(t=>t.id)).size===Q.rels.length+1}
     if(!ok){Q.err++;return{bad:E('Yhtälö ei vielä täsmää. Laske yhteen kaikkien henkilöiden lausekkeet ja merkitse niiden olevan yhtä kuin annettu summa.',SVT('The equation is not right yet. Add up the expressions for every person and set them equal to the given total.',"Ekvationen stämmer inte ännu. Addera allas uttryck och sätt dem lika med den givna summan."))}}
