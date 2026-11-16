@@ -771,7 +771,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.08</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.09</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -3819,9 +3819,17 @@ function xwEval(){const X=P.xw,ins=[...document.querySelectorAll('.xwg input.xwn
   if(!ok)P.xwMsg=E('Osa ruuduista ei vielä täsmää – punaiset kannattaa tarkistaa. Muista, että jokaisen vaaka- ja pystylaskun pitää pitää paikkansa.',SVT('Some boxes do not match yet – check the red ones. Remember that every row and column must be true.',"Några rutor stämmer inte ännu – kontrollera de röda. Kom ihåg att varje rad och kolumn måste stämma."));
   return ok}
 /* summaruudukko: raahaa luvut ruutuihin niin, että jokaisen rivin ja sarakkeen summa täsmää */
-const SGC={1:[[1,9],[1,9],[1,9]],2:[[1,20],[1,20],[1,30]],3:[[1,30],[1,50],[1,30]],4:[[10,99],[10,99],[5,60]],5:[[10,200],[10,200],[10,99]],6:[[-10,20],[-20,30],[-20,20]]};
-function sgGen(g){return L=>{const n=L===3&&g>=3?4:3,[lo,hi]=SGC[g][L-1],nb=L===1?3:L===2?5:n===4?7:6,N=n*n;
-  for(let t=0;t<800;t++){const pool=shuffle([...Array(hi-lo+1).keys()].map(x=>x+lo));if(pool.length<N)break;const v=pool.slice(0,N);
+const SGC={1:[[1,9],[1,9],[1,16]],2:[[1,20],[1,20],[1,30]],3:[[1,30],[1,50],[1,30]],4:[[10,99],[10,99],[5,60]],5:[[10,200],[10,200],[10,99]],6:[[-10,20],[-20,30],[-20,20]]};
+/* puolitaikaneliö: kaksi ortogonaalista latinalaista neliötä -> jokaisen rivin ja sarakkeen summa on sama */
+function sgMagic(n,lo,hi){const m2=[0,2,3,1];
+  const L1=(r,c)=>n===3?(r+c)%3:r^c,L2=(r,c)=>n===3?(r+2*c)%3:r^m2[c];
+  const span=hi-lo;let d=R(n,Math.max(n,Math.floor(span/n)));if(d*(n-1)+(d-1)>span)d=Math.max(n,Math.floor(span/n));if(d*(n-1)+n-1>span)return null;
+  const q=shuffle([...Array(d).keys()]).slice(0,n),maxQ=Math.max(...q),ks=[...Array(Math.floor((span-maxQ)/d)+1).keys()];if(ks.length<n)return null;
+  const pp=shuffle(ks).slice(0,n).map(k=>k*d),rp=shuffle([...Array(n).keys()]),cp=shuffle([...Array(n).keys()]);
+  const v=[];for(let r=0;r<n;r++)for(let c=0;c<n;c++)v.push(lo+pp[L1(rp[r],cp[c])]+q[L2(rp[r],cp[c])]);
+  return new Set(v).size===n*n?v:null}
+function sgGen(g){return L=>{const n=L===3?4:3,[lo,hi]=SGC[g][L-1],nb=L===1?3:L===2?5:n===4?7:6,N=n*n;
+  for(let t=0;t<800;t++){const v=sgMagic(n,lo,hi);if(!v)continue;
     const rs=[...Array(n).keys()].map(r=>v.slice(r*n,r*n+n).reduce((a,b)=>a+b,0)),cs=[...Array(n).keys()].map(c=>v.filter((x,i)=>i%n===c).reduce((a,b)=>a+b,0));
     const blank=shuffle([...Array(N).keys()]).slice(0,nb).sort((a,b)=>a-b);
     if(L>=2&&![...Array(n).keys()].some(r=>blank.filter(i=>Math.floor(i/n)===r).length>=2))continue;
@@ -3836,7 +3844,7 @@ function sgGen(g){return L=>{const n=L===3&&g>=3?4:3,[lo,hi]=SGC[g][L-1],nb=L===
       return `<div class="sgg" style="grid-template-columns:repeat(${n+1},var(--sgw))">${h}</div>`};
     const line=(a,s)=>`${a.map((x,j)=>j&&x<0?`(${fmtInt(x)})`:fmtInt(x)).join(' + ')} = ${fmtInt(s)}`;
     return{kind:'sg',sg:{n,v,blank,tiles,place:{},sel:null},answerText:'',visual:null,
-      text:plbl(E('Raahaa luvut ruutuihin. Jokaisen vaakarivin summan pitää olla rivin oikealla puolella oleva luku ja jokaisen pystyrivin summan sen alla oleva luku.',SVT('Drag the numbers into the boxes. Each row must add up to the number on its right and each column to the number below it.',"Dra talen till rutorna. Summan av varje rad ska vara talet till höger om raden och summan av varje kolumn talet under den.")),''),
+      text:plbl(E(`Raahaa luvut ruutuihin niin, että jokaisen vaakarivin ja jokaisen pystyrivin summa on ${fmtInt(rs[0])}.`,SVT(`Drag the numbers into the boxes so that every row and every column adds up to ${fmtInt(rs[0])}.`,`Dra talen till rutorna så att summan av varje rad och varje kolumn blir ${fmtInt(rs[0])}.`)),''),
       after:`<div class="answer sgw${n===4?' n4':''}" role="group" aria-label="${E('Summaruudukko',SVT('Sum grid',"Summarutnät"))}">${grid('in')}<div class="sgtray">${order.map(j=>`<button type="button" class="sgt" data-t="${j}">${fmtInt(tiles[j])}</button>`).join('')}</div><p class="xwnote">${E('Voit myös napauttaa lukua ja sitten ruutua. Napauta täytettyä ruutua palauttaaksesi luvun.',SVT('You can also tap a number and then a box. Tap a filled box to take the number back.',"Du kan också trycka på ett tal och sedan på en ruta. Tryck på en fylld ruta för att ta tillbaka talet."))}</p></div>`,
       mount:()=>sgMount(),
       hint:E('<p>Etsi rivi tai sarake, josta puuttuu vain yksi luku: puuttuva luku on summa miinus valmiit luvut. Sama ruutu kuuluu sekä vaaka- että pystyriviin, joten yksi ratkaistu luku auttaa kahteen suuntaan.</p>',SVT('<p>Look for a row or column with only one number missing: the missing number is the sum minus the numbers already there. Each box belongs to both a row and a column, so one solved number helps in two directions.</p>',"<p>Leta efter en rad eller kolumn där bara ett tal fattas: talet som fattas är summan minus de tal som redan finns. Varje ruta hör till både en rad och en kolumn, så ett löst tal hjälper i två riktningar.</p>")),
@@ -5312,7 +5320,7 @@ const NAV=[
       convT('pro')]},
     {id:'pyr',n:'Lukupyramidit',types:[{id:'plus',n:'Pluspyramidi',f:g=>({oid:'pluspyr',levels:[['Pienet luvut'],['Neljä kerrosta'],['Isommat luvut']],gen:L=>ftreeGen(g,'+')(L)})},{id:'tekij',n:'Tekijäpyramidi',f:g=>g>=3?{oid:'tekij',levels:[['Pienet tekijät'],['Neljä kerrosta'],['Isommat tekijät']],gen:L=>ftreeGen(g)(L)}:null}]},
     {id:'risti',n:'Laskuristikko',types:[{id:'risti',n:'Täytä ristikko',f:g=>({oid:'risti',levels:[['Kaksi laskua'],['Koko ristikko'],['Myös laskumerkit']],gen:L=>xwGen(g)(L)})}]},
-    {id:'sumg',n:'Summaruudukko',types:[{id:'sumg',n:'Raahaa luvut',f:g=>({oid:'sumg',levels:[['Kolme puuttuu'],['Viisi puuttuu'],[g>=3?'Isompi ruudukko':'Kuusi puuttuu']],gen:L=>sgGen(g)(L)})}]},
+    {id:'sumg',n:'Summaruudukko',types:[{id:'sumg',n:'Raahaa luvut',f:g=>({oid:'sumg',levels:[['Kolme puuttuu'],['Viisi puuttuu'],['Isompi ruudukko']],gen:L=>sgGen(g)(L)})}]},
     {id:'lab',n:'Laskuralli',types:[{id:'lab',n:'Aja ja laske',f:g=>({oid:'labyr',levels:[[E('Kaksi kaistaa',SVT('Two lanes',"Två filer"))],[E('Kolme kaistaa',SVT('Three lanes',"Tre filer"))],[g===6?E('Neljä kaistaa, negatiiviset',SVT('Four lanes, negatives',"Fyra filer, negativa tal")):g<=2?E('Pitkä matka',SVT('Long drive',"Lång körning")):E('Neljä kaistaa',SVT('Four lanes',"Fyra filer"))]],gen:L=>raceGen(g)(L)})}]},
     {id:'yhtl',n:'Yhtälöt',types:[
       {id:'vaaka',n:'Vaakayhtälöt',f:g=>({oid:'vaaka',levels:{1:[['Yksi laatikko'],['Monta punnusta'],['Kaksi laatikkoa']],2:[['Yksi laatikko'],['Monta laatikkoa'],['Laatikot ja punnus']],3:[['Yksi laatikko'],['Monta laatikkoa'],['Laatikot ja punnus']],4:[['Monta laatikkoa'],['Laatikot ja punnus'],['Laatikoita molemmilla puolilla']],5:[['Laatikot ja punnus'],['Laatikoita molemmilla puolilla'],['Isommat luvut']],6:[['Laatikot ja punnus'],['Laatikoita molemmilla puolilla'],['Isommat luvut']]}[g],gen:L=>vaakaGen(g)(L)})}]},
