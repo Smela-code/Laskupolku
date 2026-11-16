@@ -448,6 +448,7 @@ button.trow{cursor:pointer;touch-action:manipulation}button.trow:active{transfor
 .sgtray{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;min-height:52px;max-width:340px}
 .sgt{width:52px;height:48px;border-radius:10px;border:2px solid var(--blue);background:var(--blue);color:#fff;font:800 1.2rem var(--display);cursor:grab;touch-action:none;padding:0}
 .sgt.sel{outline:4px solid var(--sun,#f3c24f);outline-offset:2px}.sgt.drag{opacity:.35}
+.opc:not(.empty),.sgc.filled{touch-action:none;cursor:grab}.opc.drag,.sgc.drag{opacity:.35}
 .sgghost{position:fixed;z-index:1000;pointer-events:none;transform:translate(-50%,-50%) scale(1.1);box-shadow:0 6px 16px rgba(0,0,0,.25)}
 .opw{display:flex;flex-direction:column;align-items:center;gap:10px;margin:10px auto;max-width:360px}
 .opclues{align-self:stretch;margin:0;padding:10px 12px 10px 30px;background:color-mix(in srgb,var(--sun,#f3c24f) 18%,var(--paper));border:2px solid color-mix(in srgb,var(--sun,#f3c24f) 55%,var(--line));border-radius:12px;font-weight:600;line-height:1.45;text-align:left}
@@ -774,7 +775,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.18</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.19</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -3800,12 +3801,19 @@ function sgGen(g){return L=>{const n=L===3?4:3,[lo,hi]=SGC[g][L-1],nb=L===1?3:L=
       failMsg:E('Oikea ratkaisu näkyy alla.',SVT('The correct solution is shown below.',"Den rätta lösningen visas nedan.")),
       explain:grid('sol')+`<p>${E('Vaakarivit',SVT('Rows',"Rader"))}:</p><ul>${rs.map((s,r)=>`<li>${line(v.slice(r*n,r*n+n),s)}</li>`).join('')}</ul><p>${E('Pystyrivit',SVT('Columns',"Kolumner"))}:</p><ul>${cs.map((s,c)=>`<li>${line(v.filter((x,i)=>i%n===c),s)}</li>`).join('')}</ul>`}}
   return sgGen(g)(Math.max(1,L-1))}}
+function slotDrag(b,X,sel,render){b.addEventListener('pointerdown',e=>{if(e.button||X.place[b.dataset.i]===undefined)return;const sx=e.clientX,sy=e.clientY;let gh=null;
+  const mv=ev=>{if(!gh&&Math.hypot(ev.clientX-sx,ev.clientY-sy)>6){gh=b.cloneNode(true);gh.classList.add('sgghost');gh.style.width=b.offsetWidth+'px';gh.style.height=b.offsetHeight+'px';document.body.appendChild(gh);b.classList.add('drag')}if(gh){gh.style.left=ev.clientX+'px';gh.style.top=ev.clientY+'px';ev.preventDefault()}};
+  const up=ev=>{document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up);document.removeEventListener('pointercancel',up);b.classList.remove('drag');if(!gh)return;gh.remove();X.dragged=Date.now();
+    const el=document.elementFromPoint(ev.clientX,ev.clientY),c=el&&el.closest(sel),a=b.dataset.i;
+    if(c){const t=c.dataset.i;if(t!==a){const tmp=X.place[t];X.place[t]=X.place[a];if(tmp!==undefined)X.place[a]=tmp;else delete X.place[a]}}else delete X.place[a];X.sel=null;render()};
+  document.addEventListener('pointermove',mv,{passive:false});document.addEventListener('pointerup',up);document.addEventListener('pointercancel',up)})}
 function sgRender(){const X=P.sg;document.querySelectorAll('.sgw .sgc[data-i]').forEach(b=>{const j=X.place[b.dataset.i];b.classList.remove('ok','no');
     if(j===undefined){b.textContent='';b.classList.add('empty');b.classList.remove('filled')}else{b.textContent=fmtInt(X.tiles[j]);b.classList.remove('empty');b.classList.add('filled')}});
   const placed=new Set(Object.values(X.place));document.querySelectorAll('.sgw .sgt').forEach(t=>{t.hidden=placed.has(+t.dataset.t);t.classList.toggle('sel',X.sel===+t.dataset.t)})}
 function sgPut(i,j){const X=P.sg;for(const k in X.place)if(X.place[k]===j)delete X.place[k];X.place[i]=j;X.sel=null;sgRender()}
 function sgMount(){const X=P.sg,w=document.querySelector('.sgw');if(!w)return;
-  w.querySelectorAll('.sgc[data-i]').forEach(b=>b.addEventListener('click',()=>{if(X.sel!==null)sgPut(b.dataset.i,X.sel);else if(X.place[b.dataset.i]!==undefined){delete X.place[b.dataset.i];sgRender()}}));
+  w.querySelectorAll('.sgc[data-i]').forEach(b=>slotDrag(b,X,'.sgw .sgc[data-i]',sgRender));
+  w.querySelectorAll('.sgc[data-i]').forEach(b=>b.addEventListener('click',()=>{if(X.dragged&&Date.now()-X.dragged<400)return;if(X.sel!==null)sgPut(b.dataset.i,X.sel);else if(X.place[b.dataset.i]!==undefined){delete X.place[b.dataset.i];sgRender()}}));
   w.querySelectorAll('.sgt').forEach(t=>{t.addEventListener('pointerdown',e=>{if(e.button)return;const j=+t.dataset.t,sx=e.clientX,sy=e.clientY;let gh=null;
     const mv=ev=>{if(!gh&&Math.hypot(ev.clientX-sx,ev.clientY-sy)>6){gh=t.cloneNode(true);gh.classList.add('sgghost');document.body.appendChild(gh);t.classList.add('drag')}
       if(gh){gh.style.left=ev.clientX+'px';gh.style.top=ev.clientY+'px';ev.preventDefault()}};
@@ -3871,7 +3879,8 @@ function opRender(){const X=P.op;document.querySelectorAll('.opw .opc[data-i]').
   const placed=new Set(Object.values(X.place));document.querySelectorAll('.opw .opt').forEach(t=>{t.hidden=placed.has(+t.dataset.t);t.classList.toggle('sel',X.sel===+t.dataset.t)})}
 function opPut(i,j){const X=P.op;for(const k in X.place)if(X.place[k]===j)delete X.place[k];X.place[i]=j;X.sel=null;opRender()}
 function opMount(){const X=P.op,w=document.querySelector('.opw');if(!w)return;
-  w.querySelectorAll('.opc[data-i]').forEach(b=>b.addEventListener('click',()=>{if(X.sel!==null)opPut(b.dataset.i,X.sel);else if(X.place[b.dataset.i]!==undefined){delete X.place[b.dataset.i];opRender()}}));
+  w.querySelectorAll('.opc[data-i]').forEach(b=>slotDrag(b,X,'.opw .opc[data-i]',opRender));
+  w.querySelectorAll('.opc[data-i]').forEach(b=>b.addEventListener('click',()=>{if(X.dragged&&Date.now()-X.dragged<400)return;if(X.sel!==null)opPut(b.dataset.i,X.sel);else if(X.place[b.dataset.i]!==undefined){delete X.place[b.dataset.i];opRender()}}));
   w.querySelectorAll('.opt').forEach(t=>{t.addEventListener('pointerdown',e=>{if(e.button)return;const j=+t.dataset.t,sx=e.clientX,sy=e.clientY;let gh=null;
     const mv=ev=>{if(!gh&&Math.hypot(ev.clientX-sx,ev.clientY-sy)>6){gh=t.cloneNode(true);gh.classList.add('sgghost');document.body.appendChild(gh);t.classList.add('drag')}
       if(gh){gh.style.left=ev.clientX+'px';gh.style.top=ev.clientY+'px';ev.preventDefault()}};
