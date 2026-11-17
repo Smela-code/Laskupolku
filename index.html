@@ -775,7 +775,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.24</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.25</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -5429,11 +5429,6 @@ const NAV=[
       {id:'san',n:'Sanalliset',f:allG(src('yksikot','mit',1),2)}]}]},
   {id:'geom',n:'Geometria',subs:[
     {id:'muo',n:'Muodot',types:[{id:'muo',n:'Tunnista muodot',f:allG(src('muodot','mit'))}]},
-    {id:'pp',n:'Piiri ja pinta-ala',types:[
-      {id:'piiri',n:'Piiri',f:g=>g>=3?{oid:'piiri',levels:{3:[['Ruudukko'],['Suorakulmio ja neliö'],['Monikulmio']],4:[['Ruudukko'],['Suorakulmio ja neliö'],['Puuttuva sivu']],5:[['Suorakulmio ja neliö'],['Yhdistetyt kuviot'],['Puuttuva sivu']],6:[['Suorakulmio ja neliö'],['Yhdistetyt kuviot'],['Puuttuva sivu']]}[g],gen:L=>perGen(g)(L)}:null},
-      {id:'sivu',n:'Päättele sivu',f:g=>g>=3?{oid:'ppsivu',levels:[['L-kuvio'],['Monimutkaisempi kuvio'],['Piiri, kun sivu puuttuu']],gen:L=>sideGen(g)(L)}:null},
-      {id:'ala',n:'Pinta-ala',f:g=>g>=3?{oid:'pintaala',levels:{3:[['Ruutujen laskeminen'],['Suorakulmio ruudukolla'],['Puolikkaat ruudut']],4:[['Ruutujen laskeminen'],['Suorakulmio ja neliö'],['Yhdistetyt kuviot']],5:[['Suorakulmio ja neliö'],['Yhdistetyt kuviot'],['Puuttuva sivu']],6:[['Suorakulmio ja neliö'],['Yhdistetyt kuviot'],['Kolmio']]}[g],gen:L=>areaGen(g)(L)}:null},
-      {id:'san',n:'Sanalliset',f:g=>g>=3?{oid:'ppsan',levels:[['Piiri'],['Pinta-ala'],[g<=4?'Sekaisin':'Hinnat']],gen:L=>ppWordGen(g)(L)}:null}]},
     {id:'kap',n:'Kappaleet',types:[
       {id:'tun',n:'Tunnista kappale',f:g=>({oid:'kappale',levels:g<=2?[['Perusmuodot'],['Lisää kappaleita'],['Kaikki kappaleet']]:[['Perusmuodot'],['Lisää kappaleita'],['Tahkot, särmät ja kärjet']],gen:L=>solidGen(g)(L)})},
       {id:'aukko',n:'Palikat aukosta',f:g=>({oid:'aukko',levels:[['Kierrä'],['Kierrä ja käännä'],['Kaikki suunnat']],gen:L=>holeGen(g)(L)})},
@@ -5445,6 +5440,11 @@ const NAV=[
       {id:'onko',n:'Onko symmetrinen?',f:g=>({oid:'symonko',levels:g<=2?[['Kyllä vai ei?'],['Mikä viiva on akseli?'],['Isompi kuvio']]:[['Kyllä vai ei?'],['Mikä viiva on akseli?'],['Montako akselia?']],gen:L=>symIsGen(g)(L)})},
       {id:'val',n:'Valitse toinen puoli',f:g=>({oid:'symval',levels:g<=2?[['Pystysuora akseli'],['Vaakasuora akseli'],['Piirrokset']]:[['Selvät erot'],['Kaksi väriä'],['Pienet erot']],gen:L=>symPickGen(g)(L)})},
       {id:'tay',n:'Täydennä kuvio',f:g=>({oid:'symtay',levels:g<=2?[['Pystysuora akseli'],['Vaakasuora akseli'],['Isompi kuvio']]:g<=4?[['Yksi väri'],['Kaksi väriä'],['Kolme väriä']]:[['Monta väriä'],['Akseli sivussa'],['Kaksi akselia']],gen:L=>symFillGen(g)(L)})}]},
+    {id:'pp',n:'Piiri ja pinta-ala',types:[
+      {id:'piiri',n:'Piiri',f:g=>g>=3?{oid:'piiri',levels:{3:[['Ruudukko'],['Suorakulmio ja neliö'],['Monikulmio']],4:[['Ruudukko'],['Suorakulmio ja neliö'],['Puuttuva sivu']],5:[['Suorakulmio ja neliö'],['Yhdistetyt kuviot'],['Puuttuva sivu']],6:[['Suorakulmio ja neliö'],['Yhdistetyt kuviot'],['Puuttuva sivu']]}[g],gen:L=>perGen(g)(L)}:null},
+      {id:'sivu',n:'Päättele sivu',f:g=>g>=3?{oid:'ppsivu',levels:[['L-kuvio'],['Monimutkaisempi kuvio'],['Piiri, kun sivu puuttuu']],gen:L=>sideGen(g)(L)}:null},
+      {id:'ala',n:'Pinta-ala',f:g=>g>=3?{oid:'pintaala',levels:{3:[['Ruutujen laskeminen'],['Suorakulmio ruudukolla'],['Puolikkaat ruudut']],4:[['Ruutujen laskeminen'],['Suorakulmio ja neliö'],['Yhdistetyt kuviot']],5:[['Suorakulmio ja neliö'],['Yhdistetyt kuviot'],['Puuttuva sivu']],6:[['Suorakulmio ja neliö'],['Yhdistetyt kuviot'],['Kolmio']]}[g],gen:L=>areaGen(g)(L)}:null},
+      {id:'san',n:'Sanalliset',f:g=>g>=3?{oid:'ppsan',levels:[['Piiri'],['Pinta-ala'],[g<=4?'Sekaisin':'Hinnat']],gen:L=>ppWordGen(g)(L)}:null}]},
     {id:'koo',n:'Koordinaatisto',types:[{id:'koo',n:'Koordinaatit',f:allG(src('koord','mit'),3)}]}]},
   {id:'tilastot',n:'Tilastot ja todennäköisyys',subs:[
     {id:'dia',n:'Diagrammit',types:[{id:'dia',n:'Lue diagrammia',f:allG(src('diagrammit','stat'))},{id:'tukki',n:'Tukkimiehen kirjanpito',f:g=>({oid:'tukki',levels:g<=2?[['Kolme riviä'],['Enemmän merkittävää'],['Neljä riviä, liikkuvat']]:[['Neljä riviä'],['Liikkuvat'],['Nopeat ja järjestys']],gen:L=>tallyGen(g)(L)})},{id:'piirra',n:'Piirrä diagrammi',f:g=>({oid:'piirra',levels:{1:[['Kuvadiagrammi'],['Isompi kuvadiagrammi'],['Pylväsdiagrammi']],2:[['Kuvadiagrammi'],['Pylväsdiagrammi'],['Pylväät kahden välein']],3:[['Pylväsdiagrammi'],['Pylväät kahden välein'],['Suuruusjärjestys']],4:[['Pylväät kahden välein'],['Pylväät viiden välein'],['Puolivälit ja järjestys']],5:[['Puolivälit ja järjestys'],['Viivadiagrammi'],['Viivadiagrammi puolivälein']],6:[['Puolivälit ja järjestys'],['Viivadiagrammi'],['Viivadiagrammi, asteikko 20']]}[g],gen:L=>drawGen(g)(L)})}]},
