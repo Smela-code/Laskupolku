@@ -775,7 +775,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.26</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.27</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -5514,8 +5514,8 @@ const LGOAL={1:E('<b>Lukualue 0–20.</b> Yhteen- ja vähennyslasku, lukujen 0�
   5:E('<b>Lukualue 0–1 000 000.</b> Kerto- ja jakolasku isommilla luvuilla, desimaali- ja murtolukujen laskut, laventaminen, prosentit ja sanalliset yhtälöt.',SVT('<b>Numbers 0–1,000,000.</b> Multiplication and division with bigger numbers, calculating with decimals and fractions, equivalent fractions, percentages and equation word problems.','<b>Talen 0–1 000 000.</b> Multiplikation och division med större tal, räkning med decimaltal och bråk, förlängning, procent och ekvationer i textuppgifter.')),
   6:E('<b>Murto- ja desimaaliluvut.</b> Erinimisten murtolukujen yhteen- ja vähennyslasku, murtoluvun kerto- ja jakolasku, desimaalilukujen laskut, prosentit ja yhtälöt.',SVT('<b>Fractions and decimals.</b> Adding and subtracting fractions with different denominators, multiplying and dividing fractions, calculating with decimals, percentages and equations.','<b>Bråk och decimaltal.</b> Addition och subtraktion av bråk med olika nämnare, multiplikation och division av bråk, räkning med decimaltal, procent och ekvationer.'))};
 function navGoal(c){const g=S.grade;
-  if(c.top.id==='laskut')return LGOAL[g];
-  return `<b>${tr(c.top.n)}:</b> ${andJoin(c.subs.map(s=>tr(s.n).toLowerCase()))}.`}
+  if(c.top.id==='laskut')return LGOAL[g].replace(/<\/?b>/g,'');
+  const t=andJoin(c.subs.map(s=>tr(s.n).toLowerCase()));return t.charAt(0).toUpperCase()+t.slice(1)+'.'}
 const NCOL={laskut:'--blue',luvut:'--apple',mitta:'--good',geom:'--candy',tilastot:'--orange',pulmat:'--berry'};
 const NTX=(t,sz=17)=>`<text x="20" y="22" text-anchor="middle" dominant-baseline="middle" style="font-size:${sz}px;font-weight:800" fill="currentColor">${t}</text>`;
 const NICO={laskut:'<rect x="3.5" y="3.5" width="15" height="15" rx="3.5" fill="currentColor"/><rect x="21.5" y="3.5" width="15" height="15" rx="3.5" fill="currentColor"/><rect x="3.5" y="21.5" width="15" height="15" rx="3.5" fill="currentColor"/><rect x="21.5" y="21.5" width="15" height="15" rx="3.5" fill="currentColor"/><path class="cut" d="M7 11h8M11 7v8M25 11h8" stroke-width="2.6" stroke-linecap="round" fill="none"/><circle class="cutf" cx="11" cy="29" r="2.2"/><circle class="cutf" cx="29" cy="25.5" r="2"/><circle class="cutf" cx="29" cy="32.5" r="2"/>',
