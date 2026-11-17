@@ -775,7 +775,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.23</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.24</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -5409,20 +5409,20 @@ const NAV=[
       {id:'san',n:'Sanalliset',f:g=>({oid:'c-jonot',levels:SEQWLV[g].map(x=>[x]),gen:L=>{const P=ot(g,'c-jonot').gen(L,'cmp',true);P.opUsed='cmp';return P}})}]},
     {id:'torj',n:'Lukupomppu',types:[{id:'torj',n:'Torju oikeat pallot',f:g=>({oid:'torj',levels:[[E('Hidas',SVT('Slow',"Långsamt"))],[E('Nopeampi',SVT('Faster',"Snabbare"))],[E('Vaikeat säännöt',SVT('Hard rules',"Svåra regler"))]],gen:L=>bounceGen(g)(L)})}]}]},
   {id:'mitta',n:'Mitat ja yksiköt',subs:[
-    {id:'aika',n:'Aika',types:[
-      {id:'kello',n:'Kellonajat',f:allG(src('kello',['+','-']),2,4)},
-      {id:'nop',n:'Nopeus, matka ja aika',f:allG(src('nopeus','*'),5)},
-      {id:'san',n:'Sanalliset',f:allG(src('kello',['+','-'],1),2,4)}]},
-    {id:'kal',n:'Kalenteri',types:[
-      {id:'kk',n:'Kuukaudet ja vuodet',f:allG(kkT)}]},
-    {id:'lampo',n:'Lämpötila',types:[
-      {id:'mit',n:'Lämpömittari',f:allG(src('lampo','mit'),3)},
-      {id:'san',n:'Sanalliset',f:allG(src('lampo','mit',1),3,4)}]},
     {id:'raha',n:'Raha',types:[
       {id:'kol',n:'Kolikot ja setelit',f:allG(src('raha','+'),1,4)},
       {id:'kas',n:'Kaupan kassa',f:allG(src('raha','-'),1,4)},
       {id:'mdiv',n:'Montako saa?',f:g=>g>=3?{oid:'mdiv',levels:[['Pienet summat'],['Isommat summat'],['Ensin yksi ostos']],gen:L=>mdivGen(g)(L)}:null},
       {id:'ost',n:'Ostospäätökset',f:g=>g>=3?{oid:'ostos',levels:{3:[['Kaksi kauppaa'],['Tarjoukset'],['Kolme kauppaa']],4:[['Kaksi kauppaa'],['Kolme kauppaa'],['Paljonko säästät?']],5:[['Kolme kauppaa'],[IMP?'Paunahinta':'Kilohinta'],['Paljonko säästät?']],6:[['Kolme kauppaa'],[IMP?'Paunahinta':'Kilohinta'],['Paljonko säästät?']]}[g],gen:L=>shopGen(g)(L)}:null}]},
+    {id:'kal',n:'Kalenteri',types:[
+      {id:'kk',n:'Kuukaudet ja vuodet',f:allG(kkT)}]},
+    {id:'aika',n:'Aika',types:[
+      {id:'kello',n:'Kellonajat',f:allG(src('kello',['+','-']),2,4)},
+      {id:'nop',n:'Nopeus, matka ja aika',f:allG(src('nopeus','*'),5)},
+      {id:'san',n:'Sanalliset',f:allG(src('kello',['+','-'],1),2,4)}]},
+    {id:'lampo',n:'Lämpötila',types:[
+      {id:'mit',n:'Lämpömittari',f:allG(src('lampo','mit'),3)},
+      {id:'san',n:'Sanalliset',f:allG(src('lampo','mit',1),3,4)}]},
     {id:'kartta',n:'Kartta ja mittakaava',types:[{id:'kartta',n:'Kartta ja mittakaava',f:g=>g>=3?{oid:'kartta',levels:{3:[['Ruutujen laskeminen'],['Lyhin reitti'],['Kumpi on lähempänä?']],4:[['Lyhin reitti'],['Mihin hän meni?'],['Joen yli']],5:[['Lyhin reitti'],['Kävelyaika'],['Mittakaava 1 : 10 000']],6:[['Mihin hän meni?'],['Pyörämatkan aika'],['Mikä on mittakaava?']]}[g],gen:L=>mapGen(g)(L)}:null}]},
     {id:'yks',n:'Yksikkömuunnokset',types:[
       {id:'muu',n:'Muunnokset',f:allG(src('yksikot','mit'),2)},
