@@ -775,7 +775,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.22</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.23</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -5404,10 +5404,10 @@ const NAV=[
       {id:'pari',n:'Parilliset ja parittomat',f:g=>g<=4?{oid:'pari',levels:g<=2?[['Parijono'],['Valitse luvut'],['Isommat luvut']]:[['Kaksinumeroiset'],['Kolminumeroiset'],['Nelinumeroiset']],gen:L=>pariGen(g)(L)}:null},
       {id:'jak',n:'Jaollisuus',f:g=>g>=3?{oid:'jaollisuus',levels:g<=4?[['Ryhmätyö'],['Jaollisuus 2:lla, 5:llä ja 10:llä'],['Jaollisuus 3:lla ja 4:llä']]:[['Ryhmätyö'],['Jaollisuus 3:lla ja 9:llä'],['Monta jakajaa']],gen:L=>jakGen(g)(L)}:null},
       {id:'alku',n:'Alkuluvut',f:g=>g>=5?{oid:'alkuluvut',levels:[['Palikat suorakulmioksi'],['Luvut 2–50'],['Luvut 2–100']],gen:L=>alkuGen(g)(L)}:null}]},
-    {id:'torj',n:'Lukupomppu',types:[{id:'torj',n:'Torju oikeat pallot',f:g=>({oid:'torj',levels:[[E('Hidas',SVT('Slow',"Långsamt"))],[E('Nopeampi',SVT('Faster',"Snabbare"))],[E('Vaikeat säännöt',SVT('Hard rules',"Svåra regler"))]],gen:L=>bounceGen(g)(L)})}]},
     {id:'jon',n:'Lukujonot',types:[
       {id:'jon',n:'Mikä luku puuttuu?',f:allG(src('c-jonot','cmp'))},
-      {id:'san',n:'Sanalliset',f:g=>({oid:'c-jonot',levels:SEQWLV[g].map(x=>[x]),gen:L=>{const P=ot(g,'c-jonot').gen(L,'cmp',true);P.opUsed='cmp';return P}})}]}]},
+      {id:'san',n:'Sanalliset',f:g=>({oid:'c-jonot',levels:SEQWLV[g].map(x=>[x]),gen:L=>{const P=ot(g,'c-jonot').gen(L,'cmp',true);P.opUsed='cmp';return P}})}]},
+    {id:'torj',n:'Lukupomppu',types:[{id:'torj',n:'Torju oikeat pallot',f:g=>({oid:'torj',levels:[[E('Hidas',SVT('Slow',"Långsamt"))],[E('Nopeampi',SVT('Faster',"Snabbare"))],[E('Vaikeat säännöt',SVT('Hard rules',"Svåra regler"))]],gen:L=>bounceGen(g)(L)})}]}]},
   {id:'mitta',n:'Mitat ja yksiköt',subs:[
     {id:'aika',n:'Aika',types:[
       {id:'kello',n:'Kellonajat',f:allG(src('kello',['+','-']),2,4)},
