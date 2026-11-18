@@ -775,7 +775,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.29</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.30</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -2188,14 +2188,14 @@ function nlSVG(sp,o={}){let s=`<line x1="${NLM-14}" y1="${NLY}" x2="${NLW-NLM+14
   if(o.ball!=null){const x=nlX(sp,o.ball),tx=nlX(sp,o.ballTo);s+=`<g class="nlroll" style="--dx:${(tx-x).toFixed(1)}px"><circle cx="${x}" cy="${NLY-11}" r="9" fill="var(--berry)" stroke="var(--ink)" stroke-width="1.6"/></g>`}
   if(o.drag)s+=`<g id="nlmk" class="nlmk" style="display:none"><line x1="0" x2="0" y1="${NLY-34}" y2="${NLY}" stroke="var(--berry)" stroke-width="3"/><path d="M0 ${NLY-2}l-9-15h18z" fill="var(--berry)" stroke="var(--ink)" stroke-width="1.4"/><circle cx="0" cy="${NLY-38}" r="8" fill="var(--berry)" stroke="var(--ink)" stroke-width="1.4"/></g>`;
   if(o.extra)s+=o.extra;
-  return `<svg${o.drag?' id="nlg"':''} class="pa nl" viewBox="0 0 ${NLW} 122" width="${NLW}" height="108" role="img" aria-label="${E('Lukusuora',SVT('Number line',"Tallinje"))}">${o.drag?`<rect x="0" y="0" width="${NLW}" height="108" fill="transparent"/>`:''}${s}</svg>`}
+  return `<svg${o.drag?' id="nlg"':''} class="pa nl" viewBox="0 0 ${NLW} 108" width="${NLW}" height="108" role="img" aria-label="${E('Lukusuora',SVT('Number line',"Tallinje"))}">${o.drag?`<rect x="0" y="0" width="${NLW}" height="108" fill="transparent"/>`:''}${s}</svg>`}
 function nlSet(v){const sp=P.nl;const step=sp.snap||(sp.b-sp.a)/400;v=Math.max(sp.a,Math.min(sp.b,Math.round((v-sp.a)/step)*step+sp.a));P.nv=v;const g=document.getElementById('nlmk');if(g){g.style.display='';g.setAttribute('transform',`translate(${nlX(sp,v)},0)`);g.classList.remove('bad')}const f=$('#fb');if(f&&!done)f.hidden=true}
 let NLD=null;
 document.addEventListener('pointerdown',e=>{const sv=e.target.closest&&e.target.closest('#nlg');if(!sv||done||!P||!P.nl)return;e.preventDefault();NLD=e.pointerId;try{sv.setPointerCapture(e.pointerId)}catch(_){}nlMove(e)});
 document.addEventListener('pointermove',e=>{if(NLD!==e.pointerId||done)return;nlMove(e)});
 ['pointerup','pointercancel'].forEach(t=>document.addEventListener(t,e=>{if(NLD===e.pointerId)NLD=null}));
 function nlMove(e){const sv=document.getElementById('nlg');if(!sv)return;const r=sv.getBoundingClientRect(),x=(e.clientX-r.left)*NLW/r.width;const sp=P.nl;nlSet(sp.a+(x-NLM)/(NLW-2*NLM)*(sp.b-sp.a))}
-function nlTargetMark(sp,t,ok){const x=nlX(sp,t);return `<g class="cin" style="--d:.1s"><line x1="${x}" x2="${x}" y1="${NLY-12}" y2="${NLY+18}" stroke="var(--good)" stroke-width="3"/><circle cx="${x}" cy="${NLY+50}" r="7" fill="var(--good)"/>${ok?'':''}</g>`}
+function nlTargetMark(sp,t,ok){const x=nlX(sp,t);return `<g class="cin" style="--d:.1s"><path d="M${x-8} ${NLY-8}l16 16M${x+8} ${NLY-8}l-16 16" stroke="var(--good)" stroke-width="4" stroke-linecap="round"/>${ok?'':''}</g>`}
 const NLPLACE={1:[{a:0,b:10,M:5,m:1,snap:1},{a:0,b:20,M:10,m:1,snap:1},{a:0,b:20,M:20,m:0,tol:1.2}],
   2:[{a:0,b:100,M:50,m:10,tol:3},{a:0,b:100,M:100,m:0,tol:5},{a:0,b:1000,M:500,m:100,tol:30,st:10}],
   3:[{a:0,b:1000,M:500,m:100,tol:25},{a:0,b:1000,M:1000,m:0,tol:45},{a:200,b:300,M:100,m:10,tol:3}],
