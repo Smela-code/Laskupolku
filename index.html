@@ -789,7 +789,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.36</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.37</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -5133,7 +5133,7 @@ function msGen(g){return L=>{const[set0,u,[lo,hi]]=MSL[g][L-1],set=set0.map(v=>C
     const story=E(`Rahat jaetaan tasan ${andList(kids.map(x=>msAll(x.ll)),'ja')}.`,SVT(`The money is shared equally between ${andList(nm,'and')}.`,`Pengarna delas lika mellan ${andList(nm,'och')}.`));
     const groups=[...new Set(its)].map(v=>[v,its.filter(x=>x===v).length]);
     const sol=ps.map((p,i)=>`<li>${nm[i]}: ${p.map(mtxt).join(' + ')} = ${mtxt(S)}</li>`).join('');
-    return{kind:'msplit',ms:{st:0,stages:['each','split'],hide:L===3||(L===2&&g>=5),its,loc:its.map(()=>-1),sel:null,k,S,T,cents,nm,L},answerText:'',visual:null,story,text:'',ttsSay:story,
+    return{kind:'msplit',ms:{st:0,stages:['each'],hide:L===3||(L===2&&g>=5),its,loc:its.map(()=>-1),sel:null,k,S,T,cents,nm,L},answerText:'',visual:null,story,text:'',ttsSay:story,
       after:`<div class="msw" id="msw"></div>`,mount:()=>msRender(),
       hint:E(`<p>Laske ensin kaikki rahat yhteen. Jaa sitten summa ${k===2?'kahdelle':'kolmelle'}: se on jokaisen osuus.</p>${L>1?'<p>Kaikki eivät saa samanlaisia rahoja, mutta summan pitää olla sama. Esimerkiksi 2 € = 1 € + 1 €.</p>':''}`,
         SVT(`<p>First add up all the money. Then divide the total by ${k}: that is each child's share.</p>${L>1?'<p>Not everyone gets the same coins and notes, but the amounts must be equal. For example 2 € = 1 € + 1 €.</p>':''}`,`<p>Addera först alla pengar. Dela sedan summan med ${k}: det är vars och ens andel.</p>${L>1?'<p>Alla får inte likadana mynt och sedlar, men summan måste vara lika stor. Till exempel 2 € = 1 € + 1 €.</p>':''}`)),
@@ -5149,7 +5149,7 @@ function msRender(){const X=P.ms,w=$('#msw');if(!w)return;const keep=['msa','msb
   const purses=true?`<div class="msps" style="--k:${X.k}">${X.nm.map((n,p)=>`<div class="msp${X.res?(X.res[p]?' ok':' no'):''}" data-p="${p}"><b>${n}</b><div class="msin">${X.its.map((v,i)=>X.loc[i]===p?it(i):'').join('')}</div></div>`).join('')}</div>`:'';
   let q='',row='';const inRow=`${msInp('msa')}<span class="unit">€</span>${X.cents?`${msInp('msb')}<span class="unit">${SNT}</span>`:''}`;
   if(st==='sum'){q=E('Paljonko rahaa on yhteensä?',SVT('How much money is there in total?',"Hur mycket pengar finns det sammanlagt?"));row=inRow}
-  if(st==='each'){q=E(`Paljonko kukin saa, kun rahat jaetaan tasan ${X.k===2?'kahdelle':'kolmelle'}?`,SVT(`How much does each child get when the money is shared equally between ${X.k===2?'two':'three'}?`,`Hur mycket får var och en när pengarna delas lika mellan ${X.k===2?'två':'tre'}?`));row=inRow}
+  if(st==='each'){q=E(`Jaa rahat tasan raahaamalla ja kirjoita, paljonko kukin saa.${X.L>1?' Kaikki eivät saa samanlaisia rahoja.':''}`,SVT(`Share the money equally by dragging it, and write how much each child gets.${X.L>1?' Not everyone gets the same coins and notes.':''}`,`Dela pengarna lika genom att dra dem och skriv hur mycket var och en får.${X.L>1?' Alla får inte likadana mynt och sedlar.':''}`));row=inRow}
   if(st==='split')q=E(`Raahaa jokaiselle ${mtxt(X.S)}.${X.L>1?' Kaikki eivät saa samanlaisia rahoja.':''}`,SVT(`Drag ${mtxt(X.S)} to each child.${X.L>1?' Not everyone gets the same coins and notes.':''}`,`Dra ${mtxt(X.S)} till varje barn.${X.L>1?' Alla får inte likadana mynt och sedlar.':''}`));
   w.innerHTML=`${log.length?`<div class="mslog">${log.map(l=>`<p>${l}</p>`).join('')}</div>`:''}${q?`<p class="eqq">${q}</p>`:''}${row?`<div class="answer eqrow">${row}</div>`:''}<div class="mstray${st!=='done'?' act':''}" role="group" aria-label="${E('Rahat',SVT('Money',"Pengar"))}">${tray||`<span class="msph">${E('Kaikki rahat on jaettu.',SVT('All the money has been shared.',"Alla pengar är fördelade."))}</span>`}</div>${purses}${st!=='done'?`<p class="xwnote">${E('Voit myös napauttaa rahaa ja sitten lasta. Napauta lapsen rahaa palauttaaksesi sen.',SVT('You can also tap a coin or note and then a child. Tap a child\'s money to take it back.',"Du kan också trycka på pengarna och sedan på ett barn. Tryck på ett barns pengar för att ta tillbaka dem."))}</p>`:''}`;
   if(kp)kp.hidden=!row;if(row){['msa','msb'].forEach((id,j)=>{const x=$('#'+id);if(x&&keep[j]){x.value=keep[j][0];if(keep[j][1])x.classList.add('no')}});const a=$('#'+(kf==='msb'&&X.cents?'msb':'msa'));activeEl=a;if(a&&!holdFocus)a.focus({preventScroll:true})}}
@@ -5164,15 +5164,16 @@ document.addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.c
     else if(X.loc[i]>=0)msMove(i,-1);else{X.sel=X.sel===i?null:i;msRender()}};
   document.addEventListener('pointermove',mv,{passive:false});document.addEventListener('pointerup',up);document.addEventListener('pointercancel',up)});
 function msVal(){const a=$('#msa'),b=$('#msb'),va=a?a.value.replace(/\s/g,''):'',vb=b?b.value.replace(/\s/g,''):'';if(!va&&!vb)return null;return (+va||0)*100+(+vb||0)}
-function msEval(){const X=P.ms,st=X.stages[X.st];
-  if(st==='sum'||st==='each'){const v=msVal();if(v===null)return{empty:1};const want=st==='sum'?X.T:X.S;
-    if(v!==want){['#msa','#msb'].forEach(s=>{const x=$(s);if(x)x.classList.add('no')});
-      return{bad:st==='sum'?E('Ei vielä oikein. Laske ensin isoimmat rahat ja lisää sitten pienemmät.',SVT('Not right yet. Count the biggest money first, then add the smaller ones.',"Inte rätt ännu. Räkna de största pengarna först och lägg sedan till de mindre.")):E(`Ei vielä oikein. Laske ensin kaikki rahat yhteen ja jaa summa ${X.k===2?'kahdelle':'kolmelle'}.`,SVT(`Not right yet. First add up all the money, then divide the total by ${X.k}.`,`Inte rätt ännu. Addera först alla pengar och dela sedan summan med ${X.k}.`))}}
-    X.st++;if(X.loc.every(l=>l>=0))return msEval();msRender();fb(E('Oikein! Jaa nyt rahat.',SVT('Correct! Now share the money.',"Rätt! Dela nu pengarna.")),'good');return{wait:1}}
-  if(X.loc.some(l=>l<0))return{bad:E('Jaa kaikki rahat. Pöydälle ei saa jäädä mitään.',SVT('Share out all the money. Nothing may be left over.',"Dela ut alla pengar. Inget får bli kvar."))};
-  X.res=X.nm.map((_,p)=>X.its.reduce((a,v,i)=>a+(X.loc[i]===p?v:0),0)===X.S);msRender();const ok=X.res.every(Boolean);
-  if(!ok)P.msMsg=E(`Kaikilla ei ole vielä yhtä paljon. Jokaisella pitää olla ${mtxt(X.S)}.`,SVT(`Not everyone has the same amount yet. Each child should have ${mtxt(X.S)}.`,`Alla har inte lika mycket ännu. Varje barn ska ha ${mtxt(X.S)}.`));
-  return{ok}}
+function msEval(){const X=P.ms,v=msVal(),placed=X.loc.filter(l=>l>=0).length;
+  if(v===null&&!placed)return{empty:1};
+  if(placed<X.loc.length)return{bad:E('Jaa kaikki rahat. Pöydälle ei saa jäädä mitään.',SVT('Share out all the money. Nothing may be left over.',"Dela ut alla pengar. Inget får bli kvar."))};
+  if(v===null)return{bad:E('Kirjoita vielä, paljonko kukin saa.',SVT('Now write how much each child gets.',"Skriv också hur mycket var och en får."))};
+  X.res=X.nm.map((_,p)=>X.its.reduce((a,w,i)=>a+(X.loc[i]===p?w:0),0)===X.S);const aok=v===X.S,sok=X.res.every(Boolean);msRender();
+  if(!aok)['#msa','#msb'].forEach(q=>{const x=$(q);if(x)x.classList.add('no')});
+  if(!(aok&&sok))P.msMsg=!sok&&!aok?E('Rahoja ei ole vielä jaettu tasan, eikä vastaus ole oikein. Laske ensin kaikki rahat yhteen.',SVT('The money is not shared equally yet, and the answer is not right. First add up all the money.',"Pengarna är inte lika fördelade ännu, och svaret är inte rätt. Addera först alla pengar.")):
+    !sok?E('Vastaus on oikein, mutta kaikilla ei ole vielä yhtä paljon rahaa.',SVT('The answer is right, but not everyone has the same amount of money yet.',"Svaret är rätt, men alla har inte lika mycket pengar ännu.")):
+    E(`Rahat on jaettu tasan, mutta vastaus ei ole oikein. Laske yhden lapsen rahat yhteen.`,SVT('The money is shared equally, but the answer is not right. Add up one child\'s money.',"Pengarna är lika fördelade, men svaret är inte rätt. Addera ett barns pengar."));
+  return{ok:aok&&sok}}
 Object.assign(TR,{'Jaa rahat tasan':SVT('Share money equally',"Dela pengar lika"),'Samanlaiset osuudet':SVT('Identical shares',"Likadana delar"),'Eri rahoista':SVT('Different coins and notes',"Olika mynt och sedlar"),'Kolmelle eri rahoista':SVT('Three shares, different money',"Tre delar, olika pengar")});
 
 /* ---------- tila ---------- */
