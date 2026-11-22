@@ -789,7 +789,7 @@ footer p{margin:0 0 6px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.35</span></h1>
+      <h1>Laskupolku <span class="opsrow" aria-hidden="true"><span class="o1"><svg viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o2"><svg viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="o3"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg></span><span class="o4"><svg viewBox="0 0 10 10"><circle cx="5" cy="3" r="1.1" fill="currentColor"/><circle cx="5" cy="7" r="1.1" fill="currentColor"/></svg></span></span><span class="ver" id="appVer" title="Versio">v2.36</span></h1>
       <p class="sub">Matematiikkaa monipuolisesti ala‑asteikäisille</p>
     </div>
     <div class="hright">
@@ -5146,7 +5146,7 @@ function msRender(){const X=P.ms,w=$('#msw');if(!w)return;const keep=['msa','msb
   const it=i=>`<button type="button" class="msi${X.sel===i?' sel':''}" data-m="${i}" aria-label="${mtxt(X.its[i])}"${st==='done'?' tabindex="-1"':''}>${moneySVG(X.its[i])}</button>`;
   const tray=X.its.map((v,i)=>X.loc[i]<0?it(i):'').join('');
   const sums=X.nm.map((_,p)=>X.its.reduce((a,v,i)=>a+(X.loc[i]===p?v:0),0));
-  const purses=true?`<div class="msps" style="--k:${X.k}">${X.nm.map((n,p)=>`<div class="msp${X.res?(X.res[p]?' ok':' no'):''}" data-p="${p}"><b>${n}</b><div class="msin">${X.its.map((v,i)=>X.loc[i]===p?it(i):'').join('')}</div>${X.hide?'':`<span class="mssum">${sums[p]?mtxt(sums[p]):''}</span>`}</div>`).join('')}</div>`:'';
+  const purses=true?`<div class="msps" style="--k:${X.k}">${X.nm.map((n,p)=>`<div class="msp${X.res?(X.res[p]?' ok':' no'):''}" data-p="${p}"><b>${n}</b><div class="msin">${X.its.map((v,i)=>X.loc[i]===p?it(i):'').join('')}</div></div>`).join('')}</div>`:'';
   let q='',row='';const inRow=`${msInp('msa')}<span class="unit">€</span>${X.cents?`${msInp('msb')}<span class="unit">${SNT}</span>`:''}`;
   if(st==='sum'){q=E('Paljonko rahaa on yhteensä?',SVT('How much money is there in total?',"Hur mycket pengar finns det sammanlagt?"));row=inRow}
   if(st==='each'){q=E(`Paljonko kukin saa, kun rahat jaetaan tasan ${X.k===2?'kahdelle':'kolmelle'}?`,SVT(`How much does each child get when the money is shared equally between ${X.k===2?'two':'three'}?`,`Hur mycket får var och en när pengarna delas lika mellan ${X.k===2?'två':'tre'}?`));row=inRow}
